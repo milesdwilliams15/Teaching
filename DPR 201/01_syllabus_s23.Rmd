@@ -11,10 +11,10 @@ date: "Fall 2022"
 
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MWF 2:30-3:30 pm"
+officehours: "MW 3:00-4:30 pm"
 office: "Higley 401C"
-classroom: "Higley 325"
-classhours: "MWF 9:30-10:20 am"
+classroom: "Higley 029 (in the basement)"
+classhours: "MW 1:30-2:50 pm"
 
 fontfamily: mathpazo
 fontsize: 11pt
@@ -79,35 +79,39 @@ library(lubridate)
 
 # 1) what is the first Monday of the semester?
 # Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
-# Format: YYYYMMDD. In this example, 4 January 2021 (but no mas!).
+# Format: YYYYMMDD. First monday of semester
 
-mon <- ymd(20220829)
+mon <- ymd(20230116)
 
-# What are some dates you won't be here? In this example, I had a conference on 7 January 2021.
+
 # Spring Break was 15 March 2021 to 19 March 2021.
 not_here_dates <- c(
-  # Fall break,
-  c(ymd(20221017), ymd(20221018)),
-  # Tanksgivin'
-  seq(ymd(20221121), ymd(20221125), by = 1))
+  # MLK observed,
+  ymd(20230123),
+  # Spring break
+  seq(ymd(20230313), ymd(20230317), by = 1),
+  # MPSA
+  seq(ymd(20230413), ymd(20230416), by = 1))
 
 # You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
-# writing (MA) assignments:
-ma_dates <- c(ymd(20221007), 
-              ymd(20221028),
-              ymd(20221118),
-              ymd(20221215))
-# graph challenges:
-gc_dates <- c(ymd(20220918),
-              ymd(20220925),
-              ymd(20221002),
-              ymd(20221016),
-              ymd(20221106),
-              ymd(20221204))
+# final assigment dates:
+fa_dates <- c(ymd(20230210), 
+              ymd(20230303),
+              ymd(20230421),
+              ymd(20230503)) # Final date set to 05-03 2-4 PM
+# analysis challenges:
+ac_dates <- c(ymd(20230206),
+              ymd(20230213),
+              ymd(20230220),
+              ymd(20230227),
+              ymd(20230327),
+              ymd(20230403),
+              ymd(20230410),
+              ymd(20230417))
 
 # What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
 # In this case: Aug. 29 to Dec. 13
-semester_dates <- seq(ymd(20220829), ymd(20221213), by=1)
+semester_dates <- seq(ymd(20230116), ymd(20230501), by=1)
 
 # Custom function for treating the first day of the month as the first week 
 # of the month up until the first Sunday (unless Sunday was the start of the month)
@@ -117,29 +121,31 @@ wom <- function(date) {
   }
 
 # Create a data frame of dates, assign to Cal
-tibble(date = seq(ymd(20220801), ymd(20221231), by=1))  %>%
+tibble(date = seq(ymd(20230101), ymd(20230531), by=1))  %>%
   mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
          wkdy = weekdays(date, abbreviate=T), # get weekday label
          wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
          semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
-         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
-         gcs = ifelse(date %in% gc_dates, 1, 0), # is it a GC assignment?
+         fas = ifelse(date %in% fa_dates, 1, 0), # is it an FA?
+         acs = ifelse(date %in% ac_dates, 1, 0), # is it a AC assignment?
          not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
          day = lubridate::mday(date), # get day of month to add later as a label
          # Below: our custom wom() function
          week = wom(date)) -> Cal
 
-# Create a category variable, for filling.
+# Create a fill category and color category variable, for filling/coloring.
 # I can probably make this a case_when(), but this will work.
 
 Cal %>%
-  mutate(category = NA,
-         category = ifelse(semester == 1, "Semester", category),
-         category = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", category),
-         category = ifelse(mas == 1, "MA Due", category),
-         category = ifelse(gcs == 1, "GC Due", category),
-         category = ifelse(not_here == 1, "Breaks", category),
-         category = ifelse(is.na(category), "NA", category)) -> Cal 
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed"), "Class Day", fcategory),
+         ccategory = ifelse(fas == 1, "FA Due", ccategory),
+         ccategory = ifelse(acs == 1, "AC Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
 
 Cal %>% 
   ggplot(.,aes(wkdy, week)) +
@@ -148,25 +154,31 @@ Cal %>%
   theme_bw() +
   theme(panel.grid.major.x = element_blank()) +
   # geom_tile and facet_wrap will do all the heavy lifting
-  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
   facet_wrap(~mon, scales="free", ncol=3) +
   # fill in tiles to make it look more "calendary" (sic)
-  geom_text(aes(label=day),family="Open Sans") +
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
   # put your y-axis down, flip it, and reverse it
   scale_y_reverse(breaks=NULL) +
   # manually fill scale colors to something you like...
   scale_fill_manual(values=c("Class Day"="steelblue", 
                              "Semester"="lightsteelblue",
                              "Breaks"="forestgreen",
-                             "NA" = "white", # I like these whited out...
-                             "MA Due"="indianred4",
-                             "GC Due"="gold"),
+                             "NA" = "grey80"),
                     #... but also suppress a label for a non-class semester day
-                    breaks=c("Class Day","MA Due","GC Due","Breaks")) +
-  labs(fill = "", x="", y="",
-       caption = "Notable dates: Fall Break (17-18 Oct.), Thanksgiving (21-25 Nov.), Finals (14-19 Dec.)\nMA = Main Assigment; GC = Graph Challenge")  -> class_cal
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("FA Due" = "firebrick", 
+               "AC Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("FA Due", "AC Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: MLK Day Observed (23 Jan.), Spring Break (11-20 Mar.), Final Day of Instruction (01 May)"
+       )  -> class_cal
 
 ```
+
 
 # Course Description
 
@@ -180,19 +192,19 @@ In this course, you'll develop a number of skills.
 
 #### Quantitative
 
-You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively visualized to describe and draw inferences for maximum impact.
+You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively analyzed to describe and draw inferences for maximum impact.
 
-#### Writing
+#### Communication
 
-A picture may be worth a thousand words, but it helps if words are included. When you visualize data you will also write up your results. This will enhance your writing skills and reinforce the idea that data visualization is not a mechanical skill; it is a method of inquiry intended for public communication.
+It is not enough to have a well-designed analysis. To have any social impact with your research you need to be able to effectively communicate your research to others. In this course, you will have opportunities to relay your research and findings through written, verbal, and visual media.
 
 #### Critical Thinking
 
-Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data, create effective visualizations, and draw conclusions.
+Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data, develop a research design, and draw conclusions.
 
 #### Statistical Programming
 
-You will use R and RStudio to wrangle and visualize data. By the time you have finished this course you may not be an expert programmer, but you will be well versed in the basics of R and how to use the `{tidyverse}` suite of packages to assemble, organize, and visualize data.
+In addition to learning the intuition behind statistical methods like multiple regression, causal inference, and hypothesis testing, you will gain experience applying these methods using R and RStudio.
 
 # Analysis Software
 
@@ -207,21 +219,21 @@ All necessary R packages for the course are already installed in the server vers
 
 # Required Readings
 
-In addition to reading some short pieces written by journalists, academics, and others available online, we will primarily draw on Kieran Healy's excellent book on data viz:
+In addition to reading some short pieces written by journalists, academics, and others available online, we will primarily draw on Ethan Bueno de Misquita and Anthony Fowler's excellent book on quantitative analysis:
 
-> Healy, Kieran. 2019. *Data Visualization: A Practical Introduction*. Princeton: Princeton University Press.
+> Bueno de Mequita, Ethan and Anthony Fowler. 2021. *Thinking Clearly with Data: A Guide to Quantitative Reasoning and Analysis.* Princeton: Princeton University Press.
 
 # Resources
 
 ## We Have an TA!
 
-Zach Broeren is the Teaching Assistant for DPR 101. If you have questions about assignments or need help troubleshooting code, Zach is an excellent resource.
+Will Duquette is the Teaching Assistant for DPR 201. If you have questions about assignments or need help troubleshooting code, Will is an excellent resource.
 
 **Office Hours**: 11:00 am -- 1:00 pm
 
 **Location**: Higley 408
 
-**Contact**: [broere_z1\@denison.edu](mailto:broere_z1@denison.edu){.email}
+**Contact**: [duquet_w1@denison.edu ](mailto:duquet_w1@denison.edu ){.email}
 
 ## Accessibility
 
@@ -241,7 +253,7 @@ Essays, journals, and other coursework submitted for this class are generally co
 
 ## R Resources & Cheat Sheets
 
-[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf) $\Diamond$ [`{paletteer}`](https://emilhvitfeldt.github.io/r-color-palettes/discrete.html)
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [`{estimatr}`](https://declaredesign.org/r/estimatr/) $\Diamond$ [`{seerrr}`](https://github.com/milesdwilliams15/seerrr) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
 
 # Course Policy
 
@@ -249,33 +261,53 @@ The course policy and requirements are detailed below. It all basically boils do
 
 ## Grading Policy
 
-Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. The specifics will vary as I curve the scale depending on the overall class distribution.
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. 
 
-*Attendance and Participation* **10%**
+| **Grading Scale** |             |        |
+|-------------------|:------------|:-------|
+| A+:	98%+		      | A:	92%			| A-:	90%|
+| B+:	88%			      | B:	82%			| B-:	80%|
+| C+:	78%			      | C:	72%			| C-:	70%|
+| D+:	68%			      | D:	62%			| D-:	60%|
+| F: below 60       |             |        |
 
-> This should go without saying, but students should show up to class and ask questions and answer them. This course works best with lots of two-way conversation between you and me. Data programming and visualization involve a lot of trial and error, but it helps to talk problems through. To make this happen, you need to show up to class. You will have **1 free absence** in this class (no questions asked---really). Beyond this first absence you can expect to lose 1/2 of your participation and attendance grade for each of 2 subsequent unexcused absences. If you do the math, that means if you have two unexcused absences (after your first freebie), you lose all of your participation and attendance points. The way to avoid **unexcused** absences (other than not missing class) is to give me advanced warning of an upcoming absence---either via email or written notice at least **24 hours in advance**. If you only come to class and never say a word, you will receive no more than 66% of your attendance and participation points (that's a D, FYI).
 
-*4 Main Assignments* **15% Each**
+*Code Glossary* **10pts**
 
-> You'll have four writing assigments to complete in this course. The prompts for these assigments are located at the end of this syllabus. These involve wrangling some political data, describing trends with approximately five figures, and a five page written summary (with your figures included) of what you find.
+> We're going to be using statistical programming software in this class, which means you're going to need to learn some new R code. Taking notes and building a repository of code that you can draw on in future work is essential. That's why I want you not only to take notes in class as we write code but also to build a code repository that includes examples of different kinds of data analysis and how to process the data used to do said analysis. The good news is, you won't have to come up with these examples on your own. If you code along with me in class, you'll have a complete code glossary by the end of the semester. This will be due April 23, and I'll check in with you periodically to make sure you're keeping on pace. 
 
-*6 Graph Challenges(!)* **4% Each**
+\clearpage
 
-> These will be scattered throughout the semester, and are intended to be fun and challenging. You'll be given data or a data-frame (you'll learn what that is in the course) and make a graph that tells a story from the data better than what could be communicated by just looking at the data on its own. You'll get the necessary data for these a week in advance of when they are due.
+*Final Project - Broken down to Four Parts* **60pts Total**
 
-*Post a Viz* **6%**
+> Throughout the semester you'll work on a research project. The final product will be due as your "final exam," but you'll actually do the work in segments with different parts due at different points in the semester. Breaking the assigment down this way does two things. First, it ensures that you make steady progress in completing the final assigment. Second, it lets me see how your research project is coming along early and often. The final project will be broken down to four parts. The first three submissions are worth 10pts each and are graded on a pass-fail basis. The goal is to turn something in to me so that I can provide feedback. The final submission will be worth 30pts and will be graded based on a number of criteria, including clarity of writing, having a clear research question, description of your research design, and presentation of your results.
 
-> This is a low stakes weekly assigment to post before class on Mondays. You're job is simple. Find a visualization out in nature, post it to Canvas with its source url, and write a paragraph describing it. Did its creators make smart display choices? Is there anything that makes it interesting? Is it just terrible? This assigment will be graded based on completion (unless it's clear that you didn't try at all).
+*8 Analysis Challenges* **3pts Each**
+
+> These are intended to be a fun and challenging way to practice some data reasoning and data analysis skills. You'll be given data or a data-frame and a prompt asking you to perform some analysis with the data. You'll get the necessary data for these at least 5 days in advance of when they are due. These will be graded using a mastery-based approach. That means that if you complete the challenge successfully, that's awesome! You mastered the skills necessary to do the challenge and you get the full 3pts. But if you complete the challenge and it doesn't quite cut it, that's okay. You can try again (and again) until you nail it. Once you do, you'll get the full 3pts. Until then, you'll get 1pt as a place-holder.
+
+*4 Qs* **6pts Total**
+
+> This is a low stakes assigment that will be assigned on a rotating basis. Each week on Wednesday we will read some study or article relevant to the material we'll cover that week. In a given week ~3 of you will turn in on Canvas a short set of responses to four questions about the assigned reading. These are:
+
+>  (1) What's the research question?
+>  (2) Why does it matter?
+>  (3) What did they do to find an answer? (e.g., what's their research design?)
+>  (4) What did they find?
+  
+> Your responses to each question don't need to be longer than 1-2 sentences.
 
 $$
 \begin{aligned}
-6\% & \text{ (Post a Viz)} \\
-10\%  & \text{ (Attendance + Participation)} \\
-4 \times 15\% = 60\%  & \text{ (Main Assigments)} \\
-\underline{+ \space 6 \times 4\% = 24\%} &  \text{ (Graph Challenges)} \\
-100 \% & \text{ (Total Assigments)}
+6pts& \text{ (4 Qs)} \\
+10pts  & \text{ (Code Glossary)} \\
+60pts  & \text{ (Final Project)} \\
+\underline{+ \space 8 \times 3pts = 24pts} &  \text{ (Analysis Challenges)} \\
+100pts & \text{ (Total Assigments)}
 \end{aligned}
 $$
+
+***Wait! What about attendance?*** You're all young adults. I expect you to come to class and participate. But I won't be taking attendance (at least not formally). If you can't make it to class for some reason, then you can't make it to class. But if you start missing class regularly, your grade will start to suffer. It won't suffer because you're losing "participation" points. It'll suffer because you're missing out on information covered in class that's necessary for completing analysis challenges, keeping up with your final project, and building your code glossary.
 
 ## E-mail Policy
 
@@ -283,36 +315,21 @@ I have a simple email policy, and it is targeted at achieving one goal: **maximi
 
 > I promise a timely response to **relevant** emails I receive between **9:00 AM** and **5:00 PM** Monday to Friday.
 
-You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.[^1] But, this does mean that if you email me outside of these windows, I will not respond until the next 9-5 workday.[^2]
+You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.[^1] But, this does mean that if you email me outside of these windows, I may not respond until the next 9-5 workday.
 
 [^1]: By this, I simply mean classic societal expectations about working vs. leisure hours.
 
-[^2]: FYI, if you email me on a Saturday that you will be unable to attend class on Monday for an excusable reason, don't worry that I won't see your email until Monday. I'll be able to see when you sent me your notice.
-
-So that explains non-responses to emails sent outside of my normal working outs; what about **irrelevant** emails? What is an irrelevant email? It's an email that asks a question that can be answered by the student without need of consulting me.
-
-1.  Did you miss class and want to know what we covered? ***Read the syllabus***.
-2.  Do you want to know how much of your total grade an assignment is worth? ***Read the syllabus***.
-3.  Are you curious about a course policy? ***Read the syllabus***.
-4.  Are you curious about a campus-wide policy? [***Consult Denison's academic policies***](https://denison.edu/academics/curriculum/academic-policies).
-5.  Did you miss class, or are you going to miss class, and do you want to notify me of why? ***Read the attendance policy in the syllabus***. You have 1 free absence baked into your grade. I don't need or want an explanation for this first absence. It's yours to use as needed or desired.
-6.  Did you miss class for the second (or more) time and you want to retroactively get that absence excused? ***You should have notified me prior to the absence***. Barring the most extreme of emergencies,[^3] most excusable absences have advanced notice for you. It's your responsibility to give me advanced notice, too. Notice of an excusable absence after the fact is too late. You may give me your advanced notice up to 24 hours in advance of class via email or in writing. **A verbal notice will not count.** I'll inevitably forget that you told me, and there will be nothing in writing to prove that you notified me.
-7.  If a student would like to protest a grade on an assignment but fails to reference a specific point of objection, this does not require a response from me. As is noted in Denison's [Academic Grievance Policy](https://denison.edu/academics/curriculum/academic-policies), "Simple disagreement with the instructor's philosophy in assigning grades, or with the instructor's professional judgment about the quality of the work does not constitute a cause for petitioning." If you would like to improve your understanding of course material, or would like to preempt a poor grade, you are strongly encouraged to visit me during my office hours.
-8.  Do you want to know if you can have an extension on an assignment? ***The answer will always be no***. There's too much subjective discretion involved on my part in deciding whether someone deserves an extension. Since there's no objective or consistent way of doing this, I won't do it at all.
-9.  Do you want to know if you can have your grade rounded up? ***The answer will always be no***.[^4]
-10. Do you want extra credit, which amounts to asking the professor to do more work? ***The answer will always be no***.
-
-[^3]: Medical emergencies, for example, would fall into this category. Note, however, if you have to be absent for an emergency, and it is your first absence, **you do NOT need to notify me**.
-
-[^4]: ["Grade grubbing"](https://marktomforde.com/academic/undergraduates/GradeGrubbing.html) is a bad look.
-
 ## Make-Up Assigment Policy
 
-There are **NO** make-ups for missed assigments. Don't bother asking. But, if you anticipate missing an exam and notify me ***in advance***, we can meet to work out a solution. "I'm really busy" is not a valid excuse. There's a lot of work to do in this course, but it is spaced out so that not all of this work is crammed into a single week. If you have a lot of assignments coming due for other classes, **PLAN AHEAD**.
+There are **NO** make-ups for missed assignments.\footnote{Notwithstanding extenuating circumstances or true emergencies.} Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution.
+
+## Second Chances Policy
+
+The analysis challenges have built-in second-chances. That means if your submission didn't show that you clearly mastered the skills necessary to do the challenge well, you can try again. The final project, code glossary, and 4 Qs are a different story. With these, you have one chance. But only one should be necessary. If you come visit me or our TA early and often, you should have no trouble completing these with a passing grade.
 
 ## Attendance Policy
 
-Come to class. My rule is that you get only 1 free unexcused absence. Beyond this, you forfeit 50% of your attendance and participation points for each of up to two subsequent unexcused absences. If you do the math, that means three unexcused absences will result in a total loss of your attendance grade. If you attend class, but never participate in class discussion, expect to earn no more than 66% of your attendance and participation points.
+Come to class. Attendance is not part of your grade, but poor attendance will lead to poor grades.\footnote{Do you think this is just correlation, or is it causal?}
 
 ## Computer-based Excuses
 
@@ -321,6 +338,8 @@ Excuses for late or missed assignments based on CD, flash drive, or hard drive e
 ## Late Assigments
 
 We have a lot of work to do in this class. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. As incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose 5 percent from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade.
+
+The exception to this rule is if a student and I have worked out an arrangement for submitting an assignment at a later date. So, be proactive. If a deadline really won't work for you, I'm more than happy to make accommodations in advance.
 
 ## Electronic Submission
 
@@ -337,30 +356,32 @@ It should go without saying, but ***plagiarism*** is also a form of cheating and
 
 I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
 
-When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).[^5] Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
 
-[^5]: Of course, if you have to ask yourself if something counts as cheating, then it probably is...
 
 \newpage
 
-# Class Schedule[^6]
-
-[^6]: As the instructor, I retain the right to amend this schedule if the need arises.
+# Class Schedule
 
 \hrulefill
 
-```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
 
 class_cal + 
-  theme_minimal() +
+  theme_steve_ms() +
   theme(
     panel.grid = element_blank(),
-    legend.position = 'top'
-  )
+    legend.position = 'top',
+    axis.ticks = element_blank()
+  ) -> p
 ggsave(
-  here::here('schedule.png'),
+  plot = p,
+  here::here('DPR 201','schedule.png'),
   height = 6,
   width = 8
+)
+knitr::include_graphics(
+  here::here("DPR 201", "schedule.png")
 )
 ```
 
@@ -368,352 +389,111 @@ ggsave(
 \singlespacing
 \setlength{\parskip}{0pt}
 ```
-\bigskip
 
 \hrulefill
 
+\bigskip
+
+*Note:* BDMF = the Ethan Bueno de Mesquita and Anthony Fowler text. All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
+
 # Getting Started
 
-## `r advdate(mon, 1)`: Intro to Data Viz
+## `r advdate(mon, 1)`: Intro to Research Design
 
-#### M
+- Day 1: Course Intro
 
-Syllabus day and course intro.
+- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running
 
-#### W
+# Part I: Correlation
 
-Read: Healy Ch. 1 + Tufte [Ch. 1](https://drive.google.com/file/d/1-3OdDZ-HfQEmCHeCzKVZbl99cyd8-QCG/view?usp=sharing) & [Ch. 2](https://drive.google.com/file/d/1-49qU-zwzv766fLK376EgSbOwgiZI2Bf/view?usp=sharing). In-class: We'll talk about what makes a good data visualization.
+## `r advdate(mon, 2)`
 
-#### F
+- Day 1: MLK Day observed [so no class!]
 
-Read: [Eight graphs that tell the story of U.S. economic inequality](https://equitablegrowth.org/eight-graphs-that-tell-the-story-of-u-s-economic-inequality/); [Congressional polarization](https://www.vox.com/2015/4/23/8485443/polarization-congress-visualization); [Polarization across 9 countries](https://www.vox.com/2020/1/24/21076232/polarization-america-international-party-political). In-class: Visit from our TA + intro to RStudio.
+- Day 2: BDMF Ch2 "Correlation: What Is It and What Is It Good for?"
 
-## `r advdate(mon, 2)`: R + RStudio
+## `r advdate(mon, 3)` 
 
-#### M
+- Day 1: BDMF Ch4 "Correlation Requires Variation"
 
-Read: Healy Ch. 2.; [Top 50 ggplot2 visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html). In-class: RMarkdown, packages, and reading data.
+- Day 2: Discussion + *AC1 due next Mon.*
 
-#### W
+## `r advdate(mon, 4)` 
 
-Read: [Social lobying](https://drive.google.com/file/d/1-A7ivDIb2KWuO5f7G5inMo3B4OgXPePs/view?usp=sharing); [QAnnon beliefs](https://religioninpublic.blog/2021/09/17/what-is-happening-with-qanon-beliefs-post-trump/); [Aid skeptical](https://religioninpublic.blog/2021/01/21/white-conservative-religious-and-aid-skeptical/). In-class: The nitty gritty details of knitting documents.
+- Day 1: BDMF Ch5 "Regression for Describing and Forecasting"
 
-#### F
+- Day 2: Discussion + *Research Q due Fri. and AC2 due Mon.*
 
-Read: [Religion and culture wars](https://religioninpublic.blog/2021/06/21/religion-and-the-culture-wars-a-re-examination/); [Companies punishing Rs for Jan. 6](https://drive.google.com/file/d/1-Et2FXCkNpsXYnQZ5Nsq-jFRInSYbdY5/view?usp=sharing). Do: Follow prompt on Canvas for editing and knitting your first R Markdown file. In-class: Make your first figure!
+## `r advdate(mon, 5)`  
 
-# Unit 1 --- Cross-sectional Data
+- Day 1: BDMF Ch6 "Samples, Uncertainty, and Statistical Inference"
 
-## `r advdate(mon, 3)`: Making Plots
+- Day 2: Discussion + *AC3 due Mon.*
 
-#### M
+## `r advdate(mon, 6)` 
 
-Read: Healy Ch. 3. In-class: How ggplot works + tidy data.
+- Day 1: BDMF Ch7 "Over-Comparing, Under-Reporting"
 
-#### W
+- Day 2: Discussion + *AC4 due Mon.*
 
-In-class: Mappings and layers. Do: Tidy data task on Canvas.
+## `r advdate(mon, 7)` 
 
-#### F
+- Day 1: BDMF Ch8 "Reversion to the Mean"
 
-In-class: More on mapping aesthetics + saving your work.
+- Day 2: Discussion + *Intro & Why Care due Fri.*
 
-\bigskip
+# Part II: Causation
 
-```{=tex}
-\begin{center}
+## `r advdate(mon, 8)` 
 
-\fbox{\textbf{First graph challenge due on Canvas Sunday 09.18 by midnight.}}
+- Day 1: BDMF Ch3 "Causation: What Is It and What Is It Good for?"
 
-\end{center}
-```
-\bigskip
+- Day 2: BDMF Ch9 "Why Correlation Doesn't Imply Causation"
 
-## `r advdate(mon, 4)`: Displaying Multiple Variables
+## `r advdate(mon, 9)`
 
-#### M
+*Spring Break!*
 
-In-class: Exploring state-level data with joins and filters.
+## `r advdate(mon, 10)` 
 
-#### W
+- Day 1: BDMF Ch11 "Randomized Experiments"
 
-Read: Healy Ch. 4; [this](https://medium.com/nightingale/how-to-choose-the-colors-for-your-data-visualizations-50b2557fa335), [this](https://phys.org/news/2021-08-perception-scientific-results-distorted-graphics.html), and [this](https://www.visualisingdata.com/2015/01/make-grey-best-friend/) on color in figures. In-class: Visualizing state-level data with colors and different data types.
+- Day 2: Discussion + *AC5 due Mon.*
 
-#### F
+## `r advdate(mon, 11)` 
 
-Read: [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf), check out [this](https://coolors.co/) and [this](https://emilhvitfeldt.github.io/r-color-palettes/discrete.html) resource for generating palettes (and see [this one](https://www.color-blindness.com/coblis-color-blindness-simulator/) for accommodating colorblindness). Do: Use the palette picker to bring to class FOUR palettes picked out --- 1) one five value qualitative palette, 2) one divergent palette, 3) one sequential (i.e., low to high), and 4) one for just two groups (just pick two colors manually from the R color cheatsheet that would work well).
+- Day 1: BDMF Ch10 "Controlling for Confounders"
 
-\bigskip
+- Day 2: Discussion + *AC6 due Mon.*
 
-```{=tex}
-\begin{center}
+## `r advdate(mon, 12)` 
 
-\fbox{\textbf{Second graph challenge due on Canvas Sunday 09.25 by midnight.}}
+- Day 1: BDMF Ch12 "Regression Discontinuity Designs"
 
-\end{center}
-```
-\bigskip
+- Day 2: Discussion + *AC7 due Mon.*
 
-## `r advdate(mon, 5)`: Maps & Small Multiples
+## `r advdate(mon, 13)` 
 
-#### M
+- Day 1: BDMF Ch13 "Difference-in-Differences Designs"
 
-Read: Healy Ch. 7. In-class: Plotting data on maps.
+- Day 2: Discussion + *AC8 due Mon.*
 
-#### W
+# Part III: Finalizing Projects
 
-In-class: [Small multiples](https://towardsdatascience.com/how-to-make-beautiful-small-multiple-us-maps-in-r-ad7e557cd463) and [`{geofacets}`](https://cran.r-project.org/web/packages/geofacet/vignettes/geofacet.html). See a fun example [here](https://www.axios.com/2017/12/15/the-emoji-states-of-america-1513302318).
+## `r advdate(mon, 14)` 
 
-#### F
+- Day 1: Work Day + *Data & Design due Fri.*
 
-In-class: Work day.
+- Day 2: Work Day
 
-\bigskip
+## `r advdate(mon, 15)` 
 
-```{=tex}
-\begin{center}
+- Day 1: Work Day
 
-\fbox{\textbf{Third graph challenge due on Canvas Sunday 10.02 by midnight.}}
+- Day 2: Work Day + *Course Eval*
 
-\end{center}
-```
-\bigskip
+## `r advdate(mon, 16)` 
 
-# Unit 2 --- Survey Data
+- Day 1: *Presentations*
 
-## `r advdate(mon, 6)`: Survey Data + Reading & Manipulating
-
-#### M
-
-Read: Survey codebook and design statement (tbd); also read about survey research in Johnson and Reynolds (tbd -- in Canvas readings). In-class: Intro to using [`{socsci}`](https://github.com/ryanburge/socsci).
-
-#### W
-
-Read: [Armaly, Buckley and Enders](https://drive.google.com/file/d/1-F-ZFpWGYATCrRfrReyknpAGbPQ_xm9u/view?usp=sharing), paying special attention to the "Data and Measurement" section. In-class: Making indices and showing them.
-
-#### F
-
-Read: [Weitz-Shapiro and Winters](https://drive.google.com/file/d/1-FOMTh8WFmq3FPRymmPACqP2jPb5EdfI/view?usp=sharing). In-class: More on indices.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA1 due on Canvas Friday 10.07 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 7)`: Displaying 1 Variable + "Graph Tables"
-
-#### M
-
-Read: Healy Ch. 5. In-class: Making "graph tables" with `{socsci}`.
-
-#### W
-
-Read: Healy Ch. 8. In-class: Refining your plots.
-
-#### F
-
-Work Day!
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Fourth graph challenge due on Canvas Sunday 10.16 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 8)`: Graph Finishing
-
-#### M
-
-**No Class.** Fall break!
-
-#### W
-
-Work Day!
-
-#### F
-
-Work Day!
-
-# Unit 3 --- Longitudinal Data
-
-## `r advdate(mon, 9)`: Temporal Data, Gathering, & Aggregating
-
-#### M
-
-Read: [Can we trust measures of democracy?](https://www.washingtonpost.com/news/monkey-cage/wp/2015/06/23/how-do-you-measure-democracy/) And read about [7 different types](https://humansofdata.atlan.com/2016/11/visualizing-time-series-data/) of temporal data visualizations. In-class: Using [`{democracyData}`](https://github.com/xmarquez/democracyData) to explore tends in democracy.
-
-#### W
-
-Read: Temporal visualizations of [employment](https://www.economist.com/graphic-detail/2021/08/20/so-far-ending-pandemic-unemployment-aid-has-not-yielded-extra-jobs) and [minimum wage](https://www.abc.net.au/news/2021-10-13/nobel-prize-in-economics-2021-david-card-minimum-wage/100531994). In-class: Shifting between time and groups, and aggregating and adjusting for baselines.
-
-#### F
-
-**No Class.** I will be at a conference.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA2 due on Canvas Friday 10.28 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 10)`: Manipulating & Joining
-
-#### M
-
-In-class: Add demography for countries using [`{pwt10}`](https://www.rug.nl/ggdc/productivity/pwt/?lang=en).
-
-#### W
-
-In-class: Labeling in time.
-
-#### F
-
-In-class: Choosing case studies.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Fifth graph challenge due on Canvas Sunday 11.06 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 11)`: Visualizing Multiple Trends
-
-#### M
-
-In-class: Groups and multiple facets.
-
-#### W
-
-In-class: Groups and multiple facets continued.
-
-#### F
-
-In-class: Animated plots for multiple trends with [`{gganimate}`](https://gganimate.com/).
-
-# Unit 4 --- Choose Your Own Adventure
-
-## `r advdate(mon, 12)`: Finding & Pitching
-
-#### M
-
-In-class: Review data available --- I'll provide a list.
-
-#### W
-
-In-class: Pitch your project in 5 min.
-
-#### F
-
-In-class: Pitch your project in 5 min. continued.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA3 due on Canvas Friday 11.18 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 13)`: Thanksgiving
-
-***No Class (Thanksgiving)*** If you feel like it, spend this time either working ahead and/or reviewing past material. But by all means, **take a break, too!**
-
-## `r advdate(mon, 14)`: Descriptives & Explanations.
-
-#### M
-
-Lab Work.
-
-#### W
-
-Lab Work.
-
-#### F
-
-Lab Work + MA4 presentations.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Sixth graph challenge due on Canvas Sunday 12.04 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 15)`: Descriptives & Explanations Cont.
-
-#### M
-
-Lab Work
-
-#### W
-
-Lab Work
-
-#### F
-
-Lab Work
-
-## `r advdate(mon, 16)`: Finals Week
-
-#### M
-
-Reflections and course evaluations.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA4 due on Canvas Thursday 12.15 by 11:00 am.}}
-
-\end{center}
-```
-\bigskip
-
-\clearpage
-
-# Quick Description of Main Assignments.
-
-#### MA1
-
-We often have data organized at higher administrative units than the individual, such as the state/nation or we need to have the data aggregated to these useful units. Part of the struggle is wrangling the data to attach to these units, which might include having the appropriate identifiers. One great puzzle of American politics is that women are 51 percent of the population and constitute less than half that amount of elected representatives. Let's draw on the American laboratories of democracy (the states) and get data about women in state legislatures (WISL). Let's also compare how the US fares compared to other countries -- is it distinctive or is this common for industrialized, developed countries? We'll explore a variety of explanations, including partisanship, institutions, and attitudes to help explain the variation in WISL. We'll at least use bar graphs, maps, scatterplots. Your write up should be about 5 pages and include about 5 figures. Due Friday 10.07 at Midnight.
-
-#### MA2
-
-One of the core public problems of our time is racism, and racial resentment has been thought to drive a considerable amount of our politics. We can infer this from policy decisions pursuing disenfranchisement, but it's optimal to measure it directly. Using the 2018 CCES, you will display how much using their battery of measures: how much of each item, how much in total, how much racial resentment by party affiliation and some other demographic measures. We can also link that at the state-level to policy changes about the electoral process. Then write words to help readers understand what is shown and what it means. The write up should be about 5 pages to accompany your \~5 figures. We'll show bar graphs, dumbbell plots, and a ridgeline (and/or histogram). Due Friday 10.28 at Midnight.
-
-#### MA3
-
-Many policymakers and academics have been sounding the alarm about democratic backsliding in the United States and several countries that have recently transitioned to democracy. But the severity (and existence!) of the problem depends on how you choose to measure democracy. Has democracy really declined in places like the United States and in countries in Eastern Europe (and beyond)? Draw conclusions about trends in democracy over time using different indices provided in `{democracyData}`, and use country-level variables provided in `{pwt10}` to filter to carefully chosen comparisons between countries. The write up should be about 5 pages and include \~5 figures. Due Friday 11.18 at Midnight.
-
-#### MA4
-
-You will draw from Denison survey data for this choose-your-own-adventure assignment. The advantage of survey data is that they allow so many more narratives to develop than any other data source. There is little central direction on this assignment, but you will be asked to provide a pitch for your chosen investigation. As with the other papers, this should be about 5 pages with somewhere in the neighborhood of 5 figures. This will be due as your final assignment Dec. 15 by 11:00 am.
+- *Final research projects due 05.03 by 4:00 pm.*
