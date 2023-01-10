@@ -428,7 +428,7 @@ knitr::include_graphics(
 
 - Day 2: H Ch4 (4.5 - 4.8)
 
-- Day 3: Discussion \hfill \textit{DC3 due Mon}
+- Day 3: Discussion \hfill \textit{DC3 due Mon.}
 
 ## `r advdate(mon, 5)`
 
@@ -522,6 +522,4 @@ knitr::include_graphics(
 
 ## `r advdate(mon, 16)`
 
-- Day 1: Course evals
-
-- *Final research projects due 05.03 by 11:00 am.*
+- Day 1: Course evals \hfill \textit{Final research projects due 05.03 by 11:00 am}
