@@ -184,7 +184,7 @@ Cal %>%
 
 Political data surround us everywhere we look. How do we use this data for maximum social impact? We start by thinking clearly with data and using a good research design. To do these things well, you need to be armed with the appropriate tools and enough conceptual understanding of them to know which to use and how. 
 
-In this class, we'll cover the basics of research design. You'll learn about **correlation** and **causation**, how to know when one implies the other, and how to estimate them in the face of **bias** and **noise** that inevitably find their way into out data.
+In this class, we'll cover the basics of research design. You'll learn about **correlation** and **causation**, how to know when one implies the other, and how to estimate them in the face of **bias** and **noise** that inevitably find their way into our data.
 
 # Course Objectives
 
@@ -402,7 +402,7 @@ knitr::include_graphics(
 
 - Day 1: Course Intro
 
-- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running
+- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running. Optional reading on Canvas.
 
 # Part I: Correlation
 

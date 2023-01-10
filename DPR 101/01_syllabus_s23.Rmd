@@ -11,7 +11,7 @@ date: "Spring 2023"
 
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MWF 2:30-3:30 pm"
+officehours: "MW 3:00-4:30 pm"
 office: "Higley 401C"
 classroom: "Higley 325"
 classhours: "MWF 9:30-10:20 am"
@@ -285,7 +285,7 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 *4 Main Assignments* **15pts Each**
 
-> You'll have four main writing assigments to complete in this course. These will be anywhere form 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find.
+> You'll have four main writing assigments to complete in this course. These will be anywhere form 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find. The final assigment includes a presentation component, which is graded as completed/not completed.
 
 *8 Data Challenges* **3pts Each**
 
@@ -363,7 +363,7 @@ When in doubt about whether something constitutes cheating, consult Denison's [C
 
 \hrulefill
 
-```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
 
 class_cal + 
   theme_steve_ms() +
@@ -387,336 +387,141 @@ knitr::include_graphics(
 \singlespacing
 \setlength{\parskip}{0pt}
 ```
-\bigskip
 
 \hrulefill
 
+\bigskip
+
+*Note:* When "Discussion" is listed for a given day, the assigned readings are on Canvas. Unless otherwise indicated, due dates are by midnight. "H" = the Healy textbook.
+
 # Getting Started
 
-## `r advdate(mon, 1)`: Intro to Data Viz
+## `r advdate(mon, 1)`
 
-#### M
+- Day 1: Course Intro
 
-Syllabus day and course intro.
+- Day 2: H Ch1 "Look at Data" 
 
-#### W
+- Day 3: Tech Start + Discussion
 
-Read: Healy Ch. 1 + Tufte [Ch. 1](https://drive.google.com/file/d/1-3OdDZ-HfQEmCHeCzKVZbl99cyd8-QCG/view?usp=sharing) & [Ch. 2](https://drive.google.com/file/d/1-49qU-zwzv766fLK376EgSbOwgiZI2Bf/view?usp=sharing). In-class: We'll talk about what makes a good data visualization.
+# Part I: Cross-sectional Data 
 
-#### F
+## `r advdate(mon, 2)`
 
-Read: [Eight graphs that tell the story of U.S. economic inequality](https://equitablegrowth.org/eight-graphs-that-tell-the-story-of-u-s-economic-inequality/); [Congressional polarization](https://www.vox.com/2015/4/23/8485443/polarization-congress-visualization); [Polarization across 9 countries](https://www.vox.com/2020/1/24/21076232/polarization-america-international-party-political). In-class: Visit from our TA + intro to RStudio.
+- Day 1: MLK
 
-## `r advdate(mon, 2)`: R + RStudio
+- Day 2: H Ch2 (2.1 - 2.4) 
 
-#### M
+- Day 3: H Ch2 (2.5 - 2.7) \hfill \textit{DC1 due Mon.}
 
-**NO CLASS. MLK Day Observed**
+## `r advdate(mon, 3)`
 
-#### W
-Read: Healy Ch. 2.; [Top 50 ggplot2 visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html). In-class: RMarkdown, packages, and reading data.
+- Day 1: H Ch3 (3.1 - 3.4)
 
-#### W
+- Day 2: H Ch3 (3.5 - 3.8)
 
-Read: [Social lobying](https://drive.google.com/file/d/1-A7ivDIb2KWuO5f7G5inMo3B4OgXPePs/view?usp=sharing); [QAnnon beliefs](https://religioninpublic.blog/2021/09/17/what-is-happening-with-qanon-beliefs-post-trump/); [Aid skeptical](https://religioninpublic.blog/2021/01/21/white-conservative-religious-and-aid-skeptical/). In-class: The nitty gritty details of knitting documents.
+- Day 3: Discussion \hfill \textit{DC2 due Mon.}
 
-#### F
+## `r advdate(mon, 4)`
 
-Read: [Religion and culture wars](https://religioninpublic.blog/2021/06/21/religion-and-the-culture-wars-a-re-examination/); [Companies punishing Rs for Jan. 6](https://drive.google.com/file/d/1-Et2FXCkNpsXYnQZ5Nsq-jFRInSYbdY5/view?usp=sharing). Do: Follow prompt on Canvas for editing and knitting your first R Markdown file. In-class: Make your first figure!
+- Day 1: H Ch4 (4.1 - 4.4)
 
-# Unit 1 --- Cross-sectional Data
+- Day 2: H Ch4 (4.5 - 4.8)
 
-## `r advdate(mon, 3)`: Making Plots
+- Day 3: Discussion \hfill \textit{DC3 due Mon}
 
-#### M
+## `r advdate(mon, 5)`
 
-Read: Healy Ch. 3. In-class: How ggplot works + tidy data.
+- Day 1: H Ch7 (7.1 - 7.3)
 
-#### W
+- Day 2: H Ch7 (7.4 - 7.6)
 
-In-class: Mappings and layers. Do: Tidy data task on Canvas.
+- Day 3: Discussion \hfill \textit{DC4 due Mon.}
 
-#### F
+## `r advdate(mon, 6)`
 
-In-class: More on mapping aesthetics + saving your work.
+- Day 1: Work on MA1
 
-\bigskip
+- Day 2: Work on MA1
 
-```{=tex}
-\begin{center}
+- Day 3: Work on MA1 \hfill \textit{MA1 due Mon.}
 
-\fbox{\textbf{First graph challenge due on Canvas Sunday 09.18 by midnight.}}
+# Part II: Time-series Data
 
-\end{center}
-```
-\bigskip
+## `r advdate(mon, 8)`
 
-## `r advdate(mon, 4)`: Displaying Multiple Variables
+- Day 1: H Ch5 (5.1 - 5.3)
 
-#### M
+- Day 2: H Ch5 (5.4 - 5.7)
 
-In-class: Exploring state-level data with joins and filters.
+- Day 3: Discussion \hfill \textit{DC5 due Mon.}
 
-#### W
+## `r advdate(mon, 8)`
 
-Read: Healy Ch. 4; [this](https://medium.com/nightingale/how-to-choose-the-colors-for-your-data-visualizations-50b2557fa335), [this](https://phys.org/news/2021-08-perception-scientific-results-distorted-graphics.html), and [this](https://www.visualisingdata.com/2015/01/make-grey-best-friend/) on color in figures. In-class: Visualizing state-level data with colors and different data types.
+- Day 1: H Ch8 (8.1 - 8.2)
 
-#### F
+- Day 2: H Ch8 (8.3 - 8.4)
 
-Read: [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf), check out [this](https://coolors.co/) and [this](https://emilhvitfeldt.github.io/r-color-palettes/discrete.html) resource for generating palettes (and see [this one](https://www.color-blindness.com/coblis-color-blindness-simulator/) for accommodating colorblindness). Do: Use the palette picker to bring to class FOUR palettes picked out --- 1) one five value qualitative palette, 2) one divergent palette, 3) one sequential (i.e., low to high), and 4) one for just two groups (just pick two colors manually from the R color cheatsheet that would work well).
+- Day 3: Discussion \hfill \textit{DC6 due Mon. after break}
 
-\bigskip
+## `r advdate(mon, 9)`
 
-```{=tex}
-\begin{center}
+*Spring Break!*
 
-\fbox{\textbf{Second graph challenge due on Canvas Sunday 09.25 by midnight.}}
+## `r advdate(mon, 10)`
 
-\end{center}
-```
-\bigskip
+- Day 1: H Ch8 (8.5 - 8.6)
 
-## `r advdate(mon, 5)`: Maps & Small Multiples
+- Day 2: Work on MA2
 
-#### M
+- Day 3: Work on MA2 \hfill \textit{MA2 due Mon.}
 
-Read: Healy Ch. 7. In-class: Plotting data on maps.
+# Part III: Survey Data
 
-#### W
+## `r advdate(mon, 11)`
 
-In-class: [Small multiples](https://towardsdatascience.com/how-to-make-beautiful-small-multiple-us-maps-in-r-ad7e557cd463) and [`{geofacets}`](https://cran.r-project.org/web/packages/geofacet/vignettes/geofacet.html). See a fun example [here](https://www.axios.com/2017/12/15/the-emoji-states-of-america-1513302318).
+- Day 1: Survey data
 
-#### F
+- Day 2: Using a code book
 
-In-class: Work day.
+- Day 3: Discussion \hfill \textit{DC7 due Mon.}
 
-\bigskip
+## `r advdate(mon, 12)`
 
-```{=tex}
-\begin{center}
+- Day 1: Work on MA3
 
-\fbox{\textbf{Third graph challenge due on Canvas Sunday 10.02 by midnight.}}
+- Day 2: Work on MA3
 
-\end{center}
-```
-\bigskip
+- Day 3: Work on MA3 \hfill \textit{MA3 due Mon.}
 
-# Unit 2 --- Survey Data
+# Part IV: Choose-your-own-adventure
 
-## `r advdate(mon, 6)`: Survey Data + Reading & Manipulating
+## `r advdate(mon, 13)`
 
-#### M
+- Day 1: Start Choose-your-own-adventure (explore the data)
 
-Read: Survey codebook and design statement (tbd); also read about survey research in Johnson and Reynolds (tbd -- in Canvas readings). In-class: Intro to using [`{socsci}`](https://github.com/ryanburge/socsci).
+- Day 2: Pitch your research
 
-#### W
+- Day 3: NO CLASS \hfill \textit{DC8 due Mon.}
 
-Read: [Armaly, Buckley and Enders](https://drive.google.com/file/d/1-F-ZFpWGYATCrRfrReyknpAGbPQ_xm9u/view?usp=sharing), paying special attention to the "Data and Measurement" section. In-class: Making indices and showing them.
+## `r advdate(mon, 14)`
 
-#### F
+- Day 1: Work on MA4
 
-Read: [Weitz-Shapiro and Winters](https://drive.google.com/file/d/1-FOMTh8WFmq3FPRymmPACqP2jPb5EdfI/view?usp=sharing). In-class: More on indices.
+- Day 2: Work on MA4
 
-\bigskip
+- Day 3: Work on MA4
 
-```{=tex}
-\begin{center}
+## `r advdate(mon, 15)`
 
-\fbox{\textbf{MA1 due on Canvas Friday 10.07 by midnight.}}
+- Day 1: MA4 Presentations
 
-\end{center}
-```
-\bigskip
+- Day 2: MA4 Presentations
 
-## `r advdate(mon, 7)`: Displaying 1 Variable + "Graph Tables"
+- Day 3: Work on MA4
 
-#### M
+## `r advdate(mon, 16)`
 
-Read: Healy Ch. 5. In-class: Making "graph tables" with `{socsci}`.
+- Day 1: Course evals
 
-#### W
-
-Read: Healy Ch. 8. In-class: Refining your plots.
-
-#### F
-
-Work Day!
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Fourth graph challenge due on Canvas Sunday 10.16 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 8)`: Graph Finishing
-
-#### M
-
-**No Class.** Fall break!
-
-#### W
-
-Work Day!
-
-#### F
-
-Work Day!
-
-# Unit 3 --- Longitudinal Data
-
-## `r advdate(mon, 9)`: Temporal Data, Gathering, & Aggregating
-
-#### M
-
-Read: [Can we trust measures of democracy?](https://www.washingtonpost.com/news/monkey-cage/wp/2015/06/23/how-do-you-measure-democracy/) And read about [7 different types](https://humansofdata.atlan.com/2016/11/visualizing-time-series-data/) of temporal data visualizations. In-class: Using [`{democracyData}`](https://github.com/xmarquez/democracyData) to explore tends in democracy.
-
-#### W
-
-Read: Temporal visualizations of [employment](https://www.economist.com/graphic-detail/2021/08/20/so-far-ending-pandemic-unemployment-aid-has-not-yielded-extra-jobs) and [minimum wage](https://www.abc.net.au/news/2021-10-13/nobel-prize-in-economics-2021-david-card-minimum-wage/100531994). In-class: Shifting between time and groups, and aggregating and adjusting for baselines.
-
-#### F
-
-**No Class.** I will be at a conference.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA2 due on Canvas Friday 10.28 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 10)`: Manipulating & Joining
-
-#### M
-
-In-class: Add demography for countries using [`{pwt10}`](https://www.rug.nl/ggdc/productivity/pwt/?lang=en).
-
-#### W
-
-In-class: Labeling in time.
-
-#### F
-
-In-class: Choosing case studies.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Fifth graph challenge due on Canvas Sunday 11.06 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 11)`: Visualizing Multiple Trends
-
-#### M
-
-In-class: Groups and multiple facets.
-
-#### W
-
-In-class: Groups and multiple facets continued.
-
-#### F
-
-In-class: Animated plots for multiple trends with [`{gganimate}`](https://gganimate.com/).
-
-# Unit 4 --- Choose Your Own Adventure
-
-## `r advdate(mon, 12)`: Finding & Pitching
-
-#### M
-
-In-class: Review data available --- I'll provide a list.
-
-#### W
-
-In-class: Pitch your project in 5 min.
-
-#### F
-
-In-class: Pitch your project in 5 min. continued.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA3 due on Canvas Friday 11.18 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 13)`: Thanksgiving
-
-***No Class (Thanksgiving)*** If you feel like it, spend this time either working ahead and/or reviewing past material. But by all means, **take a break, too!**
-
-## `r advdate(mon, 14)`: Descriptives & Explanations.
-
-#### M
-
-Lab Work.
-
-#### W
-
-Lab Work.
-
-#### F
-
-Lab Work + MA4 presentations.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{Sixth graph challenge due on Canvas Sunday 12.04 by midnight.}}
-
-\end{center}
-```
-\bigskip
-
-## `r advdate(mon, 15)`: Descriptives & Explanations Cont.
-
-#### M
-
-Lab Work
-
-#### W
-
-Lab Work
-
-#### F
-
-Lab Work
-
-## `r advdate(mon, 16)`: Finals Week
-
-#### M
-
-Reflections and course evaluations.
-
-\bigskip
-
-```{=tex}
-\begin{center}
-
-\fbox{\textbf{MA4 due on Canvas Thursday 12.15 by 11:00 am.}}
-
-\end{center}
-```
-\bigskip
-
+- *Final research projects due 05.03 by 11:00 am.*
