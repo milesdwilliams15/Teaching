@@ -224,7 +224,7 @@ knitr::include_graphics(
 *Basic set-up for week*
 
 - Day 1: Topics
-- Day 2: Topics + quiz/111 feedback
+- Day 2: Topics + quiz (every other week)
 - Day 3: Discussion + Lab Day
 
 \bigskip
@@ -235,13 +235,13 @@ knitr::include_graphics(
 
 ## `r advdate(mon, 1)`
 
-- Day 1: Data types, data entry
+- Day 1: Course Intro 
 
-- Day 2: Data tidying, quality control, quality assurance \hfill \textit{111 due Wed. by midnight}
+- Day 2: Data types, entry, tidying, and quality control and assurance 
 
 - Day 3: Data in your world
 
-- Lab:   Invasive species
+- Lab:   Invasive Species I
 
 ## `r advdate(mon, 2)`
 
@@ -251,17 +251,17 @@ knitr::include_graphics(
 
 - Day 3: Open Analytics, Equity, Diversity, and Inclusion
 
-- Lab:   Data collection \hfill \textit{Invasive species due Fri. by 1:30 pm}
+- Lab:   Data Collection \hfill \textit{Invasive Species I due Fri. by 1:30 pm}
 
 ## `r advdate(mon, 3)` 
 
 - Day 1: Data and Databases
 
-- Day 2: Wrangling and dplyr \hfill \textit{111 due Wed. by midnight}
+- Day 2: Wrangling and dplyr 
 
 - Day 3: 1-on-1s with me
 
-- Lab:   Invasive species \hfill \textit{Data collection due Fri. by 1:30 pm}
+- Lab:   Invasive Species II \hfill \textit{Data Collection due Fri. by 1:30 pm}
 
 ## `r advdate(mon, 4)`
 
@@ -271,7 +271,7 @@ knitr::include_graphics(
 
 - Day 3: Challenges with missing data
 
-- Lab:   Code Glossary I \hfill \textit{Invasive species due Fri. by 1:30 pm}
+- Lab:   Code Glossary I \hfill \textit{Invasive Species II due Fri. by 1:30 pm}
 
 # Part II: Answering Questions with Statistical Analysis
 
@@ -279,11 +279,11 @@ knitr::include_graphics(
 
 - Day 1: Description
 
-- Day 2: Hypothesis tests \hfill \textit{111 due Wed. by midnight}
+- Day 2: Hypothesis tests 
 
 - Day 3: Data Visuals and Performing Arts
 
-- Lab:   Substance use \hfill \textit{Code Glossary I due Fri. by 1:30 pm}
+- Lab:   Substance Use \hfill \textit{Code Glossary I due Fri. by 1:30 pm}
 
 ## `r advdate(mon, 6)`
 
@@ -293,17 +293,17 @@ knitr::include_graphics(
 
 - Day 3: DA in social and political science
 
-- Lab:   Political polarization \hfill \textit{Substance use due Fri. by 1:30 pm}
+- Lab:   Political Polarization I \hfill \textit{Substance Use due Fri. by 1:30 pm}
 
 ## `r advdate(mon, 7)`
 
 - Day 1: Correlation
 
-- Day 2: Causation \hfill \textit{111 due Wed. by midnight}
+- Day 2: Causation 
 
 - Day 3: Statistical ethics
 
-- Lab:   Political polarization \hfill \textit{Social + political science due Fr. by 1:30 pm}
+- Lab:   Political polarization II \hfill \textit{Political Polarization I due Fr. by 1:30 pm}
 
 # Part III: It's Complicated
 
@@ -315,7 +315,7 @@ knitr::include_graphics(
 
 - Day 3: Analysis case study - quantitative research
 
-- Lab:   Code Glossary II + Peer grading activity \hfill \textit{Political polarization due by 1:30 pm}
+- Lab:   Code Glossary II + Peer grading activity \hfill \textit{Political Polarization II due by 1:30 pm}
 
 ## `r advdate(mon, 9)`
 
@@ -325,7 +325,7 @@ knitr::include_graphics(
 
 - Day 1: Multivariate regression
 
-- Day 2: Model selection \hfill \textit{111 due Wed. by midnight}
+- Day 2: Model selection
 
 - Day 3: Data analysis in a global pandemic
 
@@ -339,17 +339,17 @@ knitr::include_graphics(
 
 - Day 3: Human data ethics workshop
 
-- Lab:   IRB cert + ethical frameworks case study \hfill \textit{Arbnb in Columbus due Fri. by 1:30 pm}
+- Lab:   IRB cert + Ethical Frameworks \hfill \textit{Arbnb in Columbus due Fri. by 1:30 pm}
 
 ## `r advdate(mon, 12)`
 
 - Day 1: Write your own functions + style guides
 
-- Day 2: Write your own functions + style guides \hfill \textit{111 due Wed. by midnight}
+- Day 2: Write your own functions + style guides 
 
 - Day 3: Debuging + code reading activity
 
-- Lab:   Code glossary III + introduce final project \hfill \textit{Ethical frameworks due Fri. by 1:30 pm}
+- Lab:   Code glossary III + introduce final project \hfill \textit{Ethical Frameworks due Fri. by 1:30 pm}
 
 # Part IV: Choosing your own path and gaining independence
 
@@ -367,7 +367,7 @@ knitr::include_graphics(
 
 - Day 1: Open analytics + debuging
 
-- Day 2: Shiny \hfill \textit{111 due Wed. by midnight}
+- Day 2: Shiny 
 
 - Day 3: Progress report
 
