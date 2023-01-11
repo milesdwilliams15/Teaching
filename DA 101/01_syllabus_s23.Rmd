@@ -1,0 +1,570 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DA 101: Introduction to Data Analytics"
+author: Dr. Miles D. Williams
+date: "Spring 2023"
+
+email: "williamsmd@dension.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MW 3:00-4:30 pm"
+office: "Higley 401C"
+classroom: "Burton D. Morgan Center 219"
+classhours: "MWF 11:30 am-12:20 pm | Lab: F 1:30-4:20 pm"
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath,graphicx,amssymb}
+---
+
+<!-- CCCCCCCCnncdxxxxxxx -->
+
+<!-- Fun fact: my cat added this comment as she walked over the keyboard while I was working on this template. -->
+
+<!-- I'm going to keep it going forward. Long live Queen Bea. -->
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+# library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+# bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. First monday of semester
+
+mon <- ymd(20230116)
+
+
+# Spring Break was 15 March 2021 to 19 March 2021.
+not_here_dates <- c(
+  # MLK observed,
+  ymd(20230123),
+  # Spring break
+  seq(ymd(20230313), ymd(20230317), by = 1),
+  # MPSA
+  seq(ymd(20230413), ymd(20230416), by = 1))
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# Lab assignments:
+la_dates <- c(ymd(20230127), 
+              ymd(20230203),
+              ymd(20230210),
+              ymd(20230217),
+              ymd(20230224),
+              ymd(20230303),
+              ymd(20230310),
+              ymd(20230324),
+              ymd(20230331),
+              ymd(20230407),
+              ymd(20230504)) # Final date set to 05-04 9-11 AM
+# quizzes:
+q1_dates <- c(ymd(20230125), 
+              #ymd(20230201),
+              ymd(20230208),
+              #ymd(20230215),
+              ymd(20230222),
+              #ymd(20230301),
+              ymd(20230308),
+              #ymd(20230322),
+              ymd(20230329),
+              #ymd(20230405),
+              ymd(20230412))
+              #ymd(20230419))
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: Aug. 29 to Dec. 13
+semester_dates <- seq(ymd(20230116), ymd(20230501), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20230101), ymd(20230531), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         las = ifelse(date %in% la_dates, 1, 0), # is it an MA assignment?
+         q1s = ifelse(date %in% q1_dates, 1, 0), # is it a GC assignment?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(las == 1, "Lab Due", ccategory),
+         ccategory = ifelse(q1s == 1, "Quiz Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("Lab Due" = "firebrick", 
+               "Quiz Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("Lab Due", "Quiz Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: MLK Day Observed (23 Jan.), Spring Break (11-20 Mar.), MPSA (13-16 April), Final Day of Instruction (01 May)"
+       )  -> class_cal
+
+```
+
+# Course Outline
+
+```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
+
+class_cal + 
+  theme_steve_ms() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top',
+    axis.ticks = element_blank()
+  ) -> p
+ggsave(
+  plot = p,
+  here::here('DA 101','schedule.png'),
+  height = 6,
+  width = 8
+)
+knitr::include_graphics(
+  here::here("DA 101", "schedule.png")
+)
+```
+
+```{=tex}
+\singlespacing
+\setlength{\parskip}{0pt}
+```
+
+\hrulefill
+
+\clearpage
+
+*Basic set-up for week*
+
+- Day 1: Topics
+- Day 2: Topics + quiz/111 feedback
+- Day 3: Discussion + Lab Day
+
+\bigskip
+
+*Note:* All readings for discussion and other course materials will be available on Canvas. In-class exercises will involve real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A).
+
+# Part I: Getting Started with Data and Coding
+
+## `r advdate(mon, 1)`
+
+- Day 1: Data types, data entry
+
+- Day 2: Data tidying, quality control, quality assurance \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Data in your world
+
+- Lab:   Invasive species
+
+## `r advdate(mon, 2)`
+
+- Day 1: MLK Observed [NO CLASS]
+
+- Day 2: Metadata and data analysis cycle \hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: Open Analytics, Equity, Diversity, and Inclusion
+
+- Lab:   Data collection \hfill \textit{Invasive species due Fri. by 1:30 pm}
+
+## `r advdate(mon, 3)` 
+
+- Day 1: Data and Databases
+
+- Day 2: Wrangling and dplyr \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: 1-on-1s with me
+
+- Lab:   Invasive species \hfill \textit{Data collection due Fri. by 1:30 pm}
+
+## `r advdate(mon, 4)`
+
+- Day 1: Data viz
+
+- Day 2: Data viz \hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: Challenges with missing data
+
+- Lab:   Code Glossary I \hfill \textit{Invasive species due Fri. by 1:30 pm}
+
+# Part II: Answering Questions with Statistical Analysis
+
+## `r advdate(mon, 5)`
+
+- Day 1: Description
+
+- Day 2: Hypothesis tests \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Data Visuals and Performing Arts
+
+- Lab:   Substance use \hfill \textit{Code Glossary I due Fri. by 1:30 pm}
+
+## `r advdate(mon, 6)`
+
+- Day 1: Prediction
+
+- Day 2: Linear regression \hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: DA in social and political science
+
+- Lab:   Political polarization \hfill \textit{Substance use due Fri. by 1:30 pm}
+
+## `r advdate(mon, 7)`
+
+- Day 1: Correlation
+
+- Day 2: Causation \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Statistical ethics
+
+- Lab:   Political polarization \hfill \textit{Social + political science due Fr. by 1:30 pm}
+
+# Part III: It's Complicated
+
+## `r advdate(mon, 8)`
+
+- Day 1: Ethics & Bias
+
+- Day 2: Ethics & Bias \hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: Analysis case study - quantitative research
+
+- Lab:   Code Glossary II + Peer grading activity \hfill \textit{Political polarization due by 1:30 pm}
+
+## `r advdate(mon, 9)`
+
+*SPRING BREAK!*
+
+## `r advdate(mon, 10)`
+
+- Day 1: Multivariate regression
+
+- Day 2: Model selection \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Data analysis in a global pandemic
+
+- Lab:   Airbnb in Columbus \hfill \textit{Code Glossary II due Fri. by 1:30 pm}
+
+## `r advdate(mon, 11)`
+
+- Day 1: Maps + spacial data
+
+- Day 2: Maps + spacial data \hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: Human data ethics workshop
+
+- Lab:   IRB cert + ethical frameworks case study \hfill \textit{Arbnb in Columbus due Fri. by 1:30 pm}
+
+## `r advdate(mon, 12)`
+
+- Day 1: Write your own functions + style guides
+
+- Day 2: Write your own functions + style guides \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Debuging + code reading activity
+
+- Lab:   Code glossary III + introduce final project \hfill \textit{Ethical frameworks due Fri. by 1:30 pm}
+
+# Part IV: Choosing your own path and gaining independence
+
+## `r advdate(mon, 13)`
+
+- Day 1: Regular expressions and community-building
+
+- Day 2: Share initial questions, codebook\hfill \textit{Quiz due Wed. by midnight}
+
+- Day 3: I'm at MPSA so NO CLASS
+
+- Lab:   I'm at MPSA so NO LAB
+
+## `r advdate(mon, 14)`
+
+- Day 1: Open analytics + debuging
+
+- Day 2: Shiny \hfill \textit{111 due Wed. by midnight}
+
+- Day 3: Progress report
+
+- Lab:   Project sprints
+
+## `r advdate(mon, 15)`
+
+- Day 1: Presenting data analysis
+
+- Day 2: Student presentations and peer review
+
+- Day 3: Next gen data scientists
+
+- Lab:   Presentations + report
+
+## `r advdate(mon, 16)`
+
+- Day 1: Student presentations + peer review \hfill \textit{Final Project due Thursday, 05.04 by 11:00 am}
+
+\hrulefill
+
+```{=tex}
+\singlespacing
+\setlength{\parskip}{5pt}
+```
+
+# Course Description
+
+Data surround us everywhere we look. But where does it come from? What can we learn from it? A wide range of processes---politics, business, sports, health, lab and field experiments, physical phenomena---generate data. In this class you will be introduced to various kinds of data and the tools used to wrangle and analyze it to answer questions and gain insights. *No previous experience with data analytics or statistical programming is required*.
+
+Class on Mondays and Wednesdays will consist of short introductions to new concepts followed by hands-on computing exercises. On Fridays, we'll focus on more abstract and conceptual issues related to data-driven puzzles, ethical conundrums, and creative approaches to data analysis. Friday afternoon labs will be dedicated to in-depth practice of the skills you will learn via hands-on exploration of data from a variety of fields. Some labs will consist of individual projects, and others will be done in teams.
+
+# Course Objectives
+
+In this course, you'll develop a number of skills.
+
+#### Quantitative
+
+You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively analyzed and visualized to describe and draw inferences.
+
+#### Writing & Communication
+
+Even the best analysis requires communication of findings to an audience. You'll get experience presenting your findings both in writing and oral presentations.
+
+#### Critical Thinking
+
+Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data and draw conclusions.
+
+#### Statistical Programming
+
+You will use R and RStudio to wrangle and analyze data. By the time you have finished this course you may not be an expert programmer, but you will be well versed in the basics of R and how a variety of R packages to assemble, organize, analyze, and visualize data.
+
+#### Teamwork
+
+Some projects work will be done in teams. In data analytics, teamwork really does make the dream work. Aside from that, it is unavoidable. Most data analysis in the real world is a collaborative exercise, so learning how to work well with others is essential.
+
+# Analysis Software & Technology
+
+Students will use R and RStudio, which are free and open source! Follow [this guide](https://www.rstudio.com/products/rstudio/download/) to install each locally to your laptop. Support will be provided by the instructor in the installation of required software. If at any time you don’t have access to a laptop please contact the instructor and the Data Analytics Program can provide you with a loan from the laptop cart.
+
+As we work through learning new code and concepts, it helps me to know what you understand and what you need to spend more time on. To make that happen, in each class you will provide real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A). This way I know when I can introduce something new and when I need to provide more help and examples.
+
+# Required Readings
+
+In addition to reading some short pieces written by journalists, academics, and others available online, we will primarily draw on *R for Data Science*, which is both **free** and available **online**.
+
+> Hadley Wickham and Garrett Grolemund. 2017. *R for Data Science: Visualize, Model, Transform, Tidy, and Import Data*. [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
+
+If you wish, you can also order a physical copy from Amazon.
+
+# Resources
+
+## We Have a TA!
+
+If you need additional help outside of class, we will have a DA 101 TA available to help. The TA will also be present during Friday labs. More details to come by the instructor.
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials. The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer ([thayerk\@denison.edu](mailto:thayerk@denison.edu){.email}). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center's page (<https://my.denison.edu/campus-resources/writing-center>) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at [englishhelp\@denison.edu](mailto:englishhelp@denison.edu){.email}.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+## R Resources & Cheat Sheets
+
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [`{seerrr}`](https://github.com/milesdwilliams15/seerrr) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. 
+
+
+| **Grading Scale** |             |        |
+|-------------------|:------------|:-------|
+| A+:	98%+		      | A:	92%			| A-:	90%|
+| B+:	88%			      | B:	82%			| B-:	80%|
+| C+:	78%			      | C:	72%			| C-:	70%|
+| D+:	68%			      | D:	62%			| D-:	60%|
+| F: below 60       |             |        |
+
+
+*Code Glossary* **10pts**
+
+> We're going to be using statistical programming software in this class, which means you're going to need to learn how to code. There's no expectation that you have any coding experience prior to taking this course, but whether you have or haven't coded before, taking notes and building a repository of code that you can draw on in future work is essential. That's why I want you not only to take notes in class as we write code but also to build a code repository that includes examples of different kinds of analysis and how to process the data used to perform them. The good news is, you won't have to come up with these examples on your own. If you code along with me in class, you'll have a complete code glossary for each of the parts of the course. Different code glossaries will be due each time we start a new unit of the course. 
+
+*Fortnightly Quizzes* **5pts Total**\footnote{I always wanted an excuse to use "fortnightly."}
+
+> These will be short 5-10 minuted (timed) quizzes that you will take on Canvas to test your knowledge and retention of skills learned in class and in Lab. You will take these on your own time and will be due every other Wednesday (that is, fortnightly!) by midnight. The lowest grade will be dropped.
+
+*Friday Reading Responses* **5pts Total**
+
+> Every Friday our normal class time will be dedicated to in-class discussion of some reading. I expect everyone to come to class prepared to participate. That means having notes, coming to class with questions and comments about what we read, and engaging in discussion. As a commitment device for you (and to provide me with evidence that you've done the reading), each Friday before class you will submit a short write-up in response to a prompt that I will post to Canvas related to the reading. Tese will be graded on a 0-3 scale. The lowest grade will be dropped.
+
+*Friday Lab Projects* **60pts Total**
+
+> Weekly labs will challenge you to practice, apply, and extend the concepts and skills learned in the course. There will be five topics from different domain areas where data analytics can provide insight into interesting questions, and hopefully, some answers. Each topic will increase in complexity, skills, and expectations. Later labs will be worth more points than earlier labs. 
+
+> Some labs will be short individual assignments to practice skills introduced that week. The last lab within each topic will be a group project that will require you to collaborate to apply skills from previous weeks to investigate a set of questions. These will conclude with a group report and/or presentation of the results. 
+
+> Due on Canvas by 1:30 pm on Friday, before the beginning of lab.
+
+*Final Project* **20pts Total**
+
+> The final project will be a culmination of the skills you have learned in the weeks prior, and will offer more flexibility in your design, data choices, and approach, while demonstrating mastery of the breadth of skills discussed in the course. Potential topics will be discussed and approved with the instructor. Final reports will discuss the data, analytical approach, and a visual and oral presentation of the results.
+
+> Due on Canvas May 4 by 11:00 am.
+
+
+
+$$
+\begin{aligned}
+10pts& \text{ (Code Glossaries)} \\
+5pts  & \text{ (Quizzes)} \\
+5pts  & \text{ (Reading Responses)} \\
+60pts & \text{ (Lab Projects)} \\
+\underline{+ \space 20pts} &  \text{ (Final Project)} \\
+100pts & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+***Wait! What about attendance?*** You're all young adults. I expect you to come to class and participate. But I won't be taking attendance (at least not formally). If you can't make it to class for some reason, then you can't make it to class. But if you start missing class regularly, your grade will start to suffer. It won't suffer because you're losing "participation" points. It'll suffer because you're missing out on information provided in class that's necessary for completing Lab work, doing quizzes, and building your code glossary.
+
+## E-mail Policy
+
+I have a simple email policy, and it is targeted at achieving one goal: **maximizing your and my work-life balance**. The policy is this:
+
+> I promise a timely response to **relevant** emails I receive between **9:00 AM** and **5:00 PM** Monday to Friday.
+
+You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.[^1] But, this does mean that if you email me outside of these windows, I may not respond until the next 9-5 workday.
+
+[^1]: By this, I simply mean classic societal expectations about working vs. leisure hours.
+
+
+## Make-Up Assigment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. 
+
+## Attendance Policy
+
+Come to class. Attendance is not part of your grade, but poor attendance will lead to poor grades.
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive or some other cloud-based platform to save your work, all your work will be backed up and easy to access.
+
+## Late Assigments
+
+We have a lot of work to do in this class. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. As incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose 5 percent from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade.
+
+The exception to this rule is if a student and I have worked out an arrangement for submitting an assignment at a later date. 
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is also a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class***.
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**

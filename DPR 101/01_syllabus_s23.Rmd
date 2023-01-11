@@ -174,7 +174,7 @@ Cal %>%
     breaks = c("MA Due", "DC Due")
   ) +
   labs(fill = "", color = "", x="", y="",
-       caption = "Notable dates: MLK Day Observed (23 Jan.), Spring Break (11-20 Mar.), Final Day of Instruction (01 May)"
+       caption = "Notable dates: MLK Day Observed (23 Jan.), Spring Break (11-20 Mar.), MPSA (13-16 April), Final Day of Instruction (01 May)"
        )  -> class_cal
 
 ```
@@ -301,7 +301,7 @@ $$
 10pts  & \text{ (Code Glossary)} \\
 4 \times 15pts = 60pts  & \text{ (Main Assigments)} \\
 \underline{+ \space 8 \times 3pts = 24pts} &  \text{ (Data Challenges)} \\
-100pts & \text{ (Total Assigments)}
+100pts & \text{ (Total Assignments)}
 \end{aligned}
 $$
 
