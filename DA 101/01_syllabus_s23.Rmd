@@ -246,7 +246,7 @@ knitr::include_graphics(
 
 \bigskip
 
-*Note:* All readings for discussion and other course materials will be available on Canvas. In-class exercises will involve real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A). "R4DS" = our primary textbook, [*R for Data Science*](https://r4ds.had.co.nz/).
+*Note:* All readings for discussion and other course materials will be available on Canvas. In-class exercises will involve real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A). 
 
 # Part I: Getting Started with Data and Coding
 
@@ -449,7 +449,7 @@ As we work through learning new code and concepts, it helps me to know what you 
 
 # Required Readings
 
-In addition to reading some short pieces written by journalists, academics, and others available online, we will primarily draw on *R for Data Science*, which is both **free** and available **online**.
+We will primarily read some short pieces written by journalists, academics, and others available online. While we will not follow it strictly, you may from time to time want to consult *R for Data Science*, which is both **free** and available **online**, as a resource.
 
 > Hadley Wickham and Garrett Grolemund. 2017. *R for Data Science: Visualize, Model, Transform, Tidy, and Import Data*. [https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
 
@@ -517,7 +517,16 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 > Some labs will be short individual assignments to practice skills introduced that week. The last lab within each topic will be a group project that will require you to collaborate to apply skills from previous weeks to investigate a set of questions. These will conclude with a group report and/or presentation of the results. 
 
-> Due on Canvas by 1:30 pm on Friday, before the beginning of lab.
+> Due on Canvas by 1:30 pm on Friday, before the beginning of the next lab.
+
+> The individual lab projects break down as follows:
+
+> (1) **10pts**: *Invasive Species I and II*
+> (2) **5pts**: *Data Collection*
+> (3) **10pts**: *Substance Use*
+> (4) **15pts**: *Congressional Polarization I and II*
+> (5) **10pts**: *Ethics*
+> (6) **10pts**: *Business*
 
 *Final Project* **20pts Total**
 
