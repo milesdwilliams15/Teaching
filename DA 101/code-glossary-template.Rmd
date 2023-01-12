@@ -1,0 +1,606 @@
+---
+title: "Code Glossary"
+author: "CHANGE TO YOUR NAME"
+date: "8/29/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Code Glossary for DA 101
+This is an R Markdown document. Please fill in all example text with your own words and definitions. For each function in the code glossary, you should show your code. If you need extra code to do some data wrangling or bring in a new library, please hide it from the rendered html. Each term should have: 
+ (1) what package does it come from?
+ (2) general definition - what does the function do and for what kind of tasks/situations would you use it?
+ (3) worked example, using your dataset, or one of the example datasets from an R package
+ (4) text below the example that explains specifically, what the code accomplished. In other words, what was the input and the output? What can you do now that you have run the example that you couldn't before?
+
+### Data Wrangling
+
+#### 0. Explain what **"tidy data"** is and why it is useful for coding.
+
+Package: NA
+
+Definition:
+
+Code example (show an example dataset preview or header that you can use to explain):
+```{r}
+
+```
+Explanation:
+
+
+
+#### 1. Compare and contrast `summary`, `str`, and `glimpse`
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+**Demonstrate each of the main `dplyr` verbs in Questions 2-7. In your examples, these may be used alone or together with other functions, but your definition and explanation must focus specifically on the function in the prompt.**
+
+#### 2. Use `select` to manipulate a dataframe
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 3. Use `arrange` to manipulate a dataframe
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 4. Use `filter` to manipulate a dataframe 
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+
+#### 5. Use `mutate` to manipulate a dataframe
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+
+#### 6. Use `group_by` to manipulate a dataframe
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+
+#### 7. Use `summarize` to manipulate a dataframe
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 8. Remove NAs from a data frame or from a column
+
+**`function_name`**
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+
+
+```
+
+Explanation: 
+
+
+
+### Polished Data Visualization using ggplot2
+**All visuals should use functions from the `ggplot2` and/or `ggmap` libraries
+
+#### 9. Histogram
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 10. Box plot
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 11. Scatter plot
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 12. Frequency Polygon
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 13. Line plot
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 14. Your favorite other kind of ggplot, not yet demonstrated
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+
+#### 15.Geographic Map; `function_name`
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+#### 16. a polished table using `kable`, `xtable`, or `pander`**
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+### Advanced Data Wrangling
+
+#### 17. Use conditional statements to manipulate a dataframe
+**`ifelse`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 18. Bring multiple datasets together by stacking them
+**`rbind`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 19. Bring multiple datasets together using `merge` and/or `join`
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 20. Use Regular Expressions or `stringr` functions to manipulate text data
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 21. Transform and work with datetime values
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+#### 22. Write your own function to automate a task
+**`function`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+
+### Statistical and Analytical Tools
+
+#### 23. Demonstrate how you could calculate all of the key summary statistics listed below and describe what you can learn from each of them in your definition and in the explanation:
+`mean`, `median`, `max`, `min`, `interquartile range`, `standard deviaton`
+**You may choose to use one or more functions or code statements to demonstrate and explain**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 24. One sample t-test
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 25. Two sample t-test
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 26. Compare and contrast Correlation versus Correlation Test 
+**`function_name` and `function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 27. Simple linear regression (bivariate)
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 28. Multiple linear regression (multivariate)
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 29. Multicollinearity
+**`ggpairs`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 30. Validate your model
+**`gg_diagnose` or `autoplot`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 31. Make a histogram of your residuals
+**`list_ functions_used`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 32. Make predictions using `predict`
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 33. Interpret predictions using `confint`
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 34. Shapiro-wilk test
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 35. Non-constant variance test
+**`function_name`**
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+
+#### 36. Stepwise model selection using `stepAIC` and `modelaic$anova` output
+
+Package: 
+
+Definition: 
+
+Code example:
+```{r}
+
+```
+
+Explanation: 
+
+
+

@@ -119,6 +119,20 @@ q1_dates <- c(ymd(20230125),
               #ymd(20230405),
               ymd(20230412))
               #ymd(20230419))
+# reading responses
+rr_dates <- c(ymd(20230119),
+              ymd(20230126), 
+              #ymd(20230202),
+              ymd(20230209),
+              ymd(20230216),
+              ymd(20230223),
+              ymd(20230302),
+              ymd(20230309),
+              ymd(20230323),
+              ymd(20230330),
+              ymd(20230406))
+              #ymd(20230413),
+              #ymd(20230420))
 
 # What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
 # In this case: Aug. 29 to Dec. 13
@@ -139,6 +153,7 @@ tibble(date = seq(ymd(20230101), ymd(20230531), by=1))  %>%
          semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
          las = ifelse(date %in% la_dates, 1, 0), # is it an MA assignment?
          q1s = ifelse(date %in% q1_dates, 1, 0), # is it a GC assignment?
+         rrs = ifelse(date %in% rr_dates, 1, 0),
          not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
          day = lubridate::mday(date), # get day of month to add later as a label
          # Below: our custom wom() function
@@ -154,6 +169,7 @@ Cal %>%
          fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
          ccategory = ifelse(las == 1, "Lab Due", ccategory),
          ccategory = ifelse(q1s == 1, "Quiz Due", ccategory),
+         ccategory = ifelse(rrs == 1, "Response Due", ccategory),
          fcategory = ifelse(not_here == 1, "Breaks", fcategory),
          fcategory = ifelse(is.na(fcategory), "NA", fcategory),
          ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
@@ -181,8 +197,9 @@ Cal %>%
   scale_color_manual(
     values = c("Lab Due" = "firebrick", 
                "Quiz Due" = "darkblue", 
+               "Response Due" = "forestgreen",
                "NA" = "white"),
-    breaks = c("Lab Due", "Quiz Due")
+    breaks = c("Lab Due", "Quiz Due", "Response Due")
   ) +
   labs(fill = "", color = "", x="", y="",
        caption = "Notable dates: MLK Day Observed (23 Jan.), Spring Break (11-20 Mar.), MPSA (13-16 April), Final Day of Instruction (01 May)"
@@ -229,7 +246,7 @@ knitr::include_graphics(
 
 \bigskip
 
-*Note:* All readings for discussion and other course materials will be available on Canvas. In-class exercises will involve real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A).
+*Note:* All readings for discussion and other course materials will be available on Canvas. In-class exercises will involve real-time feedback using [this form](https://forms.gle/4FSEF6RrhVwyovf1A). "R4DS" = our primary textbook, [*R for Data Science*](https://r4ds.had.co.nz/).
 
 # Part I: Getting Started with Data and Coding
 
@@ -237,9 +254,9 @@ knitr::include_graphics(
 
 - Day 1: Course Intro 
 
-- Day 2: Data types, entry, tidying, and quality control and assurance 
+- Day 2: Data types, entry, tidying, and quality control.
 
-- Day 3: Data in your world
+- Day 3: Data in your world \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Invasive Species I
 
@@ -249,7 +266,7 @@ knitr::include_graphics(
 
 - Day 2: Metadata and data analysis cycle \hfill \textit{Quiz due Wed. by midnight}
 
-- Day 3: Open Analytics, Equity, Diversity, and Inclusion
+- Day 3: Open Analytics, Equity, Diversity, and Inclusion \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Data Collection \hfill \textit{Invasive Species I due Fri. by 1:30 pm}
 
@@ -269,7 +286,7 @@ knitr::include_graphics(
 
 - Day 2: Data viz \hfill \textit{Quiz due Wed. by midnight}
 
-- Day 3: Challenges with missing data
+- Day 3: Challenges with missing data \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Code Glossary I \hfill \textit{Invasive Species II due Fri. by 1:30 pm}
 
@@ -281,7 +298,7 @@ knitr::include_graphics(
 
 - Day 2: Hypothesis tests 
 
-- Day 3: Data Visuals and Performing Arts
+- Day 3: Data Visuals and Performing Arts \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Substance Use \hfill \textit{Code Glossary I due Fri. by 1:30 pm}
 
@@ -291,7 +308,7 @@ knitr::include_graphics(
 
 - Day 2: Linear regression \hfill \textit{Quiz due Wed. by midnight}
 
-- Day 3: DA in social and political science
+- Day 3: DA in social and political science \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Political Polarization I \hfill \textit{Substance Use due Fri. by 1:30 pm}
 
@@ -301,7 +318,7 @@ knitr::include_graphics(
 
 - Day 2: Causation 
 
-- Day 3: Statistical ethics
+- Day 3: Statistical ethics \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Political polarization II \hfill \textit{Political Polarization I due Fr. by 1:30 pm}
 
@@ -313,7 +330,7 @@ knitr::include_graphics(
 
 - Day 2: Ethics & Bias \hfill \textit{Quiz due Wed. by midnight}
 
-- Day 3: Analysis case study - quantitative research
+- Day 3: Analysis case study - quantitative research \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Code Glossary II + Peer grading activity \hfill \textit{Political Polarization II due by 1:30 pm}
 
@@ -327,7 +344,7 @@ knitr::include_graphics(
 
 - Day 2: Model selection
 
-- Day 3: Data analysis in a global pandemic
+- Day 3: Data analysis in a global pandemic \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   Airbnb in Columbus \hfill \textit{Code Glossary II due Fri. by 1:30 pm}
 
@@ -337,7 +354,7 @@ knitr::include_graphics(
 
 - Day 2: Maps + spacial data \hfill \textit{Quiz due Wed. by midnight}
 
-- Day 3: Human data ethics workshop
+- Day 3: Human data ethics workshop \hfill \textit{Response due Thurs. by midnight}
 
 - Lab:   IRB cert + Ethical Frameworks \hfill \textit{Arbnb in Columbus due Fri. by 1:30 pm}
 
@@ -490,9 +507,9 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 > These will be short 5-10 minuted (timed) quizzes that you will take on Canvas to test your knowledge and retention of skills learned in class and in Lab. You will take these on your own time and will be due every other Wednesday (that is, fortnightly!) by midnight. The lowest grade will be dropped.
 
-*Friday Reading Responses* **5pts Total**
+*Reading Responses* **5pts Total**
 
-> Every Friday our normal class time will be dedicated to in-class discussion of some reading. I expect everyone to come to class prepared to participate. That means having notes, coming to class with questions and comments about what we read, and engaging in discussion. As a commitment device for you (and to provide me with evidence that you've done the reading), each Friday before class you will submit a short write-up in response to a prompt that I will post to Canvas related to the reading. Tese will be graded on a 0-3 scale. The lowest grade will be dropped.
+> Every Friday our normal class time will be dedicated to in-class discussion of some reading. I expect everyone to come to class prepared to participate. That means having notes, coming to class with questions and comments about what we read, and engaging in discussion. As a commitment device for you (and to provide me with evidence that you've done the reading), each Thursday night before midnight you will submit a short write-up in response to a prompt that I will post to Canvas related to the reading. These will be graded on a 0-2 scale (0 = no submission, 1 = you submitted something but it's clear you didn't try or do the reading, 2 = it's clear you did the reading and engaged with it). The lowest grade will be dropped.
 
 *Friday Lab Projects* **60pts Total**
 
