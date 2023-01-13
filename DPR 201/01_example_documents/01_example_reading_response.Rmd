@@ -1,0 +1,34 @@
+---
+title: "Example Outline for Reading Responses"
+author: "Miles D. Williams"
+date: '2023-01-13'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Title: "Motivated Numeracy and Enlightened Self-Government"
+
+Authors: Dan M. Kahan, Ellen Peters, Erica Cantrell Dawson, and Paul Slovic
+
+1. What's the research question?
+
+With so much scientific evidence available and accessible to the public, why do disagreements over the nature of societal risks posed by things like climate change persist?
+
+2. Why does it matter?
+
+Many problems require empirically informed collective action to solve. While being informed about the facts doesn't guarantee agreement about the best policy, arriving at collective solutions is impossible if people don't have a common basis of fact.
+
+3. What did they do to find an answer? (e.g., what's their research design?)
+
+The authors designed a study to test whether disagreements persist because of low comprehension of scientific evidence or because of conflicting cultural and political identies. They conducted a randomized controlled trial where individuals were presented with four versions of a math problem, which varied according to whether some "intervention" produced positive or negative results and whether the intervention involved a rash cream or a ban on concealed handguns.
+
+4. What did they find?
+
+The authors found that when presented with the "rash cream" version of the problem, more numerate individuals made fewer errors in solving the problem. However, they found that high numeracy individuals made errors with almost as much frequency as low numeracy individuals when exposed to a version of the "handgun" treatment that misaligned with their ideological views.
+
+5. What are the implications?
+
+Ideologically motivated reasoning may stand in the way of society coming the share a common basis in fact for many pressing problems that require empirically informed collective action to solve.

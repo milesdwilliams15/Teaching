@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  11 JAN 2023 13:11
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  13 JAN 2023 09:37
 entering extended mode
 **./01_syllabus_s23.tex
 (01_syllabus_s23.tex
@@ -789,33 +789,33 @@ T1/cmtt/m/n/10.95 {estimatr}[][] $\U/msa/m/n/10.95 ^^F$ [][]\T1/cmtt/m/n/10.95
 
 [4]
 LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/it' tried instead on input line 481.
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 484.
 [5
 
 ]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 506.
+(Font)              scaled to size 5.21004pt on input line 509.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 506.
+(Font)              scaled to size 5.21004pt on input line 509.
 [6] [7]
 File: schedule.png Graphic file (type QTm)
 <use  "schedule.png" >
-LaTeX Font Info:    Try loading font information for OMS+ppl on input line 630.
+LaTeX Font Info:    Try loading font information for OMS+ppl on input line 633.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsppl.fd"
 File: omsppl.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ppl/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 630.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 633.
 [8] [9] 
 AED: lastpage setting LastPage
 [10]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 794.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 794.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 797.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 797.
 (01_syllabus_s23.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 794.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 794.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 794.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 797.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 797.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 797.
  ) 
 Here is how much of TeX's memory you used:
  20439 strings out of 428410
@@ -835,4 +835,4 @@ Output written on 01_syllabus_s23.pdf (10 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.4" not defined.
 
-! 241306 bytes written
+! 241478 bytes written
