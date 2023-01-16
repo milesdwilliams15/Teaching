@@ -403,7 +403,7 @@ knitr::include_graphics(
 
 - Day 1: Course Intro
 
-- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running. Optional reading on Canvas.
+- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running. Reading on Canvas.
 
 # Part I: Correlation
 
