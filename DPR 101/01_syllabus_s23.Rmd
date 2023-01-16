@@ -396,17 +396,17 @@ knitr::include_graphics(
 
 # Getting Started
 
-## `r advdate(mon, 1)`
+## `r advdate(mon, 1)`: Welcome!
 
 - Day 1: Course Intro
 
 - Day 2: H Ch1 "Look at Data" 
 
-- Day 3: Tech Start + Discussion
+- Day 3: Discussion
 
 # Part I: Cross-sectional Data 
 
-## `r advdate(mon, 2)`
+## `r advdate(mon, 2)`: Getting Started
 
 - Day 1: MLK
 
@@ -414,7 +414,7 @@ knitr::include_graphics(
 
 - Day 3: H Ch2 (2.5 - 2.7) 
 
-## `r advdate(mon, 3)`
+## `r advdate(mon, 3)`: Making a Plot
 
 - Day 1: H Ch3 (3.1 - 3.4) \hfill \textit{DC1 due Mon.}
 
@@ -422,7 +422,7 @@ knitr::include_graphics(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 4)`
+## `r advdate(mon, 4)`: Show the Right Numbers
 
 - Day 1: H Ch4 (4.1 - 4.4) \hfill \textit{DC2 due Mon.}
 
@@ -430,7 +430,7 @@ knitr::include_graphics(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 5)`
+## `r advdate(mon, 5)`: Draw Maps
 
 - Day 1: H Ch7 (7.1 - 7.3) \hfill \textit{DC3 due Mon.}
 
@@ -438,7 +438,7 @@ knitr::include_graphics(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 6)`
+## `r advdate(mon, 6)`: Finalize MA1
 
 - Day 1: Work on MA1 \hfill \textit{DC4 due Mon.}
 
@@ -448,7 +448,7 @@ knitr::include_graphics(
 
 # Part II: Time-series Data
 
-## `r advdate(mon, 8)`
+## `r advdate(mon, 8)`: Tables, Labels, and Notes
 
 - Day 1: H Ch5 (5.1 - 5.3) \hfill \textit{MA1 due Mon.}
 
@@ -456,7 +456,7 @@ knitr::include_graphics(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 8)`
+## `r advdate(mon, 8)`: Refining Plots
 
 - Day 1: H Ch8 (8.1 - 8.2) \hfill \textit{DC5 due Mon.}
 
@@ -468,7 +468,7 @@ knitr::include_graphics(
 
 *Spring Break!*
 
-## `r advdate(mon, 10)`
+## `r advdate(mon, 10)`: More Refining and Finalize MA2
 
 - Day 1: H Ch8 (8.5 - 8.6) \hfill \textit{DC6 due Mon.}
 
@@ -478,7 +478,7 @@ knitr::include_graphics(
 
 # Part III: Survey Data
 
-## `r advdate(mon, 11)`
+## `r advdate(mon, 11)`: Dealing with Survey Data
 
 - Day 1: Survey data \hfill \textit{MA2 due Mon.}
 
@@ -486,7 +486,7 @@ knitr::include_graphics(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 12)`
+## `r advdate(mon, 12)`: Finalize MA3
 
 - Day 1: Work on MA3 \hfill \textit{DC7 due Mon.}
 
@@ -496,7 +496,7 @@ knitr::include_graphics(
 
 # Part IV: Choose-your-own-adventure
 
-## `r advdate(mon, 13)`
+## `r advdate(mon, 13)`: Your Adventure Starts!
 
 - Day 1: Start Choose-your-own-adventure \hfill \textit{MA3 due Mon.}
 
@@ -504,7 +504,7 @@ knitr::include_graphics(
 
 - Day 3: NO CLASS 
 
-## `r advdate(mon, 14)`
+## `r advdate(mon, 14)`: The Adventure Continues
 
 - Day 1: Work on MA4 \hfill \textit{DC8 due Mon.}
 
@@ -512,7 +512,7 @@ knitr::include_graphics(
 
 - Day 3: Work on MA4
 
-## `r advdate(mon, 15)`
+## `r advdate(mon, 15)`: Finalizing MA4
 
 - Day 1: MA4 Presentations
 
@@ -520,6 +520,6 @@ knitr::include_graphics(
 
 - Day 3: Work on MA4
 
-## `r advdate(mon, 16)`
+## `r advdate(mon, 16)`: You Made It!
 
 - Day 1: Course evals \hfill \textit{MA4 due 05.03 by 11:00 am}

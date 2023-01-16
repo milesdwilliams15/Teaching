@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  16 JAN 2023 09:01
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  16 JAN 2023 15:43
 entering extended mode
 **./01_syllabus_s23.tex
 (01_syllabus_s23.tex
@@ -789,27 +789,27 @@ LaTeX Font Info:    Font shape `U/msb/m/n' will be
 [6] [7]
 File: schedule.png Graphic file (type QTm)
 <use  "schedule.png" >
-LaTeX Font Info:    Try loading font information for OMS+ppl on input line 626.
+LaTeX Font Info:    Try loading font information for OMS+ppl on input line 627.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsppl.fd"
 File: omsppl.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ppl/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 626.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 627.
 [8] [9] 
 AED: lastpage setting LastPage
 [10]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 820.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 820.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 835.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 835.
 (01_syllabus_s23.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 820.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 820.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 820.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 835.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 835.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 835.
  ) 
 Here is how much of TeX's memory you used:
  20441 strings out of 428410
- 350251 string characters out of 3159547
- 412367 words of memory out of 3000000
+ 350514 string characters out of 3159547
+ 413106 words of memory out of 3000000
  23536 multiletter control sequences out of 15000+200000
  34445 words of font info for 82 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -822,4 +822,4 @@ Output written on 01_syllabus_s23.pdf (10 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
 
-! 240374 bytes written
+! 240882 bytes written
