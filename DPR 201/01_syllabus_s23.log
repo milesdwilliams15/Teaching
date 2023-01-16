@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  13 JAN 2023 09:37
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  16 JAN 2023 06:01
 entering extended mode
 **./01_syllabus_s23.tex
 (01_syllabus_s23.tex
@@ -820,7 +820,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 797.
 Here is how much of TeX's memory you used:
  20439 strings out of 428410
  350225 string characters out of 3159547
- 412201 words of memory out of 3000000
+ 412200 words of memory out of 3000000
  23534 multiletter control sequences out of 15000+200000
  34445 words of font info for 82 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -835,4 +835,4 @@ Output written on 01_syllabus_s23.pdf (10 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.4" not defined.
 
-! 241478 bytes written
+! 241470 bytes written
