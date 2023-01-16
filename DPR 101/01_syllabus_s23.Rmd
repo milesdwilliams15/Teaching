@@ -258,7 +258,7 @@ Essays, journals, and other coursework submitted for this class are generally co
 
 ## R Resources & Cheat Sheets
 
-[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf) $\Diamond$ [`{paletteer}`](https://emilhvitfeldt.github.io/r-color-palettes/discrete.html)
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
 
 # Course Policy
 
