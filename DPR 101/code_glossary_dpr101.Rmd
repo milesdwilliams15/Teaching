@@ -1,7 +1,7 @@
 ---
 title: "Code Glossary for DPR 101"
 author: "[Name Goes Here]"
-date: "r Sys.date()"
+date: "`r Sys.Date()`"
 output: html_document
 ---
    
@@ -87,7 +87,7 @@ The remainder of this document contains different section headings for the class
 ```
 
 
-## Tables, Labels, and Note
+## Tables, Labels, and Notes
 
 
 ```{r}
