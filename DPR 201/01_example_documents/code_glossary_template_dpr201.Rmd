@@ -1,0 +1,134 @@
+---
+title: "Code Glossary for DPR 201"
+author: "[Name Goes Here]"
+date: "`r Sys.Date()`"
+output: html_document
+---
+   
+## Data and Research Design Notes
+
+This is a starter RMarkdown template for a code glossary. You can use it to take notes, write your code, and produce a good-looking, reproducible document that records the work you have done. At the very top of the file is a section of *metadata*, or information about what the file is and what it does. The metadata is delimited by three dashes at the start and another three at the end. You should change the author to your name. Keep the `output` line as it is for now, however. Each line in the metadata has a structure. First the *key* ("title", "author", etc), then a colon, and then the *value* associated with the key.  
+
+## This is an RMarkdown File
+
+Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. A *code chunk* is a specially delimited section of the file. You can add one by moving the cursor to a blank line choosing Code > Insert Chunk from the RStudio menu. When you do, an empty chunk will appear:
+
+```{r}
+
+
+```
+
+Code chunks are delimited by three backticks (found to the left of the 1 key on US and UK keyboards) at the start and end. The opening backticks also have a pair of braces and the letter `r`, to indicate what language the chunk is written in. You write your code inside the code chunks. Write your notes and other material around them, as here. 
+
+## Set Up Your Project and Load Libraries
+
+To begin we must load some libraries we will be using. If we do not load them, R will not be able to find the functions contained in these libraries. The tidyverse includes ggplot and other tools. 
+
+```{r setup, include=FALSE}
+
+## By defult, show code for all chunks in the knitted document,
+## as well as the output. To override for a particular chunk
+## use echo = FALSE in its options.
+knitr::opts_chunk$set(echo = TRUE) 
+
+## Set the default size of figures
+knitr::opts_chunk$set(fig.width=8, fig.height=5)  
+
+## Load the libraries we will be using
+library(here)
+library(tidyverse)
+
+```
+
+Notice that here, the braces at the start of the code chunk have some additional options set in them. There is the language, `r`, as before. This is required. Then there is the word `setup`, which is a label for your code chunk. Labels are useful to briefly say what the chunk does. Label names must be unique (no two chunks in the same document can have the same label) and cannot contain spaces. Then, after the comma, an option is set: `include=FALSE`. This tells R to run this code but not to include the output in the final document. 
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r look}
+mtcars %>% sample_n(5)
+```
+
+The remainder of this document contains different section headings for the class and an empty code chunk in each section to get you started. Try knitting this document now by clicking the "Knit" button in the RStudio toolbar, or choosing File > Knit Document from the RStudio menu.
+
+# Correlation
+
+## Correlation
+
+```{r}
+
+```
+
+
+## Variation
+
+```{r}
+
+```
+
+
+## Regression
+
+```{r}
+
+```
+
+
+## Statistical Inference
+
+```{r}
+
+```
+
+
+## p-Hacking
+
+```{r}
+
+```
+
+
+## Reversion to the Mean
+
+```{r}
+
+```
+
+
+# Causation
+
+## Counterfactuals
+
+```{r}
+
+```
+
+
+## Randomization
+
+```{r}
+
+```
+
+
+## Controlling for Confounders
+
+```{r}
+
+```
+
+
+## Regression Discontinuity Designs
+
+```{r}
+
+```
+
+
+## Difference-in-Differences Designs
+
+```{r}
+
+```
+
