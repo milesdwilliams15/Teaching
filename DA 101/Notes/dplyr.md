@@ -1,0 +1,356 @@
+Using tools in `{dplyr}`
+================
+
+## Learning Objectives
+
+-   Apply the main dplyr functions to manipulate a dataset
+-   Layer complexity by chaining together multiple dplyr functions to
+    solve a problem.
+
+## Using dplyr for data manipulation/wrangling
+
+Dplyr is a powerful tool for letting us transform a dataframe into what
+we need for analysis.
+
+There are 6 key dplyr functions that we need to know (and much more that
+it can do!)
+
+-   `filter()`: Choose observations based on their values (==, !=, \>,
+    \<, \>=, \<=)
+-   `arrange()`: Reorder the rows (sort based on a variable)
+-   `select()`: Choose variables (columns) based on their names
+-   `mutate()`: Use existing variables to create new variables
+-   `summarize()`: Collapse many variables into a single summary
+-   `group_by()`: Specify the scope of the function that you want to
+    perform (for example, calculate the average height of plants,
+    grouped by each region). ORDERING MATTERS!
+
+To use these functions, don’t forget to tell R to attach the dplyr
+package:
+
+``` r
+library(dplyr)
+```
+
+These are all dplyr functions, sometimes we call them “verbs”, and they
+all take input in a similar structure.
+
+`filter(data, colname == "value" & colname >= 1000)`
+
+We can chain together multiple dplyr “layers”, like ggplot, but we use
+the %\>% pipe instead of +.
+
+1.  First, we start with the data frame
+2.  Then, we add arguments that describe what to do with the data frame,
+    using the column (variable) names. Note that we don’t need to put
+    the column names in quotes, because we’ve already specified the data
+    frame that they are contained in, R will be able to find them as a
+    “known” object.
+3.  The output is a new data frame
+
+Do you recall using filter() in our Garlic Mustard lab? What do we need
+to add if we want to save the output so we can do things with it later?
+
+    filtered_data <- data %>%
+        filter(column_name == “some text”)
+
+To filter, we need to remember and know how to use the comparison
+operators:
+
+-   Greater than `>`
+-   Less than `<`
+-   Greater than or equal to `>=`
+-   Less than or equal to `<=`
+-   Equal to `==`
+-   Not equal to `!=`
+-   In `%in%`
+-   Is NA? `is.na()`
+
+Aside: Recall some common mathematical operators (should follow order of
+operations).
+
+-   addition `+`
+-   subtraction `-`
+-   multiplication `*`
+-   division `/`
+-   square `^2`
+
+We also need to know the logical operators
+
+-   and `&`
+-   or `|`
+-   not `!`
+
+So let’s try using filter with the NHANES dataset, which is another
+datapackage we can install and look at. This is an excerpt from the
+Center for Disease Control’s (CDC) National Health and Nutrition
+Examination Survey (NHANES), a national study conducted every two years
+that gathers data on American’s health, nutrition, and exposure to
+environmental chemicals. Data from NHANES is used widely by
+environmental health scientists to study the U.S. public’s exposure to
+chemicals.
+
+First install the NHANES package:
+
+    install.packages("NHANES")
+
+Then attach it. We can use dim() to check the size of the data (number
+of rows and columns).
+
+``` r
+library(NHANES)
+dim(NHANES)
+```
+
+    ## [1] 10000    76
+
+Let’s take a quick look at this dataset - each row is the record for a
+person who responded to the survey, and each column is the variables
+that they responded to. You can see that there are a lot of variables we
+can sort or filter on!
+
+### Filter()
+
+Let’s just practice filter first, which we’ve already seen in lab. Let’s
+say we want all the data from men.
+
+    NHANES %>%
+      filter(Gender == "male")
+
+OK but what if we want to filter on two variables, males who are also
+married?
+
+    NHANES %>%
+      filter(Gender == "male" & MaritalStatus == "Married")
+
+OK but what if we want to filter on two variables, college graduates or
+homeowners?
+
+    NHANES %>%
+      filter(Education == "College Grad" | HomeOwn == "Own")
+
+What does this give us? Rows are college grad & homeowners, and college
+graduates only, and homeowners only.
+
+Note: filter() only includes rows where the condition is TRUE. So if we
+want to keep in NA (missing) values, then we need to ask for them
+explicitly, for example:
+
+What would we do if we wanted only rows where values in a column were
+blank (indicated by NA on the computer). Would this work?
+
+    NHANES %>%
+      filter(Education == NA)
+
+Nope! Since NA is a special value that indicates missing data, it cannot
+be equal to anything, or not equal to anything. This means we can only
+include or exclude NA using functions designed to do that. For example,
+is.na() or na.rm=TRUE. The example below would work to find all rows
+where Education was either “College Grad” OR was missing.
+
+    NHANES %>%
+      filter(Education == "College Grad" | is.na(Education))
+
+### Arrange()
+
+We haven’t seen this yet, but it works similarly to filter(), except
+instead of selecting rows, it changes their order - Kind of like using
+“sort” in Excel, except you know that you won’t accidentally sort just
+the one row and scramble all your data.
+
+Let’s sort the NHANES dataset by chronological age:
+
+    NHANES %>%
+      arrange(Age)
+
+OK, cool, but what if we want to see the oldest people first? We can
+specify the order, and change the default:
+
+    NHANES %>%
+      arrange(desc(Age))
+
+But what if we really want to use the age category? Do you think we can
+sort on a factor or character? Let’s try! We can try anything in R…
+
+    NHANES %>%
+      arrange(AgeDecade)
+
+Awesome. Where do you think the NAs went? How would we check? Hint: NAs
+are always sorted to the end, whether you use ascending or descending
+order.
+
+### Select()
+
+Here’s another one that we’ve seen briefly - remember, we used select to
+choose only the columns that we were interested in. It’s another way to
+“slice” our dataframe. Usually, we don’t need ALL the variables for a
+given data analysis, so it is more efficient to just look at the ones
+that we need.
+
+How many columns does NHANES have? Use ncol()
+
+``` r
+ncol(NHANES)
+```
+
+    ## [1] 76
+
+Let’s just get the ones we want.
+
+    NHANES %>%
+      select(Gender, Age, Weight, Height, Diabetes)
+
+What if we wanted most of the columns, but just not the ones related to
+sexual health? Wouldn’t it be terrible to have to type ALL those names?
+Even just typing all the sexual health columns (7) would be a pain!
+Luckily, we don’t have to!
+
+    NHANES %>%
+      select(-(SexEver:PregnantNow))
+
+We can even use some “helper functions” inside of select() to get even
+more specific. A few examples are:
+
+-   `starts_with("")`
+-   `end_with("")`
+-   `contains("ijk")`
+
+So let’s say we know that we have a bunch of columns for sexual health,
+but we don’t want to write them all, or look them up, even though we
+need them for analysis. We can be lazy and just say we want all the
+columns that contain “Sex” in the name!
+
+    NHANES %>%
+      select(contains("Sex"))
+
+### mutate()
+
+Sometimes we need to create new variables. This might be a function of
+an existing column. For example, in last week’s lab, some people
+recorded the data twice, in two columns. They could have used mutate()
+to take the average of those two columns, and add it to their dataframe.
+
+This is our fourth dplyr command - let’s start chaining some of these
+together to see how they work! Here’s one that we did before, to select
+just 5 columns:
+
+    NHANES %>%
+      select(Gender, Age, Weight, Height, Diabetes)
+
+To chain on another command, we use the pipe %\>%, just like in ggplot,
+we added layers to our graphic using +. Let’s make our own calculation
+of BMI. First we need to convert our weight and height to kilograms and
+centimeters.
+
+    NHANES %>%
+      select(Gender, Age, Weight, Height, Diabetes) %>%
+      mutate(Height_m = Height / 100)
+
+    NHANES %>%
+      select(Gender, Age, Weight, Height, Diabetes) %>%
+      mutate(Height_m = Height / 100,
+        BMI = Weight / Height_m ^ 2)
+
+See above, we can even do this all at once, by referring to columns that
+we have just created!
+
+Or we can do it all in one equation, if we don’t need to save out a
+column for height in meters.
+
+    NHANES %>%
+      select(Gender, Age, Weight, Height, Diabetes) %>%
+      mutate(BMI = Weight / (Height / 100) ^ 2)
+
+Note that as things are getting more complex, we just did one step at a
+time, and then went back to edit what we just did, making sure each step
+along the way worked before making it more complicated. This is a good
+recipe for success, and to cut down on frustration!
+
+You could use any mathematical operators, here, including sum(x), y -
+mean(y), log(), log2(), log10(), lead()
+
+### summarize() and group_by()
+
+This can be used to collapse a dataframe to a single row, or a set of
+rows (if we use group_by())
+
+``` r
+By_gender <- NHANES %>%
+  group_by(Gender) %>%
+  summarize(mean(Height, na.rm=T))
+```
+
+OK, but this includes all the ages, which probably doesn’t make sense to
+take an average of… all those babies are bringing the heights down. Can
+you calculate the average heights of adult men and women in feet?
+
+``` r
+adult_heights <- NHANES %>%
+  filter(Age > 18) %>%
+  mutate(Height_ft = (Height * 0.39 )/12) %>%
+  group_by(Gender) %>%
+  summarize(mean(Height_ft, na.rm=TRUE))
+adult_heights # print results
+```
+
+    ## # A tibble: 2 × 2
+    ##   Gender `mean(Height_ft, na.rm = TRUE)`
+    ##   <fct>                            <dbl>
+    ## 1 female                            5.27
+    ## 2 male                              5.71
+
+Finally, we also have data on diabetes, can we include that too? How
+many men and women have diabetes?
+
+``` r
+adult_summary <- NHANES %>%
+  filter(Age > 18 & Diabetes == 'Yes') %>%
+  mutate(Height_ft = (Height * 0.39 )/12) %>%
+  group_by(Gender) %>%
+  summarize(AvgHeight = mean(Height_ft, na.rm=TRUE),
+                NumDiabetic = n())
+adult_summary # print results
+```
+
+    ## # A tibble: 2 × 3
+    ##   Gender AvgHeight NumDiabetic
+    ##   <fct>      <dbl>       <int>
+    ## 1 female      5.19         344
+    ## 2 male        5.68         399
+
+Adding a column for count to go along with your summary can also be
+helpful, because it can help you see how many things were averaged (or
+whatever). You don’t want to draw conclusions from a very small number
+of samples!
+
+Note: We can also calculate median (midpoint of the data), which tells
+us a little different information from mean (average)
+
+``` r
+adult_summary <- NHANES %>%
+  filter(Age > 18 & Diabetes == 'Yes') %>%
+  mutate(Height_ft = (Height * 0.39 )/12) %>%
+  group_by(Gender) %>%
+  summarize(MedianHeight = median(Height_ft, na.rm=TRUE),
+                NumDiabetic = n())
+adult_summary
+```
+
+    ## # A tibble: 2 × 3
+    ##   Gender MedianHeight NumDiabetic
+    ##   <fct>         <dbl>       <int>
+    ## 1 female         5.19         344
+    ## 2 male           5.67         399
+
+-   `mean()`: average
+-   `median()`: midpoint
+-   `sd()`: standard deviation
+-   `IQR()`: interquartile range
+-   `mad()`: median absolute deviation
+-   `min()`: minimum
+-   `max()`: maximum
+-   `quantile(x, 0.25)`: value in the data that is \> 25% of the values
+    and \< 75% of the values
+-   `n()`: count
+-   `sum(!is.na(x))`: count all non-missing values (don’t count NAs)
+-   `n_distinct()`: count all distinct (unique) values
