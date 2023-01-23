@@ -1,0 +1,120 @@
+---
+title: "Metadata and the Data Analytics Cycle"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Learning objectives
+
+- Describe what metadata is and what components might be included in it
+- Explain why metadata is useful (needed!) for a dataset
+- Identify ways in which you would use metadata to understand a new dataset, or prepare for a requested data analysis
+- Identify and describe different components of metadata
+- List and describe the parts of the data life cycle
+- List and describe the parts of the data analysis cycle
+
+
+## Metadata
+In lab, we had a “codebook” to go along with the Garlic Mustard dataset that we imported into R. The codebook is essentially a form of “metadata” - or, data about the data. When someone asks you to conduct a data analysis on a dataset, you usually need more information than just the data itself, even for a very tidy and well-structured dataset.
+
+Try making a list some things you would need to know about a dataset that you would want to find in the metadata. Here’s an example dataset to get you thinking: 
+
+> [Board Game Data](https://www.kaggle.com/mrpantherson/board-game-data)
+
+Check out the example dataset and think about what you would need to know about the data in order to work with it and to analyze it.
+
+Looking at the dataset, some questions like the following may come to mind:
+
+- Who collected the data?
+- When?
+- Where?
+- Who funded the data collection?
+- What do rows represent? What do columns represent?
+- What did they use to denote missing data?
+- Are there any problems with the data that I should be worried about?
+
+Structure is what turns all this raw data into useable/actionable information. Metadata contains specific elements, that are collected and stored in a such a way to be visible with explanatory labels. Properties or elements are common terms for these labels, although they may vary by user community or field. 
+
+Informal metadata is better than no metadata. Formal metadata adheres to specific standards and is machine-readable. Metadata can take many forms - we will discuss a few details of metadata, but right now, what is important is that you have an idea of what metadata is, how to use it, and how to begin constructing your own simple metadata files.
+
+Tip: To make sure that your metadata correctly describes what is actually in a data file, visual inspection or analysis should be done by someone not otherwise familiar with the data and its format. This will assure that the metadata is sufficient to describe the data.
+
+How about another dataset?
+
+> [Portal Project](http://esapubs.org/archive/ecol/E090/118/metadata.htm)
+
+The above is a published dataset, with public metadata available on the web. Keeping in mind what we’ve just discussed, let’s take a look at how it’s metadata is structured, as an example of a fairly informal form of metadata, but absolutely necessary to data sharing. 
+
+*How is the metadata organized?* 
+
+*Can you find examples of Descriptive, Administrative, and Structural metadata here?*
+
+
+
+## The data life cycle
+
+Data is not a static object. What I mean by this is that data is not something that is simply collected and analyzed once (or it shouldn’t be). There are several versions of the data life cycle, that encompass a dataset’s journey from creation to its end archived form, or it’s continuation through further data collection.
+
+> Collect $\to$ Prepare $\to$ Publish $\to$ Maintain $\to$ REPEAT $\circlearrowleft$
+
+The data life cycle shows that a dataset may go through several “high level” stages, that allows the data to be managed and preserved for later use and re-use, beyond it’s initial collection and analysis phase. Below, is a more intricate set of steps from the DataONE model of the data life cycle. Not every dataset will hit each part of this cycle (maybe not discover and integrate), but should go through most of them.
+
+What happens in each step of the life cycle of a dataset?
+
+- Plan - This is where we usually start (although you could come into a project at a different stage). Before collecting data for a project, it is best to describe, as well as you can, what data will be needed (and to do this, you probably need to also have a plan for what kind of analysis you would like to do!), who/how will the data be managed, and how will it be made accessible?
+- Collect - This is where you or a sensor/instrument goes out into “the field” to collect observations, and record your data into a digital form (like an excel spreadsheet)
+- Assure - QA/QC - As we discussed earlier about tidy data, no matter how much planning you did, it is likely that you will need to do some additional checking or cleaning to assure that the data is good enough quality to store and analyze.
+- Describe - Make sure the data are accurately and thoroughly described, so that someone else can understand what it represents. This is where metadata comes in. If you had a good plan in place to begin with, then the metadata is probably already partially written. Try to include several different aspects of metadata, as discussed earlier in class - technical, administrative, and structural…
+- Preserve - Make sure your data are stored somewhere that you (and others) can access them, and where they are safe from being changed (for example, accidentally deleted, or tampered with!). Also, make sure the data are backed up! Data used for private or public research would be backed up in a privately held, or an openly accessible official “data repository”. E.g. Preserving data on your laptop, or burning it onto a cd, or your website are not really great options for something you want to store and use/reuse long term!
+- Discover - (optional) You or someone else may discover new data that you can analyze through library, web, word of mouth, or other searches. Finding the appropriate metadata at this stage can help the new data be used properly.
+- Integrate - (optional) combine data from disparate sources into one big data “set” that can be analyzed together. This might entail some data “tidying” first, or thinking carefully about the best structure for the data.
+- Analyze - statistical analysis of the data, and/or visual output from the dataset.
+
+So, for example, different kinds of data analysis projects might use only a part of this cycle. A meta-analysis involves finding and aggregating multiple different datasets, in order to answer a big-picture question. For example, if you wanted to look at college acceptance rates for students with different high school GPAs across the USA, you would need to find datasets from as many different college application programs as you could. Thus, you would enter the data life cycle at “discover”, “integrate” all the datasets you found into a single structured data table (or database) that you could then “analyze”, and then possibly move through to “preserve” if you wanted to share or publish your aggregated dataset.
+
+A project where you are collecting new data for a specific data analysis might start at the “plan” phase, and go through the rest in order, except maybe skipping “discover” and “integrate”. 
+
+## The data analysis cycle
+
+Similar to the data cycle, strong data analysis has several predictable steps, that often lead to new questions, and thus, restarting the cycle. There is no one data analysis cycle, but this is what we will generally refer to in class, since we will be practice each of these steps. 
+
+
+- **State the question** - Just as in the data cycle - starting with a solid plan, and knowing where you are going is critical! If you have a question in mind, it can guide finding the appropriate data to answer your question, and conducting only the data exploration and analysis methods that are needed. This can save you time, but also keep you from going on a “fishing expedition” for “significant” results, which can be spurious.
+- **Data exploration** - starting with simple data exploration is usually best. Before you analyze the data, you need to know a bit more about it. For example, what are your fields and records? How are your data distributed? Are your data aggregated? Correlated? Are there a lot of zeroes or ones in your data? Missing data points?
+- **Data analysis and model building** - Once you know a bit more about your data, it should be easier to decide what kind of analysis or model would be appropriate to the data, and be adequate to answer your question. It is best if your analysis is scripted in a readable and reproducible way. Your results won’t mean much if you can’t replicate them later!
+- **Interpretation** - Decode what the analysis and model results mean. Statistically vs. practically significant? Caveats? Correlation vs causation? Detection or attribution?
+- **Communication** - Clearly communicate your results to your main audience. How you communicate will be different depending on who your audience/employer is. You could communicate by: sharing code, sending an Rmd report, distilling results into plain English in a word doc or email, summarizing results using figures and tables, writing an academic research article, making a graphic or poster to share with a technical/non-technical audience.
+
+And if you’re a data scientist, then the project probably will leave you with more questions than answers, thus restarting the process!
+
+
+## Why data/analysis planning and management?
+
+There is SO MUCH data! For this data to be useful, any better than that kept in someone’s old moldy desk drawer, or old floppy disk, it needs to be well-managed, discoverable, and accessible. 
+
+Moore’s Law (Gordon Moore, co-founder of Intel), says that chip density doubles approximately every 24 months. Seems to also be applying to data growth! Exponential growth of data is predicted to continue, and the size of the “digital universe” will double every ~2 years (50xs growth 2010-2020!). Data is collected by humans, computers, sensors, instruments, etc. 
+
+
+> [Check it out!](https://insidebigdata.com/2017/02/16/the-exponential-growth-of-data/)
+
+Data is lost for lots of reasons:
+
+- Natural disasters
+- Storage failure
+- hardware/software failure
+- Human error (oops!)
+- Malicious attack
+- Format becomes obsolete
+- Loss of funding
+- ...
+
+Documenting your data, being aware of it’s entire cycle and the cycle of your analyses can result in:
+
+- Higher quality data and analysis
+- Data that is easier to share and reuse
+- Code that is reproducible, and able to be used/modified by someone else
+- More likely to be cited or given credit by someone using your data/code
+- Save time and money!
