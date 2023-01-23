@@ -1,0 +1,86 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: '2023-01-19'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(coolorrr)
+set_palette()
+set_theme()
+```
+
+```{r}
+# A function to produce p-values from different possible data matrices
+f <- function(n = 100, m = 5) {
+  X <- map(1:n, ~ t(cbind(rnorm(m)))) %>% 
+    do.call('rbind', .)
+  P <- Hmisc::rcorr(X)$P 
+  P <- P[lower.tri(P)]
+  P # return p-values
+}
+
+# A function to iterate the above to get false positive rate
+it_f <- function(n, m, R = 200) {
+  replicate(
+    R,
+    list(any(f(n, m) < 0.05))
+  ) %>% unlist %>% mean
+}
+```
+
+
+
+```{r}
+nm_grid <- expand.grid(n = seq(100, 10000, len = 10),
+                       m = c(5, 10, 20))
+  # a grid of all possible combinations of parameters
+
+out <- map_dfr(
+  1:nrow(nm_grid),
+  ~ {
+    n <- nm_grid$n[.x]; m <- nm_grid$m[.x]
+      # the dimensions of the data
+    
+    fpr <- it_f(n, m)
+      # the false-positive rate
+    
+    tibble(
+      n = n,
+      m = m,
+      fpr = fpr
+    ) # the results
+  }
+) # a dataset of simulation results per data dimensions
+```
+
+
+```{r}
+out %>%
+  ggplot() +
+  aes(n,
+      fpr,
+      color = as.factor(m)) +
+  geom_line(size = 1) +
+  ggpal() +
+  labs(
+    x = "Rows of Data",
+    y = "Likelihood of Spurious Correlation",
+    color = "Number of Variables: "
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::percent) 
+  ggsave(
+    here::here("spurious_correlation.png"),
+    height = 4,
+    width = 5
+  )
+```
+

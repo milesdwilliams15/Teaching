@@ -1,0 +1,80 @@
+---
+title: "Garlic Mustard I"
+author: "Miles D. Williams"
+date: '2023-01-20'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 1. Importing and manipulating data
+
+```{r}
+## Install dplyr and ggplot2 if needed
+# install.packages(c("dplyr", "ggplot2"))
+
+## Load them into the current session:
+library(dplyr) 
+library(ggplot2)
+
+```
+
+
+```{r}
+gmdata <- read.csv("GarlicMustardData.csv")
+```
+
+We can look at some details with the summary function:
+
+```{r}
+summary(gmdata)
+```
+
+We can manipulate the data. Let's create a vector of just 3 variables:
+
+```{r}
+myvars <- c("Latitude", "Longitude", "Altitude")
+```
+
+And now let's ask R to make a new dataset that only includes these variables.
+
+```{r}
+gmdata_geo <- gmdata[myvars]
+summary(gmdata_geo) # check it out
+```
+
+We could have done the above using the select function:
+
+```{r}
+gmdata_geo <- gmdata %>%
+  select(Latitude, Longitude, Altitude)
+summary(gmdata_geo)
+```
+
+We can use select to get a subset of both adjoining and non-adjoining columns.
+
+```{r}
+gmdata_subset <- gmdata %>%
+  select(1, 5:8)
+summary(gmdata_subset)
+```
+
+We can also subset the data by filtering. Let's filter to observations with a total density of 4 or greater.
+
+```{r}
+gmdata_filter <- gmdata %>%
+  filter(TotalDens >= 4 & Altitude >= 100)
+summary(gmdata_filter)
+```
+
+
+## 2. Making plots with ggplot
+
+
+
+```{r}
+
+```
+

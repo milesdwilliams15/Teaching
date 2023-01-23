@@ -1,0 +1,11 @@
+---
+title: "DA 101 Lab 1: Garlic Mustard"
+author: "Miles D. Williams"
+date: '2023-01-20'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

@@ -459,7 +459,13 @@ If you wish, you can also order a physical copy from Amazon.
 
 ## We Have a TA!
 
-If you need additional help outside of class, we will have a DA 101 TA available to help. The TA will also be present during Friday labs. More details to come by the instructor.
+Niomi Ellis is the Teaching Assistant for DA 101-03. If you have questions about assignments or need help troubleshooting code, Niomi is an excellent resource.
+
+**Office Hours**: Thurs. 7:00 pm - 9:00 pm
+
+**Location**: Burton Morgan 405
+
+**Contact**: [ellis_n1@denison.edu](mailto:ellis_n1@denison.edu){.email}
 
 ## Accessibility
 
