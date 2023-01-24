@@ -1,0 +1,585 @@
+Getting Started
+================
+
+## First things first
+
+Learning objectives:
+
+-   Know how to access the RStudio server
+-   Get familiar with the elements of RStudio
+-   Know what the R console is
+-   Know how to open and use an RMarkdown file
+-   Start an R project and create a sensible file structure
+-   Know how to exit RStudio the right way
+
+## The lay of the land
+
+In this class we’ll use R and RStudio for data visualization. Before we
+get started, it’s essential that you familiarize yourself with the
+RStudio environment.
+
+First, access the [RStudio server](r.denison.edu) and log-in with your
+Denison credentials.
+
+Once you get in, you may already be in a project space. If not, you’ll
+need to start a new session.
+
+The RStudio environment has a lot of components. It may look like a lot
+at first. If you feel overwhelmed, that’s okay. In time, it’ll all make
+more sense.
+
+For now, I want to direct your attention to a few things:
+
+1.  **The R console:** This is the window in the lower-left side of the
+    screen. This is where the code you write runs and where output from
+    code appears. While you can work directly in the console, I almost
+    never recommend doing so (but I’ll let you know when there’s an
+    exception).
+2.  **Files**: On the lower-right you’ll see a window with a few
+    different tabs, one of which says “Files.” This is where you’ll save
+    your work. In a bit, I’ll give you some instructions for how I want
+    you to set up your files.
+3.  **RMarkdown or .Rmd files**: Almost all of the coding you do in this
+    class will take place in .Rmd or RMarkdown files. These let you work
+    in plain text (taking notes, making comments, etc.) alongside your
+    code. You can open a new RMarkdown file by clicking on the white “+”
+    button on top of a green circle on top of a white box in the upper
+    left. You’ll see a dropdown menu open. Select “R Markdown” from the
+    list of options. The file you see when you open this is an RMarkdown
+    file. It has some boilerplate script in it that summarizes what it
+    is and how you can use it.
+
+That’s some helpful stuff in RStudio, but what is RStudio? It is an
+“integrated development environment” (IDE), and it is a separate
+application from R itself. R is actually pretty spartan all on its own,
+and it definitely falls short as far as user-friendly software goes.
+RStudio provides a better interface with R proper that lets you organize
+files, save your work in projects, and write reports within a single
+environment.
+
+## Starting a project
+
+The best way to work in RStudio is to save your work in “projects.” This
+lets you organize all your work according to (clears throat) projects
+that you may be working on.
+
+If you look at the upper right corner, you can see a cube with an “R” in
+it. If you select that you’ll see a dropdown menu. Select “New Project”
+\> “New Directory” \> “New Project” \> enter a new directory name for
+your project \> use “brows” to find a place in your files you’d like to
+save your work \> then create. For this class, I recommend creating a
+project in a folder called “DPR 101” that way it’s obvious to your
+future self that this is where your work for this class is located.
+
+After you create your project, create two new folders in your files.
+Call one “Data” and the other “Code.” One will be where you save
+different datasets you use in this class. The other will be where you
+save the RMarkdown files you use in this class for notes and course
+assignments.
+
+## Getting Started in RMarkdown
+
+RMarkdown documents are a great place to
+
+1.  Write code
+2.  Look at your output in-line with your code
+3.  Take notes alongside your code
+
+You can also use these documents to write reports, but we’ll talk more
+about that later.
+
+These features of working in RMarkdown are great for learning to code
+with `ggplot()`, which is the way you’ll create your data visualizations
+in this course. By being able to write your code together with your
+notes, it makes it really easy to move back and forth between tasks 1-3
+listed above. You can make notes to yourself in plain text about what
+data you’re working with and what your code is supposed to be doing. You
+can create your code. You can run it. Then you can adjust based on the
+output, make new notes, and repeat.
+
+There are lots of helpful cheatsheets out there for working with
+RMarkdown. For example, this is a [great
+one](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.235103752.840764392.1674585715-719901239.1627613290).
+
+When you work with Markdown, you can create section headers using `#`
+(where more hastags = smaller headings). For example, here’s text you
+would write to make a header:
+
+`## Header`
+
+Here’s what it looks like after you “Knit” your document:
+
+## Header
+
+I’ll get to what “Knit” means in a second. But, headers don’t only have
+value for creating reports. They provide you with a convenient way to
+navigate your notes and code. If you create a new section header, you
+can click on the orange hashtag at the bottom left of your RMarkdown
+file. You’ll see a menu pop up that lists all the different headers you
+have in your document. If you click on one of these headers, you
+instantly are transported to that place in your file.
+
+When you’re done with a document, you can feed it to R using the “Knit”
+button at the top (the one that has the ball of yarn picture next to
+it). You can *knit* your document into various kinds of files like HTML,
+PDF, or Word. Try knitting to a Word doc and see what happens.
+
+First, you’ll notice that RStudio has created a Word document based on
+your RMarkdown file. If you open it, you’ll notice, too, that all of
+your plain text along with your code chunks and their outputs appear in
+the knitted document.
+
+When you knit something, you can update a few things about how it
+renders. For example, go to the place in your file that says:
+
+    knitr::opts_chunk$set(echo = TRUE)
+
+Change `echo = TRUE` to `echo = FALSE` then knit your document again. Do
+you see the difference? Now only your text appears and the output from
+your code, but not the code chunks. This is a great option when writing
+reports (or working on your main assignments in this class). You can
+write your report in plain text with headers and so on, and write your
+code alongside to produce various data visualizations (all in one
+document).
+
+## Code chunks
+
+When you use RMarkdown, your notes/comments/writing in plain text will
+be interspersed with [**code
+chunks**](https://rmarkdown.rstudio.com/lesson-3.html).
+
+A code chunk is just created using three backticks followed by an “r” in
+brackets, and then it’s closed with three more backticks.
+
+Think of each code chunk as a self-contained space for writing and
+running a specific bit of code.
+
+After you make a code chunk and write some code in it, you have a bunch
+of different options for running it.
+
+1.  Click the green arrow to the right top side of the chunk.
+2.  On Windows, with your cursor somewhere inside the chunk, use
+    “control + shift + enter” or in Mac use “command + shift + return”.
+
+A nice feature of working with RMarkdown is that you can make notes in
+plain text outside of your code chunks. But, you can make notes inside
+code chunks, too. Anything that follows a `#` in a bit of R code is
+“commented out.” That means R knows not to run anything that follows the
+hashtag in the code. For example:
+
+``` r
+# this is a comment that won't run any code
+1 + 3 # this is some code that will run (but this comment won't)
+```
+
+    ## [1] 4
+
+``` r
+# 1 + 3
+```
+
+## Working with R
+
+There are few things to know about R. First and foremost, R is not just
+an application, it’s a language. And just like learning any language,
+fluency in R takes time and a lot of practice.
+
+R specifically is an “object oriented” and “functional” programming
+language. That means a few things.
+
+First, **everything in R has a name**. You refer to the names of things
+to examine them or use them. These things can be variables or datasets
+that you manipulate, or functions that you use to perform operations.
+
+Like any language, there are some grammatical rules in R that you should
+never break (and cannot break if you tried). For example, words like
+`TRUE` or `FALSE`, `Inf` or `else`, and several others have been
+reserved for core programming purposes and you couldn’t name something
+in R one of these things if you tried.
+
+Other words or letters, like `q`, `c`, or `mean` can technically be used
+to refer to other things, but avoid doing so! These are the names of
+basic functions in R, and if you give other things in R the same names,
+R will get confused and angry with you.
+
+R is also case sensitive. So if something is named `This` R won’t know
+what you’re talking about if you try to call `This` by instead writing
+`this`.
+
+Second, **everything in R is an object**.
+
+Say we use the command `c()`, which is a function that stands for
+“concatenate.” It takes a sequence of commands and returns a **vector**
+where each element is accessible:
+
+``` r
+c(1, 2, 4, 8, 16, 32)
+```
+
+    ## [1]  1  2  4  8 16 32
+
+The output from the above is just all the elements in the vector we
+created using `c()`. If we didn’t want this to just appear in the
+console but instead have it saved, we would need to **assign** the
+vector a name, which then saves it as an object:
+
+``` r
+my_numbers <- c(1, 2, 4, 16, 32)
+```
+
+Now, every time we call the object `my_numbers`, the output will appear
+in the console (or as the output of a code chunk):
+
+``` r
+my_numbers
+```
+
+    ## [1]  1  2  4 16 32
+
+Each of the numbers in this vector can be accessed directly, too. This
+is done using square brackets `[]` after the name of the object:
+
+``` r
+my_numbers[3]
+```
+
+    ## [1] 4
+
+The above prints the 3rd element in the vector called `my_numbers`.
+
+We created `my_numbers` using an **assignment operator** `<-`. When you
+want to save something as an object, you need to use an assignment
+operator. A cool feature of it, though, is that it can work not only
+from the right to the left (the usual way), but also from the left to
+the right. The latter is sometimes called “reverse assignment;” though,
+in reality it actually may be more intuitive for you.
+
+``` r
+# norm assignment
+x <- c(1, 2, 3)
+
+# reverse assignment
+c(4, 5, 6) -> y
+```
+
+You can technically use the `=` operator to assign things, too, but
+there are some things to note about this:
+
+1.  It only works in the “normal” direction for assignment (right to
+    left)
+2.  It there are some objects that it won’t play nice with it
+
+Generally, it’s considered bad grammar to use `=` for assignment.
+Instead, we use `=` inside of functions (coming up next) to set commands
+or feed objects to functions when we want to perform an operation.
+
+Speaking of functions, just about **everything you do in R with be with
+a function**. A function is a special kind of object that performs
+actions for you. You feed it some kind of input (like an object!) and it
+provides an output (which you can assign to a new object for later use).
+
+For example, there’s a function called `mean()` which we can use on the
+object `my_numbers`:
+
+``` r
+mean(x = my_numbers)
+```
+
+    ## [1] 11
+
+The function does exactly what its name suggests—it returns the mean or
+average of whatever numerical vector you feed it.
+
+However, like all functions, `mean()` has some rules about what kinds of
+inputs it will accept.
+
+If you feed it nothing, it’ll give you an error that says
+`Error in mean.default() : argument "x" is missing, with no default`
+
+If you feed it non-numerical data, it’ll give you a warning and return
+`NA`:
+
+``` r
+my_words <- c("Hello", "World!")
+mean(x = my_words)
+```
+
+    ## Warning in mean.default(x = my_words): argument is not numeric or logical:
+    ## returning NA
+
+    ## [1] NA
+
+What’s the average of “Hello” and “World!” I dunno, and neither does R.
+
+If you ever want to learn more about a function, R is chock full of help
+files. All you need to do to access the help file for a particular
+function is write something like `help(function_name)` in the console.
+You could just write `?function_name` in the console as well.
+
+An important thing to note about functions is that they come in
+**packages**. Some functions, like `mean()`, are in the base R package
+which is already open and ready to go the moment you open R.
+
+Other functions can’t be used until you **attach the package** using the
+`library()` function.
+
+In this class, we’ll use the tidyverse of R packages. The tidyverse is
+actually a package of packages that have functions that are meant to be
+used together. Rather than attach each package in the tidyverse
+individually, if we write `library(tidyverse)` all these packages and
+the functions they contain are immediately accessible to us.
+
+``` r
+library(tidyverse)
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+    ## ✔ ggplot2 3.4.0     ✔ purrr   0.3.4
+    ## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+    ## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
+    ## ✔ readr   2.1.2     ✔ forcats 0.5.1
+
+    ## Warning: package 'ggplot2' was built under R version 4.2.2
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+
+Some packages have already been pre-installed for you if you’re using
+the Denison server. If you aren’t, you’ll need to install these using
+the `install.packages()` function.
+
+Some packages have been produced by users and aren’t yet accessible from
+the “CRAN.” For these functions, you have to take some additional steps
+to install the package.
+
+One in particular is the coolorrr package that I’ll have you use this
+semester. This is package that I developed. To install it, you’ll need
+to run the following in your console:
+
+    devtools::install_github("milesdwilliams15/coolorrr")
+
+Notice in the above that I used double colons `::`. If you ever only
+want to access a single function from a package, but don’t want to
+attach the full package in R, you can write the package name followed by
+`::` to call the function you want. The syntax will be something like
+`package_name::function_name()`
+
+## More details about R
+
+R is many things, including a glorified calculator. You can use a lot of
+different operations like `*` for multiplication, `/` for division, `+`
+for addition, and `-` for subtraction.
+
+R also uses a number of **logical operators** like and `&`, or `|`, not
+`!`, equal to `==`, greater than `>`, greater than or equal to `>=`,
+less than `<`, less than or equal to `<=`, not equal to `!=`, and in
+`%in%`.
+
+Remember the `x` and `y` objects I created earlier? Let’s try out some
+of these operations on them and see what happens:
+
+``` r
+# Mathematical operations
+x + y # addition
+```
+
+    ## [1] 5 7 9
+
+``` r
+x - y # subtraction
+```
+
+    ## [1] -3 -3 -3
+
+``` r
+x * y # multiplication
+```
+
+    ## [1]  4 10 18
+
+``` r
+x / y # division
+```
+
+    ## [1] 0.25 0.40 0.50
+
+``` r
+# Logical operations
+x == y # equivalence
+```
+
+    ## [1] FALSE FALSE FALSE
+
+``` r
+x <= y # x less than or equal to y?
+```
+
+    ## [1] TRUE TRUE TRUE
+
+``` r
+x %in% y # are x values in y?
+```
+
+    ## [1] FALSE FALSE FALSE
+
+Notice that mathematical operators return numerical outputs, while
+logical operators return logical outputs (`TRUE` or `FALSE`).
+
+R also will treat logical values as 0-1 values. For example, you can
+take the mean of a vector of `TRUE` and `FALSE` values:
+
+``` r
+mean(x = c(0, 1))
+```
+
+    ## [1] 0.5
+
+``` r
+mean(x = c(F, T)) # these are the same
+```
+
+    ## [1] 0.5
+
+You can also just write `T` for `TRUE` and `F` for false, as I did in
+the above chunk.
+
+## Working with data tables
+
+Most of the work we do in this class will involve working with datasets.
+Think of these as tables that store data in a central location for ease
+of access and use.
+
+`mtcars` is a dataset that already comes pre-installed in R. We can
+check out the first 10 rows of the data using the `head()` function:
+
+``` r
+head(mtcars, 10)
+```
+
+    ##                    mpg cyl  disp  hp drat    wt  qsec vs am gear carb
+    ## Mazda RX4         21.0   6 160.0 110 3.90 2.620 16.46  0  1    4    4
+    ## Mazda RX4 Wag     21.0   6 160.0 110 3.90 2.875 17.02  0  1    4    4
+    ## Datsun 710        22.8   4 108.0  93 3.85 2.320 18.61  1  1    4    1
+    ## Hornet 4 Drive    21.4   6 258.0 110 3.08 3.215 19.44  1  0    3    1
+    ## Hornet Sportabout 18.7   8 360.0 175 3.15 3.440 17.02  0  0    3    2
+    ## Valiant           18.1   6 225.0 105 2.76 3.460 20.22  1  0    3    1
+    ## Duster 360        14.3   8 360.0 245 3.21 3.570 15.84  0  0    3    4
+    ## Merc 240D         24.4   4 146.7  62 3.69 3.190 20.00  1  0    4    2
+    ## Merc 230          22.8   4 140.8  95 3.92 3.150 22.90  1  0    4    2
+    ## Merc 280          19.2   6 167.6 123 3.92 3.440 18.30  1  0    4    4
+
+This is a “dataframe,” or what we might also call a dataset.
+
+To access a single column of a dataframe, just use the syntax
+`dataset$variable`:
+
+``` r
+mtcars$mpg
+```
+
+    ##  [1] 21.0 21.0 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 17.8 16.4 17.3 15.2 10.4
+    ## [16] 10.4 14.7 32.4 30.4 33.9 21.5 15.5 15.2 13.3 19.2 27.3 26.0 30.4 15.8 19.7
+    ## [31] 15.0 21.4
+
+A particularly useful way to save a dataframe in R is as a **tibble**.
+To convert a dataframe to a tibble (which is a special kind of
+dataframe) just write:
+
+``` r
+mtcars_tb <- as_tibble(mtcars)
+head(mtcars_tb, 10)
+```
+
+    ## # A tibble: 10 × 11
+    ##      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb
+    ##    <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+    ##  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4
+    ##  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4
+    ##  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1
+    ##  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1
+    ##  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2
+    ##  6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1
+    ##  7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4
+    ##  8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2
+    ##  9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2
+    ## 10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4
+
+There are lots of ways for peering into a dataset/dataframe to get a
+sense for its structure (what it contains, how big it is, etc.).
+
+You can use `summary()` to get some quick summary statistics that tell
+you about the variables in a dataset:
+
+``` r
+summary(mtcars_tb)
+```
+
+    ##       mpg             cyl             disp             hp       
+    ##  Min.   :10.40   Min.   :4.000   Min.   : 71.1   Min.   : 52.0  
+    ##  1st Qu.:15.43   1st Qu.:4.000   1st Qu.:120.8   1st Qu.: 96.5  
+    ##  Median :19.20   Median :6.000   Median :196.3   Median :123.0  
+    ##  Mean   :20.09   Mean   :6.188   Mean   :230.7   Mean   :146.7  
+    ##  3rd Qu.:22.80   3rd Qu.:8.000   3rd Qu.:326.0   3rd Qu.:180.0  
+    ##  Max.   :33.90   Max.   :8.000   Max.   :472.0   Max.   :335.0  
+    ##       drat             wt             qsec             vs        
+    ##  Min.   :2.760   Min.   :1.513   Min.   :14.50   Min.   :0.0000  
+    ##  1st Qu.:3.080   1st Qu.:2.581   1st Qu.:16.89   1st Qu.:0.0000  
+    ##  Median :3.695   Median :3.325   Median :17.71   Median :0.0000  
+    ##  Mean   :3.597   Mean   :3.217   Mean   :17.85   Mean   :0.4375  
+    ##  3rd Qu.:3.920   3rd Qu.:3.610   3rd Qu.:18.90   3rd Qu.:1.0000  
+    ##  Max.   :4.930   Max.   :5.424   Max.   :22.90   Max.   :1.0000  
+    ##        am              gear            carb      
+    ##  Min.   :0.0000   Min.   :3.000   Min.   :1.000  
+    ##  1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:2.000  
+    ##  Median :0.0000   Median :4.000   Median :2.000  
+    ##  Mean   :0.4062   Mean   :3.688   Mean   :2.812  
+    ##  3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:4.000  
+    ##  Max.   :1.0000   Max.   :5.000   Max.   :8.000
+
+You can use the `str()` function to check the data’s structure:
+
+``` r
+str(mtcars_tb)
+```
+
+    ## tibble [32 × 11] (S3: tbl_df/tbl/data.frame)
+    ##  $ mpg : num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+    ##  $ cyl : num [1:32] 6 6 4 6 8 6 8 4 4 6 ...
+    ##  $ disp: num [1:32] 160 160 108 258 360 ...
+    ##  $ hp  : num [1:32] 110 110 93 110 175 105 245 62 95 123 ...
+    ##  $ drat: num [1:32] 3.9 3.9 3.85 3.08 3.15 2.76 3.21 3.69 3.92 3.92 ...
+    ##  $ wt  : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...
+    ##  $ qsec: num [1:32] 16.5 17 18.6 19.4 17 ...
+    ##  $ vs  : num [1:32] 0 0 1 1 0 1 0 1 1 1 ...
+    ##  $ am  : num [1:32] 1 1 1 0 0 0 0 0 0 0 ...
+    ##  $ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...
+    ##  $ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...
+
+## Wrapping up
+
+Be patient with yourself as you start working in R and RStudio. At the
+same time that you are familiarizing yourself with new software, you
+also are learning to speak a new language. If things don’t make sense at
+first, that’s okay. That’s normal.
+
+I can’t possibly anticipate every possible issue you may run into as you
+use R, but I can give you a heads up about some common mistakes people
+make:
+
+-   Make sure that all parentheses and brackets are complete. If you
+    start a phrase with an open parentheses “(”, you need to have a
+    corresponding “)” to close it.
+-   Sometimes you may not realize that you’ve only run part of your code
+    and not all of it. You can see if this is the case if you check the
+    console. If you see a `>` at the bottom of the console, all is good.
+    If you see a `+` then something only partially ran.
+-   Give new objects that you create new and unique names. I can’t tell
+    you how many times I’ve seen someone’s code break down because they
+    created an object called `x`, then ran a function on it and saved
+    the output as `x`, then tried to go back an run an old chunk on `x`
+    only to find that it spits out an error. The old `x` that used to
+    work with a function now no longer does because the new `x` isn’t
+    the same thing!
+-   Don’t forget to create new objects. If you don’t, changes that you
+    make to an object won’t be saved in R’s environment.
