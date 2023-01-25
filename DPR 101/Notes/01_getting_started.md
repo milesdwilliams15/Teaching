@@ -556,6 +556,14 @@ str(mtcars_tb)
     ##  $ gear: num [1:32] 4 4 4 3 3 3 3 4 4 4 ...
     ##  $ carb: num [1:32] 4 4 1 1 2 1 4 2 2 4 ...
 
+## Closing RStudio
+
+Every time you’re done working, make sure you do a few things:
+
+1.  Close out the project session
+2.  DO NOT save your workspace image
+3.  DO save changes to files
+
 ## Wrapping up
 
 Be patient with yourself as you start working in R and RStudio. At the

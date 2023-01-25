@@ -279,6 +279,14 @@ You can use the `str()` function to check the data's structure:
 str(mtcars_tb)
 ```
 
+## Closing RStudio
+
+Every time you're done working, make sure you do a few things:
+
+1. Close out the project session
+2. DO NOT save your workspace image
+3. DO save changes to files
+
 ## Wrapping up
 
 Be patient with yourself as you start working in R and RStudio. At the same time that you are familiarizing yourself with new software, you also are learning to speak a new language. If things don't make sense at first, that's okay. That's normal.
