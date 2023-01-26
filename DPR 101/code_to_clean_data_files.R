@@ -31,7 +31,7 @@ left_join(
 ) -> Data
 
 write_csv(
-  Data,
+  na.omit(Data),
   here::here(
     "DPR 101", "Data", "onset_and_wgi.csv"
   )
