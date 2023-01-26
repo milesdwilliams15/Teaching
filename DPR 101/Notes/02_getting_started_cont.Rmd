@@ -1,0 +1,35 @@
+---
+title: "Getting Started (Continued)"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is part 2 of our "getting started" notes for DPR 101. [[Check out part 1](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md)]
+
+Last time we focused on some basics of working in RStudio and using .Rmd files to write your code, make notes, and save your work. In these notes, we'll cover:
+
+1. Getting data into R
+2. Making your first data viz
+3. Some helpful resources if you want to go deeper into the details of using R
+
+
+## Goals
+
+- Be able to read a dataset into R
+- Take a first pass at making a data viz using `ggplot()`
+
+
+## Reading data into R
+
+Data viz is impossible without data. The only way we can use data for data viz is to get it into R. 
+
+A lot of packages (including base R) provide tools for reading data into R. In this class, we'll primarily use the `read_csv()` function from the `{readr}` package. This is one of the many packages in the `{tidyverse}` ecosystem of packages.
+
+There are two main ways that I will have you access data in this class. The first is via .csv files I have stored on my GitHub (the place that you're reading these notes!). The second is on Google Drive. 
+
+The procedure for reading data into R in both of these cases will be similar, but not entirely.
+
+Let's start with the first way. 
