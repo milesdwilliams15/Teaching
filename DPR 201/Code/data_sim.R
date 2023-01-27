@@ -98,6 +98,6 @@ fabricate(
 ) -> gdp_panel
 
 path <- here(
-  "DPR 101", "Data", "gdp_and_immigration.csv"
+  "DPR 201", "Data", "gdp_and_immigration.csv"
 )
 write_csv(gdp_panel, path)
