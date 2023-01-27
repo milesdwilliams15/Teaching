@@ -4,7 +4,9 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
 ```
 
 ## Learning Goals
@@ -166,5 +168,31 @@ In reality, there are some issues with this field experiment, one of which is ob
 
 If you only looked at the phone call data among individuals who voted in an election, you might conclude that the phone calls didn't actually help. But it turns out, with the bigger picture in view, people who turned out to vote were more likely to get a call and more likely to answer.
 
+
 ## Try out some examples yourself
 
+Here are links to four different datasets. For each one, there's a research question. Get the data into R and see if it gives you the variation you need to answer the research question. If it can, answer the research question. If it can't, can you leverage the data to draw inferences about other correlations?
+
+#### Terrorism and Foreign Occupation
+
+- **link:** https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/terror_data.csv
+
+- **Research Question:** Does the presence of a foreign occupying force in a country lead to an increase in the number of suicide terrorist attacks?
+
+#### Vote on Immigration Proposition
+
+- **link:** https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/immigration_proposition.csv
+
+- **Research Question:** Does political ideology predict support for a pro-immigration proposition on the ballot?
+
+#### Gender in Congress
+
+- **link:** https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/gender_in_congress.csv
+
+- **Research Question:** Are women more likely to hold a seat in the U.S. Congress if they are Republicans or Democrats?
+
+#### Economic Growth and Immigration
+
+- **link:** https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/gdp_and_immigration.csv
+
+- **Research Question:** Do countries with higher GDP (gross domestic product) attract more immigrants?
