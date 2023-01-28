@@ -13,29 +13,31 @@ Selection: Why We Need Variation for Correlation
 
 We’ve been talking about correlation. Last time we introduced some
 important concepts related to correlation (mean, variance, covariance,
-linear regression, etc.) and discussed the utility of correlations
-(description, prediction, and causal inference). \[[Check out the
+linear regression, etc.) and discussed the utility of correlations (for
+description, prediction, and causal inference). \[[Check out the
 correlation notes
 here](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20201/Notes/01_correlation.md)\]
 
 ## Where we’re going
 
-At present, I want us to sit with a particular element of correlation:
+I want us to sit with an important requirement for correlation:
 **variation**.
 
 To estimate a correlation between two features of the world, we need
 variation in each of those features. This may seem obvious, but you’d be
 surprised by the number of real-world cases (in the media or even
-scholarly articles) that are missing variation in at least one variable.
+scholarly articles) where correlations or causation are inferred when at
+least one variable is missing variation.
 
 In Chapter 2 of our *Thinking Clearly with Data* text, we saw a few
-examples of facts, some of which are correlations and others of which
-are not. Can you remember which are which?
+examples of facts or descriptions about the world, some of which are
+correlations and others of which are not. Can you remember which are
+which?
 
 1.  People who live to 100 years of age typically take vitamins.
 2.  Cities with more crime tend to higher more police officers.
-3.  Successful people have spent at least ten thousand hours honing
-    their craft.
+3.  Successful people have spent at least 10,000 hours honing their
+    craft.
 4.  Most politicians facing a scandal win reelection.
 5.  Older people vote more than younger people.
 
@@ -75,7 +77,7 @@ vitamin_data %>%
   )
 ```
 
-![](02_selecting_on_the_dv_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+<img src="02_selecting_on_the_dv_files/figure-gfm/unnamed-chunk-1-1.png" width="70%" />
 
 The problem is obvious. We don’t have variation in age!
 
@@ -83,18 +85,46 @@ How about 5? Or something close to it anyway. In the below code, I’m
 attaching the `{socviz}` package which lets me access a dataset called
 `gss_sm`. This is a selection of individual responses to the 2016
 General Social Survey. It has a variable for age and a variable for
-whether a person voted for Barak Obama in the 2012 election. Let’s check
-out their relationship.
+whether a person voted for Barack Obama in the 2012 election. Let’s
+check out their relationship.
 
 ``` r
 library(socviz)
+# opening socviz to access gss_sm
+
+library(geomtextpath)
+library(coolorrr)
+set_theme()
+# opening geomtextpath to add text to lines
+# opening coolorrr to use the default theme with set_theme()
+
+# Make the data viz:
 ggplot(gss_sm) +
   aes(x = age,
       y = obama) +
-  geom_smooth()
+  geom_jitter(height = 0.05,
+              alpha = 0.4) +
+  geom_textsmooth(
+    label = "Proprotion who voted for Obama",
+    linewidth = 1,
+    linecolor = "blue",
+    se = T,
+    method = "gam",
+    formula = y ~ x
+  ) + 
+  scale_y_continuous(
+    breaks = seq(0, 1, by = 0.1),
+    labels = c("No", as.character(seq(0.1, 0.9, 0.1)), "Yes")
+  ) +
+  labs(
+    x = "Age",
+    y = "Voted for Obama?",
+    title = "Were older votes less likely to vote for Obama?",
+    subtitle = "Data from GSS 2016 survey"
+  )
 ```
 
-![](02_selecting_on_the_dv_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+<img src="02_selecting_on_the_dv_files/figure-gfm/unnamed-chunk-2-1.png" width="70%" />
 
 Can you identify a relationship? Of course you can! That’s because we
 have variation in both of these features of the world. We have some
@@ -102,15 +132,15 @@ people who are older, some younger. And among those groups we have
 people who voted for Obama in 2012 and others that didn’t.
 
 This analysis tells us something about a relationship or regularity in
-the world. The first dealing with longevity and vitamins does not. The
+the world. The first, dealing with longevity and vitamins, does not. The
 fact that people who live to 100 years of age regularly take vitamins
 does not tell us whether taking vitamins actually promotes longevity.
 It’s just a bit of trivia about a particular age group.
 
 ## Selecting on the DV
 
-The mistake that was made in statement 1 is an example of **selecting on
-the dependent variable**. Why do many people do this?
+The mistake made in statement 1 is an example of **selecting on the
+dependent variable**. Why would someone do this?
 
 It’s actually easier than you many think to select on the DV, even
 without noticing. After all, the statement that “people who live to be
@@ -120,10 +150,17 @@ plain to see that this statement doesn’t actually tell us anything
 useful (certainly not actionable).
 
 A lot of people slip into selecting on the DV when trying to make
-correlational (even causal) claims. This is partially a handicap of
-talking about these things in plain English. I have to admit, I had to
-think carefully about claims 1-5 above before I knew with certainty
-which dealt with correlations and which didn’t.
+correlational (even causal) claims. This is partly a handicap of talking
+about these things in plain English. I have to admit, I had to think
+carefully about claims 1-5 above before I knew with certainty which
+dealt with correlations and which didn’t.
+
+As pointed out in *Thinking Clearly with Data*,
+organizational/structural pressures may force researchers into selecting
+on the DV as well. Take the 2012 Republican party which did an “autopsy”
+after Romney lost the U.S. Presidential election. The autopsy-style of
+analysis is a prime example of selecting on the DV but one nonetheless
+that many political parties or corporations are tempted to do.
 
 The dead give-away that a claim or analysis is predicated on selecting
 on the DV is that it starts with some phenomenon or outcome and then
@@ -137,8 +174,8 @@ Clearly with Data*.
 
 1.  Malcom Gladwell’s claim that 10,000 hours of practice leads to
     becoming a great acheiver.
-2.  Rock’n Roll is currupting the youth.
-3.  High schoold dropouts.
+2.  Rock’n Roll is corrupting the youth.
+3.  High school dropouts.
 4.  Suicide attacks.
 
 Let’s take a look at an example using some data that were collected in a
@@ -173,8 +210,8 @@ Data_turnout <- Data %>%
   filter(turnout == 1)
 ```
 
-With this data, can we answer the question: did getting a call increase
-turnout? Let’s see:
+With this filtered data, do you think we can figure out if getting a
+call increased turnout? Let’s see:
 
 ``` r
 Data_turnout %>%
@@ -191,69 +228,93 @@ Data_turnout %>%
 
 About 53-54 percent of people who turned out to vote received a GOTV
 phone call. 44 percent answered the phone. Did getting a call lead to an
-increase in the likelihood of turnout?
-
-Maybe it would help if we knew the likelihood that anyone got a call:
+increase in the likelihood of turnout? What if we just look at the
+answer rate among phone call recipients?
 
 ``` r
-# What share people got a GOTV call in total?
-Data %>%
+Data_turnout %>%
+  filter(treatmentattempt == 1) %>%
   summarize(
-    phone_call = mean(treatmentattempt),
-    answered_phone = mean(successfultreatment)
+    mean_answered = mean(successfultreatment)
   )
 ```
 
-    ## # A tibble: 1 × 2
-    ##   phone_call answered_phone
-    ##        <dbl>          <dbl>
-    ## 1      0.502          0.386
+    ## # A tibble: 1 × 1
+    ##   mean_answered
+    ##           <dbl>
+    ## 1         0.821
 
-About 50 percent of all people got a call, and among those a little over
-39 percent answered the phone. Did the GOTV campaign work?
+82 percent of people who turned out to vote picked up the phone when
+they got a GOTV phone call. Does this tell us anything? It does in a
+sense. But does this say anything about the effect of calls on turnout?
+Not at all.
 
-It’s tempting to think that this is enough information. But we still
-don’t have variation in the outcome of interest: turnout. Let’s see what
-the data look like with this little detail in place:
+Without variation in turnout, we can’t say anything causal, let alone
+correlational.
+
+If we use the full dataset, we can start to draw some more informative
+conclusions. Below is some code that helps us answer this very question.
 
 ``` r
 Data %>%
-  group_by(turnout) %>%
-  summarize(
-    phone_call = mean(treatmentattempt),
-    answered_phone = mean(successfultreatment)
+  group_by(treatmentattempt) %>%
+  summarize(mean = mean(turnout, na.rm=T)) %>%
+  ungroup %>%
+  mutate(xvar = ifelse(treatmentattempt==1, "Yes", "No")) %>%
+  ggplot() +
+  aes(x = xvar,
+      y = mean) +
+  geom_col(width = 0.5) +
+  labs(
+    x = "Did individuals receive at GOTV phone call?",
+    y = "(%) Turnout",
+    title = "Difference in turnout due to the GOTV campaign",
+    subtitle = "Data for New Haven, CT 1998"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
   )
 ```
 
-    ## # A tibble: 3 × 3
-    ##   turnout phone_call answered_phone
-    ##     <dbl>      <dbl>          <dbl>
-    ## 1       0      0.465          0.327
-    ## 2       1      0.536          0.441
-    ## 3      NA      0.457          0.337
+<img src="02_selecting_on_the_dv_files/figure-gfm/unnamed-chunk-7-1.png" width="70%" />
 
-Now we’re cooking! Those who came out to vote disproportionately
-received phone calls. They were also more likely to answer the phone.
+When we look at the data we can clearly see a positive correlation
+between GOTV phone calls and turnout.
 
-In reality, there are some issues with this field experiment, one of
-which is obvious from the output above. We’re going to bracket that for
-now. It is most important to note that drawing inferences by selecting
-on the DV is not only irresponsible; it can be dangerous, or at the very
-least expensive.
+Can we make any causal claims? As it turns out, we don’t quite have
+enough basis for saying phone calls caused greater turnout. The data
+used for this analysis is infamous in political science because
+something went wrong with the field experiment. Households that received
+calls have some different characteristics compared to those that didn’t,
+and some of these characteristics might also explain higher turnout.
+This problem is called **confounding**, which we will return to later in
+this course.
 
-If you only looked at the phone call data among individuals who voted in
-an election, you might conclude that the phone calls didn’t actually
-help. But it turns out, with the bigger picture in view, people who
-turned out to vote were more likely to get a call and more likely to
-answer.
+Confounding aside, it is a fact that phone calls and turnout have a
+positive correlation. This can only be identified when we have variation
+in both turnout and whether individuals received a GOTV phone call.
+
+## Wrapping up
+
+By now, you should understand that to identify a correlation between to
+features of the world, you need variation in both of those features.
+Nonetheless, out of ignorance or organizational demands, researchers
+all-to-often select on the DV—they start with an outcome and try to look
+backward to identify causes. This is a recipe for bad inference, and now
+you know why. Don’t forget this lesson, because recognizing when someone
+is making claims based on selecting on the DV can make you a better
+informed consumer of research.
 
 ## Try out some examples yourself
 
-Here are links to four different datasets. For each one, there’s a
-research question. Get the data into R and see if it gives you the
-variation you need to answer the research question. If it can, answer
-the research question. If it can’t, can you leverage the data to draw
-inferences about other correlations?
+Here are links to four different datasets that I simulated. For each
+one, there’s a research question. Get the data into R and see if it
+gives you the variation you need to answer the research question. If it
+can, answer the research question. If it can’t, can you leverage the
+data to draw inferences about other correlations? You’ll work in teams
+to find the answers. If it’s helpful, [here’s a
+link](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/02_getting_started_cont.md)
+to some notes I made for DPR 101 on getting data into R.
 
 #### Terrorism and Foreign Occupation
 
@@ -264,7 +325,7 @@ inferences about other correlations?
     force in a country lead to an increase in the number of suicide
     terrorist attacks?
 
-#### Vote on Immigration Proposition
+#### Vote on an Immigration Proposition
 
 -   **link:**
     <https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/immigration_proposition.csv>
