@@ -54,7 +54,7 @@ Each table must have at least one column that only contains *unique* values, not
 
 So, while CustomerID is the primary key in the Customer’s table, it is the foreign key in the Orders table. A variable could be both the primary key in it’s table, and the foreign key that matches to another table. (e.g., the nycflights13 example, where origin is primary key in weather table, but foreign key for the airport table.)
 
-Tables in a Relational Data Base (RDB) *should* really have a primary key. If it doesn’t you could make one (sometimes called a surrogate key), by simply adding a column that is “rowID”. This could just number each of the rows 1 to whatever the total number of rows is, so you have a set of unique values to match to and identify each row. 
+Tables in a Relational Data Base (RDB) *should* really have a primary key. If it doesn’t you could make one (sometimes called a surrogate key), by simply adding a column that is "rowID". This could just number each of the rows 1 to whatever the total number of rows is, so you have a set of unique values to match to and identify each row. 
 
 Typically, relations are one-to-many (1 to $\infty$), but they can be many-to-many ($\infty$ to $\infty$), or many-to-1 ($\infty$ to 1). 
 
