@@ -1,0 +1,188 @@
+Data and Data Bases
+================
+
+## Learning Objectives
+
+-   Describe what a relational database is, and why you might need to
+    store your data in one.
+-   Identify the different parts of a relational database (tables, key,
+    query).
+-   Know that Structured Query Language (SQL) is the way to “talk” to
+    relational DBs.
+
+Example database, soccer from Kaggle:
+<https://www.kaggle.com/hugomathien/soccer>
+
+## What is a relational database?
+
+In class, we’ve been working with relatively small datasets that fit
+easily into our computer’s memory. But what about *really* big datasets?
+These are often better stored outside of R and inside databases. Using
+R, we can connect to a database, and retrieve only the parts of the data
+that we need for a given analysis. But there are many other reasons why
+you might want to store your data in a relational DB.
+
+A relational DB is a set of linked tables. Each of the tables are linked
+by at least one column between each one that can help them “relate” or
+bring the data back together. These links are defined relationships,
+that explicitly state how each table relates to which other table. A
+specialized command language called (Structured Query Language, SQL
+\[see-kwel\]), is usually used to manipulate data held in relational
+databases.
+
+Benefits of a relational database are:
+
+-   Can break a large complex dataset into digestible pieces (each table
+    is a cohesive “unit” of the data), for better and less repetitive
+    storage.
+-   Can use (and store) a “query” (like asking the database a question)
+    to find exactly which parts of the data you need to use (e.g. only
+    the basketball games that are home, and not away).
+-   You must specify a data type for each field (e.g. you can’t mix
+    numbers and text in a single column).
+-   It is not possible to sort a column independently of other columns
+    (this is possible in excel and can cause problems!).
+-   Is often a better way to store very large datafiles, especially ones
+    you plan to continue to grow and maintain long-term.
+-   Widely used to store and maintain lots of existing data.
+-   Fast processing of large amounts of data.
+-   Improve quality control of data entry.
+-   Set valid data type and value constraints.
+-   Often possible to set up data entry forms (e.g. Access, Excel,
+    Filemaker).
+-   Can use quality control scripts to test entered data.
+-   Being able to conceptualize a relational database can aid in
+    understanding data manipulation in other languages (e.g. SQL is
+    similar to dplyr).
+
+Take a real-life example of something that is stored in a relational
+database (Amazon orders, names/addresses, payment methods, etc). When
+you order something from a company online, they need to store a lot of
+different information about you to process that order. This is a
+simplified version of how the data might be organized (Note: this is how
+the database schema would look in MS Access).
+
+<img src="amazon_relational_db.JPG" width="75%" />
+
+What do the “keys” mean? What about the lines? The numbers and infinity
+symbols?
+
+Each table must have at least one column that only contains *unique*
+values, nothing is allowed to be repeated. So this is often some sort of
+ID number, or code. Or it could be someone’s name, as long as those
+names are not repeated. This is known as the primary key and is
+represented by the yellow key symbol next to a column name. You can see
+that the lines connect each primary key to another field in another
+table. This is the information that can be used to connect tables, and
+bring them back together. So information could be a primary key in one
+table, but not in another.
+
+So, while CustomerID is the primary key in the Customer’s table, it is
+the foreign key in the Orders table. A variable could be both the
+primary key in it’s table, and the foreign key that matches to another
+table. (e.g., the nycflights13 example, where origin is primary key in
+weather table, but foreign key for the airport table.)
+
+Tables in a Relational Data Base (RDB) *should* really have a primary
+key. If it doesn’t you could make one (sometimes called a surrogate
+key), by simply adding a column that is “rowID”. This could just number
+each of the rows 1 to whatever the total number of rows is, so you have
+a set of unique values to match to and identify each row.
+
+Typically, relations are one-to-many (1 to
+![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")),
+but they can be many-to-many
+(![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")
+to
+![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")),
+or many-to-1
+(![\\infty](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Cinfty "\infty")
+to 1).
+
+What are the relations in the example table shown? Are they all
+1-to-many relations?
+
+-   Q: Why would CustomerID not be a primary key in the Orders table?
+-   A: Because a customer could place more than one order, so it would
+    necessarily be repeated in the orders table.
+
+Here’s another way to think through the logic of how these tables are
+structured, and why they are stored in a relational set of data tables.
+
+Our basic business logic can be described in the following points:
+
+-   All Customers can place 1 or more orders.
+-   Each Order can only be attached to 1 Customer.
+-   Each Order will have 1 or more Order Detail records associated with
+    it.
+-   Each Order Detail will deal with only 1 Product.
+-   A Product can of course be found on multiple Order Details because
+    many customers may want to order the same products.
+
+Does this seem confusing? What would this database look like if we put
+all the information in a single table? How many columns would we need?
+Take some time to make sure most students are following along here. Ask
+for student volunteers to help me draw up what the data table would look
+like.
+
+And what we’ve been looking at is actually a pretty simplified version
+of what this kind of database could contain. Here’s a more realistic
+version.
+
+``` r
+knitr::include_graphics(
+  here::here("DA 101", "Notes", "amazon_big_relational_db.JPG")
+)
+```
+
+<img src="amazon_big_relational_db.JPG" width="75%" />
+
+(example from
+<https://bohr.wlu.ca/rhenderson/cp102/labs/about_databases2.htm>)
+
+Does this help make it more clear why you *really* wouldn’t want to
+enter, sort, or load this data as a single large flat file?
+
+Relational databases have much in common with the “rules” for flat
+datasets (e.g. an excel file). They’re just a little bigger. Kind of
+like the difference between writing a paragraph, and an essay. (There is
+a lot similar between data and coding and writing).
+
+Relational database rules:
+
+-   Data is stored in tables.
+-   One table per type of data.
+-   Tables can be linked together to combine information.
+-   Each row contains a single record.
+-   A single observation or data point.
+-   Each column or field contains a single attribute.
+-   A single type of information.
+-   The concepts of a relational database management are core to
+    understanding how to do similar things using programming languages
+    like R or Python.
+
+## Try it out
+
+For an extra challenge, install one of these data packages, and explore
+how the database is set up.
+
+Here’s what the code would look like:
+
+    install.packages("Lahman")
+    library(Lahman)
+
+Here are your options:
+
+-   Lahman
+-   babynames
+-   nasaweather
+-   fueleconomy
+-   nycflights13
+
+Hint: If you type databasename:: then the tab complete will show you
+what the tables are. You could also google the package to see a
+description of the tables.
+
+-   For your group’s database, what are the tables?
+-   Choose one or two tables and identify the keys in those tables.
+-   What are the relationships among the tables? Can you draw a diagram?
