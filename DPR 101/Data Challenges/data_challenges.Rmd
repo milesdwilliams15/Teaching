@@ -1,0 +1,64 @@
+---
+title: "Data Challenges"
+author: "Miles D. Williams"
+date: '2023-01-31'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## DC 1
+
+Make a simple scatter plot using this data.
+
+Data: https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/DC1_da
+ta.csv
+
+Complete your code in a .Rmd file. Knit your code to a Word document and submit the document.
+
+
+## DC 2
+
+**What I did**
+
+For this challenge, I'm having students summarize the distribution of cabinet turnover for different presidents. First, I want to condense the data to the presidential level. Then I'll save the new data and have them use that:
+
+```{r}
+library(tidyverse)
+url <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/cabinet-turnover/cabinet-turnover.csv"
+Data <- read_csv(url)
+```
+
+```{r}
+Data %>%
+  group_by(president, position) %>%
+  summarize(
+    mean_tenure = mean(as.numeric(length), na.rm=T)
+  ) -> new_data
+
+library(here)
+write_csv(new_data, here("DPR 101", "Data", "cabinet_turnover.csv"))
+```
+
+
+**What they'll do**
+
+Here's some data on the average tenure of members of U.S. Presidential cabinets from Carter to the first couple years of Trump's presidency. Make a data viz where you map an aesthetic to the president and set at least one other aesthetic. 
+
+Knit your work to a Word document and submit it.
+
+
+**Example winning answer**
+
+```{r}
+
+```
+
+
+
+
+
+
