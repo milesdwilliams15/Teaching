@@ -1,8 +1,17 @@
-president,mean_tenure
-Bush 41,896.7
-Bush 43,1134.8035714285713
-Carter,848.7272727272727
-Clinton,1236.2857142857142
-Obama,1252.4716981132076
-Reagan,1204.2857142857142
-Trump,470
+president,position,mean_tenure
+Bush 41,Attorney General,1197.5
+Bush 41,Secretary of Defense,1462
+Bush 41,Secretary of State,1386.5
+Bush 41,Secretary of the Treasury,1459
+Bush 43,Attorney General,2277
+Bush 43,Secretary of Defense,2159
+Bush 43,Secretary of State,2195
+Bush 43,Secretary of the Treasury,1873.6666666666667
+Reagan,Attorney General,2130
+Reagan,Secretary of Defense,2711
+Reagan,Secretary of State,1727.5
+Reagan,Secretary of the Treasury,2121
+Trump,Attorney General,657
+Trump,Secretary of Defense,711
+Trump,Secretary of State,436
+Trump,Secretary of the Treasury,NA

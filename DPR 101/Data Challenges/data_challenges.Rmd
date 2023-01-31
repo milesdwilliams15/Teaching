@@ -34,9 +34,18 @@ Data <- read_csv(url)
 
 ```{r}
 Data %>%
+  filter(
+    president %in% c("Reagan","Bush 41", "Bush 43", "Trump"),
+    position %in% c(
+      "Secretary of the Treasury",
+      "Secretary of State",
+      "Secretary of Defense",
+      "Attorney General"
+    )
+  ) %>%
   group_by(president, position) %>%
   summarize(
-    mean_tenure = mean(as.numeric(length), na.rm=T)
+    mean_tenure = mean(days, na.rm=T)
   ) -> new_data
 
 library(here)
@@ -46,7 +55,11 @@ write_csv(new_data, here("DPR 101", "Data", "cabinet_turnover.csv"))
 
 **What they'll do**
 
-Here's some data on the average tenure of members of U.S. Presidential cabinets from Carter to the first couple years of Trump's presidency. Make a data viz where you map an aesthetic to the president and set at least one other aesthetic. 
+Here's some data on the average tenure of members of U.S. Presidential cabinets from Carter to the first couple years of Trump's presidency. 
+
+Data: https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/cabinet_turnover.csv
+
+Make a data viz showing how mean tenure differed across presidents. In your figure, map an aesthetic to the cabinet position and set at least one other aesthetic. 
 
 Knit your work to a Word document and submit it.
 
@@ -54,7 +67,21 @@ Knit your work to a Word document and submit it.
 **Example winning answer**
 
 ```{r}
+# open the tidyverse
+library(tidyverse)
 
+# read in the data
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/cabinet_turnover.csv"
+the_data <- read_csv(url)
+
+# make a column plot
+ggplot(new_data) +
+  aes(x = president,
+      y = mean_tenure,
+      fill = position) +
+  geom_col(
+    color = "darkblue"
+  )
 ```
 
 
