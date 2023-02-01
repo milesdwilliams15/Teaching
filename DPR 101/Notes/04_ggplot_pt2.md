@@ -31,8 +31,8 @@ What’s the difference?
 -   You set aesthetics inside `geom_*()`.
 
 Here’s an example. Let’s load the `gapminder` data and the `{tidyverse}`
-and make a plot with ggplot where we set some options for the color
-aesthetic.
+and make a plot with ggplot where we map the color aesthetic to
+continent names.
 
 ``` r
 library(tidyverse)
@@ -76,7 +76,7 @@ ggplot(gapminder) +
 
 <img src="04_ggplot_pt2_files/figure-gfm/unnamed-chunk-2-1.png" width="75%" />
 
-Does the output look “gold” to you? It sure doesn’t! Instead, it’s read.
+Does the output look “gold” to you? It sure doesn’t! Instead, it’s red.
 What went wrong here?
 
 This is a classic example of mapping an aesthetic when what we actually
@@ -86,8 +86,7 @@ don’t specify them by mapping. In the above example, setting a color in
 column where each cell entry of that column is a category called “gold.”
 It then picks a color to map to that category.
 
-To avoid this, we set aesthetic inside the geoms we tell ggplot to draw
-rather than inside `aes()`:
+To avoid this, we instead *set* aesthetics inside a `geom_*()` function:
 
 ``` r
 ggplot(gapminder) +
@@ -252,7 +251,6 @@ This is my favorite and preferred way of saving a figure. The biggest
 pros of using this approach are:
 
 1.  The ability to control dimensions.
-
 2.  The ability to control the sharpness of the figure.
 
 You can check out these options and a lot more by writing `?ggsave()` in
