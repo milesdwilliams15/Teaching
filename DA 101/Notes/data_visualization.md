@@ -1,0 +1,257 @@
+Data Visualization
+================
+
+## Goals
+
+-   Identify different kinds of graphs and the data inputs to produce
+    them.
+-   List rules of thumb for deciding what kind of graph is the most
+    useful.
+-   Solve common problems, like making color graphs readable for
+    colorblind people.
+-   Practice using ggplot to make figures.
+-   Practice layering different aspects of data in ggplots.
+-   Learn about some add-on packages that work with ggplot.
+
+For some additional reading, check out:
+
+> [Data Visualization: A Practical
+> Introduction](http://socviz.co/index.html#what-you-will-learn)
+
+I use this book to teach my intro to data visualization course.
+
+## Why data viz?
+
+Data visualization plays an integral part of data analysis. It is
+generally a bad idea to jump right into analysis before **looking at the
+data**.
+
+There’s a famous example of why looking at the data is so important—it’s
+called [Anscombe’s
+Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet). The below
+figure shows the relationship between two variables, x and y, but with
+four different versions of the data. Each panel shows a scatter plot
+along with a linear regression line showing the estimated trend. Even
+though the data are very different, the trend is identical. In fact, in
+all four versions of the data x and y have the same estimated
+correlation of 0.82 (that’s a really strong positive correlation!).
+
+<img src="data_visualization_files/figure-gfm/unnamed-chunk-1-1.png" width="75%" />
+
+This example highlights why looking at data is so essential to drawing
+good inferences. Each version of the data tells a different story, but
+if we had jumped straight to analysis we may have missed this.
+
+## Fundamentals of Good Data Viz
+
+The difference between good and bad data visualization comes down to
+three things:
+
+1.  **Good taste:** We want to avoid a lot of “chartjunk” or unnecessary
+    plotting elements.
+2.  **Good data:** Bad data can give misleading results.
+3.  **Good perception:** Subjective human perception can get in the way
+    of objective insights.
+
+### Chartjunk
+
+Chartjunk is any kind of design element or elements that don’t
+communicate anything new or useful. In fact, chartjunk often misleads an
+audience about the data. Think about things like 3-D bar plots.
+
+### Bad data
+
+Data itself can lead people astray. Someone might convert a continuous
+scale into categories to make a trend look worse than it actually is. Or
+they might use variables where one or both have not been appropriately
+measured, either due to faulty instruments or human error.
+
+### Bad perception
+
+In addition to some 3-D plots that make it hard to gauge values, some
+2-D plots can create problems of perception, too. Pie charts are a
+notorious example, but even a simple matter of stretching or condensing
+a plot can distort the data.
+
+## Make good choices
+
+Use these three principles to help you make good choices about how to
+show a relationship, or distribution, or difference using data
+viz. Getting all the elements right requires thinking about a few
+things.
+
+### 1. What’s your point?
+
+Be clear about your intent. Do you want to explore the data to better
+understand it? Or, do you want to explain a relationship or make a point
+for an audience? You need to think about:
+
+-   What you want people to understand.
+-   What you want people to walk away with.
+
+Never will you visualize **all** of the data. You need to consider: what
+is the least I can show to maximize the impact of my message?
+
+### 2. What’s the right plot?
+
+Different kinds of plots are meant to describe different kinds of
+things. Which you should use will depend on some details about your data
+and what you want to show.
+
+-   Is your data numerical or categorical?
+-   Do you want to show a distribution? A relationship? A comparison?
+-   Do you want to show all the data or break it down to smaller chunks?
+
+You’ve already gotten some experience using a few different plots in
+class:
+
+-   Histograms.
+-   Scatterplots.
+-   Boxplots.
+-   Barplots.
+
+Some other options include:
+
+-   Heatmaps
+-   Layered or stacked bar graphs.
+-   Maps
+
+With each kind of plot, you need to follow some guidelines based on the
+way humans perceive information:
+
+-   Position data on a common scale.
+-   Bars are better than circles or squares to communicate size.
+-   People discern color better than shapes in scatter plots.
+-   Avoid pie charts.
+-   Avoid 3-D plots.
+-   Use small multiples to show changes in data.
+
+Here are some basic rules of thumb when deciding what kind of plot to
+use:
+
+-   Line charts track changes or trends over time and/or show the
+    relationship between two or more variables.
+-   Bar charts compare quantities (like counts or proportions) of
+    different categories.
+-   Scatter plots show the relationship (joint variation) of two
+    numerical variables.
+-   Pie charts…don’t use pie charts. Some people think pie charts are
+    good for showing proportions. Just use a bar chart instead.
+-   Use color, shape, or size to show additional information in a 2-D
+    plot based on other categories or variables in the data.
+
+### 3. Less is more (but avoid extreme minimalism)
+
+Don’t overcomplicate your data viz. Be creative, but make sure an style
+elements you add don’t obscure the data.
+
+This is the principle of “minimizing the ink-to-data ratio.”
+
+Don’t use redundant elements, like a color, labels, and a legend to
+highlight the same categories.
+
+But don’t go too extreme in an effort to ruthlessly eliminate ink from
+your data viz. Research shows that going to minimalist can also
+interfere with human perception of results.
+
+### 4. Use color intentionally
+
+Use color to draw your audience’s attention to certain points.
+
+-   If you don’t have a good reason to color your histogram blue, don’t
+    do it.
+-   If you don’t need to have each bar in your bar chart be a different
+    color of the rainbow, don’t do it.
+-   Do use color to differentiate groups in the data.
+-   Do use color to make a scatter plot with a regression line easier to
+    see.
+
+### 5. Use good titles and text
+
+Use sensible and informative titles, axis labels, and annotations. Tell
+people what the data is, tell them about the relationship it shows, tell
+them what the variables are or what the categories mean, etc. Use active
+voice as much as possible.
+
+### 6. Get feedback and try again
+
+Producing a data visualization is never a one and done exercise. It
+requires multiple attempts to get it right. It usually helps to have
+others look at your data viz along the way for a more objective take on
+how an audience might perceive the data. You know what relationships or
+distributions you want to show, so your figure’s insights seem obvious
+to you. But do they look obvious to someone else?
+
+### 7. Look at other data viz and copy
+
+R is open source, and lots of people use it for data viz. Look online to
+find examples that people have posted or created for ideas. Often these
+examples come with code that you can copy and then modify for your own
+data.
+
+## Common mistakes
+
+Mark Twain popularized the phrase:
+
+> There are three kinds of lies: lies, damned lies, and statistics.
+
+He attributed this to Benjamin Disraeli, a former British Prime
+Minister.
+
+Not to put too fine a point on it, data viz provides all the tools
+necessary to lie quite effectively.
+
+Scaling matters. Take the below figures. Both panels show the same data
+over time: % growth from 2010 to 2013. However, the left panel shows
+this relationship using a y-axis that only extends across the range of
+values growth takes over this time period. The right panel uses a y-axis
+that instead starts at zero. The first version obviously creates a the
+impression of more dramatic growth.
+
+<img src="data_visualization_files/figure-gfm/unnamed-chunk-2-1.png" width="75%" />
+
+How about the below figure? Does the use of color do anything for us? It
+shows the average life expectancy of individuals from different
+continents from 1952-2007. Each bar in the chart has a different color.
+
+<img src="data_visualization_files/figure-gfm/unnamed-chunk-3-1.png" width="75%" />
+
+Does the next figure use color more effectively? This data viz uses data
+at the country level for 2007 to show the relationship between GDP per
+capita (a common measure of average income in a country) and average
+life expectancy. It uses color to show groups of countries by region. It
+also uses point size to show population size.
+
+<img src="data_visualization_files/figure-gfm/unnamed-chunk-4-1.png" width="75%" />
+
+## A note on colorblindness
+
+Use of color is good only in so far as your audience can make sense of
+it. But not everyone can.
+
+There’s a great package called `{colorblindr}` that you can use to test
+how your color choices would look to someone who is colorblind.
+
+Here’s how to install it:
+
+    remotes::install_github("clauswilke/colorblindr")
+
+Here’s an example of how it works using the last scatter plot I produced
+where I used color to group points by regions. Clearly, some kinds of
+colorblindness prevent people from distinguishing all five categories
+when using ggplot’s default color options.
+
+``` r
+library(colorblindr)
+cvd_grid(fig + labs(x = NULL, y = NULL, title = NULL) +
+           theme(legend.position = "none") +
+           scale_x_log10(
+             breaks = c(1000, 10000)
+           ))
+```
+
+<img src="data_visualization_files/figure-gfm/unnamed-chunk-5-1.png" width="75%" />
+
+Using contrast in addition to color can be an effective way to deal with
+some kinds of color blindness. Even if people can’t tell apart colors,
+they can see that some things are lighter and others darker.
