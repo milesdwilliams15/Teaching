@@ -1,0 +1,37 @@
+Regression Model Worksheet
+================
+
+Work in teams of 2-3 and work through these exercises. The lecture notes
+[found
+here](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20201/Notes/03_regression_for_description_and_forcasting.md)
+will help if you get stuck.
+
+Here’s the data you’ll be working with and the code to download it:
+
+    library(tidyverse)
+    url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/SchoolingEarnings.csv"
+    Data <- read_csv(url)
+
+The data show the average annual earnings of men in their 40s in 1980 by
+level of education acheived.
+
+**Exercise 1**: Make a scatter plot showing how earnings varies with
+schooling. What kind of relationship do you see in the data? Linear?
+Non-linear?
+
+**Exercise 2**: Estimate a regression model with the data where earnings
+is the outcome and schooling is the explanatory variable. What do the
+coefficients tell you?
+
+**Exercise 3**: Use the results from the linear model you fit to the
+data to add a regression line in your original scatter plot. How does it
+look?
+
+**Exercise 4**: Use the `poly()` function to add polynomial terms to the
+model. Write `?poly` in the console to open the help file if you need
+it. Does adding more terms improve the fit?
+
+**Exercise 5**: Split the data by whether individuals have more than 12
+years of schooling. Train a model on the data with 12 or less years of
+schooling and use it to make predictions for those with more than 12
+years of schooling.
