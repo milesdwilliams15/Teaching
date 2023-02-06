@@ -281,6 +281,35 @@ params; coef(fit) # FYI a ; lets you run two seperate things in the same line.
 
 Exactly identical.
 
+We can also tell ggplot to add a linear fit to some data for us by
+adding the `geom_smooth()` layer to a scatter plot, like so:
+
+``` r
+ggplot(Data) +
+  aes(x = temp, y = crimes) +
+  geom_point() +
+  geom_line(
+    aes(y = 600 + 3 * temp),
+    color = "red",
+    size = 1
+  ) +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  labs(
+    x = "Daily Temperature",
+    y = "Number of Crimes",
+    title = "Correlation between Temperature and Crimes",
+    subtitle = "Chicago 2018"
+  )
+```
+
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-12-1.png" width="75%" />
+
+The blue line above is the OLS fit for the data. The red line is the fit
+using the parameters I hand-selected earlier.
+
 ## Why OLS?
 
 The reason we use OLS (most of the time) to find the parameters of a
@@ -328,7 +357,7 @@ ggplot(turnout) +
   )
 ```
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-12-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-13-1.png" width="75%" />
 
 If we lop off all observations beyond 60, a linear regression model
 makes for a good fit. But if we use the full data, we can see we have a
@@ -367,7 +396,7 @@ ggplot(filter(turnout, age < 60)) +
   )
 ```
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-13-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-14-1.png" width="75%" />
 
 Thankfully, linear regression models provide a great deal of
 flexibility. We could, for example, add a squared term to the model. Do
@@ -396,7 +425,7 @@ p <- ggplot(turnout) +
 p 
 ```
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-14-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-15-1.png" width="75%" />
 
 We can keep adding **polynomials** (terms to the nth power) until we’re
 satisfied with the fit. There are also other forms of regression that
@@ -419,7 +448,7 @@ p +
   )
 ```
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-15-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-16-1.png" width="75%" />
 
 Linear models with polynomial terms are still technically linear, even
 though they capture non-linear relationships. This is because the model
@@ -494,7 +523,7 @@ sim_out %>%
   )
 ```
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-16-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-17-1.png" width="75%" />
 
 It’s important to think carefully about the variables you include in a
 linear model. Just because it gives you good predictions doesn’t
@@ -543,7 +572,7 @@ tibble(
     ## # A tibble: 1 × 2
     ##   Training  Test
     ##      <dbl> <dbl>
-    ## 1    0.486 0.221
+    ## 1    0.458 0.284
 
 Depending on when you run this, you would see a wide range of values
 produced in this exercise. In this particular run, age explains more
@@ -567,7 +596,7 @@ you’ll often see results presented in regression tables, like this one:
 <tbody>
 <tr style="border-top: 1px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">Age</td>
-<td style="padding-left: 5px;padding-right: 5px;">0.75<sup>&#42;&#42;&#42;</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">0.77<sup>&#42;&#42;&#42;</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -575,7 +604,7 @@ you’ll often see results presented in regression tables, like this one:
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Age^2</td>
-<td style="padding-left: 5px;padding-right: 5px;">-0.97<sup>&#42;&#42;&#42;</sup></td>
+<td style="padding-left: 5px;padding-right: 5px;">-0.94<sup>&#42;&#42;&#42;</sup></td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">&nbsp;</td>
@@ -583,11 +612,11 @@ you’ll often see results presented in regression tables, like this one:
 </tr>
 <tr style="border-top: 1px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">R<sup>2</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.91</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.90</td>
 </tr>
 <tr>
 <td style="padding-left: 5px;padding-right: 5px;">Adj. R<sup>2</sup></td>
-<td style="padding-left: 5px;padding-right: 5px;">0.91</td>
+<td style="padding-left: 5px;padding-right: 5px;">0.89</td>
 </tr>
 <tr style="border-bottom: 2px solid #000000;">
 <td style="padding-left: 5px;padding-right: 5px;">Num. obs.</td>
@@ -606,7 +635,7 @@ better way to go. These are even becoming more common in academic
 settings, especially at academic conferences. Here’s one based on the
 same results in the above table:
 
-<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-19-1.png" width="75%" />
+<img src="03_regression_for_description_and_forcasting_files/figure-gfm/unnamed-chunk-20-1.png" width="75%" />
 
 Of course, for many settings, a figure like those plotted earlier in
 these notes would be fine, too—at least if you only want to talk about

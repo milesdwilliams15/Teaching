@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: '2023-02-03'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+Here's my report about mpg! Here's a figure:
+
+```{r}
+library(ggplot2)
+ggplot(mtcars) +
+  aes(x = wt,
+      y = mpg) +
+  geom_point()
+```
+

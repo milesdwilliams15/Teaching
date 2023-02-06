@@ -173,6 +173,30 @@ params; coef(fit) # FYI a ; lets you run two seperate things in the same line.
 
 Exactly identical.
 
+We can also tell ggplot to add a linear fit to some data for us by adding the `geom_smooth()` layer to a scatter plot, like so:
+
+```{r}
+ggplot(Data) +
+  aes(x = temp, y = crimes) +
+  geom_point() +
+  geom_line(
+    aes(y = 600 + 3 * temp),
+    color = "red",
+    size = 1
+  ) +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  labs(
+    x = "Daily Temperature",
+    y = "Number of Crimes",
+    title = "Correlation between Temperature and Crimes",
+    subtitle = "Chicago 2018"
+  )
+```
+
+The blue line above is the OLS fit for the data. The red line is the fit using the parameters I hand-selected earlier.
 
 ## Why OLS?
 
