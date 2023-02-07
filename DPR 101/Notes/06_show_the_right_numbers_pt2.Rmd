@@ -1,0 +1,204 @@
+---
+title: "Showing the right numbers, part 2"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Goals
+
+- Use ggplot to summarize data.
+- Use ggplot to show distributions.
+- Show why transforming data *before* plotting is more efficient.
+
+
+## Frequency plots for showing summaries
+
+Some geoms transform or summarize the data for us when we plot it. We talked about using `geom_bar()` last time. This function really shines when we want to break the data down by multiple categories at once---imagine the data viz equivalent of a cross-tab.
+
+```{r}
+library(tidyverse)
+library(socviz)
+
+ggplot(gss_sm) + 
+  aes(x = bigregion, fill = religion) +
+  geom_bar()
+```
+
+The above summarizes the number of observations by census region in the GSS 2016 dataset from the `{socviz}` package. By mapping fit to religion, it further breakds down the count by self-identified region among survey respondents.
+
+By updating just one option we can convert this output from a raw count to a proportion. 
+
+```{r}
+ggplot(gss_sm) +
+  aes(x = bigregion, fill = religion) +
+  geom_bar(position = "fill")
+```
+
+By setting `position = "fill"` the output now shows proportions by our x variable. We can now see the share of respondents by region that self-identy with a particular religion.
+
+We could show the proportions side-by-side to make comparisons even clearer. But we have to take a few more steps than you might think. For example, say we tried using `position = "dodge`:
+
+```{r}
+ggplot(gss_sm) +
+  aes(x = bigregion, fill = religion) +
+  geom_bar(position = "dodge")
+```
+
+The bars appear side-by-side, but we're back to showing counts. Maybe we should try mapping `y` to `..prop..`?
+
+```{r}
+ggplot(gss_sm) +
+  aes(x = bigregion, y = ..prop.., fill = religion) +
+  geom_bar(
+    position = "dodge"
+  )
+```
+
+Shoot! That didn't work either. The final step we need to take is to map groups to `religion`, too.
+
+```{r}
+ggplot(gss_sm) +
+  aes(x = bigregion, 
+      y = ..prop.., 
+      fill = religion,
+      group = religion) +
+  geom_bar(
+    position = "dodge"
+  )
+```
+
+Instead of mapping fill to religion, we could facet by region to avoid the need to map fill.
+
+```{r}
+ggplot(gss_sm) +
+  aes(
+    x = religion,
+    y = ..prop..,
+    group = bigregion
+  ) +
+  geom_bar(
+    position = "dodge"
+  ) +
+  facet_wrap(
+    ~ bigregion
+  )
+```
+
+
+## Show distributions
+
+Bar plots provide a useful way to show the distribution of observations across discrete categories. We can use other geoms to summarize numerical variables. 
+
+Here's some data on fatalities from political violence events, including battles, protests, etc., in Ukraine. The data is at the month level from 2018 to 2022.
+
+```{r}
+path <- here::here("DPR 101", "Data", "ukraine_political_violence.csv")
+ukraine_data <- read_csv(path)
+str(ukraine_data)
+```
+
+Just like `geom_bar()` summarizes discrete data, `geom_histogram()` summarizes continuous data. For example, we can use it to summarize the distribution of fatalities in political violence events in a given month:
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities) +
+  geom_histogram()
+```
+
+Histograms work by putting continuous variables into "bins" and then counting up the number of observations that fall into those bins. We can directly adjust the number of bins in a ggplot histogram. The below code sets `bins = 10`.
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities) +
+  geom_histogram(
+    bins = 10
+  )
+```
+We can also group data to show its distribution by different categories. For example, by year:
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities, fill = as.factor(Year)) +
+  geom_histogram(
+    position = "identity",
+    alpha = 0.5
+  ) 
+```
+
+An alternative to binning with a histogram is a density plot. This uses a smooth function to represent the distribution of a continuous variable:
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities) +
+  geom_density()
+```
+
+We can also group by different categories in the data:
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities, color = as.factor(Year)) +
+  geom_density()
+```
+
+We can also modify the scales when showing continuous distributions. For example, when showing fatality data from political conflicts, applying log scales to both the x and y axis might be a good idea. Conflict fatalities are thought to follow a [power-law](https://en.wikipedia.org/wiki/Power_law) distribution which has the distinct characteristic of being linear in log-log space.
+
+```{r}
+ggplot(ukraine_data) +
+  aes(x = Fatalities) +
+  geom_density() +
+  scale_x_log10() +
+  scale_y_log10() 
+```
+
+Kinda' bumpy, but could be close to linear.
+
+## Don't transform if you don't have to
+
+You often can and should transform data before you give it to ggplot. This can help you avoid some of the weird quirks with using functions like `geom_bar()`
+
+Say for example I wanted to summarize the distribution of fatalities with the Ukraine data using a method often used with power-law distributed variables.
+
+Rather than use a histogram, I can add a new variable to `ukraine_data` that gives me the probability of a violence event deadlier than a given recorded value. I then can make a log-log plot mapping observed fatalities to x and the probability of higher fatality events to y:
+
+```{r}
+ukraine_data <- ukraine_data %>%
+  mutate(prob = rank(-Fatalities) / max(rank(-Fatalities)))
+
+ggplot(ukraine_data) +
+  aes(x = Fatalities, y = prob) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  scale_x_log10() +
+  scale_y_log10()
+``` 
+
+The data has the characteristic linear relationship in log-log space typical of power-law distributed outcomes.
+
+Using already transformed data, we can also use a geom similar to `geom_bar()` called `geom_col()`. Following our text, we can replicate the column plot showing how life expectancy in the US compares to other OECD countries over time.
+
+```{r}
+ggplot(oecd_sum) +
+  aes(x = year, y = diff, fill = hi_lo) +
+  geom_col() +
+  guides(
+    fill = F
+  ) +
+  labs(
+    x = NULL,
+    y = "Difference in Years",
+    title = "The US Life Expectancy Gap",
+    subtitle = "Difference between US and OECD average life expectancies, 1960-2015",
+    caption = "Data: OECD"
+  )
+```
+
+The data `oecd_sum` already is summarized in the appropriate way to make mapping the data to aesthetics straightforward.
+
