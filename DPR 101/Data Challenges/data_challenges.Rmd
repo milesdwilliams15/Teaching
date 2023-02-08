@@ -85,6 +85,13 @@ ggplot(new_data) +
 ```
 
 
+## DC 3
+
+For this data challenge, use the Ukraine event-fatality data to show how the number of events has changed or not changed from 2018 to 2022.
+
+Do you think a histogram that groups the data by year, or a line plot is a more effective way to show the data? Make both kinds of plots and write a short paragraph explaining which you prefer.
+
+Here's a link to the data: https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Data/ukraine_political_violence.csv
 
 
 

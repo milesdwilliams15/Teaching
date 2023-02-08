@@ -1,0 +1,40 @@
+---
+title: "Analysis Challenge 2"
+author: "Dr. Williams"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Use the incumbent forecast data from the piece we read this week to make predictions for the 2020 election and simulate what the results for a 2024 election would look like using Biden's current popularity in the polls.
+
+## Data
+
+The data contains 11 observations and 25 variables. Each observation is a U.S. Presidential election year where an incumbent was running for office.
+
+- year: the year of an election.
+- label: the abreviated year.
+- deminc: 1 = a Democratic incumbent.
+- popmargin: The popular vote margin for the Democrat
+- demvote: The share of the vote for the Democrat
+- incvotemargin: The incumbent's vote margin
+- incvote: The incumbent's vote share.
+- inc1: 1 = the incumbent won.
+- eygdp: End of year GDP growth.
+- q2gdp: Second quarter GDP growth.
+- fhgdp: GDP growth for the first half of the year.
+- incevoteshare: Incumbent's Electoral College vote share.
+- demevoteshare: Democrat's Electoral College vote share.
+- landslide: 1 = the election was a landslide.
+- octapp: October approval of incumbent.
+- juneapp: June approval of incumbent.
+- term1: 1 = first term.
+- term2: 1 = second term.        
+- dmargin: Democrat's margin in the Electoral College.
+- juneapp2: June approval up or down?   
+- incelectvotes: Total incumbent Electoral College votes.
+- changeapp: Change in approval.
+- filter_$: All values equal 1 since this was filtered down to incumbents.     
