@@ -1,6 +1,5 @@
 ---
 title: "Analysis Challenge 2"
-author: "Dr. Williams"
 date: "`r Sys.Date()`"
 output: word_document
 ---
@@ -11,7 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Use the incumbent forecast data from the piece we read this week to make predictions for the 2020 election and simulate what the results for a 2024 election would look like using Biden's current popularity in the polls.
 
+You pick what variables to use and try to come up with the most accurate forecast you can. 
+
 ## Data
+
+[Presidential Election Data](https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/predict_prez.csv)
 
 The data contains 11 observations and 25 variables. Each observation is a U.S. Presidential election year where an incumbent was running for office.
 
