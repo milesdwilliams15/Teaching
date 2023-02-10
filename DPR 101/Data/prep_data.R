@@ -14,3 +14,15 @@ write_csv(
   Data,
   here::here("DPR 101", "Data", "538_prez_forecast.csv")
 )
+
+Data <- filter(
+  Data,
+  forecast_date %in% as.Date(c("2020-09-01",
+                               "2020-10-01",
+                               "2020-11-01"))
+)
+
+write_csv(
+  Data,
+  here::here("DPR 101", "Data", "538_prez_forecast_small_2020.csv")
+)

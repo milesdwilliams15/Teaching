@@ -371,4 +371,46 @@ ggplot(election) +
 
 Above, we used small-multiples with a geographically informed arrangement to make something like a map. We can also use small-multiples with actual maps to show how trends evolve over time.
 
-Here's an example using the o
+Here's an example using FiveThirtyEight presidential election forecasts by state.
+
+```{r}
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/538_prez_forecast.csv"
+forecast_data <- read_csv(url)
+
+# just give me the first date of the month
+forecast_data <- filter(
+  forecast_data,
+  forecast_date %in% as.Date(c("2020-09-01",
+                       "2020-10-01",
+                       "2020-11-01"))
+)
+```
+
+With the data read in, we just need to merge it with the US map data:
+
+```{r}
+# cross-walk the data
+forecast_data$region <- tolower(usdata::abbr2state(forecast_data$state))
+  # we need a region column in election to match the column in us_states
+
+# join the data
+map_forecast_data <- left_join(us_states, forecast_data)
+```
+
+```{r}
+ggplot(map_forecast_data) +
+  aes(
+    x = long,
+    y = lat,
+    group = group,
+    fill = projected_voteshare
+  ) +
+  geom_polygon(
+    color = "white",
+    size = 0.1
+  ) +
+  facet_wrap(
+    ~ forecast_date
+  )
+```
+

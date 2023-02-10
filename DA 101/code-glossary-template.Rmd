@@ -9,12 +9,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ## Code Glossary for DA 101
+
 This is an R Markdown document. Please fill in all example text with your own words and definitions. For each function in the code glossary, you should show your code. If you need extra code to do some data wrangling or bring in a new library, please hide it from the rendered html. Each term should have: 
  (1) what package does it come from?
  (2) general definition - what does the function do and for what kind of tasks/situations would you use it?
  (3) worked example, using your dataset, or one of the example datasets from an R package
  (4) text below the example that explains specifically, what the code accomplished. In other words, what was the input and the output? What can you do now that you have run the example that you couldn't before?
+
 
 ### Data Wrangling
 
