@@ -1,0 +1,142 @@
+---
+title: "Summary Statistics and Description"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "45%")
+```
+
+## Goals
+
+- Review basic summary stats, and how to do them in R
+- Interpret R output from summary stats, and how to communicate the result
+- Describe the difference between standard deviation and variance
+- Discuss how confidence intervals are useful, and what they tell you about your data
+
+
+## What are summary statistics and why do I need them?
+
+So far, we’ve done a lot of data thinking and data visualization, but not a lot of statistical tests. There is a reason we’ve spent so much time on the data and data visualization components of the data cycle. Both give you clues as to the best statistical analysis for you to conduct!
+
+Data visualization often comes up at multiple places in the data analysis cycle. For example, we commonly use it during data exploration to get a sense of what the data looks like (what is its distribution? Do some of the variables seem to have a relationship? Do different categories look different? We often use it again during the data analysis and model building steps, as a way to visually check our results. Do the model results look the way we expected? And we visualize again during communication to present a graph that refines our main “take home” message we want the audience to remember, or to provide them with the “Aha!” moment they might have missed in the statistical analysis. 
+
+
+## The Datasaurus - Never trust summary statistics alone
+
+### Data Viz and summary stats belong together 
+[Same Stats, Different Graphs](https://www.autodesk.com/research/publications/same-stats-different-graphs)
+
+Let’s open RStudio for a quick review of `{dplyr}` and `ggplot()` together and go through this example with a new cool dataset, called the datasauRus (note the capital R).
+
+Here's the code you need to use. First, go to the R console and run the following:
+
+```
+install.packages("datasauRus")
+```
+
+Then, in a new .Rmd file, get rid of the boilplate text and make a code chunk where you write:
+
+```{r}
+library(datasauRus)
+library(ggplot2)
+library(dplyr)
+```
+
+You're now read to go for this session.
+
+Try out the following to look at the data.
+```
+View(datasaurus_dozen)
+unique(datasaurus_dozen$dataset)
+```
+
+It contains multiple datasets. We can use tools from `{dplyr}` to make some descriptive statistics for each.
+
+```{r}
+# make a summary object
+data_summary <- datasaurus_dozen %>%
+  group_by(dataset) %>%
+  summarize(
+    meanx = round(mean(x),3), 
+    meany = round(mean(y),3),
+    sdx = round(sd(x),3), 
+    sdy = round(sd(y),3),
+    corxy = round(cor(x,y),3)
+  )
+
+data_summary # print
+```
+
+The stats are mostly identical. If we plot them, they should look the same, right?
+
+```{r}
+ggplot(datasaurus_dozen, aes(x=x, y=y))+
+  geom_point(alpha=0.5)+
+  theme(legend.position = "none")+
+  facet_wrap(~dataset, ncol=3)
+```
+
+Whoa! Not at all. What happened?
+
+Graphs are much more than “pretty pictures”, and we can’t always get all the important information through statistical analysis alone. [Anscome's Quartet](https://en.wikipedia.org/wiki/Anscombe%27s_quartet) was developed by [F.J. Anscombe in 1973](http://www.jstor.org/stable/2682899?origin=crossref), and is a set of four datasets, where each produces the same summary statistics (mean, standard deviation, and correlation), which could lead one to believe the datasets are quite similar. However, after visualizing (plotting) the data, it becomes clear that the datasets are markedly different. In other words, four clearly different and visually distinct datasets produce the same statistical properties. We talked about this last week with data visualization.
+
+[Alberto Cairo](http://albertocairo.com/) created the Datasaurus dataset which urges people to "never trust summary statistics alone; always visualize your data", since, while the data exhibits normal seeming statistics, plotting the data reveals a picture of a dinosaur. 
+
+
+## Descriptive statistics in R
+
+Summary statistics are useful because they can tell us a lot about a dataset (or a set of observations) in a simple way (often summarized by a single number).
+
+We’ve already covered many of the descriptive statistics you can do in `{baseR}`. We’ve also shown how we can calculate these on multiple groups in a tidy dataset using `{dplyr}`. A quick review:
+
+
+### Location
+
+These summary stats tell us something about central tendency, or where most of the data occurs (or is centered around). 
+
+- mean() - The sum of the values divided by the number of values in the data.
+- median() - The middle most value in the data.
+- Mode - The value that has highest number of occurrences in the data. No built-in function in R.
+- min() - The lowest value in the data.
+- max() - The highest value in the data.
+
+
+### Spread 
+
+These summary stats tell us something about the range of the data around the mean, or statistical dispersion.
+
+- var() - The numerical measure of how the data is dispersed around the mean. It is the average of the squared differences (of each data point) from the mean.
+- sd() - The square root of the variance. Example for variance and standard deviation: http://www.mathsisfun.com/data/standard-deviation.html 
+- range() - The distance between the minimum and maximum values.
+- quantile() - The first quartile, or lower quartile, is the value that cuts off the first 25% of the data when it is sorted in ascending order. The second quartile, or median, is the value that cuts off the first 50%. The third quartile, or upper quartile, is the value that cuts off the first 75%. 
+- IQR() - The distance between the upper and lower quartile (IQR = upper - lower).
+- summary() - Shows the min, max, median, mean, 1st (quartiles) and 3rd (upper) quartiles.
+- fivenum() - Returns Tukey’s five number summary for the data - minimum, 1st quartile, median, 3rd quartile, maximum.
+- describe() - From `{Hmisc}`. Returns the total number of observations, if any data are missing, the number of distinct values, the sum of the values, the mean, Gini’s mean difference (measure of dispersion that is the mean absolute difference between any pairs of observations), and for categorical data, the frequency (count) of each value and the proportion for each value.
+
+
+### Shape 
+
+These summary stats tell us something about the distribution of the data. For example is it shaped like a normal bell curve centered evenly around the mean, or is it pushed to the right or to the left? The below functions are in the `{moments}` package.
+
+- skewness() - This is a measure of symmetry. Negative skewness indicates the mean is less than the median, and the data distribution is left-skewed. Positive skewness indicates that the mean is larger than the median, and the data distribution is right-skewed. 
+- kurtosis() - This describes the tail shape of the data distribution. A normal distribution has zero kurtosis and thus the standard tail shape. Negative kurtosis would indicate a thin-tailed data distribution. Positive kurtosis would indicate a fat-tailed distribution. 
+
+
+### Dependence 
+
+When you have more than one variable, these kind of summary stats tell us something about the relationship between variables.
+
+- cov(x,y) - This describes how 2 variables (x and y) are linearly related. A positive covariance indicates a positive linear relationship. A negative covariance indicates a negative linear relationship.
+- cor(x,y) - This is the covariance divided by the product of the individual standard deviations. If the correlation coefficient is close to 1, it indicates the variables are positively related and points on a scatterplot would fall almost along a straight line with positive slope. For -1, it indicates the variables are negatively related and the scatter plot almost falls along a straight line with negative slope. If the correlation was zero, it indicates a weak linear relationship between the variables. R’s default method is to calculate Pearson’s correlation, but you can specify Spearman or Kendall if you would like.
+
+Some examples: http://www.mathsisfun.com/data/standard-deviation.html 
+
+
