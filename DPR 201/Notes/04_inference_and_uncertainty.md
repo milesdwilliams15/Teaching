@@ -1,6 +1,15 @@
 Inference and Uncertainty
 ================
 
+-   [The Big Picture](#the-big-picture)
+-   [Estimates](#estimates)
+-   [Populations and Samples](#populations-and-samples)
+-   [Be Careful of Bias](#be-careful-of-bias)
+-   [What If My Sample *Is* the
+    Population?](#what-if-my-sample-is-the-population)
+-   [Where to Next](#where-to-next)
+-   [What to Try](#what-to-try)
+
 ## The Big Picture
 
 -   All **estimates** are a function of **signal**, **noise**, and
@@ -443,6 +452,7 @@ library(tidyverse)
   # open the tidyverse
 
 # make population data
+set.seed(111)
 pop_data <- tibble(
   coke = population,
   u = rbinom(
@@ -473,9 +483,9 @@ Let’s check the sample mean to see if we notice anything odd.
 mean(biased_sample$coke)
 ```
 
-    ## [1] 0.55
+    ## [1] 0.43
 
-In the sample, only 55% of people indicated they prefer Coke to Pepsi.
+In the sample, only 43% of people indicated they prefer Coke to Pepsi.
 That’s way lower than in the actual population.
 
 Even worse, if we calculated 95% confidence intervals for this sample,
@@ -496,7 +506,7 @@ biased_sample %>%
     ## # A tibble: 1 × 4
     ##   estimate std.error  lo95  hi95
     ##      <dbl>     <dbl> <dbl> <dbl>
-    ## 1     0.55      0.05 0.452 0.648
+    ## 1     0.43    0.0498 0.332 0.528
 
 An alternative function to produce similar output is `mean_ci()` from
 the `{socsci}` package. To use it, we would write:
@@ -508,9 +518,9 @@ biased_sample %>%
 ```
 
     ## # A tibble: 1 × 7
-    ##    mean    sd     n  level    se lower upper
-    ##   <dbl> <dbl> <int>  <dbl> <dbl> <dbl> <dbl>
-    ## 1  0.55   0.5   100 0.0500  0.05 0.451 0.649
+    ##    mean    sd     n  level     se lower upper
+    ##   <dbl> <dbl> <int>  <dbl>  <dbl> <dbl> <dbl>
+    ## 1  0.43 0.498   100 0.0500 0.0498 0.331 0.529
 
 The tough thing about bias is that it’s difficult to devise a test to
 determine if it is present in or influenced the collection or creation

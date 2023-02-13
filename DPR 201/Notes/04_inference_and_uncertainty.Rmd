@@ -1,6 +1,8 @@
 ---
 title: "Inference and Uncertainty"
-output: github_document
+output:     
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -346,6 +348,7 @@ library(tidyverse)
   # open the tidyverse
 
 # make population data
+set.seed(111)
 pop_data <- tibble(
   coke = population,
   u = rbinom(
