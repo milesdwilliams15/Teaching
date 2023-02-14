@@ -1,6 +1,15 @@
 Hypothesis Testing
 ================
 
+-   [What is a hypothesis?](#what-is-a-hypothesis)
+-   [The Null Hypothesis and the Alternative
+    Hypothesis](#the-null-hypothesis-and-the-alternative-hypothesis)
+-   [What is a hypothesis test?](#what-is-a-hypothesis-test)
+-   [Hypothesis tests and confidence
+    intervals](#hypothesis-tests-and-confidence-intervals)
+-   [More on p-values](#more-on-p-values)
+-   [Try it out](#try-it-out)
+
 ## What is a hypothesis?
 
 A hypothesis in science is usually specified in terms of some equality
@@ -11,7 +20,7 @@ between *x* and *y* is equal to zero.
 Whatever it is, it takes the form of *something* being equal to
 *something else*.
 
-In practice, hypotheses can get pretty sophistocated, but even more
+In practice, hypotheses can get pretty sophisticated, but even more
 baroque hypotheses are nothing but a riff on this core formulation.
 
 Let’s use your presidential forecasts as an example. Say we really
@@ -62,17 +71,48 @@ pred # check it out
 To win the presidential election you need 270 votes. The actual number
 Trump received in 2020 was 232. My model predicted he would only get
 132. The direction of the prediction is the same as the outcome, but
-Trump clearly overperformed relative to my model’s forecast. In short,
+Trump clearly outperformed relative to my model’s forecast. In short,
 contrary to my hypothesis that *D = V - P = 0*, instead *D = V - P \>
 0*.
 
 Clearly the data don’t support the MMP hypothesis. So we should reject
 it, right?
 
-Well, it’s actually more complicated than that. Remeber our discussion
+Well, it’s actually more complicated than that. Remember our discussion
 about uncertainty when we make inferences? Before we can think about
 rejecting or not rejecting any hypotheses, we need to take uncertainty
 into account. We need to run a **hypothesis test**.
+
+## The Null Hypothesis and the Alternative Hypothesis
+
+Usually in research we draw a distinction between the “null” and the
+“alternative” hypothesis. Say I run an election study and hypothesize
+that self-reported Republicans have a lower likelihood of voting for
+President Biden (shocking!). If I wanted to test this formally, I would
+actually try to test the hypothesis that Republicans are no more or less
+likely to vote for Biden than other groups.
+
+This is the null hypothesis (null = zero). We use the null as a
+benchmark because it’s a precise number we can nail down. If we fail to
+reject the null, that means we don’t have support for the alternative.
+In this case, the alternative is that Republicans are less likely to
+vote for Biden.
+
+This all goes back to the idea that hypotheses (generally) have to do
+with statements about the equality of two values. It’s easier to test
+the null than the alternative.
+
+In the case of the MMP hypothesis, the hypothesis itself is the null
+hypothesis. It holds that there is no difference between my model’s
+prediction and what happened in 2020. In other words, that this
+difference is *zero*.
+
+I could have framed my research question in terms of an alternative
+hypothesis: that my model will under-predict how well Trump does in
+2020. But, I would still test the null or MMP hypothesis rather than the
+alternative. Zero gives me clearly defined benchmark. But I don’t
+realistically know by how much my model will under-predict Trump’s
+performance.
 
 ## What is a hypothesis test?
 
@@ -86,11 +126,11 @@ populations, we can use statistics to make inferences about hypotheses.
 The likelihood, or probability, of calculating an estimate with our
 data, assuming our hypothesis is true, is called a *p-value*. The *p*
 stands for *probability*. A p-value can be anywhere from 0 to 1. A value
-cose to 0 means that the likelihood of getting the estimate we got if
+close to 0 means that the likelihood of getting the estimate we got if
 our hypothesis is true is quite small.
 
-Think of a p-value as a way to quantify how embarassed our hypothesis is
-by the data. Generally, in political science research we use the *p \<
+Think of a p-value as a way to quantify how embarrassed our hypothesis
+is by the data. Generally in political science research we use the *p \<
 0.05* threshold to decide whether to reject a hypothesis. If the p-value
 is less than 0.05, we reject the hypothesis. If it isn’t, we say that we
 “fail to reject” the hypothesis.
@@ -101,6 +141,8 @@ ruling out possibilities to home in on the truth. This is a never-ending
 process. To say we accept a hypothesis would be to say we don’t think
 other explanations or forces could be at work that would explain it
 away. That’s just bad science.
+
+## Hypothesis tests and confidence intervals
 
 Confidence intervals, which we talked about last time, have a direct
 correspondence with with p-values. Think of them as a collection of
