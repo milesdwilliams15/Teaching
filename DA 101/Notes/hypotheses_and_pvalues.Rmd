@@ -1,0 +1,224 @@
+---
+title: "Hypothsis and significance testing"
+output: 
+  html_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Goals
+
+- Define a hypothesis and a hypothesis test.
+- Understand p-values and what they do and don't tell us.
+- Discuss p-hacking and why it's a problem.
+- Think about the difference between statistical and practical significance.
+
+
+## Hypothesis testing
+
+When we have a data sample, we may be interested in comparing two claims or hypotheses about a value of interest.
+
+The first of this is called the **null hypothesis**, which is an equality statement about a parameter or parameters of interest.
+
+The second is called the **alternative hypothesis**, which is a statement that contradicts the null.
+
+Hypotheses can be one- or two-sided. If two-sided, your test allows you to detect if your parameter is greater or less than the value specified by the null hypothesis. If one-sided, your test allows you to detect if your parameter is either greater or less than the value specified by the null hypothesis (but not both).
+
+### Example
+
+We want to test if the average yearly rainfall is greater than 20 inches.
+
+$$
+\begin{aligned}
+H_0: & \mu_\text{rain} = 20 \text{ inches} \textit{ or } \mu_\text{rain} - 20 = 0, \\
+H_1: & \mu_\text{rain} > 20 \text{ inches} \textit{ or } \mu_\text{rain} - 20 > 0.
+\end{aligned}
+$$
+
+
+### What would these look like for...
+
+1. Testing if median household income is \$60,000?
+2. Testing if the variance of income is larger than \$400,000?
+3. Testing if 80\% of the population makes less than \$100,000?
+
+
+## Testing hypotheses
+
+1. State the hypothesis
+2. Determine the test statistic and decision criteria
+3. Calculate the test statistic from the sample
+4. Draw a conclusion about the null hypothesis (reject or fail to reject?)
+
+If we observe sufficient evidence, we “reject the null hypothesis”.
+If we do not observe sufficient evidence, we “fail to reject the null hypothesis”.
+
+In science, we don’t talk about accepting or proving, only “the evidence strongly suggests” or disproving.
+
+
+## Error in hypothesis testing
+
+There are four possible outcomes when hypothesis testing:
+
+**If the null hypothesis is true**
+
+- Fail to reject: *No error*
+- Reject: *Type I Error*
+
+**If the null hypothesis is false**
+
+- Fail to reject: *Type II error*
+- Reject: *No Error*
+
+Type I error (alpha-error) is rejecting the null when it's true.
+
+Type II error (beta-error) is rejecting the null when it's false.
+
+
+## What is a p-value?
+
+Watch: https://www.youtube.com/watch?v=kMYxd6QeAss (bears discussing pvalue, sample size, and significance) 
+
+What went wrong in this conversation. What misconceptions does the bear have? What can they do to have better inference? What is publication bias?
+
+(I like 538’s description of a p-value) - A p-value does not tell you that your hypothesis was true or not. “You can think of the p-value as an index of surprise. How surprising would these results be if you assumed your hypothesis was false?”
+
+In short, the **p-value** is the likelihood of calculating a result at least as extreme as the one observed with our data *if the null hypothesis is true.*
+
+If the p-value is less than a pre-specified value alpha (usually we set to 0.05), then we reject the null hypothesis. 
+
+If the p-value is greater than a pre-specified value, then we fail to reject the null hypothesis.
+
+As simple as that is, people misunderstand and misuse p-values all the time ([check this out](http://www.ohri.ca/newsroom/seminars/SeminarUploads/1829%5CSuggested%20Reading%20-%20Nov%203,%202014.pdf)).
+
+### A brief history:
+
+R. A. Fisher set up the P value to be used as a rough quantitative measure of the “strength of evidence against the null hypothesis”. A small P-value is “significant” because it shows that something is worthy of notice.  Operationally, a P-value <0.05 was meant to suggest that one should repeat the experiment. If the experiment consistently gave a small P-value, then there was probably something worth noticing! A P-value was never meant to be “proof”. 
+
+A P-value is the probability of getting the result, or a more extreme result, if the null hypothesis were true. 
+
+Sometimes people get this wrong by instead thinking that:
+
+1. If p=0.05, then the null hypothesis has a 5\% chance of being true 
+
+*The assumption is that the null hypothesis is true. There is a 5\% probability that you would observe this result, if the null hypothesis is true. So it does not measure the “chance” that the null hypothesis is true. Confusing, but see the difference?*
+
+2. A nonsignificant difference (p>0.05) means there is no difference among groups
+
+*It just means that in *your *data, you observed a null effect. This doesn’t necessarily mean that the null effect is most likely.*
+
+3. A statistically significant finding is clinically important
+
+*This is not always true. What if the observed difference is really small? What if the confidence intervals are really wide?*
+
+4. Studies with p-values on opposite sides of 0.05 are conflicting.
+
+*Studies can show the same average percent benefit, but one has larger confidence intervals (that overlap with zero). Could have had different precision, or different sample sizes. They can’t be compared directly, unless you did another study.*
+
+5. Studies with the same p-value provide the same evidence against the null hypothesis. 
+
+*The means can be quite different, even if the p-values are the same. You still need to look at the effect size and the CIs to decide which value is the most useful. There is no “positive” evidence - only evidence against the null hypothesis.*
+
+6. p=0.05 means that we have observed data that would only occur 5% of the time under the null hypothesis.
+
+*Recall, that the definition of the p-value is the probability that you observed this value and anything more extreme given the null hypothesis is true.*
+
+7. p=0.05 and p<= 0.05 mean the same thing.
+
+*One is the probability only equal to 0.05, the other is all values less than 0.05, so it doesn’t mean the same thing!*
+
+8. P values are properly written as inequalities
+
+*When we write our hypothesis test, we want to know which region the p-value falls into: fail to reject (>0.05) or reject the null (< 0.05), so we write it as an inequality, or an equality statement.*
+
+*When we report a p-value, we should report the actual value, because it conveys the strength of the evidence against the null hypothesis.* 
+
+9. p=0.05 means that if you reject the null hypothesis, the probability of a Type I error is only 5%
+
+*Related to the first point, a Type I error is a “false positive”, which means no difference, so it is a bit of semantics, but related to the idea that if your assumption in the test is that the null is true, then it can’t also tell you the chance that the null is false. The chance of a Type I error *actually *depends on the data and your prior knowledge of the system, and certitude for your hypothesis, before you even begin.*
+
+10. With p=0.05 threshold for significance, the chance of a Type I error will be 5%
+
+*Related to the above, except it implies this before a test has even been done… Still depends on the prior probability that your hypothesis is true. If we “know” the data is true, then the chance for type I error actually 0. If the null hypothesis is actually true, then it is 5%. If we are unsure, then the chance of a false positive is somewhere between 0 and 5%.*
+
+11. You should use a one-sided p-value when you don’t care about a result in one direction, or a difference in that direction is impossible.
+
+*Sticky statistical philosophy ground… May need to alter your required strength of evidence (change p<0.025 for reject the null?)*
+
+12. A scientific conclusion or treatment policy should be based on whether or not the p-value is significant.
+
+*THIS IS THE MOST IMPORTANT, AND ENCOMPASSES ALL THE REST! This is like saying that the magnitude of the effect isn’t important (look at your other output parameters!) or that the evidence from your study/experiment is all that is needed, and statistical results are objective, all-powerful tools to design actions from.*
+
+
+## p-hacking
+
+There is often a LOT of importance placed on the p-value. This may be leading to a bias in the academic research literature towards “positive” results, or those that found p < 0.05. 
+
+Discuss ethical dilemma of: if your study didn’t find a significant p-value, is it still useful, or was it just a dead end? Or if you didn’t find a significant p-value, should you just keep trying? 
+You can say almost anything you want with statistics….
+
+Look at this example from FiveThirtyEight: https://projects.fivethirtyeight.com/p-hacking/ 
+
+How do you think you *should* go about answering this question? Don’t you just want to try all the variables to see what is significant? What problems might there be with this approach?
+
+Remember the data analytics cycle?
+
+We should always start by stating the question.
+
+Take a look at the dataset again. What do you think the question should be?
+
+Why is “Is there a connection between politics and the economy” probably not a very good question to use as you begin your data analysis?
+
+What are some better (more specific) questions we could ask using the data?
+
+Having a question that is too vague may lead (intentionally or not) you to conduct a “fishing expedition”. 
+
+If you go “fishing” you might be just looking for any combination of data points that produces a significant result, without an a priori hypotheses for a relationship or causality. Statistics is a tool, but you still should be using your brain. Using your knowledge of the system/data that you’re looking at, you should have some expectation of a causal relationship that you think you will see in the data. This is partly why we require Data Analytics majors to choose a “focus” - to be really good at Data Analysis, you need to be able to think, reason, and talk about the relationships/concepts in your chosen field (e.g. biology), beyond just crunching data and running statistics.
+
+Every dataset contains some patterns, just due to chance. The point of running a statistical test is to test a hypothesis with evidence (data), and to see how likely your results would be compared to the null (if they were entirely due to chance). Just running a statistical test does not protect you from spurious results - if you haven’t followed the proper process. 
+
+Things to keep in mind to protect your analysis from spurious results
+
+1. Begin with a clear question and hypothesis. This is the blueprint from which the rest of your data collection, statistical analysis, and visualization can begin!
+2. Are your data representative? Do you have a large enough sample size? 
+3. If you have a really large sample size, how might that impact your results?
+4. Was your data collection unbiased?
+5. Are you looking for a pattern in the data, and then using that observed pattern to create your hypothesis, and then run a statistical test on the same data?
+6. There is a difference between exploratory analysis and confirmatory analysis
+
+*So why does p-hacking happen?*
+
+Some of it is the pressure put on researchers to publish more, and to publish in high-ranking “glamour” journals, which can also be linked to career success, income, and promotion. But a lot of it is probably simple human nature. It’s very tempting to keep trying something new until you see the significant result you were hoping to see. Deep in a big data analysis, it is easy to forget what, specifically, your initial question was. Again, this is why getting the first part of your project, the “Plan/Design” phase correct is so important. You can protect yourself from straying off course, which ultimately will save time and money, in addition to reducing the chance you will go fishing or “p-hack”. 
+
+
+## Statistical significance vs practical significance
+
+Reminder: Statistics is a tool to test hypotheses, but you still need to use your brain and field-specific knowledge to assess how useful the result is. 
+
+Related in R: R is a tool, you still need to use your brain to assess if the output you got means that the program ran correctly, if the functions are being applied properly, and if the result is useful.
+
+Remember the example of a medical trial with a statistical difference between two groups with an average BP of 139 vs 140? So it’s significant, but is it useful? 
+
+- Would you tell the doctor to make different decisions for these two groups based on the results? 
+- What other criteria might you need to make a recommendation? 
+- How could you find such information?
+
+
+Let’s dig in some more… 
+- These data are not practically significant
+- Is there an important threshold (high or low) for blood pressure?
+- Is there an acceptable range of variability for blood pressure?
+- Might need to go back to the doctors/nurses/client to ask if there are any other risk factors we should be looking at
+- After this study, where are we in the Data Analysis cycle? Where should we go next?
+
+https://xkcd.com/1478/ 
+
+...Recall the example we looked at with political parties and the economy. Even when we found significant results, they were often quite weak (p<0.05, but look at the spread around that line [R2]!). Even though we did do quite a bit of “fishing” to find patterns in the data, they frequently produced marginally significant or weakly significant effects, which could suggest to us that if there is a connection between the number of Democrats vs. Republicans in office and the economy, it is not a very strong one. There must be other factors that we should be looking at, if we wanted to predict economic strength.
+
