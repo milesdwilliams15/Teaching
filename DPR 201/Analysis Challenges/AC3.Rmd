@@ -1,0 +1,16 @@
+---
+title: "Analysis Challenge 3"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this analysis challenge, use the model you created in AC2 to test whether your prediction for 2020 is statistically different from Trump's actual performance in 2020. 
+
+Here's a template for your response based on what you find:
+
+I created a forecast model for U.S. Presidential elections. I used [VARIABLE(S)] to predict [OUTCOME VARIABLE]. My model was trained on all presidential elections from 1948 to 2012 where an incumbent ran for office. Using values for my predictor variables in 2020, my model predicted that [MY OUTCOME VARIBLE] would be [X]. The actual value in 2020 was [Y]. Using a statistical test I [CAN/CANNOT] reject the null hypothesis that my prediction is equal to the outcome in 2020.
+
+In the same .Rmd file, fill in the above text with your answers and write the code you used to make your prediction and perform the hypothesis test. When you're done, knit your document to Word or HTML and submit to Canvas.

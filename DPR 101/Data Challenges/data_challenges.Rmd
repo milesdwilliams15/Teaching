@@ -94,5 +94,49 @@ Do you think a histogram that groups the data by year, or a line plot is a more 
 Here's a link to the data: https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Data/ukraine_political_violence.csv
 
 
+## DC 4
 
+Use the county_map_data we made in the notes here [link here].
+
+1. Filter the data down to a state of your choice.
+2. Make a map that shows county level detail about voter turnout in 2016. [You'll need to set the mapping fill = 100 * (vote_total_2016 / pop).]
+3. Knit your work to an HTML or word and submit to Canvas.
+
+Read in the data:
+```{r}
+library(tidyverse)
+library(socviz)
+county_map_data <- left_join(county_map, county_data)
+glimpse(county_map_data)
+```
+
+Filter to look at Ohio:
+```{r}
+oh_map_data <- county_map_data %>%
+  filter(state == "OH")
+```
+
+Draw an Ohio map:
+```{r}
+ggplot(oh_map_data) +
+  aes(x = long, y = lat, 
+      group = group,
+      fill = 100 * (total_votes_2016 / pop)) +
+  geom_polygon(
+    color = "gray",
+    size = 0.1
+  ) +
+  coord_fixed() +
+  theme_void() +
+  scale_fill_gradient(
+    low = "white", high = muted("blue")
+  ) +
+  labs(
+    fill = "% Turnout",
+    title = "Ohio voter turnout, 2016",
+    caption = "By Miles D. Williams"
+  ) +
+  theme(legend.position = c(0.3, 0.9),
+        legend.direction = "horizontal")
+```
 
