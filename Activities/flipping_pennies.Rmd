@@ -1,0 +1,41 @@
+---
+title: "Flipping Pennies"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Will *Fortune* be your friend? Try your hand at the Flipping Pennies game to see!
+
+Make a function to "flip a penny":
+```{r}
+penny_flip <- function() sample(c("heads", "tails"), 1)
+```
+
+If you run it without any input, it'll give you a result:
+```{r}
+penny_flip()
+```
+
+And again, another result:
+```{r}
+penny_flip()
+```
+
+
+## Game 1: Tournament
+
+Use this function to compete head to head with a partner. The first to get "heads" while the other gets "tails" wins.
+
+If you win, you'll advance to the next round. If you lose, you'll be eliminated from the tournament.
+
+We'll continue like this until there's one winner.
+
+
+## Game 2: Round Robin
+
+Play a round with 10 different classmates. The rules are the same as before. The first to get "heads" while the other gets "tails" wins. 
+
+This time, record the number of times you win.
