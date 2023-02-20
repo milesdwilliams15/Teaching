@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = T,
 
 ## Goals
 
-- Consider why *over-comparing* and *under-reporting* of research findings is bad for the generally accumulation of scientific knowledge.
+- Consider why *over-comparing* and *under-reporting* of research findings is bad for the general accumulation of scientific knowledge.
 - Use data from the 2016 election to get hands-on experience with the over-comparing and under-reporting problem.
 
 
@@ -51,6 +51,7 @@ alt_data <- simulate(
 ```
 
 The above code creates two lists of simulated datasets. In the first, the true underlying data-generating process is such that x and y have no relationships. In the second, x and y have a modest positive relationship.
+
 
 ### When the null is true
 

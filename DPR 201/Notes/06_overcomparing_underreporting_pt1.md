@@ -4,7 +4,7 @@ Over-Comparing, Under-Reporting, Part 1
 ## Goals
 
 -   Consider why *over-comparing* and *under-reporting* of research
-    findings is bad for the generally accumulation of scientific
+    findings is bad for the general accumulation of scientific
     knowledge.
 -   Use data from the 2016 election to get hands-on experience with the
     over-comparing and under-reporting problem.
