@@ -20,11 +20,12 @@ knitr::opts_chunk$set(echo = T,
 - Differentiate a *model* from an *estimator*
 - Use a linear model to summarize the relationship between variables
 - Use a linear model to make predictions
+- Talk about what's necessary to use regression for causal analysis.
 
 
 ## Linear Regression
 
-A linear regression model is a way of representing a data-generating process or DGP. A linear regression model in particular represents the relationship between an outcome variable and one or more explanatory variables as a linear function.
+A linear regression model is a way of representing a data-generating process or DGP. A linear model in particular represents the relationship between an outcome variable and one or more explanatory variables as a linear function.
 
 These help us to accomplish three basic goals:
 
@@ -50,11 +51,11 @@ A linear regression model has a similar form. The main difference is the inclusi
 
 $y_i = \alpha + \beta x_i + \epsilon_i$.
 
-The parameters and variables have slightly different interpretations now.
+The parameters and variables have slightly different interpretations as well.
 
-- $x_i$ and $y_i$: The variables where $i$ is a subscript that alters us to the fact that there are different values of the variables for individual observations in our data.
-- $\beta$: This is the slope. It tells us the average change in $y_i$ per a unit change in $x_i$.
-- $\alpha$: This is the intercept. It tells us the average of $y_i$ when $x_i = 0$.
+- $x_i$ and $y_i$: The variables where $i$ is a subscript that alerts us to the fact that there are different values of the variables for individual observations in our data.
+- $\beta$: This is the slope. It tells us the expected change in $y_i$ per a unit change in $x_i$.
+- $\alpha$: This is the intercept. It tells us the expected value of $y_i$ when $x_i = 0$.
 - $\epsilon_i$: Variation in $y_i$ not explained as a linear function of $x_i$.
 
 
@@ -64,7 +65,7 @@ A linear model has known and unknown parameters. The values of the variables are
 
 The process of *identifying* the unknown parameters is called model fitting. This is where we try to find the slope and intercept values that make the most sense given the data.
 
-The default way we do this in R is with a method called ordinary least squares or OLS. OLS is an *estimator*, a rule or criterion that defines what the best values of the unknown parameters are. In the case of OLS, the rule is that the values must minimize the following:
+The default way we do this in R is with a method called ordinary least squares or OLS. OLS is an *estimator*. This is a rule or criterion that defines what the best values of the unknown parameters are. In the case of OLS, the rule is that the values must minimize the following:
 
 $\sum_i[y_i - (\alpha + \beta x_i)]^2$
 
@@ -115,33 +116,59 @@ fit1 <- lm(lifeExp ~ gdpPercap, data = gapminder)
 summary(fit1)
 ```
 
-There's a lot more going on now. The `summary()` function reports numerous test statistics for the linear model. Importantly, it summarizes for us whether there is a statistically detectible linear relationship between the outcome and the explanatory variable. It also gives us information at the bottom about the overall quality of the fit.
+There's a lot more going on now. The `summary()` function reports numerous test statistics for the linear model. Importantly, it summarizes for us whether there is a statistically detectable linear relationship between the outcome and the explanatory variable. It also gives us information at the bottom about the overall quality of the fit.
 
 The F-statistic at the bottom, for example, is used to tell us whether the linear model with `gdpPercap` as a predictor does better than a "null" model that has no predictors whatsoever. It's testing the null hypothesis that our model does no better than random chance would suggest. In this case, we can reject the null. 
 
 It also reports an R^2 value. This has direct correspondence with correlation. It tells us the share of the variation in the outcome that is explained by the regression model. We usually look at the adjusted version of the R^2 because this takes into account the number of variables we use to predict an outcome.
 
+As a general warning, the R^2 is not always a reliable indicator of how well you're model fits the data. For example, the R^2 for the gapminder data is actually fairly good by social science standards. But if you look at the data, you can clearly see that the model isn't capturing the relationship between GDP per capita and life expectancy very well.
+
+
+## Describing Relationships
+
+The first use of linear models is to help us summarize relationships. We use the value of the slope on a variable to do this. When we use OLS, the slope tells us how much the average value of the outcome variable changes per a unit change in the explanatory variable.
+
+Here's our fit model:
+```{r}
+fit1 <- lm(lifeExp ~ gdpPercap, data = gapminder)
+fit1
+```
+
+Here's our slope:
+```{r}
+coef(fit1)[2]
+```
+
+This tells us that, on average, life expectancy increases by 0.00076 years per each additional dollar of GDP per capita.
+
 
 ## Making Predictions
 
-Say we use the gapminder data to make predictions. Let's subset the data so that we have pre-2007 data and data only for 2007.
+The slope and intercept of a linear model let us make predictions with data, too. All we need to to is provide new data and make predictions with it using the parameters we fit with other data.
+
+Let's use the gapminder data to make predictions. First, subset the data so that we have pre-2007 data and data only for 2007.
 
 ```{r}
+library(dplyr)
 data_pre_2007 <- gapminder %>%
   filter(year < 2007)
 data_for_2007 <- gapminder %>%
   filter(year == 2007)
 ```
 
+And then we can estimate a regression model using the data before 2007.
 ```{r}
 the_model <- lm(lifeExp ~ gdpPercap, data = data_pre_2007)
 summary(the_model)
 ```
 
+We can then use the `predict()` function and give it our fitted model and the 2007 data. It'll use the estimated slope and intercept calculated with the pre-2007 data to make predictions for 2007.
 ```{r}
 predictions <- predict(the_model, newdata = data_for_2007)
 ```
 
+We can visually inspect the results to see how well it did:
 ```{r}
 ggplot(data_for_2007) +
   aes(x = gdpPercap,
@@ -153,3 +180,53 @@ ggplot(data_for_2007) +
   )
 ```
 
+Not too bad, but obviously not perfect. 
+
+We can also check the quality of the predictions using an R^2 value. We can calculate one by just squaring the correlation between the observed life expectancy in countries in 2007 to the predicted values.
+```{r}
+data_for_2007 %>%
+  summarize(
+    R2 = cor(lifeExp, predictions)^2
+  )
+```
+
+
+## When does correlation suggest causation?
+
+We can also use linear regression to make causal inferences. But to do this, we need to take extra care to ensure our data and study design allow us to make causal claims. The below walks through some things to consider using case studies.
+
+### Case Studies
+The point of these case studies is not to say exactly what should be prescribed in each situation. Rather, it is to help students to identify the principles of statistical interpretation, while taking into account field-specific knowledge and factors related to the data and the analysis, and to talk about the principles or questions they would ask in each situation. We will provide Hill’s criteria as a guide for determining if there is evidence for a causal relationship. Note that Hill’s criteria cannot “prove” causality, but it can provide an “aid to thought”, to help the data analyst determine how to interpret the results, and what the next steps to the data analysis could be.
+
+The 18th-century Scottish philosopher David Hume pointed out that causation is induced logically, not observed empirically. Therefore we can never know absolutely that exposure X causes disease Y. There is no final proof of causation: it is merely an inference based on an observed conjunction of two variables (exposure and health status) in time and space. This limitation of inductive logic applies, of course, to both experimental and non-experimental research.
+
+In his paper, Hill said: “What I do not believe‚ and this has been suggested, that we can usefully lay down some hard-and-fast rules of evidence that must be obeyed before we can accept cause and effect. None of my nine viewpoints can bring indisputable evidence for or against the cause-and-effect hypothesis and none can be required as a sine qua non [a necessary condition of causality]. What they can do, with greater or less strength, is to help us to make up our minds on the fundamental question, is there any other way of explaining the set of facts before us, is there any other answer equally, or more, likely than cause and effect?”
+
+“No formal tests of significance can answer those questions. Such tests can, and should, remind us of the effects that the play of chance can create, and they will instruct us in the likely magnitude of those effects. Beyond that they contribute nothing to the, proof‚ of our hypothesis … It was therefore a useful corrective for statisticians to stress, and to teach the needs for, tests of significance merely to serve as guides to caution before drawing a conclusion, before inflating the particular to the general… Yet there are innumerable situations in which (tests of significance) are totally unnecessary‚ because the difference is grotesquely obvious, because it is negligible, or because, whether it be formally significant or not, it is too small to be of any practical importance… What is worse the glitter of the t table diverts attention from the inadequacies of the fare.”
+
+
+### Bradford Hill’s Criterion for Data Scientists
+
+Read: https://www.kdnuggets.com/2017/02/hill-data-scientist-xkcd-story.html 
+
+- Strength
+- Consistency
+- Specificity
+- Temporality
+- Biological Gradient
+- Plausibility
+- Coherence
+- Experiment
+- Analogy
+
+### Case 1
+You are conducting a data analysis on a dataset that contains observational measures on bumblebee population densities and pesticide use across the United States. You notice that bumblebees tend to be more densely populated in areas where pesticide use is low or where pesticides are not used. You conduct a linear regression on your data and find a p value <0.05, and R2=0.37, which is often considered a good amount of variance explained in an ecological study. You are aware of several recent experiments on other species of bees and pollinating insects that show mixed effects of pesticides on egg laying rates, colony size, and life span.
+
+### Case 2
+You are a data analyst for a hospital, who is trying out a new medication for patients suffering from chronic inflammation. When you compare 200 patient outcomes to a control group using a placebo medication, you find a significant difference. There are only 150 patients in your control group because about 25% of them dropped out of the study after the first 2 weeks. In the new medication group, you have some patients who use the medication more often, but at higher rates there is only a small increase in patient benefit compared to patients using the medication less often. You are friends with a data analyst at another hospital that is also looking into the new medication using a similar dataset, but they have found a statistically stronger improvement than you have, for patients who use the new medication more often. You did not explicitly include a comparison group of patients taking current (older) medication yet, but you think that the outcomes look promising for the new drug.
+
+### Case 3
+You are a data analyst working for a large international manufacturing company that makes shredded cheese. You have been asked to solve a problem that seems to only exist for one of your major customers, even though you make the same, or a similar product, for other customers. In fact, the rate of complaint is 9 times larger than the average complaint rate from your other customers. A common complaint is that the cheese smells “off” and sometimes has visible green mold. As you analyze the data, you find several inputs that are unique to the complaining customer, such as 200% larger bag size made of thinner plastic (packaging), 3 times longer inventory turn-time (the amount of time the customer stores the product before using it), and omitting a flavorless mold inhibiting ingredient. The Vice President of the company wants to you to find the cause of the complaints and make a recommendation to solve the problem so that you don’t lose a profitable customer.
+
+### Case 4
+You are a data analyst working on a team to give recommendations for the Department of Education. You have been given a dataset of current college students that includes data on parent’s address, family income, college enrollment, SAT scores, and college grade point average (GPA). You run a linear regression on SAT scores and college GPA, and find p=0.002. Your partner analyst says “Great! We can see from this test that an increase of one point in SAT scores causes, on average, an increase of 0.1 points in college GPA!”. You also tried looking at linear regressions on several other variables with SAT scores, and found that family income had R2=0.95 with SAT score and that for each income category, the SAT score increases by about 12 points. Similar correlations have been found for ACT scores (a different college entrance exam) and for GRE (graduate entrance exam) and LSAT (law school entrance exam) scores with college GPA. Did you find a causation for better college GPA, and what should you tell your boss?

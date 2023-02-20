@@ -13,16 +13,22 @@ knitr::opts_chunk$set(echo = F,
                       out.width = "75%")
 library(tidyverse)
 library(socviz)
-county_map_data <- left_join(county_map, county_data)
-county_map_data <- county_map_data %>%
+
+# Adding new columns to county_data
+county_data <- county_data %>%
   mutate(
     change_dem = per_dem_2016 - per_dem_2012,
-    change_gop = per_gop_2016 - per_gop_2012
+    change_gop = per_gop_2016 - per_gop_2012,
+    shift_dem = ifelse(change_dem > 0, "Yes", "No"),
+    shift_gop = ifelse(change_gop > 0, "Yes", "No")
   )
 
 # STOP! EDIT THIS TO PICK YOUR STATE
-data_for_state <- county_map_data %>%
-  filter(state == "AL")
+my_state <- "AL"
+data_for_state <- county_data %>%
+  filter(state == my_state)
+map_for_state <- left_join(county_map, county_data) %>%
+  filter(state == my_state)
 ```
 
 ## Introduction
@@ -51,7 +57,8 @@ To provide a sense for where the biggest shifts in electoral support occurred in
 Here's a map of [US STATE]. It shows...
 
 ```{r}
-# write your code here to plot a state map
+# draw a map of your state. map the fill aesthetic to the
+# continuous change_dem/gop variable.
 ```
 
 
