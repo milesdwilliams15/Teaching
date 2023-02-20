@@ -147,7 +147,7 @@ ggplot(gapminder) +
   geom_smooth(method = lm)
 ```
 
-<img src="linear_regression_and-_prediction_pt1_files/figure-gfm/unnamed-chunk-1-1.png" width="75%" />
+<img src="linear_regression_and_prediction_pt1_files/figure-gfm/unnamed-chunk-1-1.png" width="75%" />
 
 Looking at this, do you think a linear model is a good fit for the data?
 
@@ -320,7 +320,7 @@ ggplot(data_for_2007) +
   )
 ```
 
-<img src="linear_regression_and-_prediction_pt1_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
+<img src="linear_regression_and_prediction_pt1_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
 
 Not too bad, but obviously not perfect.
 
