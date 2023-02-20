@@ -1,0 +1,88 @@
+---
+title: "Main Assignment 1"
+author: "[YOUR NAME HERE]"
+date: '`r Sys.Date()`'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+library(tidyverse)
+library(socviz)
+county_map_data <- left_join(county_map, county_data)
+county_map_data <- county_map_data %>%
+  mutate(
+    change_dem = per_dem_2016 - per_dem_2012,
+    change_gop = per_gop_2016 - per_gop_2012
+  )
+
+# STOP! EDIT THIS TO PICK YOUR STATE
+data_for_state <- county_map_data %>%
+  filter(state == "AL")
+```
+
+## Introduction
+
+What were the characteristics of counties in [US STATE] that were correlated with shifts in support from the [REPUBLICANS/DEMOCRATS] in 2012 to [DEMOCRATS/REPUBLICANS] in 2016 for the office of US President? Finding an answer to this question matters because...
+
+
+## Data and Design
+
+I used county-level data from the `{socviz}` R package to examine how demographic characteristics of counties in [US STATE] correlated with shifts in support away from the [REPUBLICANS/DEMOCRATS] to the [DEMOCRATS/REPUBLICANS] between 2012 and 2016. Change in support was measured as the difference in the share of the vote that went to the [REPUBLICAN/DEMOCRATIC] candidate in 2016 relative to 2012.
+
+I specifically looked at the following four additional variables to see how well they explained shifts in support:
+
+1. VARIABLE 1
+2. VARIABLE 2
+3. VARIABLE 3
+4. VARIABLE 4
+
+I chose to look at these because...
+
+To provide a sense for where the biggest shifts in electoral support occurred in [US STATE], I first drew a map of the state and used color to show how much support changed in 2016 relative to 2012 in favor of the [REPUBLICAN/DEMOCRATIC] nominee for President in 2016. I then used a series of [BAR PLOTS/BOXPLOTS/SMOOTHED REGRESSION PLOTS] to show the correlation between shifts in support and the four demographic characteristics listed above.
+
+
+## Results
+
+Here's a map of [US STATE]. It shows...
+
+```{r}
+# write your code here to plot a state map
+```
+
+
+Write text about your next plot here...
+
+```{r}
+# code for your second figure
+```
+
+
+Write text about your next plot here...
+
+```{r}
+# code for your third figure
+```
+
+
+Write text about your next plot here...
+
+```{r}
+# code for your fourth figure
+```
+
+
+Write text about your next plot here...
+
+```{r}
+# code for your fifth figure
+```
+
+
+## Conclusion
+
+[Restate the research question in your own words. Restate why you think this issue is important. Summarize what you found.]
