@@ -1,0 +1,347 @@
+---
+title: "Multiple Regression and Model Selection"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Goals
+
+- Introduce *multiple* regression models for description, prediction, and causal inference.
+- Talk about methods for comparing models.
+
+
+## Multiple Regression
+
+Last time we talked about simple linear regression models. Multiple regression models are similar except that they include multiple explanatory variables.
+
+Instead of a model that looks like this:
+
+$y_i = \alpha + \beta x_i + \epsilon_i$.
+
+We have a model that looks like this:
+
+$y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + ... + \beta_k x_{ik} + \epsilon_i$.
+
+We can easily build on the simple linear model we talked about last time with some additional columns in the gapminder data:
+```{r}
+library(gapminder)
+fit1 <- lm(lifeExp ~ gdpPercap, data = gapminder)
+```
+
+The above object is a fitted linear model of life expectancy as a function of GDP per capita. If we take the summary of it, we can check the overall model performance:
+```{r}
+summary(fit1)
+```
+
+We can look at the output and see that the model captures about 34\% of the variation in life expectancy across countries over time. Could we do better by including more variables?
+
+We could first riff on our original model by adding polynomial terms with the `poly()` function:
+```{r}
+fit2 <- lm(lifeExp ~ poly(gdpPercap, 2), data = gapminder)
+summary(fit2)
+```
+
+This model has two slope coefficients. One for GDP per capita, and one for GDP per capita squared. Just like a simple linear regression model is like the simple equation for a like:
+
+*y = mx + b*
+
+this new regression model has a form more like:
+
+*y = mx + dx^2 + b*
+
+This is a quadratic equation.
+
+If we look at the summary of the model, we can see a big improvement in the R^2! A quadratic equation appears to do a much better job of fitting the data than a simple linear equation. We can check this by looking at the model predictions relative to the observed data:
+```{r}
+library(ggplot2)
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point() +
+  geom_line(
+    aes(y = predict(fit2)),
+    color = "blue"
+  )
+```
+
+This example shows just how flixible linear models can be. They can be adapted to accomodate all kinds of *nonlinear* relationships. 
+
+Here's another example:
+```{r}
+fit3 <- lm(lifeExp ~ log(gdpPercap), data = gapminder)
+summary(fit3)
+```
+
+Wow! This one does even better than the quadratic equation. This one specifies a very special form of the relationship between life expectancy and GDP per capita:
+
+$e^\text{lifeExp}_i = \alpha \cdot \text{gdpPercap}_i^\beta \cdot \epsilon_i$.
+
+This is a non-linear equation. Specifically, it indicates an exponential relationship. But as a testament to the adaptability of linear regression, by simply taking the natural log of GDP per capita, the model can be specified as a linear equation:
+
+$\text{lifeExp}_i = \log(\alpha \cdot \text{gdpPercap}_i^\beta \cdot \epsilon_i) = \log(\alpha) + \beta \log(\text{gdpPercap}_i) + \log(\epsilon_i)$.
+
+We can check how well this fits to the data, too:
+```{r}
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point() +
+  geom_line(
+    aes(y = predict(fit3)),
+    color = "blue"
+  )
+```
+
+FYI, this would be equivalent to producing a plot where the x-axis has been log-transformed and we produce a linear regression line with the updated scaling for the data:
+```{r}
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point() +
+  geom_smooth(
+    method = lm
+  ) +
+  scale_x_log10()
+```
+
+We aren't limited to variations on functional form using a single predictor variable. We can add multiple predictor variables as well using the `+` operator in our formula object:
+```{r}
+fit4 <- lm(lifeExp ~ log(gdpPercap) + continent, data = gapminder)
+summary(fit4)
+```
+
+That R^2 is getting pretty darn high. This model explains more than 70\% of the variation in life expectancy. The above model in particular includes multiple coefficients estimated by all but one of the values for the `continent` variable in the data. When we give `lm` a variable that is a category, by default it drops one of the categories and treats it as a referent category. That is, it gets absorbed in the model's intercept term. Each of the coefficients on the remaining categories then tells us how the intercept changes depending on the category the observations fall into. 
+
+Observe:
+```{r}
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point() +
+  geom_line(
+    aes(y = predict(fit4),
+        color = continent)
+  )
+```
+
+For each region, we now have a separate line produced for each group. The slope on GDP per capita is the same, but there is now a different intercept per region.
+
+Plotting our results like this starts to become trickier the more variables we add. For example check out what happens if we add a continuous variable like population into the mix:
+
+```{r}
+fit5 <- lm(lifeExp ~ log(gdpPercap) + pop + continent, data = gapminder)
+summary(fit5)
+```
+
+```{r}
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp) +
+  geom_point() +
+  geom_line(
+    aes(y = predict(fit5),
+        color = continent)
+  )
+```
+
+The fact that our regression is fit using population as well makes it much harder show the lines of best fit with simple x-y coordinates.
+
+Under the hood, the lines of best fit are actually hyperplanes of best fit. To show these, we actually need to plot the data in 3 dimensions rather than just 2.
+
+
+## How to describe relationships?
+
+With multiple regression, interpretation of coefficients becomes more conditional or *marginal*. Rather than each telling us the simple linear relationship between an outcome and a predictor, each tells us the marginal relationship between an outcome and a predictor after subtracting out the linear relationship between any other predictors in the model with the outcome and the predictor of interest.
+
+This is probably the most unintuitive part of multiple regression, so we'll walk through a simple example. This is easiest to do using the continent variable.
+
+First, we're going to group the data by continent and then make continent specific versions of GDP per capita and life expectancy that are *mean centered*. That means that we're centering the variables around their continent-specific averages:
+```{r}
+library(dplyr)
+gapminder <- gapminder %>%
+  group_by(continent) %>%
+  mutate(
+    gdpPercap_cen = gdpPercap - mean(gdpPercap),
+    lifeExp_cen = lifeExp - mean(lifeExp)
+  ) %>%
+  ungroup()
+```
+
+Next, we'll estimate two regression models. The first is a multiple regression model where we estimate the relationship between life expectancy and GDP per capita while *adjusting* for continent/regional membership:
+```{r}
+mult_reg <- lm(lifeExp ~ gdpPercap + continent, data = gapminder)
+```
+
+The second will be a simple regression model where the already mean-centered life expectancy is regressed on the already mean-centered GDP per capita:
+```{r}
+simp_reg <- lm(lifeExp_cen ~ gdpPercap_cen, data = gapminder)
+```
+
+Check out the slopes estimated for GDP per capita for each model:
+```{r}
+coef(mult_reg)[2]
+coef(simp_reg)[2]
+```
+
+They're identical. Note that these slopes are not the same as what we'd estimate from the following model:
+```{r}
+lm(lifeExp ~ gdpPercap, data = gapminder) %>%
+  coef() %>%
+  .[2]
+```
+
+This is where the *multiple* regression part of multiple regression comes in. We essentially are estimating multiple linear regression models within linear regression models.
+
+Here's another example controlling for population. First, here's the multiple regression specification:
+```{r}
+mult_reg <- lm(lifeExp ~ gdpPercap + pop, data = gapminder)
+```
+
+And here's how we get to the same place using multiple simple linear regressions:
+```{r}
+simp_reg1 <- lm(lifeExp ~ pop, data = gapminder)
+simp_reg2 <- lm(gdpPercap ~ pop, data = gapminder)
+simp_reg3 <- lm(resid(simp_reg1) ~ resid(simp_reg2))
+```
+
+Now check the slopes for GDP per capita:
+```{r}
+coef(mult_reg)[2]
+coef(simp_reg3)[2]
+```
+
+These are identical. When we use multiple regression to get the marginal slope estimate for a variable while controlling for other variables in the model, it's mathematically equivalent to estimate three simple regression models. We first estimate a model where life expectancy is just a simple linear function of population. We then estimate a model where GDP per capita is a simple linear function of population. And then we estimate a model where the *residual* variation in life expectancy from the first model is a linear function of the residual variation in GDP per capita from the second model. 
+
+We get that residual variation using the `resid()` function. The residuals are just the unexplained variation in an outcome variable after fitting a linear regression model.
+
+
+## Making predictions with multiple regression
+
+Just like with simple regression models, we can make predictions using multiple regression models. The process of making predictions can actually be a useful way to benchmark the performance of different models. For instance, let's compare the following three models:
+```{r}
+pre_2007 <- gapminder %>% filter(year < 2007)
+for_2007 <- gapminder %>% filter(year == 2007)
+
+fit1 <- lm(lifeExp ~ gdpPercap, data = pre_2007)
+fit2 <- lm(lifeExp ~ poly(gdpPercap, 2), data = pre_2007)
+fit3 <- lm(lifeExp ~ log(gdpPercap), data = pre_2007)
+```
+
+And now, let's get the predictions from each model:
+```{r}
+pred1 <- predict(fit1, for_2007)
+pred2 <- predict(fit2, for_2007)
+pred3 <- predict(fit3, for_2007)
+```
+
+And then let's check the prediction accuracy of each:
+```{r}
+for_2007 %>%
+  summarize(
+    fit1_R2 = cor(lifeExp, pred1)^2,
+    fit2_R2 = cor(lifeExp, pred2)^2,
+    fit3_R2 = cor(lifeExp, pred3)^2
+  )
+```
+
+Remember that these diagnostics are not the end-all be-all for model evaluation. But we can at minimum use these to compare relative model performance. In this case, are comparing three alternative functional forms for the data and how predictive models based on those forms translate to new predictions. Based on the above, a linear-log model does better than a quadratic model, and a quadratic model does better than a linear model.
+
+Say on the basis of this we decide that we will build on the linear-log model, but we want to keep improving our predictions. We'll do three additional models. We'll try a model that controls for the log of population, of continents, and of the log of population and continents together:
+```{r}
+fit4 <- lm(lifeExp ~ log(gdpPercap) + log(pop), data = pre_2007)
+fit5 <- lm(lifeExp ~ log(gdpPercap) + continent, data = pre_2007)
+fit6 <- lm(lifeExp ~ log(gdpPercap) + log(pop) + continent,
+           data = pre_2007)
+```
+
+Let's check out the predictive performance of these models:
+```{r}
+pred4 <- predict(fit4, for_2007)
+pred5 <- predict(fit5, for_2007)
+pred6 <- predict(fit6, for_2007)
+
+for_2007 %>%
+  summarize(
+    fit3_R2 = cor(lifeExp, pred3)^2,
+    fit4_R2 = cor(lifeExp, pred4)^2,
+    fit5_R2 = cor(lifeExp, pred5)^2,
+    fit6_R2 = cor(lifeExp, pred6)^2
+  )
+```
+
+Amazingly, this example shows that more does not always equal better. Adding the log of population as a predictor actually makes the model's predictions slightly *worse*. 
+
+This is surprising, because if we just look at the original fits we can see that the log of population has a significant relationship with life expectancy in the pre-2007 data and that these models have *better* R^2 values:
+```{r}
+summary(fit3)
+summary(fit4)
+summary(fit5)
+summary(fit6)
+```
+
+
+## Occam's Razor and avoiding over-fitting
+
+The above is an excellent example of the problem of over-fitting. Over-fitting describes a scenario where, counter-intuitively, a fitted regression model is too specific to the sample of data. This makes it poorly suited to generalizing beyond that specific sample to a broader population.
+
+William of Occam (1287-1347) was a philosopher and theologian who said that among competing hypotheses, the one with the fewest assumptions should be selected. So in data analysis, we can think of each of our models as a separate hypothesis for how the world works, and we can use Occam's razor as a guide, or “aid to thought” - where we can prefer the simplest model that “works” and is more likely to be testable, than the most complex model. 
+
+Complexity should never and can never substitute for careful, theory driven model creation. Fancy is not necessarily better, because fancier models can increase the risk of over-fitting.
+
+Here's an example using a machine learning approach called Random Forests:
+```{r}
+library(ranger)
+rf_fit <- ranger(lifeExp ~ lgdpPercap + lpop + continent,
+                 data = pre_2007 %>%
+                   mutate(lgdpPercap = log(gdpPercap),
+                          lpop = log(pop)))
+rf_pred <- predict(rf_fit, for_2007 %>%
+                     mutate(
+                       lgdpPercap = log(gdpPercap),
+                       lpop = log(pop)
+                     ))
+for_2007 %>%
+  summarize(
+    fit3_R2 = cor(lifeExp, pred3)^2,
+    fit4_R2 = cor(lifeExp, pred4)^2,
+    fit5_R2 = cor(lifeExp, pred5)^2,
+    fit6_R2 = cor(lifeExp, pred6)^2,
+    rf_R2 = cor(lifeExp, rf_pred$predictions)^2
+  )
+```
+
+For all the extra computing power we used with a Random Forest machine learner, we got a measly 2\% point increase in predictive performance. Extra fancy comes with only marginal benefit in some cases.
+
+
+## Other model evaulation tools
+
+I generally would recommend making predictions to evaluate model performance. But there are tools for evaulating how well models fit your sample as well. You can use these to compare models, too.
+
+### Stepwise regression
+
+Stepwise regression is probably one of the most misused tools by researchers. So why am I teaching it to you?? Because you need to know what it is and why it can be problematic when you see others use it:
+
+```{r}
+library(MASS)
+
+step <- stepAIC(fit6, direction = "both")
+step$anova
+```
+
+`stepAIC()` shows you the AIC value of each model, as you take away predictor variables. But it can be a lot to look at. To run it, you might choose to put your more complex model inside, and see what happens at it starts to remove predictors.
+
+The anova output of step will show you the model that you started with (Initial Model, below), the model that it chose (Final Model, below), and the difference in AIC among the model chosen and the others. You can feel more confident in using the model that it says you should choose. If the Initial and the Final model are the same, it is telling you that all the predictors you provided give useful information and should stay. If the Final model does not include some of the predictors, it is telling you that those predictors did not provide useful information, and you would be OK leaving them out (in the example below, x1 was not useful). Usually if there is a difference in AIC > 2 (but this is not a hard rule), then you have some evidence to distinguish among the models. 
+
+
+### Linear hypothesis testing
+
+You can also use functions like `anova()` to perform linear hypothesis tests for nested models: models where one model is just a more complex version of another. It tests the null hypothesis that a more complex model can be reduced to a simpler one:
+```{r}
+anova(fit6, fit3)
+```
+
+In this case, we can reject the null that a model of life expectancy can be reduced to a linear-log function of GDP per capita from a linear-log function of GDP per capita and population with continent intercepts.
