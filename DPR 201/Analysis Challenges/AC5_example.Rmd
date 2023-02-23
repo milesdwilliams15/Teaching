@@ -1,0 +1,118 @@
+---
+title: "Montana Wildfires"
+author: "Miles D. Williams"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+library(tidyverse)
+library(estimatr)
+library(texreg)
+library(oesr)
+library(coolorrr)
+set_theme()
+set_palette()
+```
+
+## Background
+
+The state of Montana has a problem. Forest fires are a regular seasonal occurrence. To limit the spread and damage caused, the Forest Service offers to inspect the properties of individuals to ensure they are "fire proofed." If more people take advantage of this service, forest fires wouldn't be eliminated, but they would spread less intensely and pose a lower risk of damage and loss of life. Unfortunately, this service is voluntary and estimates suggest that less than 1\% of the population take advantage of it. So, in conjunction with the Forest Service, we've conducted a randomized controlled trial (RCT) in the form of behaviorally informed letters intended to highlight the risks individuals pose to their neighbors by not ensuring that their property is fire proofed. We want to know, did the letters increase applications for property inspections?
+
+
+## Design of the Experiment and Expected Data
+
+Households in two counties were randomly assigned to either treatment or control. Theoretically, each household, regardless of characteristics, had an equal chance of getting a letter.
+
+For each household, we have the following data:
+
+- `county`: a county identifier
+- `hhincome`: household income
+- `acres`: the size of the property in acres
+- `urban`: an indicator for whether the property is urban or rural
+
+We additionally will have information about which households received a letter and which submitted an application for an inspection. These variables will be `letter` and `app` respectively.
+
+## Analysis
+
+### Analysis Plan
+
+Will estimate the effect of letters sent to households using the estimator specified by Lin (2013). I will specify my regression model like so:
+
+```
+eq <- app ~ letter * (ccounty + curban + chhincome + cacres)
+```
+
+In the above, each of the covariates interacted with letter will be mean centered.
+
+I will then estimate this model using the `lm_robust()` function from the `{estimatr}` R package using HC2 standard errors. Since these errors are randomization justified, they should provide appropriate randomization based inferences about the effect of the letters.
+
+
+### Analysis Implemented
+
+Below I'm reading in the code for the analysis.
+```{r}
+data_location <- here::here("DPR 201", "Data", "montana_wildfires.csv")
+Data <- read_csv(data_location)
+```
+
+If we take a glimpse at the data, we can get a sense for its structure:
+```{r}
+glimpse(Data)
+```
+
+With the data, I first need to make mean-centered versions of the covariates:
+```{r}
+cmean <- function(x) x - mean(x, na.rm=T)
+Data %>%
+  mutate(
+    ccounty = cmean(county == "County A"),
+    curban = cmean(urban),
+    chhincome = cmean(log(hhincome)),
+    cacres = cmean(log(acres))
+  ) -> Data
+```
+
+Now I'll create my formula object:
+```{r}
+eq <- app ~ letter * (ccounty + curban + chhincome + cacres)
+```
+
+Next, I'll estimate the model:
+```{r}
+fit <- lm_robust(eq, Data, se_type = "HC2")
+```
+
+With this, we can now take a look at the results.
+
+### Results
+
+The below table summarizes the output from the regression model.
+```{r echo=FALSE, results='asis'}
+tb <- htmlreg(
+  fit,
+  include.ci = F,
+  digits = 3
+)
+htmlTable::htmlTable(tb)
+loci <- round(100 * fit$conf.low[2], 3)
+hici <- round(100 * fit$conf.high[2], 3)
+```
+
+The estimate on `letter` indicates that the effect of the treatment on inspection applications by households was approximately 4.1 percentage points (p < 0.001, 95% CI = [`r loci`, `r hici`]). We can reject the null that the letters had no effect on applications. 
+
+We can visualize the substantive impact of letters relative to baseline. The below figure summarizes the percentage of household applications among the control group and calculates the estimated counterfactual application rate due to receiving a letter. The letter would have led to a more than 5 percent application rate.
+```{r echo=FALSE}
+oes_prep(fit, treatment_vars = "letter",
+         scale = "percentage") %>%
+  oes_plot(
+    ylab = "% Applications",
+    title = "The impact of letters on household\napplications"
+  )
+```
+

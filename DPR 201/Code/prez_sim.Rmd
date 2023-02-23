@@ -1,0 +1,82 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: '2023-02-22'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+library(tidyverse)
+library(geomtextpath)
+library(coolorrr)
+set_theme()
+set_palette()
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/predict_prez.csv"
+data <- read_csv(url)
+```
+
+
+```{r}
+fit <- lm(incelectvotes ~ juneapp + q2gdp, data = data)
+summary(fit)
+```
+
+```{r}
+newdata <- tibble(juneapp = 41 - 54,
+                  q2gdp = 2.8)
+pred <- predict(fit, newdata)
+```
+
+```{r}
+sim_pred <- function(form, data, newdata) {
+  bootdata <- sample_n(data, size = nrow(data), replace = T)
+  bootfit <- lm(form, bootdata)
+  bootpred <- predict(bootfit, newdata)
+  bootpred
+}
+sim_out <- replicate(
+  2000, sim_pred(incelectvotes ~ juneapp + q2gdp, data = data,
+                newdata = newdata),
+  simplify = "c"
+)
+```
+
+```{r}
+win_pct <- 100 * mean(sim_out >= 270)
+ggplot() +
+  aes(x = sim_out) +
+  geom_histogram(
+    fill = "lightgray",
+    color = "darkgray"
+  ) +
+  geom_textvline(
+    xintercept = pred,
+    color = "red",
+    label = paste0("Prediction = ", round(pred))
+  ) +
+  geom_textvline(
+    xintercept = 270,
+    color = "blue",
+    label = "270 to win"
+  ) +
+  annotate(
+    "text",
+    x = 150,
+    y = 150,
+    label = paste0(round(win_pct, 2), "% chance\nof winning")
+  ) +
+  labs(
+    x = "Simulated Electoral Votes",
+    y = "Count",
+    title = "How will Biden do in 2024?",
+    subtitle = "Simulated results if the election were today"
+  )
+```
+
+
+
