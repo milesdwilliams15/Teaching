@@ -1,0 +1,206 @@
+---
+title: "Correlation"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Learning objectives
+
+- Correlation tells us about how two features of the world occur together.
+- To estimate a correlation, we need variation in the factors we want to study.
+- Correlations can be useful for description, prediction, or causation, but we need to be careful and think clearly about how appropriate estimated correlations really are.
+- Correlation coefficients are restricted to ***linear*** relationships. That means they have some limitations but are generally more useful than you might guess.
+
+## Ronald A. Fisher: An unlikely defender of smoking
+
+According to [Wikipeida](https://en.wikipedia.org/wiki/Ronald_Fisher), Ronald Fisher (1890-1962) was a "British polymath who was active as a mathematician, statistician, biologist, geneticist, and academic." In a history of modern statistics, Anders Hald called him a "genius who almost single-handedly created the foundations of modern statistical science."\footnote{Hald, Anders (1998). *A History of Mathematical Statistics.* New York: Wiley.}
+
+Fisher also didn't believe that smoking causes cancer, and he spent the last years of his life arguing with the British medical community about it.
+
+This piece by [Priceonomics](https://priceonomics.com/why-the-father-of-modern-statistics-didnt-believe/) provides some good background on the debate.
+
+It all started in 1957 when Fisher wrote a [letter](https://www.york.ac.uk/depts/maths/histstat/fisher269.pdf) to the *British Medical Journal* denouncing its recent editorial position that smoking causes lung cancer. The journal called for a public information campaign to spread the word about the dangers of tobacco. Fisher bristled at this advice.
+
+Fisher, well-known as a hothead prone to making enemies and never one to mince words, loved to smoke pipe tobacco. This habit, coupled with a fair dose of motivated reasoning, likely blinded the venerated and influential "father of modern statistics" to the scientific evidence---but whether bias or sound statistical reasoning drove this criticism remains the subject of debate.
+
+Though today this issue is settled (smoking does indeed cause lung cancer!), the root of Fisher's critique---that correlation $\neq$ causation---is a point that we will return to again and again. Just because two things co-occur does not imply that one *causes* the other. Remember this as we start to explore the topic of **correlation**. Knowing what an observed correlation **can** and **cannot** tell us about the features of the world under study is one of the biggest challenges researchers face. Clear thinking is essential.
+
+## What is correlation?
+
+"Correlation is the primary tool through which quantitative analysts describe the world, forecast future events, and answer scientific questions" (p. 13).\footnote{Bueno de Mesquita, Ethan and Anthony Fowler. 2021. \textit{Thinking Clear with Data: A Guide to Quantitative Reasoning and Analysis}. Princeton: Princeton University Press.} A **correlation** describes how much two features (or variables) of the world co-occur. 
+
+A correlation can be **positive**, meaning as one variable occurs or increases in value so does the other. A correlation also can be **negative**, meaning as one variable occurs or increases in value the other does the opposite. 
+
+As we think about variables, remember that they can come in different types. Some variables are **binary**, meaning they can take only one of two values. Imagine a light switch, which can either be on or off. Or think of smoking. Someone either smokes cigarettes on the regular, or they don't. 
+
+**Continuous** variables can take a variety of values. These capture features of the world like magnitude. Think of things like the number of people killed in a terrorist attack or ballots cast for a candidate in an election.
+
+### Binary Features
+
+Let's consider some county-level US data on the 2016 election. We're going to make two binary variables, one for whether the county was won by the GOP in 2016 and another for whether it was won by the GOP in 2012.
+
+```{r}
+
+# Use tools in the tidyverse
+library(tidyverse)
+library(socviz)
+
+county_data %>%
+  drop_na() %>%
+  mutate(
+    Rwin16 = ifelse(partywinner16=="Republican", 1, 0),
+    Rwin12 = ifelse(partywinner12=="Republican", 1, 0)
+  ) -> Data
+
+```
+
+We can calculate the correlation between these two features in R in a bunch of different ways. For example, we can use the cor() function in base R.
+
+```{r}
+cor(Data$Rwin12, Data$Rwin16)
+```
+
+There are many other packages in R that users have developed to make estimating correlations easier and compatible with the tidyverse way of doing things. The socsci package, for example, contains the corr() function (with two r's). To install it, just write:
+
+```
+devtools::install_github("ryanburge/socsci")
+```
+
+Then you can open it like any other package:
+```{r}
+library(socsci)
+```
+
+What I like about `corr()` is that we can not only estimate the correlation between two variables, but also make statistical inferences:
+
+```{r}
+Data %>%
+  corr(Rwin16, Rwin12)
+```
+
+The output has a lot more going on than cor(). What I like about the corr() function is that (1) you can use the `%>%` operator and (2) it automatically reports statistics for doing inference. 
+
+Returning to the data, remember that correlations have another use besides description. We can use them to make predictions, which we talked about last week. The correlation where the GOP won in '12 and '16 tells us that we can predict where the GOP would have won in '16 by looking at where they won in '12. 
+
+
+### Continuous Features
+
+What about continuous variables? We have those in the data, too. 
+
+Let's take a look at the relationship between average household income in counties and the share of the vote that went to the Democrats in 2016.
+
+```{r}
+ggplot(Data) +
+  aes(x = hh_income, y = per_dem_2016) +
+  geom_point() +
+  geom_smooth(
+    method = lm
+  ) +
+  labs(
+    x = "Avg. household income",
+    y = "% votes for Clinton (D)"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    labels = scales::dollar
+  )
+```
+
+In the above, we can visually see that `hh_income` and `per_dem_2016` have a positive correlation.
+
+We can calculate the correlation between continuous variables just the same as binary ones:
+
+```{r}
+Data %>%
+  corr(hh_income, per_dem_2016)
+```
+
+As you probably expected from looking at the data, these variables are positively correlated. Importantly though, and remember this, this finding says nothing about causation. That's something we'll get to later. Even so, this correlation is certainly a valid description of these two features of the world, and this knowledge can be useful for prediction. 
+
+## What Correlations Are Good For
+
+I've already mentioned a couple things above that correlations are good for:
+
+1. Description
+2. Prediction
+
+Next time we'll talk about a third use:
+
+3. Causal inference
+
+The latter is a unique animal. For now let's just say that while correlation does not imply causation, causation without correlation is hard to identify.
+
+
+## We need variation to calculate correlations
+
+**No correlation without variation!** This sounds obvious, but you'd be surprised how often people make claims that have the appearance of correlation that actually are not.
+
+Consider the following statements:
+
+1. People who live to be 100 tend to take vitamins.
+2. Cities with more crime hire more police officers.
+3. Successful people have spent at least 10,000 hours honing their craft.
+4. Most politicians facing a scandal win reelection.
+5. Older people vote more than younger people.
+
+Can you tell which are correlations? 
+
+Only 2 and 5 reflect correlations. The rest do not, though the reason why may not be clear at first glance. Take 4 for example which seems to imply that there's a positive correlation between facing scandal and winning reelection. The problem is there's no variation in the *dependent variable* or DV. We only know that a lot of politicians facing scandal win reelection. We don't know the rate of scandal among those that lose reelection. 
+
+To say something about the correlation between two factors, we need to be able to make comparisons. To do that, we need *variation*. Let's go back to `Rwin16` and `Rwin12`. If we select only observations where GOP candidates won in '16, we can't estimate the correlation between where they won in '12 and where they also won in '16.
+
+```{r}
+Data %>%
+  filter(Rwin16 == 1) %>%
+  corr(Rwin16, Rwin12)
+```
+
+## Avoid selecting on the DV
+
+The above illustrates an error that analysts sometimes make called *selecting on the DV*. This is a subset of a problem called *selection bias*.
+
+Selecting on the DV is a problem because when it's done, it usually is intended to facilitate a correlational or causal analysis. People do this because it actually sounds reasonable. When Mitt Romney lost the US Presidential election in 2012, the GOP did a "post mortem" to figure out why.
+
+This is an example of selecting on the DV. You look only at a case or cases where one kind of outcome occurred and look back to figure out why. But this only lets us make very basic descriptive observations. We can't use what we find to predict anything, much less identify causes (at least when using a lot of data). We need variation in the outcome. Then we can say something about correlation and identify possible causes.
+
+There are scenarios, however, where you still can calculate a correlation but where selection bias more broadly is a problem. This is most apt to occur with continuous data. 
+
+Say we want to do an analysis to see how the share of a county's population that was white correlated with Democratic party performance in 2012. But suppose we just looked at counties where the Democratic candidate won. The below figure compares the inferences we'd draw with this truncated data versus using the full data.
+
+```{r}
+Data %>%
+  ggplot() +
+  aes(x = white,
+      y = per_dem_2012) +
+  geom_point(
+    aes(color = partywinner12)
+  ) +
+  geom_smooth(
+    method = lm
+  ) +
+  geom_smooth(
+    data = Data %>% filter(partywinner12=="Democrat"),
+    method = lm,
+    color = "red"
+  ) +
+  scale_color_grey() +
+  theme_light() +
+  labs(
+    x = "% county population that's white",
+    y = "Share of vote that went to the Democrat",
+    color = "Party winner"
+  )
+```
+
+Using this truncated data, we would draw biased inferences about the relationship between the factors of interest. In this case, we would underestimate the relationship between these variables.
