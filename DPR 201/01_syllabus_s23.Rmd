@@ -95,8 +95,8 @@ not_here_dates <- c(
 
 # You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
 # final assigment dates:
-fa_dates <- c(ymd(20230210), 
-              ymd(20230303),
+fa_dates <- c(ymd(20230217), 
+              ymd(20230324),
               ymd(20230421),
               ymd(20230503)) # Final date set to 05-03 2-4 PM
 # analysis challenges:
@@ -104,7 +104,7 @@ ac_dates <- c(ymd(20230206),
               ymd(20230213),
               ymd(20230220),
               ymd(20230227),
-              ymd(20230327),
+              ymd(20230306),
               ymd(20230403),
               ymd(20230410),
               ymd(20230417))
@@ -441,7 +441,7 @@ knitr::include_graphics(
 
 - Day 1: BDMF Ch8 "Reversion to the Mean"
 
-- Day 2: Discussion \hfill \textit{Intro and Why Care due Fri.}
+- Day 2: Discussion \hfill \textit{AC5 due Mon.}
 
 # Part II: Causation
 
@@ -449,7 +449,7 @@ knitr::include_graphics(
 
 - Day 1: BDMF Ch3 "Causation: What Is It and What Is It Good for?"
 
-- Day 2: BDMF Ch9 "Why Correlation Doesn't Imply Causation"
+- Day 2: BDMF Ch9 "Why Correlation Doesn't Imply Causation" 
 
 ## `r advdate(mon, 9)`
 
@@ -459,7 +459,7 @@ knitr::include_graphics(
 
 - Day 1: BDMF Ch11 "Randomized Experiments"
 
-- Day 2: Discussion \hfill \textit{AC5 due Mon.}
+- Day 2: Discussion \hfill \textit{Intro and Why Care due Fri.}
 
 ## `r advdate(mon, 11)` 
 
