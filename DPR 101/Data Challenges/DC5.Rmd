@@ -1,0 +1,74 @@
+---
+output: word_document
+title: "Data Challenge 5"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+library(ggplot2)
+library(coolorrr)
+set_theme()
+```
+
+## Summarize and Label
+
+For this data challenge, you're going to plot trends in different regime types over time. The `{democracyData}` package is an excellent resource for easily accessing all kinds of measures of democracy and regimes over time. The below code will open the packages you need and read in the data:
+```{r}
+library(tidyverse)
+library(geomtextpath)
+library(democracyData)
+library(socsci)
+Data <- redownload_pacl(verbose = F)
+```
+
+The `redownload_pacl()` function reads in data that was used in a [2010 study](https://www.jstor.org/stable/40661005) by Cheibub, Gandhi, and Vreeland on the quality of regime measures. It contains a column called `regime` that specifies whether a country in the data has one of six different kinds of political regimes. These are given as numerical codes. The below script creates a new pair of columns called `regime_name` and `regime_type` based on the values these codes correspond with:
+```{r}
+Data %>%
+  mutate(
+    regime_name = frcode(
+      regime == 0 ~ "Parliamentary Democracy",
+      regime == 1 ~ "Mixed Democracy",
+      regime == 2 ~ "Presidential Democracy",
+      regime == 3 ~ "Civilian Autocracy",
+      regime == 4 ~ "Military Dictatorship",
+      regime == 5 ~ "Royal Dictatorship"
+    ),
+    regime_type = ifelse(
+      regime %in% 0:2, "Democracy", "Autocracy"
+    )
+  ) -> Data
+```
+
+Using this data, your challenge is to produce the following figure:
+```{r echo=FALSE, fig.height=4, fig.width=8}
+Data %>%
+  group_by(year, regime_type) %>%
+  count(regime_name) %>%
+  group_by(year) %>%
+  mutate(pct = n / sum(n)) %>%
+  drop_na() %>%
+  ggplot() +
+  aes(x = year,
+      y = pct,
+      color = regime_name,
+      label = regime_name) +
+  geom_point() +
+  geom_labelsmooth(
+    text_smoothing = 20
+  ) +
+  facet_wrap(~ regime_type) +
+  labs(
+    x = NULL,
+    y = "Share of Regimes",
+    title = "Regime trends since WWII"
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+When you're done. Knit your .Rmd file to either html or word and submit it to Canvas.

@@ -1,6 +1,8 @@
 ---
 title: "Modifying data with `{dplyr}`"
-output: github_document
+output: 
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}

@@ -1,6 +1,16 @@
 Modifying data with `{dplyr}`
 ================
 
+-   [Learning Objectives](#learning-objectives)
+-   [Using `{dplyr}` for data
+    manipulation/wrangling](#using-dplyr-for-data-manipulationwrangling)
+    -   [filter()](#filter)
+    -   [arrange()](#arrange)
+    -   [select()](#select)
+    -   [mutate()](#mutate)
+    -   [summarize() and group_by()](#summarize-and-group_by)
+-   [From summarizing to plotting](#from-summarizing-to-plotting)
+
 ## Learning Objectives
 
 -   Apply the main `{dplyr}` functions to manipulate a dataset
