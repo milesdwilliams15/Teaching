@@ -21,6 +21,7 @@ set_palette()
 
 First, simulate the background data:
 ```{r}
+set.seed(500)
 fabricate(
   county_id = add_level(
     N = 2, 
@@ -48,6 +49,7 @@ hist(Data$acres)
 Cool. Now let's assign treatment and specify the outcome:
 ```{r}
 f <- function(x) 1 / (1 + exp(-x))
+set.seed(10)
 Data %>%
   mutate(
     letter = block_ra(blocks = paste(county, urban),
@@ -83,6 +85,7 @@ c(Truth = trueATE, Observed = obsATE)
 Technically, we can only estimate the intent to treat effect or ITT, but I won't tell the students that (yet). Assuming compliance with the treatment weren't an issue, I'd do the following:
 
 ```{r}
+cmean <- function(x) x - mean(x)
 fit <- lm_robust(
   app ~ letter * (ccounty + curban) + hhincome + acres, 
   data = Data %>%
@@ -105,7 +108,7 @@ oes_prep(fit,
 Lock it in:
 ```{r}
 write_csv(
-  Data,
+  Data %>% select(county, urban, hhincome, acres, letter, app),
   here::here("DPR 201", "Data", "montana_wildfires.csv")
 )
 ```
