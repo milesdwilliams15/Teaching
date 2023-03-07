@@ -46,8 +46,8 @@ Data %>%
 Using this data, your challenge is to produce the following figure:
 ```{r echo=FALSE, fig.height=4, fig.width=8}
 Data %>%
-  group_by(year, regime_type) %>%
-  count(regime_name) %>%
+  group_by(year, regime_type, regime_name) %>%
+  summarize(n = n()) %>%
   group_by(year) %>%
   mutate(pct = n / sum(n)) %>%
   drop_na() %>%
