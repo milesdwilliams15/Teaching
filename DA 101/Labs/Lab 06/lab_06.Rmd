@@ -1,0 +1,220 @@
+---
+title: "Lab 06"
+author: "Miles D. Williams"
+date: '2023-03-10'
+output: 
+  html_document:
+    toc: yes
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+## The setup
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+
+## My tools
+library(tidyverse)
+library(coolorrr)
+
+## Customize plotting themes and colors
+set_theme()
+set_palette(
+  binary = c("blue", "red"),
+  from_coolors = F
+)
+```
+
+
+First, I need to read in the data:
+```{r}
+housedata <- read_csv("House_all_members.csv")
+```
+
+Now I need to create a year column:
+```{r}
+housedata %>%
+  mutate(
+    year = 1789 + 2 * (congress - 1)
+  ) -> housedata
+```
+
+Confirm that the years have the appropriate range:
+```{r}
+range(housedata$year)
+```
+
+Make a "polished" plot of the nominate_dim1 scores over time:
+```{r}
+ggplot(housedata) +
+  aes(x = year,
+      y = nominate_dim1) +
+  geom_point(alpha = 0.2,
+             color = "gray") +
+  labs(x = NULL,
+       y = "DW-scores",
+       title = "Ideology of Congress over Time")
+```
+
+Do the same by party code and use geom_gitter:
+```{r}
+ggplot(housedata) +
+  aes(x = year,
+      y = nominate_dim1,
+      color = factor(party_code)) +
+  geom_jitter(alpha = 0.1,
+              show.legend = F) +
+  labs(x = NULL,
+       y = "DW-scores",
+       title = "Ideology of Congress over Time")
+```
+
+Just focus on polarization after Reconstruction (post 1876):
+```{r}
+house1876 <- housedata %>%
+  filter(year > 1876)
+```
+
+Make a twoparty dummy:
+```{r}
+`%nin%` <- Negate(`%in%`)
+house1876 %>%
+  mutate(
+    twoparty = ifelse(
+      party_code %nin% c(100, 200),
+      NA,
+      ifelse(party_code==200, 1, 0)
+    )
+  ) -> house1876
+```
+
+Now add rep_or_dem:
+```{r}
+house1876 %>%
+  mutate(
+    rep_or_dem = ifelse(twoparty==0,
+                        "Democrat",
+                        "Republican")
+  ) -> house1876
+```
+
+Reps should be positive and Dems negative:
+```{r}
+house1876 %>%
+  group_by(rep_or_dem) %>%
+  summarize(mean(nominate_dim1, na.rm=T))
+```
+
+Now let's make another plot with colors by the two parties:
+```{r}
+ggplot(house1876) +
+  aes(x = year,
+      y = nominate_dim1,
+      color = rep_or_dem) +
+  geom_jitter(alpha = 0.1) +
+  labs(x = NULL,
+       y = "DW-score",
+       title = "Ideology in Congress over Time",
+       color = NULL) +
+  ggpal(type = "binary",
+        na.translate = F)
+```
+
+Alright, one more thing. Adjust the x-axis to be more granular and at an angle:
+```{r}
+ggplot(house1876) +
+  aes(x = year,
+      y = nominate_dim1,
+      color = rep_or_dem) +
+  geom_jitter(alpha = 0.1) +
+  labs(x = NULL,
+       y = "DW-score",
+       title = "Ideology in Congress over Time",
+       color = NULL) +
+  ggpal(type = "binary",
+        na.translate = F) +
+  scale_x_continuous(
+    breaks = seq(1877, 2017, 10)
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Now let's test some claims about polarization over time. I want to show the average for each party and the total average over time to compare:
+```{r}
+house1876 %>%
+  group_by(congress, rep_or_dem) %>%
+  mutate(party_mean = mean(nominate_dim1, na.rm=T)) %>%
+  group_by(congress) %>%
+  mutate(
+    congress_mean = mean(nominate_dim1, na.rm=T)
+  ) -> house1876
+
+house1876 %>%
+  drop_na(rep_or_dem) %>%
+  ggplot() +
+  aes(x = year) +
+  geom_line(aes(y = party_mean,
+                     color = rep_or_dem)) +
+  geom_line(aes(y = congress_mean),
+                 color = "black") +
+  ggpal(type = "binary") +
+  scale_x_continuous(
+    breaks = seq(1877, 2017, by = 10) 
+  ) +
+  labs(x = NULL,
+       y = "Mean DW-Scores",
+       title = "Mean DW-Scores over Time by Party",
+       color = NULL,
+       caption = "Note: Black line is the total mean") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Let's do some statistical tests. Is one party more polarized than the other?
+```{r}
+house1876 %>%
+  ungroup %>%
+  select(year, congress_mean, party_mean, rep_or_dem)%>%
+  distinct()%>%
+  drop_na() %>%
+  pivot_wider(values_from = party_mean,
+              names_from = rep_or_dem) -> house1876cong
+```
+
+Now let's recreate the last figure but in a kinda-sorta hacky way:
+```{r}
+set_palette(
+  qualitative = c("black", "blue", "red"),
+  binary = c("blue", "red"),
+  from_coolors = F
+)
+ggplot(house1876cong) +
+  aes(x = year) +
+  geom_line(
+    aes(y = congress_mean, 
+        color = "All Members")
+  ) +
+  geom_line(
+    aes(y = Republican,
+        color = "Republicans")
+  ) +
+  geom_line(
+    aes(y = Democrat,
+        color = "Democrats")
+  ) +
+  ggpal() +
+  labs(x = NULL,
+       y = "Mean DW-score",
+       title = "Mean DW-scores over Time by Party",
+       color = NULL)
+```
+
+Is one party more polarized than the other?
+```{r}
+lm(abs(Democrat) - abs(Republican) ~ 1, house1876cong) %>%
+  summary()
+```
+
+It looks like the Reps are farther to the right than the Dems are to the left. But the difference is actually quite small.
