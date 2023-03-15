@@ -28,7 +28,7 @@ set_theme()
 
 Causal inference is a field that is simultaneously scientific and philosophical because it is a highly stylized approach of, effectively, doing thought experiments. These thought experiments ask us to imagine two or more versions of reality and how the range of potential outcomes can differ if we tweak just one or two things about the world.
 
-Say we want to know the effect of a new math curiculum on standardized test scores. This scenario implicitly sets up for us the need to think about two versions of reality. One where students are "treated" with the new curriculum and one where they are not. We call these *counterfactuals*.
+Say we want to know the effect of a new math curriculum on standardized test scores. This scenario implicitly sets up for us the need to think about two versions of reality. One where students are "treated" with the new curriculum and one where they are not. We call these *counterfactuals*.
 
 Let's use $T \in \{0, 1\}$ to denote treatment where 1 means treatment and 0 means no treatment. Let $Y$ be a continous measure of standardized test scores. Using this notation, we can specify two versions of the world:
 
