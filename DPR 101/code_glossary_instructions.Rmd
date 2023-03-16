@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 You will use the code glossary template for this assignment. The completed code glossary will be worth 10% of your final grade and will be due before the final week of class.
 
-In each of the sections below, I've given you some prompts for definitions/examples/explanations of concepts and functions you should provide.
+In each of the sections below, I've given you some prompts for definitions/examples/explanations of concepts and functions you should fill in.
 
 For many examples, you'll need to use some data. You are free to use any data you like. There are many free and read-to-access datasets in R. Check them out here: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
 

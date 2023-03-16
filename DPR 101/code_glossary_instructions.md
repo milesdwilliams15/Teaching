@@ -24,7 +24,7 @@ be due before the final week of class.
 
 In each of the sections below, I’ve given you some prompts for
 definitions/examples/explanations of concepts and functions you should
-provide.
+fill in.
 
 For many examples, you’ll need to use some data. You are free to use any
 data you like. There are many free and read-to-access datasets in R.

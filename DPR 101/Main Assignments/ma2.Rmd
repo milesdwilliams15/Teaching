@@ -1,0 +1,116 @@
+---
+title: "Main Assignment 2"
+subtitle: "Conditions for Civil War: Democracy, the Economy, or Leaders?"
+author: "[YOUR NAME HERE]"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+
+## Packages you need
+library(tidyverse)
+library(geomtextpath)
+library(peacesciencer)
+library(coolorrr)
+set_theme() # You can turn this off and select your own theme!
+
+## Preping the data
+create_stateyears(
+  system = 'gw',
+  subset_years = 1946:2015
+) %>%
+  add_ucdp_acd(
+    type = "intrastate"
+  ) %>%
+  add_sdp_gdp() %>%
+  add_democracy() %>%
+  add_archigos() -> Data
+left_join(
+  Data,
+  archigos %>% mutate(jan1obsid = obsid),
+  by = c("gwcode", "jan1obsid")
+) %>%
+  mutate(
+    age = year - yrborn
+  ) -> Data
+Data %>%
+  group_by(gwcode) %>%
+  mutate(anywars = any(ucdpongoing)+0,
+         nwars = sum(ucdpongoing)) %>%
+  ungroup -> Data
+stand <- function(x) (x - min(x, na.rm=T)) /
+  (max(x, na.rm = T) - min(x, na.rm = T))
+Data %>%
+  mutate(
+    across(c(polity2, v2x_polyarchy, xm_qudsest),
+           stand)
+  ) -> Data
+
+## This is where you come in: Pick a country to look at!
+## Ideally, you should pick a country that gives you some
+## variation in conflict. At least 10 years at war is 
+## a good place to start. The nwars column can help you
+## narrow down your choices
+country <- "Guatemala" # Here's an example
+Data %>%
+  filter(statename == country) -> countryData
+```
+
+## Introduction
+
+Does quality of democracy (or lack thereof) explain why countries fall into civil war? In this paper, I look at the case of [COUNTRY NAME] to see how periods of conflict correlate with different measures of quality of democracy. I also examine alternative explanations---specifically, economic wellbeing and political leader characteristics. 
+
+Understanding the conditions under which conflict is likely to errupt matters because...
+
+## Data and Design
+
+For this study I'm using data made available in the `{peacesciencer}` R package. My main outcome is whether there is an ongoing civil war in [COUNTRY] during a given year from [START YEAR] to [END YEAR].
+
+I cross-reference the incidence of civil war with two popular measures of democracy from Polity and V-Dem. Polity measures democratic quality as [LOOK UP THE POLITY DATASET AND DESCRIBE HOW IT DEFINES DEMOCRACY]. V-Dem conversely measures democratic quality as [LOOK UP THE V-DEM DATASET AND DESCRIBE HOW IT DEFINES DEMOCRACY].
+
+I also cross-reference the incidence of civil war with [THE ECONOMIC VARIABLE YOU'LL USE] and [THE LEADER VARIABLE YOU'LL USE]. These variables may provide an alternative explanation for why countries fall into civil war.
+
+## Analysis: Democracy and Conflict
+
+Write about your first figure here...
+
+```{r}
+## Use two geom_statsmooth() layers to show the global trend
+## in democracy using v2x_polyarchy alongside the trend for
+## the country you picked to look at.
+```
+
+Write about your second figure here...
+
+```{r}
+## Use two calls to geom_textsmooth() to compare how the relationship
+## between v2x_polyarchy and ongoing conflict looks vs. polity2 and 
+## ongoing conflict.
+```
+
+## Alternative Explanations
+
+Write about your third figure here...
+
+```{r}
+## Pick an economic variable in the data and show its relationship
+## with ongoing conflict in your chosen country.
+```
+
+Write about your fourth figure here...
+
+```{r}
+## Pick a leader-specific variable (like age or transition type) and
+## show its relationship with ongoing conflict.
+```
+
+
+## Conclusion
+
+Restate the research question in your own words. Restate why you think this issue is important. Summarize what you found.

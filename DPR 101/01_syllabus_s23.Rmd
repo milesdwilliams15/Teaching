@@ -105,7 +105,7 @@ gc_dates <- c(ymd(20230130),
               ymd(20230213),
               ymd(20230220),
               ymd(20230306),
-              ymd(20230320),
+              ymd(20230324),
               ymd(20230403),
               ymd(20230417))
 
@@ -470,11 +470,11 @@ knitr::include_graphics(
 
 ## `r advdate(mon, 10)`: More Refining and Finalize MA2
 
-- Day 1: H Ch8 (8.5 - 8.6) \hfill \textit{DC6 due Mon.}
+- Day 1: H Ch8 (8.5 - 8.6) 
 
 - Day 2: Work on MA2
 
-- Day 3: Work on MA2 
+- Day 3: Work on MA2 \hfill \textit{DC6 due Fri.}
 
 # Part III: Survey Data
 

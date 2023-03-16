@@ -1,0 +1,261 @@
+---
+title: "Code Glossary Prompt"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+
+You will use the code glossary template for this assignment. The completed code glossary will be worth 10% of your final grade and will be due before the final week of class.
+
+In each of the sections below, I've given you some prompts for definitions/examples/explanations of concepts and functions you should fill in.
+
+For many examples, you'll need to use some data. You are free to use any data you like. There are many free and read-to-access datasets in R. Check them out here: https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/00Index.html
+
+You can also feel free to use any data that we've used in the class. 
+
+Under each section header, there are some prompts alerting you to what you need to add. You are allowed to work with study groups to complete the code glossary, but **all work should be your own.** Definitions and explanations should be in your own words. If I see that students have used identical text, or have copied text from online, this will count as an **academic integrity violation that I will have to report.** The result will be an automatic failing grade. ***So don't cheat!***
+
+There are two main sections to complete, with several subsections related to different topics we've discussed in class. The first set of topics deal with measuring correlations between factors of the world and how we can use these for description and to make predictions. The second set of topics deal with causal inference or how we can know if one factor in the world is causally related to another.
+
+# Correlation
+
+## Correlation
+
+For each of the prompts below, you can copy and paste the text directly into your code glossary template and then start filling them in. For each function below you will provide the package the function is from, a definition, a code example, and an explanation of the output. Some pacakges are available as soon as you open R. For these you can just indicate that the package is baseR.
+
+The below functions provide ways of estimating the the correlation between two factors. For each function, provide an example of how to estimate a bivariate (two-variables) correlation.
+
+\#\#\# cor()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# corr()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# lm()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# ggplot()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+
+## Variation
+
+Variation is a necessary condition for estimating correlations. As we talked about in class, analysts can easily draw misleading conclusions from data if they select on the dependent variable or DV. For each section below, you'll provide a definition for either **selecting on the DV** or **selection bias**. Remember that the second can arise when we select on a continuous DV and only include values above a certain threshold in our data.
+
+\#\#\# Selecting on the DV
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# Selection Bias
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+
+## Regression
+
+In the below example, you'll show how to fit a regression model and make predictions.
+
+\#\#\# lm() + predict()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+
+## Statistical Inference
+
+In the below, you'll talke about how you summarize the output of a linear regression model.
+
+\#\#\# lm() + summary()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# lm_robust() + summary()
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# A Regression Table
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+\#\#\# A Coefficient Plot
+
+Package:
+
+Definition:
+
+Example:
+
+&grave;&grave;&grave;{r}
+
+&grave;&grave;&grave;
+
+Explanation:
+
+## p-Hacking
+
+In the below, you'll define the following concepts.
+
+\#\#\# p-Hacking
+
+Definition:
+
+\#\#\# p-Screening
+
+Definition:
+
+\#\#\# Preregistered Analysis Plan
+
+Definition:
+
+## Reversion to the Mean
+
+In this section, you'll describe what reversion to the mean is, why it's important, and provide an example of what it looks like using data.
+
+\#\#\# What is reversion to the mean?
+
+\#\#\# Why is it important?
+
+\#\#\# Example
+
+
+# Causation
+
+## Counterfactuals
+
+```{r}
+
+```
+
+
+## Randomization
+
+```{r}
+
+```
+
+
+## Controlling for Confounders
+
+```{r}
+
+```
+
+
+## Regression Discontinuity Designs
+
+```{r}
+
+```
+
+
+## Difference-in-Differences Designs
+
+```{r}
+
+```
+
