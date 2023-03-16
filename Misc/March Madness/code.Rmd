@@ -1,0 +1,738 @@
+---
+title: "March Madness, 2023"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Introduction
+
+Let's try out some predictions for March Madness 2023.
+
+## Setup
+
+First, I need to gather my tools and set some options for my session:
+```{r}
+library(tidyverse)
+library(coolorrr)
+set_theme()
+set_palette()
+```
+
+## Data
+
+Now I need to read in and merge some historical data on team performance in past years. The below files come from Kaggle: https://www.kaggle.com/competitions/mens-march-mania-2022/data
+
+```{r}
+## First, team identifiers
+d1 <- read_csv("MTeams.csv")
+
+## Then, team seeds
+d2 <- read_csv("MNCAATourneySeeds.csv")
+
+## Finally, outcomes
+d3 <- read_csv("MRegularSeasonCompactResults.csv")
+```
+
+For each team in a given year, I want a record and the seed:
+```{r}
+d1 %>%
+  select(TeamID, TeamName) %>%
+  right_join(
+    d2
+  ) %>%
+  mutate(
+    Seed = str_remove(Seed, "[A-Z]") %>%
+      str_remove("[a-z]") %>%
+      as.numeric()
+  ) -> Data
+
+d3 %>%
+  group_by(Season, WTeamID) %>%
+  summarize(
+    Score = mean(WScore),
+    Differential = mean(WScore - LScore),
+    N = n()
+  ) %>%
+  ungroup %>%
+  rename(TeamID = WTeamID) -> win_d
+d3 %>%
+  group_by(Season, LTeamID) %>%
+  summarize(
+    Score = mean(LScore),
+    Differential = mean(LScore - WScore),
+    N = n()
+  ) %>%
+  ungroup %>%
+  rename(TeamID = LTeamID) -> loss_d
+
+bind_rows(
+  win_d,
+  loss_d
+) %>%
+  group_by(Season, TeamID) %>%
+  summarize(
+    AvgScore = sum(N * Score) / sum(N),
+    Differential = sum(N * Differential) / sum(N)
+  ) %>%
+  ungroup -> outcomes
+
+Data %>%
+  left_join(outcomes, by = c("Season", "TeamID")) -> Data
+```
+
+
+## Explore some trends
+
+It should probably be the case that teams with better records have better seeds:
+```{r}
+ggplot(Data) +
+  aes(x = Differential,
+      y = Seed) +
+  geom_point() +
+  geom_smooth(method = "loess",
+              se = F) +
+  labs(x = "Average Point Differential",
+       y = "Tourney Seed",
+       title = "A scatter plot")
+```
+
+How about a summary:
+```{r}
+library(socsci)
+Data %>%
+  group_by(Seed) %>%
+  mean_ci(Differential) %>%
+  ggplot() +
+  aes(x = mean,
+      y = Seed,
+      xmin = lower,
+      xmax = upper) +
+  geom_pointrange() +
+  geom_vline(xintercept = 0) +
+  labs(x = "Average Differential",
+       y = "Seed",
+       title = "A dotwhisker plot") +
+  scale_y_continuous(
+    breaks = 1:16
+  )
+```
+
+## Adding tourney performance
+
+Okay, I need to add in performance in the tournaments:
+```{r}
+d4 <- read_csv("MNCAATourneyCompactResults.csv")
+```
+
+I think I want to make something like a directed dyad dataset:
+```{r}
+bind_rows(
+  d4 %>%
+    rename(TeamID1 = WTeamID,
+           Score1 = WScore,
+           TeamID2 = LTeamID,
+           Score2 = LScore),
+  d4 %>%
+    rename(TeamID2 = WTeamID,
+           Score2 = WScore,
+           TeamID1 = LTeamID,
+           Score1 = LScore)
+) %>%
+  select(1:6) -> tourney_data
+```
+
+Okay, let's find a way to match this with the season data:
+```{r}
+# Make a version for each team of the dyad
+Data1 <- Data
+Data2 <- Data
+names(Data1) <- paste0(names(Data), 1)
+names(Data2) <- paste0(names(Data), 2)
+
+# I need the season column to be the same in each
+Data1 <- Data1 %>% rename(Season = Season1)
+Data2 <- Data2 %>% rename(Season = Season2)
+
+# These should merge nicely with the tourney data
+tourney_data %>%
+  left_join(Data1, by = c("TeamID1", "Season")) %>%
+  left_join(Data2, by = c("TeamID2", "Season")) -> full_data
+```
+
+## Look at the data again
+
+Can we see a correlation between regular season performance and tourney outcomes?
+
+Let's try a scatter plot:
+```{r}
+library(geomtextpath)
+ggplot(full_data) +
+  aes(x = AvgScore1,
+      y = Score1) +
+  geom_point(color = "darkgray",
+             alpha = 0.2) +
+  labs(x = "Average Season Points Scored",
+       y = "Points Scored in Tourney") +
+  geom_textabline(
+    slope = 1,
+    intercept = 0,
+    label = "45 degrees",
+    linetype = 2,
+    color = "red",
+    hjust = .8
+  ) +
+  geom_textsmooth(
+    method = lm,
+    label = "OLS Line of Best Fit",
+    color = "darkblue"
+  )
+```
+
+Yeah, just about. But...
+```{r}
+ggplot(full_data) +
+  aes(x = Score1 - AvgScore1) +
+  geom_density(fill = "gray",
+               color = "black") +
+  geom_vline(xintercept = 0,
+             lty = 2) +
+  labs(x = "Tourney Score minus Season Avg.")
+```
+
+It looks like teams tend to do slightly worse in March Madness than in the regular season. On average, they do about 5 points worse, and this difference is statistically significant, too:
+```{r}
+t.test(Score1 - AvgScore1 ~ 1, full_data)
+```
+
+Now, let's take a look at differentials:
+```{r}
+ggplot(full_data) +
+  aes(x = Differential1 - Differential2,
+      y = Score1 - Score2) +
+  geom_point(color = "darkgray",
+             alpha = 0.2) +
+  geom_textabline(
+    slope = 1,
+    intercept = 0,
+    label = "45 degrees",
+    linetype = 2,
+    color = "red",
+    hjust = .8
+  ) +
+  geom_textsmooth(
+    method = lm,
+    label = "OLS Line of Best Fit",
+    color = "darkblue"
+  )
+```
+
+I wonder if seed is predicitive?
+```{r}
+ggplot(full_data) +
+  aes(x = Seed1 - Seed2,
+      y = Score1 - Score2) +
+  geom_point(color = "darkgray",
+             alpha = 0.2) +
+  geom_textsmooth(
+    method = lm,
+    label = "OLS Line of Best Fit",
+    color = "darkblue"
+  )
+```
+
+Ooo... That's pretty good. I think I have some ideas for a predictive model.
+
+But, let's do one more thing. In a previous figure I got the impression that there could be a secular upward trend in the regular season point differentials for Tourney teams. Is that worth modeling?
+```{r}
+ggplot(full_data) +
+  aes(x = Season,
+      y = Score1 - Score2) +
+  geom_point(color = "darkgray",
+             alpha = 0.2) +
+  labs(x = "Season",
+       y = "Tourney Differential") +
+  geom_smooth(method = lm)
+```
+
+Nah. That's pretty flat. Okay...on with the model.
+
+## Train the model
+
+I'm going to make a model that predicts the tourney point differential as a function of the seed differential between the teams matched against each other and the difference in their regular season average point differential.
+
+The model:
+```{r}
+model <- tourneyDiff1 ~ diffDiff1 + seedDiff1
+```
+
+Add the necessary columns to the data:
+```{r}
+full_data %>%
+  mutate(tourneyDiff1 = Score1 - Score2,
+         seedDiff1 = Seed1 - Seed2,
+         diffDiff1 = Differential1 - Differential2) -> full_data
+```
+
+Fit the model to the data:
+```{r}
+fit <- lm(model, full_data)
+```
+
+Let's take a quick look:
+```{r}
+summary(fit)
+```
+
+Okay, it's a good idea to try some hypothetical predictions and also to translate predictions to win probabilities. To do that, I want to take a bootstrapping procedure.
+
+First, my bootstrapping function:
+```{r}
+boot_lm <- function(form, data, R = 500) {
+  ## The main fit
+  fit <- lm(form, data)
+  
+  ## Bootstrap the data and refit
+  boot_fits <- 1:R %>%
+    map(~sample_n(data, nrow(data), T)) %>%
+    map(~lm(form, .x))
+  
+  ## Return the output
+  list(
+    fit = fit,
+    boot_fits = boot_fits
+  )
+}
+```
+
+Now, apply it:
+```{r}
+boot_fit <- boot_lm(model, full_data, R = 999)
+```
+
+Okay, now I need a function that will get the original plus bootstrapped predictions:
+```{r}
+boot_predict <- function(fit, newdata = NULL, ref = 0) {
+  ## The main prediction
+  pred <- predict(fit$fit, newdata)
+  ## The bootstrapped predictions
+  boot_preds <- fit$boot_fits %>%
+    map(~ predict(.x, newdata)) 
+  ## For each obs, get prob x > ref
+  boot_probs <- 1:nrow(newdata) %>%
+    map_dfr(
+      ~ {
+        obs <- .x
+        boot_preds %>%
+          map_dfr(
+            ~ tibble(val = .x[obs]) 
+          ) %>%
+          summarize(prob = mean(val > 0)) %>%
+          mutate(pred = pred[obs]) %>%
+          select(pred, prob) 
+      }
+    )
+  ## Return
+  list(pred = pred,
+       boot_preds = boot_preds,
+       boot_probs = boot_probs)
+}
+```
+
+Try it out:
+```{r}
+newdata <- tibble(
+  diffDiff1 = -5:5,
+  seedDiff1 = 3
+)
+boot_pred <- boot_predict(fit = boot_fit, newdata, ref = 0)
+boot_pred$boot_probs
+```
+
+## Make predictions for 2023
+
+Okay, first I need information about the season performance and seeds of current teams...
+
+An hour of data collection later, I have it!
+
+```{r}
+googsheeturl <- "https://docs.google.com/spreadsheets/d/1JdIoZBExz5AygMH7E6QMfTCjQ75wkiRMpimdNq-2qiU/edit?usp=sharing"
+library(googlesheets4)
+gs4_deauth()
+data23 <- range_speedread(googsheeturl)
+glimpse(data23)
+```
+
+Okay, let's create seedDiff1 and diffDiff1:
+```{r}
+data23 %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> data23
+```
+
+Now, I can make some first round predictions:
+```{r}
+fst_pred <- boot_predict(boot_fit, data23)
+fst_pred$boot_probs %>%
+  cbind(., data23)
+```
+
+Okay, so I need to keep the teams that are predicted to win:
+```{r}
+fst_pred$boot_probs %>%
+  cbind(., data23) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> fst_round_winners
+fst_round_winners %>%
+  kableExtra::kable("html", caption = "1st Round Predictions")
+```
+
+Now, set things up for second round. I need to match the team above with the team below in pairs.
+```{r}
+r2_data <- tibble(
+  TeamName = fst_round_winners$winner,
+  side = paste0("TeamName",rep(1:2, len = 32))
+) %>%
+  pivot_wider(
+    values_from = TeamName,
+    names_from = side
+  ) %>%
+  unnest %>%
+  mutate(
+    Differential1 = 0,
+    Seed1 = 0,
+    Differential2 = 0,
+    Seed2 = 0
+  )
+keep1 <- which(r2_data$TeamName1 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r2_data$TeamName1) 
+r2_data[keep1, 3:4] <- data23[keep2, 2:3]
+keep1 <- which(r2_data$TeamName2 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r2_data$TeamName2) 
+r2_data[keep1, 5:6] <- data23[keep2, 2:3]
+keep1 <- which(r2_data$TeamName1 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r2_data$TeamName1) 
+r2_data[keep1, 3:4] <- data23[keep2, 5:6]
+keep1 <- which(r2_data$TeamName2 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r2_data$TeamName2)
+r2_data[keep1, 5:6] <- data23[keep2, 5:6]
+r2_data
+```
+
+There we go! Now I need the new predictors:
+```{r}
+r2_data %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> r2_data
+```
+
+Now I can make round 2 predictions:
+```{r}
+snd_pred <- boot_predict(boot_fit, r2_data)
+```
+
+Check out the predictions:
+```{r}
+snd_pred$boot_probs %>%
+  cbind(., r2_data) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> snd_round_winners
+snd_round_winners %>%
+  kableExtra::kable("html", caption = "2nd Round Predictions")
+```
+
+Same thing as before. Line up teams by who they'll play:
+```{r}
+r3_data <- tibble(
+  TeamName = snd_round_winners$winner,
+  side = paste0("TeamName",rep(1:2, len = 16))
+) %>%
+  pivot_wider(
+    values_from = TeamName,
+    names_from = side
+  ) %>%
+  unnest %>%
+  mutate(
+    Differential1 = 0,
+    Seed1 = 0,
+    Differential2 = 0,
+    Seed2 = 0
+  )
+keep1 <- which(r3_data$TeamName1 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r3_data$TeamName1) 
+r3_data[keep1, 3:4] <- data23[keep2, 2:3]
+keep1 <- which(r3_data$TeamName2 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r3_data$TeamName2) 
+r3_data[keep1, 5:6] <- data23[keep2, 2:3]
+keep1 <- which(r3_data$TeamName1 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r3_data$TeamName1) 
+r3_data[keep1, 3:4] <- data23[keep2, 5:6]
+keep1 <- which(r3_data$TeamName2 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r3_data$TeamName2)
+r3_data[keep1, 5:6] <- data23[keep2, 5:6]
+r3_data
+```
+
+There we go! Now I need the new predictors:
+```{r}
+r3_data %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> r3_data
+```
+
+Now I can make round 3 predictions:
+```{r}
+trd_pred <- boot_predict(boot_fit, r3_data)
+```
+
+Check out the predictions:
+```{r}
+trd_pred$boot_probs %>%
+  cbind(., r3_data) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> trd_round_winners
+trd_round_winners %>%
+  kableExtra::kable("html", caption = "3rd Round Predictions")
+```
+
+
+Same thing as before. Line up teams by who they'll play:
+```{r}
+r4_data <- tibble(
+  TeamName = trd_round_winners$winner,
+  side = paste0("TeamName",rep(1:2, len = 8))
+) %>%
+  pivot_wider(
+    values_from = TeamName,
+    names_from = side
+  ) %>%
+  unnest %>%
+  mutate(
+    Differential1 = 0,
+    Seed1 = 0,
+    Differential2 = 0,
+    Seed2 = 0
+  )
+keep1 <- which(r4_data$TeamName1 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r4_data$TeamName1) 
+r4_data[keep1, 3:4] <- data23[keep2, 2:3]
+keep1 <- which(r4_data$TeamName2 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r4_data$TeamName2) 
+r4_data[keep1, 5:6] <- data23[keep2, 2:3]
+keep1 <- which(r4_data$TeamName1 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r4_data$TeamName1) 
+r4_data[keep1, 3:4] <- data23[keep2, 5:6]
+keep1 <- which(r4_data$TeamName2 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r4_data$TeamName2)
+r4_data[keep1, 5:6] <- data23[keep2, 5:6]
+r4_data
+```
+
+There we go! Now I need the new predictors:
+```{r}
+r4_data %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> r4_data
+```
+
+Now I can make round 4 predictions:
+```{r}
+fth_pred <- boot_predict(boot_fit, r4_data)
+```
+
+Check out the predictions:
+```{r}
+fth_pred$boot_probs %>%
+  cbind(., r4_data) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> fth_round_winners
+fth_round_winners %>%
+  kableExtra::kable("html", caption = "4th Round Predictions")
+```
+
+
+Same thing as before. Line up teams by who they'll play:
+```{r}
+r5_data <- tibble(
+  TeamName = fth_round_winners$winner,
+  side = paste0("TeamName",rep(1:2, each = 2))
+) %>%
+  pivot_wider(
+    values_from = TeamName,
+    names_from = side
+  ) %>%
+  unnest %>%
+  mutate(
+    Differential1 = 0,
+    Seed1 = 0,
+    Differential2 = 0,
+    Seed2 = 0
+  )
+keep1 <- which(r5_data$TeamName1 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r5_data$TeamName1) 
+r5_data[keep1, 3:4] <- data23[keep2, 2:3]
+keep1 <- which(r5_data$TeamName2 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r5_data$TeamName2) 
+r5_data[keep1, 5:6] <- data23[keep2, 2:3]
+keep1 <- which(r5_data$TeamName1 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r5_data$TeamName1) 
+r5_data[keep1, 3:4] <- data23[keep2, 5:6]
+keep1 <- which(r5_data$TeamName2 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r5_data$TeamName2)
+r5_data[keep1, 5:6] <- data23[keep2, 5:6]
+r5_data
+```
+
+There we go! Now I need the new predictors:
+```{r}
+r5_data %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> r5_data
+```
+
+Now I can make round 5 predictions:
+```{r}
+fvth_pred <- boot_predict(boot_fit, r5_data)
+```
+
+Check out the predictions:
+```{r}
+fvth_pred$boot_probs %>%
+  cbind(., r5_data) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> fvth_round_winners
+fvth_round_winners %>%
+  kableExtra::kable("html", caption = "5th Round Predictions")
+```
+
+
+Same thing as before. Line up teams by who they'll play:
+```{r}
+r6_data <- tibble(
+  TeamName = fvth_round_winners$winner,
+  side = paste0("TeamName",rep(1:2, len = 2))
+) %>%
+  pivot_wider(
+    values_from = TeamName,
+    names_from = side
+  ) %>%
+  unnest %>%
+  mutate(
+    Differential1 = 0,
+    Seed1 = 0,
+    Differential2 = 0,
+    Seed2 = 0
+  )
+keep1 <- which(r6_data$TeamName1 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r6_data$TeamName1) 
+r6_data[keep1, 3:4] <- data23[keep2, 2:3]
+keep1 <- which(r6_data$TeamName2 %in% data23$TeamName1)
+keep2 <- which(data23$TeamName1 %in% r6_data$TeamName2) 
+r6_data[keep1, 5:6] <- data23[keep2, 2:3]
+keep1 <- which(r6_data$TeamName1 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r6_data$TeamName1) 
+r6_data[keep1, 3:4] <- data23[keep2, 5:6]
+keep1 <- which(r6_data$TeamName2 %in% data23$TeamName2)
+keep2 <- which(data23$TeamName2 %in% r6_data$TeamName2)
+r6_data[keep1, 5:6] <- data23[keep2, 5:6]
+r6_data
+```
+
+
+
+
+There we go! Now I need the new predictors:
+```{r}
+r6_data %>%
+  mutate(
+    seedDiff1 = Seed1 - Seed2,
+    diffDiff1 = Differential1 - Differential2
+  ) -> r6_data
+```
+
+Now I can make final predictions:
+```{r}
+final_pred <- boot_predict(boot_fit, r6_data)
+```
+
+Check out the predictions:
+```{r}
+final_pred$boot_probs %>%
+  cbind(., r6_data) %>%
+  mutate(
+    winner = ifelse(prob > 0.5, 
+                    TeamName1, 
+                    TeamName2),
+    prob = ifelse(prob > 0.5,
+                  paste0(round(100 * prob, 3), "%"),
+                  paste0(round(100 * (1 - prob), 3), "%")) 
+  ) %>%
+  select(
+    winner, prob
+  ) -> final_round_winners
+final_round_winners %>%
+  kableExtra::kable("html", caption = "Final Round Predictions")
+```
+
+
