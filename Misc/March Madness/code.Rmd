@@ -390,15 +390,16 @@ Okay, so I need to keep the teams that are predicted to win:
 fst_pred$boot_probs %>%
   cbind(., data23) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fst_round_winners
 fst_round_winners %>%
   kableExtra::kable("html", caption = "1st Round Predictions")
@@ -407,7 +408,7 @@ fst_round_winners %>%
 Now, set things up for second round. I need to match the team above with the team below in pairs.
 ```{r}
 r2_data <- tibble(
-  TeamName = fst_round_winners$winner,
+  TeamName = fst_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 32))
 ) %>%
   pivot_wider(
@@ -455,15 +456,16 @@ Check out the predictions:
 snd_pred$boot_probs %>%
   cbind(., r2_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> snd_round_winners
 snd_round_winners %>%
   kableExtra::kable("html", caption = "2nd Round Predictions")
@@ -472,7 +474,7 @@ snd_round_winners %>%
 Same thing as before. Line up teams by who they'll play:
 ```{r}
 r3_data <- tibble(
-  TeamName = snd_round_winners$winner,
+  TeamName = snd_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 16))
 ) %>%
   pivot_wider(
@@ -520,15 +522,16 @@ Check out the predictions:
 trd_pred$boot_probs %>%
   cbind(., r3_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> trd_round_winners
 trd_round_winners %>%
   kableExtra::kable("html", caption = "3rd Round Predictions")
@@ -538,7 +541,7 @@ trd_round_winners %>%
 Same thing as before. Line up teams by who they'll play:
 ```{r}
 r4_data <- tibble(
-  TeamName = trd_round_winners$winner,
+  TeamName = trd_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 8))
 ) %>%
   pivot_wider(
@@ -586,15 +589,16 @@ Check out the predictions:
 fth_pred$boot_probs %>%
   cbind(., r4_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fth_round_winners
 fth_round_winners %>%
   kableExtra::kable("html", caption = "4th Round Predictions")
@@ -604,7 +608,7 @@ fth_round_winners %>%
 Same thing as before. Line up teams by who they'll play:
 ```{r}
 r5_data <- tibble(
-  TeamName = fth_round_winners$winner,
+  TeamName = fth_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, each = 2))
 ) %>%
   pivot_wider(
@@ -652,15 +656,16 @@ Check out the predictions:
 fvth_pred$boot_probs %>%
   cbind(., r5_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fvth_round_winners
 fvth_round_winners %>%
   kableExtra::kable("html", caption = "5th Round Predictions")
@@ -670,7 +675,7 @@ fvth_round_winners %>%
 Same thing as before. Line up teams by who they'll play:
 ```{r}
 r6_data <- tibble(
-  TeamName = fvth_round_winners$winner,
+  TeamName = fvth_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 2))
 ) %>%
   pivot_wider(
@@ -721,15 +726,16 @@ Check out the predictions:
 final_pred$boot_probs %>%
   cbind(., r6_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> final_round_winners
 final_round_winners %>%
   kableExtra::kable("html", caption = "Final Round Predictions")

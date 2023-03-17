@@ -427,19 +427,19 @@ boot_pred$boot_probs
 ```
 
     ## # A tibble: 11 × 2
-    ##      pred  prob
-    ##     <dbl> <dbl>
-    ##  1 -5.11  0    
-    ##  2 -4.62  0    
-    ##  3 -4.14  0    
-    ##  4 -3.65  0    
-    ##  5 -3.17  0    
-    ##  6 -2.69  0    
-    ##  7 -2.20  0    
-    ##  8 -1.72  0    
-    ##  9 -1.24  0    
-    ## 10 -0.751 0    
-    ## 11 -0.267 0.153
+    ##      pred    prob
+    ##     <dbl>   <dbl>
+    ##  1 -5.11  0      
+    ##  2 -4.62  0      
+    ##  3 -4.14  0      
+    ##  4 -3.65  0      
+    ##  5 -3.17  0      
+    ##  6 -2.69  0      
+    ##  7 -2.20  0      
+    ##  8 -1.72  0      
+    ##  9 -1.24  0      
+    ## 10 -0.751 0.00100
+    ## 11 -0.267 0.166
 
 ## Make predictions for 2023
 
@@ -557,15 +557,16 @@ Okay, so I need to keep the teams that are predicted to win:
 fst_pred$boot_probs %>%
   cbind(., data23) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fst_round_winners
 fst_round_winners %>%
   kableExtra::kable("html", caption = "1st Round Predictions")
@@ -578,10 +579,13 @@ fst_round_winners %>%
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -589,6 +593,9 @@ prob
 <tr>
 <td style="text-align:left;">
 Alabama
+</td>
+<td style="text-align:left;">
++17.5
 </td>
 <td style="text-align:left;">
 100%
@@ -599,12 +606,18 @@ Alabama
 Maryland
 </td>
 <td style="text-align:left;">
++1.81
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 San Diego St
+</td>
+<td style="text-align:left;">
++3.61
 </td>
 <td style="text-align:left;">
 100%
@@ -615,12 +628,18 @@ San Diego St
 Virginia
 </td>
 <td style="text-align:left;">
++7.38
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Creighton
+</td>
+<td style="text-align:left;">
++4.86
 </td>
 <td style="text-align:left;">
 100%
@@ -631,12 +650,18 @@ Creighton
 Baylor
 </td>
 <td style="text-align:left;">
++10.24
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Missouri
+</td>
+<td style="text-align:left;">
++1.19
 </td>
 <td style="text-align:left;">
 100%
@@ -647,12 +672,18 @@ Missouri
 Arizona
 </td>
 <td style="text-align:left;">
++14.11
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Houston
+</td>
+<td style="text-align:left;">
++21.17
 </td>
 <td style="text-align:left;">
 100%
@@ -663,12 +694,18 @@ Houston
 Iowa
 </td>
 <td style="text-align:left;">
++0.94
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Miami
+</td>
+<td style="text-align:left;">
++5.2
 </td>
 <td style="text-align:left;">
 100%
@@ -679,12 +716,18 @@ Miami
 Indiana
 </td>
 <td style="text-align:left;">
++6.7
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Iowa St
+</td>
+<td style="text-align:left;">
++4.57
 </td>
 <td style="text-align:left;">
 100%
@@ -695,12 +738,18 @@ Iowa St
 Xavier
 </td>
 <td style="text-align:left;">
++12.03
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Texas A&M
+</td>
+<td style="text-align:left;">
++4.19
 </td>
 <td style="text-align:left;">
 100%
@@ -711,12 +760,18 @@ Texas A&M
 Texas
 </td>
 <td style="text-align:left;">
++12.37
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Purdue
+</td>
+<td style="text-align:left;">
++18.32
 </td>
 <td style="text-align:left;">
 100%
@@ -727,12 +782,18 @@ Purdue
 FAU
 </td>
 <td style="text-align:left;">
++1.52
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Duke
+</td>
+<td style="text-align:left;">
++4.38
 </td>
 <td style="text-align:left;">
 100%
@@ -743,12 +804,18 @@ Duke
 Tennessee
 </td>
 <td style="text-align:left;">
++12.32
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Kentucky
+</td>
+<td style="text-align:left;">
++4.57
 </td>
 <td style="text-align:left;">
 100%
@@ -759,12 +826,18 @@ Kentucky
 Kansas St
 </td>
 <td style="text-align:left;">
++11.01
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Michigan St
+</td>
+<td style="text-align:left;">
++1.38
 </td>
 <td style="text-align:left;">
 100%
@@ -775,12 +848,18 @@ Michigan St
 Marquette
 </td>
 <td style="text-align:left;">
++13.58
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Kansas
+</td>
+<td style="text-align:left;">
++16.34
 </td>
 <td style="text-align:left;">
 100%
@@ -791,12 +870,18 @@ Kansas
 Arkansas
 </td>
 <td style="text-align:left;">
++0.56
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 St Mary
+</td>
+<td style="text-align:left;">
++7.48
 </td>
 <td style="text-align:left;">
 100%
@@ -807,12 +892,18 @@ St Mary
 UConn
 </td>
 <td style="text-align:left;">
++9.03
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 TCU
+</td>
+<td style="text-align:left;">
++6.8
 </td>
 <td style="text-align:left;">
 100%
@@ -823,6 +914,9 @@ TCU
 Gonzaga
 </td>
 <td style="text-align:left;">
++14.21
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
@@ -831,12 +925,18 @@ Gonzaga
 Northwestern
 </td>
 <td style="text-align:left;">
++1.82
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 UCLA
+</td>
+<td style="text-align:left;">
++16.43
 </td>
 <td style="text-align:left;">
 100%
@@ -850,7 +950,7 @@ the team below in pairs.
 
 ``` r
 r2_data <- tibble(
-  TeamName = fst_round_winners$winner,
+  TeamName = fst_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 32))
 ) %>%
   pivot_wider(
@@ -921,15 +1021,16 @@ Check out the predictions:
 snd_pred$boot_probs %>%
   cbind(., r2_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> snd_round_winners
 snd_round_winners %>%
   kableExtra::kable("html", caption = "2nd Round Predictions")
@@ -942,10 +1043,13 @@ snd_round_winners %>%
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -953,6 +1057,9 @@ prob
 <tr>
 <td style="text-align:left;">
 Alabama
+</td>
+<td style="text-align:left;">
++9.41
 </td>
 <td style="text-align:left;">
 100%
@@ -963,12 +1070,18 @@ Alabama
 Virginia
 </td>
 <td style="text-align:left;">
++0.94
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Baylor
+</td>
+<td style="text-align:left;">
++2.06
 </td>
 <td style="text-align:left;">
 100%
@@ -979,12 +1092,18 @@ Baylor
 Arizona
 </td>
 <td style="text-align:left;">
++7.53
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Houston
+</td>
+<td style="text-align:left;">
++12.41
 </td>
 <td style="text-align:left;">
 100%
@@ -995,12 +1114,18 @@ Houston
 Indiana
 </td>
 <td style="text-align:left;">
-100%
++0.56
+</td>
+<td style="text-align:left;">
+99.6%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Xavier
+</td>
+<td style="text-align:left;">
++3.51
 </td>
 <td style="text-align:left;">
 100%
@@ -1011,12 +1136,18 @@ Xavier
 Texas
 </td>
 <td style="text-align:left;">
++6.12
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Purdue
+</td>
+<td style="text-align:left;">
++5.95
 </td>
 <td style="text-align:left;">
 100%
@@ -1027,12 +1158,18 @@ Purdue
 Tennessee
 </td>
 <td style="text-align:left;">
++3.41
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Kansas St
+</td>
+<td style="text-align:left;">
++2.44
 </td>
 <td style="text-align:left;">
 100%
@@ -1043,12 +1180,18 @@ Kansas St
 Marquette
 </td>
 <td style="text-align:left;">
++7.67
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Kansas
+</td>
+<td style="text-align:left;">
++6.27
 </td>
 <td style="text-align:left;">
 100%
@@ -1059,6 +1202,9 @@ Kansas
 UConn
 </td>
 <td style="text-align:left;">
++2.06
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
@@ -1067,12 +1213,18 @@ UConn
 Gonzaga
 </td>
 <td style="text-align:left;">
++5.2
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 UCLA
+</td>
+<td style="text-align:left;">
++8.54
 </td>
 <td style="text-align:left;">
 100%
@@ -1085,7 +1237,7 @@ Same thing as before. Line up teams by who they’ll play:
 
 ``` r
 r3_data <- tibble(
-  TeamName = snd_round_winners$winner,
+  TeamName = snd_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 16))
 ) %>%
   pivot_wider(
@@ -1148,15 +1300,16 @@ Check out the predictions:
 trd_pred$boot_probs %>%
   cbind(., r3_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> trd_round_winners
 trd_round_winners %>%
   kableExtra::kable("html", caption = "3rd Round Predictions")
@@ -1169,10 +1322,13 @@ trd_round_winners %>%
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -1180,6 +1336,9 @@ prob
 <tr>
 <td style="text-align:left;">
 Alabama
+</td>
+<td style="text-align:left;">
++5.64
 </td>
 <td style="text-align:left;">
 100%
@@ -1190,12 +1349,18 @@ Alabama
 Arizona
 </td>
 <td style="text-align:left;">
++2.98
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Houston
+</td>
+<td style="text-align:left;">
++8.44
 </td>
 <td style="text-align:left;">
 100%
@@ -1206,12 +1371,18 @@ Houston
 Texas
 </td>
 <td style="text-align:left;">
++2.35
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Purdue
+</td>
+<td style="text-align:left;">
++1.04
 </td>
 <td style="text-align:left;">
 100%
@@ -1222,6 +1393,9 @@ Purdue
 Marquette
 </td>
 <td style="text-align:left;">
++2.3
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
@@ -1230,12 +1404,18 @@ Marquette
 UConn
 </td>
 <td style="text-align:left;">
-89.389%
++0.41
+</td>
+<td style="text-align:left;">
+90.691%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 UCLA
+</td>
+<td style="text-align:left;">
++1.38
 </td>
 <td style="text-align:left;">
 100%
@@ -1248,7 +1428,7 @@ Same thing as before. Line up teams by who they’ll play:
 
 ``` r
 r4_data <- tibble(
-  TeamName = trd_round_winners$winner,
+  TeamName = trd_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 8))
 ) %>%
   pivot_wider(
@@ -1307,15 +1487,16 @@ Check out the predictions:
 fth_pred$boot_probs %>%
   cbind(., r4_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fth_round_winners
 fth_round_winners %>%
   kableExtra::kable("html", caption = "4th Round Predictions")
@@ -1328,10 +1509,13 @@ fth_round_winners %>%
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -1339,6 +1523,9 @@ prob
 <tr>
 <td style="text-align:left;">
 Alabama
+</td>
+<td style="text-align:left;">
++2.11
 </td>
 <td style="text-align:left;">
 100%
@@ -1349,6 +1536,9 @@ Alabama
 Houston
 </td>
 <td style="text-align:left;">
++4.81
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
@@ -1357,12 +1547,18 @@ Houston
 Purdue
 </td>
 <td style="text-align:left;">
++1.38
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 UCLA
+</td>
+<td style="text-align:left;">
++1.89
 </td>
 <td style="text-align:left;">
 100%
@@ -1375,7 +1571,7 @@ Same thing as before. Line up teams by who they’ll play:
 
 ``` r
 r5_data <- tibble(
-  TeamName = fth_round_winners$winner,
+  TeamName = fth_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, each = 2))
 ) %>%
   pivot_wider(
@@ -1432,15 +1628,16 @@ Check out the predictions:
 fvth_pred$boot_probs %>%
   cbind(., r5_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> fvth_round_winners
 fvth_round_winners %>%
   kableExtra::kable("html", caption = "5th Round Predictions")
@@ -1453,10 +1650,13 @@ fvth_round_winners %>%
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -1466,12 +1666,18 @@ prob
 Alabama
 </td>
 <td style="text-align:left;">
++1.6
+</td>
+<td style="text-align:left;">
 100%
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Houston
+</td>
+<td style="text-align:left;">
++3.27
 </td>
 <td style="text-align:left;">
 100%
@@ -1484,7 +1690,7 @@ Same thing as before. Line up teams by who they’ll play:
 
 ``` r
 r6_data <- tibble(
-  TeamName = fvth_round_winners$winner,
+  TeamName = fvth_round_winners$Winner,
   side = paste0("TeamName",rep(1:2, len = 2))
 ) %>%
   pivot_wider(
@@ -1540,15 +1746,16 @@ Check out the predictions:
 final_pred$boot_probs %>%
   cbind(., r6_data) %>%
   mutate(
-    winner = ifelse(prob > 0.5, 
+    Winner = ifelse(prob > 0.5, 
                     TeamName1, 
                     TeamName2),
-    prob = ifelse(prob > 0.5,
+    Prediction = paste0("+",round(abs(pred), 2)),
+    Probability = ifelse(prob > 0.5,
                   paste0(round(100 * prob, 3), "%"),
                   paste0(round(100 * (1 - prob), 3), "%")) 
   ) %>%
   select(
-    winner, prob
+    Winner, Prediction, Probability
   ) -> final_round_winners
 final_round_winners %>%
   kableExtra::kable("html", caption = "Final Round Predictions")
@@ -1561,10 +1768,13 @@ Final Round Predictions
 <thead>
 <tr>
 <th style="text-align:left;">
-winner
+Winner
 </th>
 <th style="text-align:left;">
-prob
+Prediction
+</th>
+<th style="text-align:left;">
+Probability
 </th>
 </tr>
 </thead>
@@ -1572,6 +1782,9 @@ prob
 <tr>
 <td style="text-align:left;">
 Houston
+</td>
+<td style="text-align:left;">
++2.32
 </td>
 <td style="text-align:left;">
 100%
