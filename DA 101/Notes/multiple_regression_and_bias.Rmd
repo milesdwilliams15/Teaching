@@ -1,10 +1,20 @@
 ---
 title: "Multiple Regression Part 2"
-output: github_document
+output: 
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+## getter tools and custom plot settings
+library(tidyverse)
+library(coolorrr)
+set_theme()
 ```
 
 ## Goals
@@ -17,13 +27,10 @@ Note: Data examples and pseudo-theorems come from [Achen (2005)](https://www.jst
 
 ## Some Baised Data
 
-```{r}
-library(tidyverse)
-library(estimatr)
-library(xtable)
-```
+We're going to simulate some data. This data is copied directly from Table 1 in Achen 2005 (see page 331).
 
 ```{r}
+library(tidyverse)
 Data <- tibble(
   z = rep(c(0, 1, 2, 8, 12), each = 3),
   x1 = rep(c(0, 3, 6, 9, 12), each = 3),
@@ -33,18 +40,34 @@ Data <- tibble(
 )
 ```
 
-Look at the data:
+If we take a look at the data, on its surface it doesn't look like anything special:
 ```{r}
-Data
+xtable::xtable(Data) %>%
+  print(type = "html")
 ```
 
-Look at the relationship between z and x1:
+We have an outcome "y" that is a simple linear function of "z" and "x2":
+
+*y = z + 0.1x2*
+
+But, we also have a column for a variable called "x1." There's something special about this variable. 
+
+First, look at the relationship between z and x1:
 ```{r}
 ggplot(Data) +
   aes(x = x1, y = z) +
   geom_point() +
-  geom_line()
+  geom_line() +
+  labs(title = "The function z = f(x1)")
 ```
+
+As it turns, z and x1 have a positive *monotonic* relationship---just not a linear one. Even more, the nature of this relationship is unknown. All we know is that
+
+*z = f(x1)*
+
+The second special thing about x1 is that we are asked to imagine a world where we cannot observe z directly. Instead we only observe x1.
+
+## Estimating regression models
 
 Since the outcome is directly predicted by the variables z and x1, when we estimate a linear model, we should recover exactly the correct model parameters:
 ```{r}
@@ -52,9 +75,7 @@ fit <- lm(y ~ z + x2, Data)
 fit
 ```
 
-Now
-
-But say instead of observing z, we only observe x1. If we just do some simple regressions, we can see that z and x1 give us the same direction of relationship:
+That's just what we do. But remember, we're supposed to pretend like we don't observe z. If we just do some simple regressions, we can see that z and x1 give us the same direction of relationship and with almost the same magnitude:
 
 ```{r}
 lm(y ~ z, Data)
@@ -63,12 +84,12 @@ lm(y ~ x1, Data)
 
 If we used summary of these, we'd see that both are statistically significant and well-fit models.
 
-We can see too that if we regress y on x2 alone, we also get the right relationship (albeit an exagerated one):
+We can see too that if we regress y on x2 alone, we also get the right relationship (albeit an exaggerated one):
 ```{r}
 lm(y ~ x2, Data)
 ```
 
-It would be reasonable to expect that if we estimate a multiple regression model with both x1 and x2, even if the results aren't identical to those shown with z and x2, they should be close. Right?
+It would be reasonable to expect that if we estimate a multiple regression model with both x1 and x2 (rather than z and x2), even if the results aren't identical to those shown with z and x2, they should be close. Right?
 ```{r}
 fit2 <- lm(y ~ x1 + x2, Data)
 fit2
@@ -76,23 +97,28 @@ fit2
 
 Oh wait, that's not right at all!
 
-If we look at their summaries side-by-side, we'll see that these estimates are statisticall significant, too:
+If we look at their summaries side-by-side, we'll see that these estimates are statistically significant, too:
 ```{r}
 summary(fit)
 summary(fit2)
 ```
 
-
+Why would having a close approximation for in our model rather than z itself so radically change our regression estimates?
 
 ## Pseudo-Theorems
 
-**Theorem 1:** "Dropping a list of conditionally monotonic control variables into a linear link function controls for their effects, so that the other variables of interest will take on appropriate coefficients" (Achen 2005, 330).
+Quantitative researchers often implicitly operate as if two *pseudo-theorems* are true. We call them "pseudo" because they aren't based on any formal mathematical proofs. But, they do have some intuitive appeal---e.g., they sound like they should be right.
 
-**Theorem 2:** "Dropping a list of conditionally monotonic variables into a linear link function assigns each of them theor appropriate explanatory impact, so that the power of each hypothesis can be assessed from its coefficient and standard error" (Achen 2005, 330).
+- **Theorem 1:** "Dropping a list of conditionally monotonic control variables into a linear link function controls for their effects, so that the other variables of interest will take on appropriate coefficients" (Achen 2005, 330).
+- **Theorem 2:** "Dropping a list of conditionally monotonic variables into a linear link function assigns each of them theoretically appropriate explanatory impact, so that the power of each hypothesis can be assessed from its coefficient and standard error" (Achen 2005, 330).
 
+If these theorems are mostly true, all is good with our regression analyses. But as the previous example shows, we can easily find a case that violates these theorems.
 
 ## When We Control...
 
+When we control for a list of covariates, it's as if we are subtracting out all the variation in our outcome variable and explanatory variable of interest that is a linear function of these other covariates. And then, we use the left-over variation to estimate the relationship of interest.
+
+The below code makes this explicit:
 ```{r}
 x2resx1 <- resid(lm(x2 ~ x1, Data))
 x2resz  <- resid(lm(x2 ~ z, Data))
@@ -100,6 +126,14 @@ yresx1  <- resid(lm(y ~ x1, Data))
 yresz   <- resid(lm(y ~ z, Data))
 ```
 
+I've created four vectors:
+
+- `x2resx1`: What's leftover of x2 that's *not* explained as a linear function of `x1`
+- `x2resz`: What's leftover of x2 that's *not* explained as a linear function of `z`
+- `yresx1`: What's leftover of y that's *not* explained as a linear function of `x1`
+- `yresz`: What's leftover of y that's *not* explained as a linear function of `z`
+
+If we look at the relationship between `x2resz` and `yresz`, we should see a perfect linear relationship between the variation leftover in each not explained by z:
 ```{r}
 ggplot() +
   aes(x = x2resz,
@@ -108,11 +142,50 @@ ggplot() +
   geom_line()
 ```
 
+If the pseudo-theorems are right, then even if we replace z with x1, the variation leftover in y and x2 should be close enough to the truth to give us the correct relationship. As it turns out, this isn't what happens:
 ```{r}
 ggplot() +
   aes(x = x2resx1,
       y = yresx1) +
   geom_point() +
   geom_line()
+```
+
+As it turns out, x1 doesn't quite explain the variation in both y and x2 correctly. As a result, the variation leftover that it's explained by x1 isn't the correct variation.
+
+## Three Questions
+
+With this data can you...
+
+1. find a way to transform x1 to recover better estimates?
+2. if you can't find a transformation, how do you think you would proceed?
+3. answer whether this is a problem for prediction?
+
+## The Main Point
+
+As tempting as it is to throw every variable in your data at a problem, I cannot stress enough the need to slow down and think clearly about your data before you proceed. 
+
+Sometimes it helps to just look at the data. For instance, we can clearly see that there isn't a linear relationship between x1 and y:
+```{r}
+ggplot(Data) +
+  aes(x = x1,
+      y = y) +
+  geom_point()+
+  geom_smooth(se = F)
+```
+
+But maybe a simple transformation can make a difference:
+```{r}
+ggplot(Data) +
+  aes(x = x1^2,
+      y = y) +
+  geom_point()+
+  geom_smooth(se = F)
+```
+
+But even then, not enough:
+```{r}
+lm(y ~ I(x1^2) + x2, Data) %>%
+  summary()
 ```
 
