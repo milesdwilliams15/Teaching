@@ -1,0 +1,118 @@
+---
+title: "Multiple Regression Part 2"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goals
+
+- We've talked about multiple regression in the context of prediction.
+- But just like we need to be careful about overfitting when making prediction models, we need to be careful about introducing bias in descriptive and causal models.
+
+Note: Data examples and pseudo-theorems come from [Achen (2005)](https://www.jstor.org/stable/pdf/26273558.pdf?refreqid=excelsior%3A4b4477da4a574e29d3538df16b0a42bd&ab_segments=&origin=&initiator=&acceptTC=1)
+
+
+## Some Baised Data
+
+```{r}
+library(tidyverse)
+library(estimatr)
+library(xtable)
+```
+
+```{r}
+Data <- tibble(
+  z = rep(c(0, 1, 2, 8, 12), each = 3),
+  x1 = rep(c(0, 3, 6, 9, 12), each = 3),
+  x2 = c(0,rep(c(1, 2), each = 5),
+         2.1, rep(2.2, len = 3)),
+  y = z + 0.1 * x2
+)
+```
+
+Look at the data:
+```{r}
+Data
+```
+
+Look at the relationship between z and x1:
+```{r}
+ggplot(Data) +
+  aes(x = x1, y = z) +
+  geom_point() +
+  geom_line()
+```
+
+Since the outcome is directly predicted by the variables z and x1, when we estimate a linear model, we should recover exactly the correct model parameters:
+```{r}
+fit <- lm(y ~ z + x2, Data)
+fit
+```
+
+Now
+
+But say instead of observing z, we only observe x1. If we just do some simple regressions, we can see that z and x1 give us the same direction of relationship:
+
+```{r}
+lm(y ~ z, Data)
+lm(y ~ x1, Data)
+```
+
+If we used summary of these, we'd see that both are statistically significant and well-fit models.
+
+We can see too that if we regress y on x2 alone, we also get the right relationship (albeit an exagerated one):
+```{r}
+lm(y ~ x2, Data)
+```
+
+It would be reasonable to expect that if we estimate a multiple regression model with both x1 and x2, even if the results aren't identical to those shown with z and x2, they should be close. Right?
+```{r}
+fit2 <- lm(y ~ x1 + x2, Data)
+fit2
+```
+
+Oh wait, that's not right at all!
+
+If we look at their summaries side-by-side, we'll see that these estimates are statisticall significant, too:
+```{r}
+summary(fit)
+summary(fit2)
+```
+
+
+
+## Pseudo-Theorems
+
+**Theorem 1:** "Dropping a list of conditionally monotonic control variables into a linear link function controls for their effects, so that the other variables of interest will take on appropriate coefficients" (Achen 2005, 330).
+
+**Theorem 2:** "Dropping a list of conditionally monotonic variables into a linear link function assigns each of them theor appropriate explanatory impact, so that the power of each hypothesis can be assessed from its coefficient and standard error" (Achen 2005, 330).
+
+
+## When We Control...
+
+```{r}
+x2resx1 <- resid(lm(x2 ~ x1, Data))
+x2resz  <- resid(lm(x2 ~ z, Data))
+yresx1  <- resid(lm(y ~ x1, Data))
+yresz   <- resid(lm(y ~ z, Data))
+```
+
+```{r}
+ggplot() +
+  aes(x = x2resz,
+      y = yresz) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+ggplot() +
+  aes(x = x2resx1,
+      y = yresx1) +
+  geom_point() +
+  geom_line()
+```
+
