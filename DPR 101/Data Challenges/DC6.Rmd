@@ -1,0 +1,76 @@
+---
+title: "DC 6"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+For this data challenge your goal is to modify some existing code to improve some features of a data viz.
+
+Below is the code that reads in your data:
+
+```{r}
+## Gather tools and setup
+library(tidyverse)
+
+## Data
+library(peacesciencer)
+create_stateyears(
+  system = "gw",
+  subset_years = 1946:2018
+) %>%
+  add_democracy() %>%
+  add_ucdp_acd(
+    type = "intrastate"
+  ) -> Data
+```
+
+And here's the code that produces the data viz:
+```{r}
+## Hide the answer but show the output
+Data %>%
+  mutate(
+    vdemcat = cut(v2x_polyarchy, 
+                  breaks = seq(0, 1, len = 4),
+                  include.lowest = T,
+                  ordered_result = T,
+                  labels = c("Low",
+                             "Medium",
+                             "High")),
+    politycat = cut(polity2, 
+                    breaks = seq(0, 1, len = 4),
+                    include.lowest = T,
+                    ordered_result = T,
+                    labels = c("Low",
+                             "Medium",
+                             "High"))
+  ) -> Data
+Data %>%
+  group_by(vdemcat, year) %>%
+  summarize(mean = mean(ucdpongoing, na.rm=T)) %>%
+  drop_na() %>%
+  ggplot() +
+  aes(x = year,
+      y = mean,
+      color = vdemcat) +
+  geom_line(
+    aes(label = vdemcat)
+  ) +
+  labs(x = "Year",
+       y = "(%) Civil Conflict Rate",
+       color = "V-Dem",
+       title = "Quality of Democracy and Civil Civil Conflict, 1946-2017")
+```
+
+Your challenge is to make the following updates:
+
+1. Update the plot title so that it's split into two lines. At the moment, it's running off the side of the figure.
+2. The y-axis should be in percentages but it's in proportions. Change the scale to show percentages.
+3. Update the x-axis to show all years from 1946 to 2018 in intervals of 4, update the angle of the text to 45 degrees, and make sure it's flush with the tick marks.
+4. Update the default plot theme to a theme from `{ggthemes}` (your pick).

@@ -1,0 +1,197 @@
+---
+title: "Model Selection with Cross-Validation"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Goals
+
+- We've talked a bit about model selection, but today we'll dig deeper by talking about cross-validation.
+- Cross-validation is one of my favorite approaches to model selection, because compared to alternatives (like stepwise regression) it does a better job helping us to avoid overfitting.
+- We'll use tools in the `{purrr}` package to make it happen.
+
+
+## Getting Started
+
+We'll need to use tools in the following packages:
+```{r}
+library(tidyverse)
+library(modelr)
+coolorrr::set_theme()
+```
+
+First, let's use some simple data. How about `mtcars`?
+```{r}
+glimpse(mtcars)
+```
+
+A good goal with this data might be to come up with a good model of vehicle MPG or miles per gallon.
+
+To do this with cross validation, we first need to split the data into training and test sets. We can do that with the function `crossv_mc()` from `{modelr}`:
+```{r}
+mtcars_split <- mtcars %>%
+  crossv_mc(n = 50, test = 0.3)
+glimpse(mtcars_split)
+```
+
+## One Model
+
+With the object `mtcars_split`, we can train a single model using each of the training sets and validate their performance on each of the test sets. We do that by writing:
+```{r}
+mtcars_split %>%
+  mutate(
+    model = map(train, ~ lm(mpg ~ ., data = .x))
+  ) -> mtcars_split
+```
+
+We now have a model column in the object:
+```{r}
+glimpse(mtcars_split)
+```
+
+We can then get model errors by checking performance in the test set:
+```{r}
+mtcars_split %>%
+  mutate(
+    prediction = map2(test, model, ~ predict(.y, newdata = .x)),
+    outcome = map(test, ~ as.data.frame(.x)$mpg),
+    residual = map2(outcome, prediction, ~ .x - .y),
+    rmse = map(residual, ~ sqrt(mean(.x^2)))
+  ) -> mtcars_split
+```
+
+We can check out the model performance with each iteration. To start, we'll collect the columns we want to keep and use `unnest()` to return a data frame:
+```{r}
+mtcars_split %>%
+  select(.id, prediction, outcome, residual, rmse) %>%
+  unnest() -> cv_out
+```
+
+For each test dataset, we have predictions, the observed outcomes, the residual error and root mean squared error or RMSE:
+```{r}
+glimpse(cv_out)
+```
+
+One useful thing to do is check out the prediction residuals:
+```{r}
+ggplot(cv_out) +
+  aes(x = residual,
+      group = .id) +
+  geom_density(fill = "darkblue",
+               alpha = 0.1,
+               size = 0) +
+  labs(x = "Test Set Residual Error",
+       y = "Density",
+       title = "Performance of 50\nCross-validation Sets")
+```
+
+## Comparing Models
+
+Okay, all that's great, but when it comes to model selection, we generally have multiple models to compare. Above, we only used cross-validation with one model. Here, well use corss-validation to compare several.
+
+To keep things simple, let's just compare 3 possible predictors: hp, wt, and cyl. With just three variables, we can create at least 7 different models. We can make a list of them like so:
+```{r}
+form_list <- list(
+  "1" = mpg ~ hp,
+  "2" = mpg ~ wt,
+  "3" = mpg ~ cyl,
+  "4" = mpg ~ hp + wt,
+  "5" = mpg ~ hp + cyl,
+  "6" = mpg ~ wt + cyl,
+  "7" = mpg ~ hp + wt + cyl
+)
+```
+
+To start fresh, we'll run the cross-validation generator again:
+```{r}
+mtcars_split <- mtcars %>%
+  crossv_mc(n = 50, test = 0.3)
+```
+
+And now, for each training set, we'll also estimate each of the 7 possible model specifications:
+```{r}
+mtcars_split %>%
+  expand_grid(., 
+              forms = form_list) %>%
+  mutate(
+    model_num = rep(1:7, len = n()),
+    models = map2(train, forms, ~ lm(.y, data = .x))
+  ) -> mtcars_split
+
+## Check it:
+mtcars_split
+```
+
+And then, for each of those, we'll get predictions and compare with outcomes in the test data:
+```{r}
+mtcars_split %>%
+  mutate(
+    prediction = map2(test, models, ~ predict(.y, newdata = .x)),
+    outcome = map(test, ~ as_data_frame(.x)$mpg),
+    residual = map2(outcome, prediction, ~ .x - .y)
+  ) -> mtcars_split
+```
+
+Now, for each model, we can pull out the residual prediction error:
+```{r}
+mtcars_split %>%
+  select(.id, model_num, residual) %>%
+  unnest() -> cv_out
+```
+
+And then we can use ggplot to visualize:
+```{r}
+ggplot(cv_out) +
+  aes(x = as.factor(model_num),
+      y = abs(residual)) +
+  geom_boxplot() +
+  labs(x = "Models",
+       y = "Absolute Residuals",
+       title = "Which model performs best?")
+```
+
+We could also use a kind of plot called a ridge
+```{r}
+library(ggridges)
+ggplot(cv_out) +
+  aes(x = abs(residual),
+      y = as.factor(model_num)) +
+  geom_density_ridges() +
+  labs(x = "Absolute Residuals",
+       y = "Model Number",
+       title = "Which model performs best?")
+```
+
+We can also use a dot-whisker plot:
+```{r}
+cv_out %>%
+  group_by(model_num) %>%
+  summarize(
+    median = median(abs(residual)),
+    lo = quantile(abs(residual), 0.25),
+    hi = quantile(abs(residual), 0.75)
+  ) %>%
+  ggplot() +
+  aes(x = median,
+      xmin = lo,
+      xmax = hi,
+      y = as.factor(model_num)) +
+  geom_pointrange() +
+  labs(x = "Median Absolute Residual",
+       y = "Model",
+       title = "Which model performs best?",
+       caption = "(interval from 25th and 75th percentiles shown)")
+```
+
+## Challenge
+
+Use the methods above to find a model that does better than the best performing one above.
