@@ -14,16 +14,19 @@ Model Selection with Cross-Validation
 -   Cross-validation is one of my favorite approaches to model
     selection, because compared to alternatives (like stepwise
     regression) it does a better job helping us to avoid overfitting.
--   We’ll use tools in the `{purrr}` package to make it happen.
+-   We’ll use tools in the `{purrr}` and `{modelr}` packages to make it
+    happen.
 
 ## Getting Started
 
-We’ll need to use tools in the following packages:
+We’ll need to use tools in the following packages. You probably won’t
+have `{modelr}` installed, so you’ll need to do so by running
+`install.packages("modelr")` in your console. Then you should be able to
+open the following:
 
 ``` r
 library(tidyverse)
 library(modelr)
-coolorrr::set_theme()
 ```
 
 First, let’s use some simple data. How about `mtcars`?
@@ -50,8 +53,10 @@ A good goal with this data might be to come up with a good model of
 vehicle MPG or miles per gallon.
 
 To do this with cross validation, we first need to split the data into
-training and test sets. We can do that with the function `crossv_mc()`
-from `{modelr}`:
+training and test sets. There are many kinds of cross-validation. We’ll
+use a version where we make a bunch of random splits in the data. This
+is called *Monte Carlo* or MC cross-validation. We can do that with the
+function `crossv_mc()` from `{modelr}`:
 
 ``` r
 mtcars_split <- mtcars %>%
@@ -64,6 +69,18 @@ glimpse(mtcars_split)
     ## $ train <list> [<resample[22 x 11]>], [<resample[22 x 11]>], [<resample[22 x 1…
     ## $ test  <list> [<resample[10 x 11]>], [<resample[10 x 11]>], [<resample[10 x 1…
     ## $ .id   <chr> "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"…
+
+The above options in `crossv_mc()` tell R do:
+
+-   Make 50 random partitions between training and test datasets
+    (`n = 50`)
+-   Make the test set roughly 30% of the data and the remaining 70% the
+    training data (`test = 0.3`)
+
+There are other kinds of cross-validation that we could apply, too, like
+*leave-one-out* or LOO cross-validation or *K-fold* cross-validation.
+The first is done with the function `crossv_loo()` and the second is
+done with `crossv_kfold()`.
 
 ## One Model
 
@@ -89,7 +106,7 @@ glimpse(mtcars_split)
     ## $ train <list> [<resample[22 x 11]>], [<resample[22 x 11]>], [<resample[22 x 1…
     ## $ test  <list> [<resample[10 x 11]>], [<resample[10 x 11]>], [<resample[10 x 1…
     ## $ .id   <chr> "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"…
-    ## $ model <list> [10.314027987, 0.752722665, 0.007125579, -0.026207312, 0.846167…
+    ## $ model <list> [16.423163309, -0.988282575, -0.003540701, 0.005242170, 2.81520…
 
 We can then get model errors by checking performance in the test set:
 
@@ -114,7 +131,7 @@ mtcars_split %>%
 ```
 
 For each test dataset, we have predictions, the observed outcomes, the
-residual error and root mean squared error or RMSE:
+residual error, and root mean squared error or RMSE:
 
 ``` r
 glimpse(cv_out)
@@ -123,12 +140,14 @@ glimpse(cv_out)
     ## Rows: 500
     ## Columns: 5
     ## $ .id        <chr> "01", "01", "01", "01", "01", "01", "01", "01", "01", "01",…
-    ## $ prediction <dbl> 21.678315, 22.101806, 19.407365, 15.979170, 9.200299, 31.02…
-    ## $ outcome    <dbl> 18.1, 24.4, 17.8, 15.2, 14.7, 30.4, 27.3, 19.7, 15.0, 21.4,…
-    ## $ residual   <dbl> -3.5783151, 2.2981942, -1.6073651, -0.7791704, 5.4997011, -…
-    ## $ rmse       <dbl> 2.861132, 2.861132, 2.861132, 2.861132, 2.861132, 2.861132,…
+    ## $ prediction <dbl> 16.146317, 21.412195, 12.736432, 12.626909, 27.733590, 25.4…
+    ## $ outcome    <dbl> 18.7, 24.4, 10.4, 10.4, 32.4, 21.5, 13.3, 19.2, 30.4, 21.4,…
+    ## $ residual   <dbl> 2.5536827, 2.9878051, -2.3364319, -2.2269094, 4.6664099, -3…
+    ## $ rmse       <dbl> 3.917492, 3.917492, 3.917492, 3.917492, 3.917492, 3.917492,…
 
-One useful thing to do is check out the prediction residuals:
+We can do a few things to quantify the performance of our model, like
+visualize the distribution of residuals per each iteration of the MC
+cross-validation:
 
 ``` r
 ggplot(cv_out) +
@@ -142,13 +161,13 @@ ggplot(cv_out) +
        title = "Performance of 50\nCross-validation Sets")
 ```
 
-<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
+<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-10-1.png" width="75%" />
 
 ## Comparing Models
 
 Okay, all that’s great, but when it comes to model selection, we
 generally have multiple models to compare. Above, we only used
-cross-validation with one model. Here, well use corss-validation to
+cross-validation with one model. Here, well use cross-validation to
 compare several.
 
 To keep things simple, let’s just compare 3 possible predictors: hp, wt,
@@ -157,13 +176,13 @@ models. We can make a list of them like so:
 
 ``` r
 form_list <- list(
-  "1" = mpg ~ hp,
-  "2" = mpg ~ wt,
-  "3" = mpg ~ cyl,
-  "4" = mpg ~ hp + wt,
-  "5" = mpg ~ hp + cyl,
-  "6" = mpg ~ wt + cyl,
-  "7" = mpg ~ hp + wt + cyl
+  mpg ~ hp,
+  mpg ~ wt,
+  mpg ~ cyl,
+  mpg ~ hp + wt,
+  mpg ~ hp + cyl,
+  mpg ~ wt + cyl,
+  mpg ~ hp + wt + cyl
 )
 ```
 
@@ -175,7 +194,9 @@ mtcars_split <- mtcars %>%
 ```
 
 And now, for each training set, we’ll also estimate each of the 7
-possible model specifications:
+possible model specifications. The `expand_grid()` function below
+ensures that for each training and test dataset pair we have a row for
+each of the model specifications.
 
 ``` r
 mtcars_split %>%
@@ -191,18 +212,18 @@ mtcars_split
 ```
 
     ## # A tibble: 350 × 6
-    ##    train                test                 .id   forms        model_num models
-    ##    <list>               <list>               <chr> <named list>     <int> <list>
-    ##  1 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            1 <lm>  
-    ##  2 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            2 <lm>  
-    ##  3 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            3 <lm>  
-    ##  4 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            4 <lm>  
-    ##  5 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            5 <lm>  
-    ##  6 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            6 <lm>  
-    ##  7 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>            7 <lm>  
-    ##  8 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>            1 <lm>  
-    ##  9 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>            2 <lm>  
-    ## 10 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>            3 <lm>  
+    ##    train                test                 .id   forms     model_num models
+    ##    <list>               <list>               <chr> <list>        <int> <list>
+    ##  1 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         1 <lm>  
+    ##  2 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         2 <lm>  
+    ##  3 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         3 <lm>  
+    ##  4 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         4 <lm>  
+    ##  5 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         5 <lm>  
+    ##  6 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         6 <lm>  
+    ##  7 <resample [22 x 11]> <resample [10 x 11]> 01    <formula>         7 <lm>  
+    ##  8 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>         1 <lm>  
+    ##  9 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>         2 <lm>  
+    ## 10 <resample [22 x 11]> <resample [10 x 11]> 02    <formula>         3 <lm>  
     ## # … with 340 more rows
     ## # ℹ Use `print(n = ...)` to see more rows
 
@@ -238,9 +259,11 @@ ggplot(cv_out) +
        title = "Which model performs best?")
 ```
 
-<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-15-1.png" width="75%" />
+<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-16-1.png" width="75%" />
 
-We could also use a kind of plot called a ridge
+We could also use a kind of plot called a ridge plot. It’s like a
+density plot, but it shows the density for a bunch of different
+categories all at once:
 
 ``` r
 library(ggridges)
@@ -253,7 +276,7 @@ ggplot(cv_out) +
        title = "Which model performs best?")
 ```
 
-<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-16-1.png" width="75%" />
+<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-17-1.png" width="75%" />
 
 We can also use a dot-whisker plot:
 
@@ -277,7 +300,9 @@ cv_out %>%
        caption = "(interval from 25th and 75th percentiles shown)")
 ```
 
-<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-17-1.png" width="75%" />
+<img src="model_selection_with_crossvalidation_files/figure-gfm/unnamed-chunk-18-1.png" width="75%" />
+
+It looks like model 7 (`mpg ~ hp + wt + cyl`) does the best.
 
 ## Challenge
 

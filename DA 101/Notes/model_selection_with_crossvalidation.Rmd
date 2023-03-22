@@ -17,17 +17,21 @@ knitr::opts_chunk$set(echo = T,
 
 - We've talked a bit about model selection, but today we'll dig deeper by talking about cross-validation.
 - Cross-validation is one of my favorite approaches to model selection, because compared to alternatives (like stepwise regression) it does a better job helping us to avoid overfitting.
-- We'll use tools in the `{purrr}` package to make it happen.
+- We'll use tools in the `{purrr}` and `{modelr}` packages to make it happen.
 
 
 ## Getting Started
 
-We'll need to use tools in the following packages:
+We'll need to use tools in the following packages. You probably won't have `{modelr}` installed, so you'll need to do so by running `install.packages("modelr")` in your console. Then you should be able to open the following:
 ```{r}
 library(tidyverse)
 library(modelr)
+```
+
+```{r echo=FALSE}
 coolorrr::set_theme()
 ```
+
 
 First, let's use some simple data. How about `mtcars`?
 ```{r}
@@ -36,12 +40,19 @@ glimpse(mtcars)
 
 A good goal with this data might be to come up with a good model of vehicle MPG or miles per gallon.
 
-To do this with cross validation, we first need to split the data into training and test sets. We can do that with the function `crossv_mc()` from `{modelr}`:
+To do this with cross validation, we first need to split the data into training and test sets. There are many kinds of cross-validation. We'll use a version where we make a bunch of random splits in the data. This is called *Monte Carlo* or MC cross-validation. We can do that with the function `crossv_mc()` from `{modelr}`:
 ```{r}
 mtcars_split <- mtcars %>%
   crossv_mc(n = 50, test = 0.3)
 glimpse(mtcars_split)
 ```
+
+The above options in `crossv_mc()` tell R do:
+
+- Make 50 random partitions between training and test datasets (`n = 50`)
+- Make the test set roughly 30% of the data and the remaining 70% the training data (`test = 0.3`)
+
+There are other kinds of cross-validation that we could apply, too, like *leave-one-out* or LOO cross-validation or *K-fold* cross-validation. The first is done with the function `crossv_loo()` and the second is done with `crossv_kfold()`.
 
 ## One Model
 
@@ -76,12 +87,12 @@ mtcars_split %>%
   unnest() -> cv_out
 ```
 
-For each test dataset, we have predictions, the observed outcomes, the residual error and root mean squared error or RMSE:
+For each test dataset, we have predictions, the observed outcomes, the residual error, and root mean squared error or RMSE:
 ```{r}
 glimpse(cv_out)
 ```
 
-One useful thing to do is check out the prediction residuals:
+We can do a few things to quantify the performance of our model, like visualize the distribution of residuals per each iteration of the MC cross-validation:
 ```{r}
 ggplot(cv_out) +
   aes(x = residual,
@@ -96,18 +107,18 @@ ggplot(cv_out) +
 
 ## Comparing Models
 
-Okay, all that's great, but when it comes to model selection, we generally have multiple models to compare. Above, we only used cross-validation with one model. Here, well use corss-validation to compare several.
+Okay, all that's great, but when it comes to model selection, we generally have multiple models to compare. Above, we only used cross-validation with one model. Here, well use cross-validation to compare several.
 
 To keep things simple, let's just compare 3 possible predictors: hp, wt, and cyl. With just three variables, we can create at least 7 different models. We can make a list of them like so:
 ```{r}
 form_list <- list(
-  "1" = mpg ~ hp,
-  "2" = mpg ~ wt,
-  "3" = mpg ~ cyl,
-  "4" = mpg ~ hp + wt,
-  "5" = mpg ~ hp + cyl,
-  "6" = mpg ~ wt + cyl,
-  "7" = mpg ~ hp + wt + cyl
+  mpg ~ hp,
+  mpg ~ wt,
+  mpg ~ cyl,
+  mpg ~ hp + wt,
+  mpg ~ hp + cyl,
+  mpg ~ wt + cyl,
+  mpg ~ hp + wt + cyl
 )
 ```
 
@@ -117,7 +128,7 @@ mtcars_split <- mtcars %>%
   crossv_mc(n = 50, test = 0.3)
 ```
 
-And now, for each training set, we'll also estimate each of the 7 possible model specifications:
+And now, for each training set, we'll also estimate each of the 7 possible model specifications. The `expand_grid()` function below ensures that for each training and test dataset pair we have a row for each of the model specifications.
 ```{r}
 mtcars_split %>%
   expand_grid(., 
@@ -159,7 +170,7 @@ ggplot(cv_out) +
        title = "Which model performs best?")
 ```
 
-We could also use a kind of plot called a ridge
+We could also use a kind of plot called a ridge plot. It's like a density plot, but it shows the density for a bunch of different categories all at once:
 ```{r}
 library(ggridges)
 ggplot(cv_out) +
@@ -191,6 +202,8 @@ cv_out %>%
        title = "Which model performs best?",
        caption = "(interval from 25th and 75th percentiles shown)")
 ```
+
+It looks like model 7 (`mpg ~ hp + wt + cyl`) does the best.
 
 ## Challenge
 
