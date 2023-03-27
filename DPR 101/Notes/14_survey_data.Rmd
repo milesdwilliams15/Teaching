@@ -1,0 +1,116 @@
+---
+title: "Tools for Working with Survey Data"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Goals
+
+- We can use surveys to learn about the attitudes of a population.
+- We don't have to ask everyone in our population what their attitudes are. We can just ask a small fraction. 
+- Provided our small fraction of the population is a *random sample* of individuals, their survey responses will provide a good approximation for the population's, at least in expectation.
+- When you use surveys for data analysis, you generally will need to dedicate some extra time to cleaning your data.
+- We'll talk about how to use tools from `{socsci}` to make that cleaning process easier.
+
+Tools we'll use in this session:
+```{r}
+library(tidyverse)
+library(socsci)
+```
+
+## We use surveys to learn about populations
+
+How do we come up with an estimate for who will win the U.S. Presidential election? How do we gauge public opinion on use of military force or foreign aid? How do we figure out the relationship between socioeconomic background and political attitudes?
+
+The answer to all of these questions is that we do a survey. But not just any survey. Sure, you could go out on the street and ask some people their opinions about issues, but if you really want to learn something about the attitudes of an entire, city, state, or country you need to be more systematic than that.
+
+Surveys of random samples from a population are the best social science tool we have for making population inferences. But, like all social science tools, they also have limitations and can lead to bad inferences for two key reasons:
+
+1. The sample isn't really random
+2. Social desirability bias
+
+The first happens if the process of selecting people for a survey gives you a biased sample. For example, many surveys are still done using land-line phone calls. Any guesses as to how that might give you a biased sample?
+
+The second happens because people sometimes lie on surveys. This happens if people try to give you the answer that they think is the "right" answer rather than their honest opinion.
+
+## What survey data usually looks like
+
+Survey data usually looks like this:
+```{r}
+cces <- read_csv("https://raw.githubusercontent.com/ryanburge/cces/master/CCES%20for%20Methods/small_cces.csv")
+cces
+```
+
+Any clues what the values for each of the variables are supposed to mean? It isn't obvious at first glance. Most survey datasets use special numeric codes that correspond with specific responses to different questions. The data is saved in this way because many question responses can be long-winded, and if the data were saved using those long-winded responses, it would eat up a lot more of your computer's memory. 
+
+As a way to minimize memory space, either on a computer or database, survey researchers will save the output from surveys using numerical codes and then create a *codebook* that they or others can use to convert the numerical codes back to their original meaning.
+
+## Recoding Variables and Visualizing with 
+
+`{socsci}`
+
+
+
+```{r}
+cces %>% 
+  mutate(race2 = frcode(race == 1 ~ "White",
+                        race == 2 ~ "Black", 
+                        race == 3 ~ "Hispanic",
+                        race == 4 ~ "Asian")) %>% 
+  ct(race2)
+```
+
+```{r}
+cces %>% 
+  mutate(race2 = frcode(race == 1 ~ "White",
+                        race == 2 ~ "Black", 
+                        race == 3 ~ "Hispanic",
+                        race == 4 ~ "Asian")) %>% 
+  ct(race2, show_na = FALSE)
+```
+
+```{r}
+graph <- cces %>% 
+  mutate(pid_new = frcode(pid7 == 1 ~ "Strong Democrat", 
+                          pid7 == 2 ~ "Not Strong Democrat", 
+                          pid7 == 3 ~ "Lean Democrat", 
+                          pid7 == 4 ~ "Independent", 
+                          pid7 == 5 ~ "Lean Republican", 
+                          pid7 == 6 ~ "Not Strong Republican", 
+                          pid7 == 7 ~ "Strong Republican")) %>% 
+  ct(pid_new, show_na = FALSE)
+
+
+ggplot(graph) +
+  aes(x = pid_new, y = pct) +
+  geom_col() +
+  labs(x = "Partisanship",
+       y = "Proportion of Sample") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+```{r}
+cces %>% 
+  mutate(pid_new = frcode(pid7 == 1 ~ "Strong Democrat", 
+                          pid7 == 2 ~ "Not Strong Democrat", 
+                          pid7 == 3 ~ "Lean Democrat", 
+                          pid7 == 4 ~ "Independent", 
+                          pid7 == 5 ~ "Lean Republican", 
+                          pid7 == 6 ~ "Not Strong Republican", 
+                          pid7 == 7 ~ "Strong Republican", 
+                          TRUE ~ "All Others")) %>% 
+  mutate(gender = frcode(gender ==1 ~ "Male",
+                         gender ==2 ~ "Female")) %>% 
+  xheat(gender, pid_new) 
+```
+
+## Other useful recode tools
+
+### ifelse()
+

@@ -1,0 +1,407 @@
+---
+title: "Lab 09 - AirBnB"
+author: "Miles D. Williams"
+date: '2023-03-23'
+output: 
+  html_document:
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Goals
+
+I'm going to try working through this lab as I also try to update it. The original lab mostly is good, but it teaches some less than useful or appropriate skills. So I'm going to replace some components with some ideas of my own. As I do this, I want to make sure everything works.
+
+## Getting started
+
+First, I need to read in the data from my working directory. 
+
+Here are the packages I need:
+```{r}
+library(tidyverse)
+library(modelr)
+```
+
+And here's the data:
+```{r}
+dt <- read_csv("Columbus_2020_listings.csv")
+```
+
+There are a bunch of variables in here:
+```{r}
+dim(dt)
+```
+
+Okay, time for some brain work. I'm telling students to narrow down to 5-7 variables that they think will be most relevant for predicting housing price. I should probably do the same. There's a lot in here, and many more than 7 variables are probably predictive. Here are some promising ideas:
+
+**Host details**
+
+- host_since 
+- host_location
+- host_response_time
+- host_acceptance_rate (pick 1)
+- host_is_superhost (pick 2)
+- host_total_listings
+
+**Neighborhood details**
+
+- neighborhood_cleaned (pick 3)
+- city
+
+**Property details**
+
+- property_type 
+- room_type (pick 4)
+- accommodates
+- bedrooms
+- bathrooms
+- beds
+
+**Pricing**
+
+- price (outcome)
+- security_deposit (outcome?)
+- cleaning_fee (outcome?)
+- guests_included
+- extra_people
+- minimum nights
+- maximum nights
+
+**Satisfaction**
+
+- number_of_reviews (pick 5)
+- review_scores_rating (pick 6)
+- review_scores_*
+- reviews_per_month
+
+**Misc**
+
+- require_license
+- cancellation_policy (pick 7)
+- require_guest_profile_picture
+- require_guest_phone_verification
+
+Okay, so I have my picks. Now I need to do some cleaning and refining:
+
+```{r}
+dt %>%
+  transmute(
+    ## the outcome(s)
+    across(c(price, 
+             security_deposit, 
+             cleaning_fee),
+           ~ str_remove(.x, "\\$") %>%
+             as.numeric()),
+    
+    ## the predictors
+    host_acceptance_rate = 
+      str_remove(host_acceptance_rate, "\\%") %>%
+      as.numeric(),
+    host_is_superhost = host_is_superhost+0,
+    neighbourhood_cleansed,
+    room_type,
+    number_of_reviews,
+    review_scores_rating,
+    cancellation_policy,
+    
+    ## keep location details for mapping
+    longitude,
+    latitude
+  ) -> dtclean
+glimpse(dtclean)
+```
+
+The room type and cancellation policy columns may make more sense as ordered categories:
+```{r}
+## how many unique categories
+table(dtclean$room_type) # 4
+table(dtclean$cancellation_policy) # 4 (but really 3)
+
+## okay let's update the order
+library(socsci)
+dtclean %>%
+  mutate(
+    room_type = frcode(
+      room_type == "Shared room" ~ "Shared room",
+      room_type %in% 
+        c("Hotel room", "Private room") ~ "Hotel/Private room",
+      room_type == "Entire home/apt" ~ "Entire home/apt"
+    ),
+    cancellation_policy = frcode(
+      cancellation_policy == "flexible" ~ "Flexible",
+      cancellation_policy == "moderate" ~ "Moderate",
+      TRUE ~ "Strict/Super strict"
+    )
+  ) -> dtclean
+```
+
+
+## Polished Visualizations
+
+I need to make two polished visuals showing the relationship between some predictors and price.
+
+Visual 1:
+```{r class.source = "fold-hide"}
+coolorrr::set_theme()
+dtclean %>%
+  group_by(room_type) %>%
+  mean_ci(log(price)) %>%
+  ggplot() +
+  aes(x = exp(mean),
+      xmin = exp(lower),
+      xmax = exp(upper),
+      y = room_type,
+      label = paste0("N = ", 
+                     scales::comma(n))) +
+  geom_pointrange(
+    aes(size = n),
+    show.legend = F
+  ) +
+  scale_size_continuous(
+    range = c(0.1, 1)
+  ) +
+  geom_text(vjust = 2) +
+  scale_x_continuous(
+    labels = scales::dollar
+  ) +
+  labs(
+    x = "Avg. Housing Price",
+    y = NULL,
+    title = "AirBnB Price by Kind of Housing"
+  )
+```
+
+Visual 2:
+```{r class.source = "fold-hide"}
+ggplot(dtclean %>%
+         filter(host_acceptance_rate>0)) +
+  aes(x = host_acceptance_rate,
+      y = price) +
+  geom_jitter(
+    aes(y = 40),
+    color = "darkgray",
+    alpha = 0.25,
+    height = 5,
+    width = 1
+  ) +
+  scale_y_continuous(
+    breaks = seq(40, 150, by = 10),
+    labels = scales::dollar
+  ) +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = poisson),
+    formula = y ~ x,
+    color = "darkblue"
+  ) +
+  labs(
+    x = "Host Acceptance Rate (%)",
+    y = "Price of Housing",
+    title = "Higher acceptance = higher price",
+    subtitle = "Poisson line of best fit"
+  )
+```
+
+## A map
+
+Now I need to make a map of Columbus to summarize housing locations. First I need to install `{ggmap}` by running `devtools::install_github("dkahle/ggmap")`. Then I can open it:
+```{r}
+library(ggmap)
+```
+
+Now I need the coordinates for Columbus:
+```{r}
+## coordinates
+map <- c(left=-83.2, bottom=39.8, right=-82.75, top=40.16)
+
+## state map
+cbus_map <- get_stamenmap(map, zoom = 10, maptype = "toner")
+```
+
+Now let's check it out:
+```{r}
+ggmap(cbus_map) +
+  theme_void()
+```
+
+That's cool. So I should be able to add the coordinates of different AirBnBs by writing:
+```{r}
+ggmap(cbus_map) +
+  geom_point(
+    data = dtclean,
+    aes(x = longitude,
+        y = latitude,
+        size = price),
+    alpha = 0.05,
+    color = "darkblue",
+    show.legend = F
+  ) +
+  labs(title = "Location of AirBnBs in Columbus",
+       subtitle = "Larger points indicate higher prices") +
+  theme(
+    axis.line = element_blank(),
+    axis.text = element_blank(),
+    axis.title = element_blank()
+  )
+```
+
+It looks like it's expensive to stay close to downtown. It may be worth adding a column that's distance to the city center:
+```{r}
+ggmap(cbus_map)
+library(geosphere)
+## lon = -83 : lat = 39.96
+ccenter <- c(-83, 39.96)
+dtclean$distance <- with(dtclean, distHaversine(ccenter, cbind(longitude, latitude))) / 1000
+ggplot(dtclean) +
+  aes(
+    x = distance,
+    y = price
+  ) +
+  geom_point() +
+  scale_y_continuous(
+    labels = scales::dollar
+  ) +
+  #scale_x_log10() +
+  labs(
+    x = "Distance from city center (km)",
+    y = "Price",
+    title = "It pays to have a location downtown"
+  )
+```
+
+
+## Bivariate regression
+
+We can make a simple bivariate regression modeling the log of prices as a function of the host acceptance rate:
+```{r}
+simple_fit <- lm(price ~ distance, dtclean)
+summary(simple_fit)
+```
+
+
+## Check for multicolinearity
+
+```{r}
+library(GGally)
+ggpairs(dtclean %>% select(security_deposit,
+                           host_acceptance_rate,
+                           host_is_superhost,
+                           distance)) +
+  theme_classic()
+```
+
+## Use cross-validation to pick the best model
+
+```{r}
+library(modelr)
+## How about we just compare 4 models?
+
+## Step 1: use MC cross-validation
+cv_dt <- dtclean %>%
+  crossv_mc(n = 500)
+
+## Step 2: specify a list of model specifications
+spec_list <- list(
+  log(price) ~ 1, # NULL model for reference
+  log(price) ~ room_type,
+  log(price) ~ room_type + distance,
+  log(price) ~ room_type + host_is_superhost,
+  log(price) ~ room_type + host_acceptance_rate
+)
+
+## Step 3: train
+cv_dt %>%
+  expand_grid(., specs = spec_list) %>%
+  mutate(
+    model_num = rep(1:5, len = n()),
+    models = map2(specs, train, ~ lm(.x, .y))
+  ) -> cv_out
+
+## Step 4: validate performance
+cv_out %>%
+  mutate(
+    rmse = map2(models, test, ~ rmse(.x, .y))
+  ) -> cv_out
+
+## Step 5: collect the columns I need
+cv_out %>%
+  select(.id, model_num, rmse) %>%
+  unnest -> cv_results
+
+## Step 6: visualize the results
+cv_results %>%
+  group_by(model_num) %>%
+  mutate(
+    median = mean(rmse)
+  ) %>%
+  ggplot() +
+  aes(x = model_num,
+      y = rmse) +
+  geom_jitter(
+    color = "darkgray",
+    width = .1,
+    alpha = 0.4
+  ) +
+  geom_line(
+    aes(y = median)
+  ) +
+  geom_point(
+    aes(y = median),
+    color = "red",
+    size = 2
+  ) +
+  scale_x_continuous(
+    labels = c("NULL",
+               "type",
+               "type + distance",
+               "type + superhost",
+               "type + acceptance")
+  ) +
+  labs(x = NULL,
+       y = "RMSE",
+       title = "MC Cross-validation Results",
+       caption = "(500 MC iterations)")
+```
+
+Seems like using the housing type and distance to downtown do the best!
+
+
+## Make predictions
+
+So we know this is the best:
+```{r}
+olsfit <- lm(log(price) ~ room_type + distance, dtclean)
+psnfit <- glm(price ~ room_type + distance, dtclean, family = poisson)
+summary(olsfit)
+summary(psnfit)
+
+dtclean %>%
+  drop_na(price, room_type, distance) %>%
+  mutate(
+    olspred = predict(olsfit),
+    psnpred = exp(predict(psnfit))
+  ) %>%
+  summarize(
+    across(olspred:psnpred,
+           ~ sqrt(mean((price - .x)^2)))
+  )
+```
+
+Low/med/high price predictions:
+```{r}
+predata <- tibble(
+  room_type = sort(unique(dtclean$room_type)),
+  distance = c(20, 10, 0)
+)
+preds <- paste0("$",round(exp(predict(modelfit, predata)), 2))
+cbind(price = preds, predata)
+```
+
+You would net the highest nightly rate with an AirBnB that's an entire home/apartment close to the city center. If you only can offer a shared room in a far-out suburb, good luck making much money!
