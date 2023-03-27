@@ -1,0 +1,447 @@
+Controlling for Confounders
+================
+
+## Goals
+
+-   Randomized experiments are ideal for making causal inferences.
+-   But sometimes, experiments aren’t feasible for logistical or ethical
+    reasons.
+-   Our next best option is to use data from a non-experiment
+    (real-world events like civil wars, elections, protests) and try to
+    control for observed confounders.
+-   Thinking about a theoretical model of causation can help guide our
+    design.
+-   This won’t solve all our problems, because we can only control for
+    what we can observe or measure.
+-   Any unobserved confounders can still be lurking under the surface of
+    our data.
+
+## DAGs
+
+A *directed acyclic graph* or DAG is a useful way of visualizing both
+simple and complex causal relationships between variables. By using
+DAGs, we can start to think more clearly about our observational
+research designs.
+
+Visualizing a DAG in R is really easy with the `{ggdag}` package, which
+you can install by writing:
+
+    install.packages("ggdag")
+
+We’ll make an example DAG that summarizes the theoretical causal
+relationship among three variables: Voting, Ideology, and Party
+Membership in the U.S. Congress.
+
+First open the tidyverse along with ggdag:
+
+``` r
+library(tidyverse)
+library(ggdag)
+```
+
+Next, to make a DAG you’ll give R some instructions about the
+relationships between variables using `dagify()`. You can then pipe
+these instructions to `ggdag()`. The below code does so and adds some
+customization along the way:
+
+``` r
+dagify("Voting" ~ "Ideology" + "Party",
+       "Party" ~ "Ideology") %>%
+  ggdag(node = F,
+        text_col = "darkblue") +
+  theme_void()
+```
+
+<img src="11_controlling_for_confounders_files/figure-gfm/unnamed-chunk-2-1.png" width="75%" />
+
+The above represents a theoretical model of the causal relationships
+between political ideology, partisanship, and voting behavior in
+Congress. Specifically, it argues that ideology influences how
+individuals vote and their party ID, and that party ID in turn also
+influences how individuals vote.
+
+We can simulate some data based on this model:
+
+``` r
+dt <- tibble(
+  ideology = c(
+    rep(1, len = 70),
+    rep(2, len = 70),
+    rep(3, len = 69),
+    rep(4, len = 70),
+    rep(5, len = 70)
+  ),
+  republican = randomizr::block_ra(
+    blocks = ideology,
+    block_m = c(0, 4, 45, 69, 69)
+  ),
+  voting = republican + 0.1 * ideology + rnorm(length(ideology))
+) %>%
+  mutate(
+    ideology = as.factor(ideology),
+    voting = 100 * (voting - min(voting)) / (max(voting) - min(voting))
+  )
+```
+
+And then we can estimate some regression models:
+
+``` r
+# A simple regression model
+lm(voting ~ republican, dt)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = voting ~ republican, data = dt)
+    ## 
+    ## Coefficients:
+    ## (Intercept)   republican  
+    ##       35.94        20.59
+
+``` r
+# A multiple regression model that controls for ideology
+lm(voting ~ republican + ideology, dt)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = voting ~ republican + ideology, data = dt)
+    ## 
+    ## Coefficients:
+    ## (Intercept)   republican    ideology2    ideology3    ideology4    ideology5  
+    ##      33.742       16.213        3.260        5.314        4.454        9.732
+
+When we estimate the first model, each observation in our data is
+getting equal weight. But in the second model, observations are given
+different weights. Specifically, the weights are coming from ideological
+categories that give us more variation in party membership. We can run
+the code below to see which:
+
+``` r
+library(socsci)
+## Original sample weights:
+dt %>%
+  ct(ideology)
+```
+
+    ## # A tibble: 5 × 3
+    ##   ideology     n   pct
+    ##   <fct>    <int> <dbl>
+    ## 1 1           70 0.201
+    ## 2 2           70 0.201
+    ## 3 3           69 0.198
+    ## 4 4           70 0.201
+    ## 5 5           70 0.201
+
+``` r
+## Multiple regression weights:
+dt %>%
+  mutate(
+    wts = resid(lm(republican ~ ideology))^2
+  ) %>%
+  ct(ideology, wt = wts)
+```
+
+    ## # A tibble: 5 × 3
+    ##   ideology        n   pct
+    ##   <fct>       <dbl> <dbl>
+    ## 1 1        3.96e-27 0    
+    ## 2 2        3.77e+ 0 0.176
+    ## 3 3        1.57e+ 1 0.732
+    ## 4 4        9.86e- 1 0.046
+    ## 5 5        9.86e- 1 0.046
+
+As you can see, when we control for ideology, observations in that
+middle group are getting the majority of the weight.
+
+## Measuring Bias
+
+There are four general scenarios that influence the direction of the
+bias in a study with confounding. If the confounder is omitted from the
+analysis, it will result in the following biases:
+
+-   If the omitted variable has a positive correlation with treatment
+    and the outcome, the bias will be **positive**
+-   If the omitted variable has a positive correlation with treatment
+    and a negative correlation with the outcome, the bias will be
+    **negative**
+-   If the omitted variable has a negative correlation with treatment
+    and a positive correlation with the outcome, the bias will be
+    **negative**
+-   If the omitted variable has a negative relationship with the
+    treatment and the outcome, the bias will be **positive**
+
+We can do a simple simulation to illustrate:
+
+``` r
+d1 <- tibble(
+  z = rnorm(1000),
+  x = z + rnorm(1000),
+  y = z + x + rnorm(1000)
+)
+d2 <- tibble(
+  z = rnorm(1000),
+  x = -z + rnorm(1000),
+  y = z + x + rnorm(1000)
+)
+d3 <- tibble(
+  z = rnorm(1000),
+  x = z + rnorm(1000),
+  y = -z + x + rnorm(1000)
+)
+d4 <- tibble(
+  z = rnorm(1000),
+  x = -z + rnorm(1000),
+  y = -z + x + rnorm(1000)
+)
+```
+
+Each of these datasets is going to give us a different direction of
+bias. To calculate the bias we’ll first need to estimate some simple
+regression models:
+
+``` r
+sf <- y ~ x
+s1 <- lm(sf, d1)
+s2 <- lm(sf, d2)
+s3 <- lm(sf, d3)
+s4 <- lm(sf, d4)
+```
+
+We’re then going to estimate the full (correct) regression models:
+
+``` r
+mf <- y ~ x + z
+m1 <- lm(mf, d1)
+m2 <- lm(mf, d2)
+m3 <- lm(mf, d3)
+m4 <- lm(mf, d4)
+```
+
+If we use `screenreg()` from `{texreg}` to summarize the output of these
+models, we can clearly see that the simple models have different
+estimates for the effect x on y:
+
+``` r
+library(texreg)
+screenreg(list(s1, s2, s3, s4),
+          include.ci = F)
+```
+
+    ## 
+    ## ===============================================================
+    ##              Model 1      Model 2      Model 3      Model 4    
+    ## ---------------------------------------------------------------
+    ## (Intercept)     0.01         0.02        -0.06        -0.06    
+    ##                (0.04)       (0.04)       (0.04)       (0.04)   
+    ## x               1.48 ***     0.50 ***     0.48 ***     1.51 ***
+    ##                (0.03)       (0.03)       (0.03)       (0.03)   
+    ## ---------------------------------------------------------------
+    ## R^2             0.74         0.24         0.21         0.75    
+    ## Adj. R^2        0.74         0.24         0.21         0.75    
+    ## Num. obs.    1000         1000         1000         1000       
+    ## ===============================================================
+    ## *** p < 0.001; ** p < 0.01; * p < 0.05
+
+``` r
+screenreg(list(m1, m2, m3, m4),
+          include.ci = F)
+```
+
+    ## 
+    ## ===============================================================
+    ##              Model 1      Model 2      Model 3      Model 4    
+    ## ---------------------------------------------------------------
+    ## (Intercept)     0.01        -0.00        -0.08 *      -0.01    
+    ##                (0.03)       (0.03)       (0.03)       (0.03)   
+    ## x               0.99 ***     1.00 ***     1.01 ***     1.03 ***
+    ##                (0.03)       (0.03)       (0.03)       (0.03)   
+    ## z               0.98 ***     0.95 ***    -1.07 ***    -0.95 ***
+    ##                (0.04)       (0.04)       (0.04)       (0.05)   
+    ## ---------------------------------------------------------------
+    ## R^2             0.82         0.47         0.50         0.83    
+    ## Adj. R^2        0.82         0.47         0.50         0.83    
+    ## Num. obs.    1000         1000         1000         1000       
+    ## ===============================================================
+    ## *** p < 0.001; ** p < 0.01; * p < 0.05
+
+Does it look like the bias runs in the expected directions?
+
+We’ll make a simple function that lets us calculate the bias:
+
+``` r
+bias <- function(s, m) {
+  bias <- coef(s)["x"] - coef(m)["x"]
+  bias # return bias
+}
+```
+
+Now we can use it:
+
+``` r
+bias(s1, m1) # y = +z; x = +z
+```
+
+    ##         x 
+    ## 0.4918768
+
+``` r
+bias(s2, m2) # y = +z; x = -z
+```
+
+    ##          x 
+    ## -0.5035423
+
+``` r
+bias(s3, m3) # y = -z; x = +z
+```
+
+    ##          x 
+    ## -0.5361595
+
+``` r
+bias(s4, m4) # y = -z; x = -z
+```
+
+    ##         x 
+    ## 0.4847905
+
+## How does regression control?
+
+Let’s go back to our simulated ideology, partisanship, and voting data.
+We’re going to first convert ideology back to a numerical variable:
+
+``` r
+dt %>%
+  mutate(
+    ideology = as.numeric(ideology)
+  ) -> dt
+```
+
+Now, let’s visualize the relationship between ideology and voting:
+
+``` r
+library(coolorrr)
+set_theme()
+set_palette(binary = c("blue", "red"), from_coolors = F)
+p <- ggplot(dt) +
+  aes(x = ideology, 
+      y = voting) +
+  geom_jitter(
+    aes(color = ifelse(republican == 1, "Rep.", "Dem.")),
+    width = .1,
+    alpha = 0.4
+  ) +
+  ggpal(type = "binary") +
+  labs(x = "Conservative Ideology",
+       y = "Conservative Voting Score",
+       color = NULL) 
+p
+```
+
+<img src="11_controlling_for_confounders_files/figure-gfm/unnamed-chunk-13-1.png" width="75%" />
+
+We can see from the above that conservative ideology has a positive
+correlation with conservative voting score. We can also see that
+conservative candidates are disproportionately members of the Republican
+party.
+
+We could just estimate the relationship between ideology and voting with
+a simple model like this:
+
+``` r
+p + 
+  geom_smooth(
+    method = lm,
+    se = F,
+    color = "black"
+  )
+```
+
+<img src="11_controlling_for_confounders_files/figure-gfm/unnamed-chunk-14-1.png" width="75%" />
+
+But we could also do seperate models by party:
+
+``` r
+p + 
+  geom_smooth(
+    aes(group = as.factor(republican)),
+    method = lm,
+    se = F,
+    color = "black"
+  )
+```
+
+<img src="11_controlling_for_confounders_files/figure-gfm/unnamed-chunk-15-1.png" width="75%" />
+
+When we estimate a multiple regression model that also controls for
+party membership, what we effectively are doing is calculating a
+weighted average of both of these slopes and using that per party,
+instead:
+
+``` r
+p + 
+  geom_line(
+    aes(y = predict(lm(voting ~ ideology + republican)),
+        group = republican),
+    size = 1
+  )
+```
+
+<img src="11_controlling_for_confounders_files/figure-gfm/unnamed-chunk-16-1.png" width="75%" />
+
+## The limitations of controlling
+
+When we control for confounding covariates, we are assuming *selection
+on observables*, which is the idea that the process of treatment
+assignment (where the treatment is just the causal variable of interest)
+is determined by other *observed* factors.
+
+Our ability to remove bias from our estimate of the effect of a variable
+of interest on an outcome is limited to the extent that:
+
+1.  Other *unobserved* factors influence the treatment and outcome.
+2.  Reverse causation, or the idea that the outcome also influences the
+    treatment, is at work.
+
+The first problem has no real solution. The second can be addressed
+under only the best of circumstances, but even then it will be hard to
+convince all skeptics.
+
+These problems haunt all observational studies, even those that control
+for dozens of possible confounding factors.
+
+You can use some methods like sensitivity analysis to at least speculate
+about how big omitted variable bias would have to be to change the
+results of your study. This is a more advanced technique that we won’t
+cover in this class, but the curious should check out the
+[`{sensemakr}`](https://cran.r-project.org/web/packages/sensemakr/vignettes/sensemakr.html)
+package.
+
+Other landmines await the intrepid observational researcher. Perhaps two
+of the most common, aside from omitted variable bias and reverse
+causation, are mistaking confounders for mechanisms and post-treatment
+bias.
+
+An example of mistaking a confounder for a mechanism is controlling for
+incidence of lung cancer in a study about the effect of smoking on
+mortality. It should go without saying that smoking is deadly. But one
+of the reasons or mechanisms that explains its deadliness is its effect
+on the incidence of lung cancer. Obviously, if we want to estimate the
+effect of smoking on mortality, it doesn’t make sense to control for
+lung cancer, and doing so could actually bias the results.
+
+Post-treatment bias involves controlling for a variable in your model
+that is actually caused by the treatment. For example, you could argue
+that controlling for party membership in the analysis above introduces
+post-treatment bias since ideology may cause people to select into one
+or the party. Post-treatment bias can accidentally create spurious
+correlations or make other relationships disappear in the data.
+
+## Wrapping up
+
+Observational studies are incredibly important and necessary for making
+causal inferences when logistics and ethics make it impossible to run a
+randomized controlled trial. But, observational studies have
+limitations, so you need to be clear eyed about what conclusions you can
+and can’t confidently draw.

@@ -24,21 +24,31 @@ knitr::opts_chunk$set(echo = T,
 
 A *directed acyclic graph* or DAG is a useful way of visualizing both simple and complex causal relationships between variables. By using DAGs, we can start to think more clearly about our observational research designs.
 
+Visualizing a DAG in R is really easy with the `{ggdag}` package, which you can install by writing:
+```
 install.packages("ggdag")
+```
 
+We'll make an example DAG that summarizes the theoretical causal relationship among three variables: Voting, Ideology, and Party Membership in the U.S. Congress.
+
+First open the tidyverse along with ggdag:
 ```{r}
 library(tidyverse)
 library(ggdag)
 ```
 
+Next, to make a DAG you'll give R some instructions about the relationships between variables using `dagify()`. You can then pipe these instructions to `ggdag()`. The below code does so and adds some customization along the way:
 ```{r}
 dagify("Voting" ~ "Ideology" + "Party",
        "Party" ~ "Ideology") %>%
-  ggdag(text_col = "darkblue",
-        node = F) +
+  ggdag(node = F,
+        text_col = "darkblue") +
   theme_void()
 ```
 
+The above represents a theoretical model of the causal relationships between political ideology, partisanship, and voting behavior in Congress. Specifically, it argues that ideology influences how individuals vote and their party ID, and that party ID in turn also influences how individuals vote.
+
+We can simulate some data based on this model:
 ```{r}
 dt <- tibble(
   ideology = c(
@@ -58,17 +68,25 @@ dt <- tibble(
     ideology = as.factor(ideology),
     voting = 100 * (voting - min(voting)) / (max(voting) - min(voting))
   )
+```
 
+And then we can estimate some regression models:
+```{r}
+# A simple regression model
 lm(voting ~ republican, dt)
+
+# A multiple regression model that controls for ideology
 lm(voting ~ republican + ideology, dt)
 ```
 
-
-Where are the weights coming from?
+When we estimate the first model, each observation in our data is getting equal weight. But in the second model, observations are given different weights. Specifically, the weights are coming from ideological categories that give us more variation in party membership. We can run the code below to see which:
 ```{r}
 library(socsci)
+## Original sample weights:
 dt %>%
   ct(ideology)
+
+## Multiple regression weights:
 dt %>%
   mutate(
     wts = resid(lm(republican ~ ideology))^2
