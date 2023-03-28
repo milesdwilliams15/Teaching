@@ -1,0 +1,150 @@
+---
+title: "Analysis Challenge 6"
+subtitle: "Confounding"
+author: "Miles D. Williams"
+date: '2023-03-28'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      warning = F,
+                      message = F,
+                      dpi = 500,
+                      out.width = "50%")
+library(tidyverse)
+library(ggdag)
+theme_set(theme_void())
+```
+
+For this analysis challenge, you'll be presented with a few different causal frameworks. Your task, for each case, is to use that framework to decide which variables you should control for in a multiple regression model, and which you should leave out.
+
+For each scenario you will 
+
+1. Indicate the variables you will control for
+2. Justify your choice in a short paragraph
+
+For two, your reasoning should be guided by one of the following considerations we discussed in the lecture regarding *selection on observables* or SOO designs:
+
+- Minimizing ommited variable bias
+- Avoiding controlling for mechanisms
+- Avoiding post-treatment bias
+
+\clearpage
+
+## Secnario 1
+
+```{r}
+dagify(
+  Outcome ~ Treatment + Z1 + Z2,
+  Treatment ~ Z1 + Z2
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:
+
+\clearpage
+
+## Scenario 2
+
+```{r}
+dagify(
+  Outcome ~ Treatment + Z1 ,
+  Treatment ~ Z1,
+  Z2 ~ Treatment
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:
+
+\clearpage
+
+## Scenario 3
+
+```{r}
+dagify(
+  Outcome ~ Treatment,
+  Treatment ~ Z1 + Z2
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:
+
+
+\clearpage
+
+## Scenario 4
+
+```{r}
+dagify(
+  Outcome ~ Treatment + Z1 + Z2
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:
+
+
+\clearpage
+
+## Scenario 5
+
+```{r}
+dagify(
+  Outcome ~ Z1 + Z2,
+  Z1 ~ Treatment,
+  Z2 ~ Treatment
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:
+
+
+\clearpage
+
+## Scenario 6
+
+```{r}
+dagify(
+  Outcome ~ Treatment + Z1 + Z2,
+  Z1 ~ Treatment,
+  Z2 ~ Treatment
+) %>%
+  ggdag(
+    node = F,
+    text_col = "Black"
+  )
+```
+
+Variables you'd control for:
+
+Reasoning:

@@ -140,3 +140,15 @@ ggplot(oh_map_data) +
         legend.direction = "horizontal")
 ```
 
+## DC 7
+
+Clean up some data:
+```{r}
+write_csv(
+  x,
+  here::here("DPR 101", "Data",
+             "cces16.csv")
+)
+```
+
+For this challenge, use the 2016 CCES codebook and the CCES 2016 survey data. Recode two variables, one an attitude (like support for an issue, ideology) and the other a demographic factor (like gender, age, race). Then make a visualization that shows how the demographic factor explains variation in the attitude.
