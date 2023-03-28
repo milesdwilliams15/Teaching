@@ -1,8 +1,6 @@
 ---
 title: "Analysis Challenge 6"
 subtitle: "Confounding"
-author: "Miles D. Williams"
-date: '2023-03-28'
 output: word_document
 ---
 
@@ -17,6 +15,8 @@ library(ggdag)
 theme_set(theme_void())
 ```
 
+## Instructions
+
 For this analysis challenge, you'll be presented with a few different causal frameworks. Your task, for each case, is to use that framework to decide which variables you should control for in a multiple regression model, and which you should leave out.
 
 For each scenario you will 
@@ -24,9 +24,9 @@ For each scenario you will
 1. Indicate the variables you will control for
 2. Justify your choice in a short paragraph
 
-For two, your reasoning should be guided by one of the following considerations we discussed in the lecture regarding *selection on observables* or SOO designs:
+For 2, your reasoning should be guided by one of the following considerations we discussed in the lecture regarding *selection on observables* or SOO designs:
 
-- Minimizing ommited variable bias
+- Minimizing omitted variable bias
 - Avoiding controlling for mechanisms
 - Avoiding post-treatment bias
 

@@ -1,0 +1,332 @@
+Map it or plot it?
+================
+
+## Goals
+
+-   Understand when a map is and isn’t an appropriate visualization
+    choice.
+-   Talk about how to incorporate maps into a broader project.
+
+## When NOT to draw a map
+
+The first question you should ask yourself when making a data viz is:
+*what do I want to show?*
+
+If you want to show the *spatial distribution* of a variable (how some
+quantity differs across geographical locations) a map may be a good
+visualization choice. But, if you want to show other kinds of
+distributions, like how opinions on issues differ between Republicans
+and Democrats or how drug-use has changed over time, a map would be a
+poor choice.
+
+Let’s go back to the FiveThirtyEight forecast data. This time, we’ll
+look at a much larger version of the dataset. This one will give us
+information about all of the state-level predictions for Biden in 2020
+and for Clinton in 2016 across the range of dates for which
+FiveThirtyEight created forecasts for the respective election years.
+
+``` r
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/538_prez_forecast.csv"
+library(tidyverse)
+forecast_data <- read_csv(url)
+```
+
+If we look at the data with the `glimpse()` function from `{dplyr}`, we
+can see it has six columns.
+
+``` r
+glimpse(forecast_data)
+```
+
+    ## Rows: 12,138
+    ## Columns: 6
+    ## $ forecast_date       <date> 2020-11-03, 2020-11-03, 2020-11-03, 2020-11-03, 2…
+    ## $ state               <chr> "WY", "WI", "WV", "WA", "VA", "VT", "UT", "TX", "T…
+    ## $ projected_voteshare <dbl> 31.04658, 53.68898, 33.77089, 60.76666, 55.77469, …
+    ## $ actual_voteshare    <dbl> 26.55357, 49.44954, 29.69510, 57.97030, 54.10952, …
+    ## $ probwin             <dbl> 0.001625, 0.943575, 0.007175, 0.991550, 0.990225, …
+    ## $ probwin_outcome     <dbl> 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0,…
+
+By using `glimpse()` we can see a number of features about the data. For
+example, the variable `forecast_date` is a “date” class variable. This
+is a special kind of class in R reserved especially for, well, dates.
+
+We can also see that `state` is a character vector. That means that R
+treats it like an unordered categorical variable.
+
+It also has four variables of class “double” which is R-speak for
+non-integer real numbers.
+
+If we look at the range of dates we can see that the forecast data is
+not just for 2020 but also for 2016.
+
+``` r
+range(forecast_data$forecast_date)
+```
+
+    ## [1] "2016-06-08" "2020-11-03"
+
+Let’s add a column to the data that tells us which predictions are for
+2020 and which are for 2016.
+
+``` r
+forecast_data %>% # give the data to mutate()
+  mutate( # tell mutate to add a new column called election
+    election = ifelse(
+      forecast_date < as.Date("2020-01-01"),
+      "2016", # use ifelse() to return "2016" for dates before 2020
+      "2020"  # and to return "2020" otherwise
+    ) 
+  ) -> forecast_data
+```
+
+Using this data, we can plot the trends in Biden’s and Clinton’s
+projected vote shares in 2020 and 2016, respectively.
+
+``` r
+ggplot(forecast_data) +
+  aes(x = forecast_date, y = projected_voteshare,
+      group = state) +
+  geom_line(color = "grey", alpha = 0.5) +
+  facet_wrap(~ election, scales = "free_x") +
+  labs(
+    x = NULL,
+    y = "Predicted Vote Share",
+    title = "Change in forecasts over time",
+    caption = "Data: FiveThirtyEight"
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-6-1.png" width="75%" />
+
+If we wanted to add extra clarity, we could include an overall trend
+line:
+
+``` r
+ggplot(forecast_data) +
+  aes(x = forecast_date, y = projected_voteshare) +
+  geom_line(
+    aes(group = state),
+    color = "grey", alpha = 0.5
+  ) +
+  facet_wrap(~ election, scales = "free_x") +
+  labs(
+    x = NULL,
+    y = "Predicted Vote Share",
+    title = "Change in forecasts over time",
+    caption = "Data: FiveThirtyEight"
+  ) +
+  geom_smooth(
+    color = "black"
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-7-1.png" width="75%" />
+
+Do you notice anything interesting when comparing 2016 to 2020?
+
+You should be able to see a lot of differences. Do you think any of
+these would be visible in a map? Not a chance.
+
+## You can use maps to complement other visualizations
+
+Just because maps aren’t always an appropriate choice for showing
+relationships, that doesn’t mean you have to avoid them in the context
+of a research project that utilizes multiple forms of data viz.
+
+In fact, when writing a report, using many kinds of visualizations can
+be a helpful way to show an audience data from multiple angles.
+
+Here’s some data from election nights in 2016 and 2020. For each
+election, it shows for a given state FiveThirtyEight’s projected vote
+share for Clinton or Biden and their actual vote share. It also has a
+column that indicates whether the forecast over or under predicted the
+election. After you read it into R you can use `glimpse()` to see the
+data.
+
+``` r
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/538_prez_forecast_error_20162020.csv"
+Data <- read_csv(url)
+```
+
+Say we were doing a project to see whether FiveThirtyEight’s prediction
+errors in 2016 were as bad or worse than they were in 2020.
+
+We might start with a bar plot summarizing the errors in each election:
+
+``` r
+library(socsci)
+Data %>%
+  group_by(election) %>%
+  mean_ci(forecast_error) %>%
+  ggplot() +
+  aes(x = as.factor(election), y = mean) +
+  geom_col(width = 0.5) +
+  labs(
+    x = "Election",
+    y = "Average Forecast Error (% points)",
+    title = "Did FiveThirtyEight's forecasts get worse in 2020?",
+    caption = "Data: FiveThirtyEight"
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
+
+It looks like, on average, FiveThirtyEight’s forecasts overshot Biden’s
+margin in 2020 by twice as much as they did for Clinton in 2016. Was
+this the same across states? The below figure is a dot plot that shows
+errors by states. It looks like the forecasts tended to over or under
+project Biden and Clinton’s margins in the same places (mostly). Is
+there a positive relationship between these errors?
+
+``` r
+Data %>%
+  mutate(
+    first25 = state %in% sort(unique(state))[1:25]
+  ) %>%
+  ggplot() +
+  aes(x = forecast_error, 
+      y = reorder(state, forecast_error), 
+      color = as.factor(election)) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  ) +
+  geom_point() +
+  labs(
+    x = "Forecast Error (% points)",
+    y = NULL,
+    title = "Forecast error by state",
+    caption = "Data: FiveThirtyEight",
+    color = "Election"
+  ) +
+  facet_wrap(
+    ~ first25,
+    scales = "free_y",
+    ncol = 2
+  ) +
+  theme(
+    strip.text = element_blank()
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-10-1.png" width="75%" />
+
+We can look to see if such a positive correlation exists by making a
+scatter plot showing forecast error in 2016 on the x-axis and the
+forecast error in 2020 on the y-axis. The figure below reveals a pretty
+strong positive relationship between these variables.
+
+``` r
+Data %>%
+  select(
+    election, state, forecast_error
+  ) %>%
+  pivot_wider(
+    values_from = forecast_error,
+    names_from = election
+  ) %>%
+  ggplot() +
+  aes(x = `2016`, y = `2020`) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  labs(
+    x = "2016 Forecast Error",
+    y = "2020 Forecast Error",
+    title = "Are forecast errors correlated?",
+    caption = "Data: FiveThirtyEight"
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-11-1.png" width="75%" />
+
+We might finally want to describe where forecast errors got worse or
+better. Instead of making a full blown map, we can just use a geofaceted
+plot. The below figure shows the percentage point improvement in
+FiveThirtyEight’s forecast in different states between 2016 and 2020.
+Positive values mean that the forecast was more accurate, and negative
+values mean it was less accurate. We can see that across states the
+forecast seemed to generally get worse in 2020; though there were some
+pockets of improvement.
+
+``` r
+library(geofacet)
+Data %>%
+  group_by(state) %>%
+  summarize(
+    improvement = -diff(abs(forecast_error))
+  ) %>%
+  ggplot() +
+  aes(
+    x = 1,
+    y = 1,
+    label = round(improvement, 2),
+    fill = improvement
+  ) +
+  geom_tile(
+    show.legend = F
+  ) +
+  geom_text(
+    color = "white"
+  ) +
+  labs(
+    title = "Where did the forecast get better in 2020?",
+    caption = "Data: FiveThirtyEight"
+  ) +
+  facet_geo(~ state, scales = "free") +
+  scale_fill_gradient2(mid = "gray") +
+  theme_void()
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-12-1.png" width="75%" />
+
+Alternatively, if we wanted to make a map, we could do the following:
+
+``` r
+us_states <- usmap::us_map("states") %>%
+  mutate(state = abbr)
+us_states_data <- left_join(
+  us_states,
+  Data %>%
+  group_by(state) %>%
+  summarize(
+    improvement = -diff(abs(forecast_error))
+  ))
+```
+
+Notice the use of the `{usmaps}` package. You’ll need to install this
+package using `install.packages("usmaps")` to make the code work.
+
+With the data, we can then make a map that shows the same information as
+the geofaceted plot above.
+
+``` r
+library(coolorrr)
+set_palette(
+  diverging = c("red", "white", "blue"),
+  from_coolors = F
+)
+ggplot(us_states_data) +
+  aes(x = x, y = y, group = group,
+      fill = improvement) +
+  geom_polygon(
+    color = "black",
+    size = 0.1
+  ) +
+  coord_fixed() +
+  ggpal(type = "diverging",
+        aes = "fill") +
+  labs(
+    title = "Change in Prediction Error, 2020 vs. 2016",
+    fill = "Improvement: "
+  ) +
+  theme_void() +
+  theme(
+    legend.position = "bottom"
+  )
+```
+
+<img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-14-1.png" width="75%" />
