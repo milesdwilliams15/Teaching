@@ -330,3 +330,8 @@ ggplot(us_states_data) +
 ```
 
 <img src="map_it_or_plot_it_files/figure-gfm/unnamed-chunk-14-1.png" width="75%" />
+
+The coordinates provided by the `us_map()` function are already adjusted
+to reflect the curvature of the earth. While that means we don’t need to
+use the `coord_map()` function, I find that to get the proportions right
+it helps to use `coord_fixed()` instead.
