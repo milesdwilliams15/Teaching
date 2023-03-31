@@ -1,0 +1,55 @@
+---
+title: "Main Assignment 3"
+author: "[NAME HERE]"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      warning = F,
+                      message = F,
+                      dpi = 500,
+                      out.width = "75%")
+
+library(tidyverse)
+library(socsci)
+## add any other packages, like coolorrr, you want to use
+
+## read in your data here:
+
+## do your data cleaning and recoding here:
+```
+
+
+## Introduction
+
+Write your introduction here. Make sure you start with a clear research question, stated in the form of a question. And remember, you're addressing party officials, so write accordingly.
+
+
+## Data and Design
+
+Write your data and design section here. Summarize the survey data, where it came from, and why it's useful.
+
+
+## Analysis
+
+Quickly outline the sections below...
+
+### Overview of the Party
+
+How do you measure partisan membership in the data, how big is the party as a share of the sample, and what is its demographic profile? (This first bit could be done with words rather than a figure.)
+
+### Major Issues
+
+What are at least 10 issues on which they are united and divided? Your data viz should summarize the distribution of attitudes toward each issue. You can do this in a single figure or several.
+
+### Views on Underrepresented Groups
+
+How are they united or divided in their feelings toward at least three underrepresented groups? (e.g, women [sexism], racial minorities [racism], and immigrants [fear of demographic change]). Again, your data viz should summarize the distribution of attitudes/feelings toward each group. You can do this in a single figure or several.
+
+
+## Conclusion
+
+Write your conclusion. Do more than summarize the paper. Think big. What groups should your chosen party try to appease and what issues should they emphasize?
+
+
