@@ -1,0 +1,271 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: '2023-04-04'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(estimatr)
+library(texreg)
+coolorrr::set_theme()
+```
+
+
+Okay, let's see if I can make any sense of this. Here's the data:
+```{r}
+url <- "https://raw.githubusercontent.com/AndrewBertoli/Nationalism-RD-Replication-Files/master/WorldCupData.csv"
+data <- read_csv(url)
+```
+
+What's this look like?
+```{r}
+ggplot(data) +
+  aes(x = PointsFromCutpoint,
+      y = Treat) +
+  geom_point()
+```
+
+Okay, so that's the discontinuity. Outcome should be aggression.
+```{r}
+## From the original code
+data$AGGAfter=with(data,  AGGP.5 + AGGP1 + AGGP1.5 + AGGP2 + AGGP2.5)
+
+data$AGGBefore=with(data, AGG0 + AGGM.5 + AGGM1 + AGGM1.5 + AGGM2)
+```
+
+This format isn't exactly tidy:
+```{r}
+ggplot(data) +
+  aes(x = PointsFromCutpoint,
+      y = AGGAfter) +
+  geom_point()
+```
+
+Or maybe it is. Actually, yeah this makes sense! So I should be able to easily construct a RDD like so:
+
+```{r}
+rdd_fit <- 
+  lm_robust(
+    AGGAfter ~ Treat * PointsFromCutpoint,
+    data = data
+  )
+screenreg(
+  rdd_fit,
+  include.ci = F,
+  digits = 3
+)
+```
+
+Conflict before the cup could be used for a placebo test:
+```{r}
+rdd_fit2 <- 
+  lm_robust(
+    AGGAfter ~ Treat * PointsFromCutpoint,
+    data = data %>% filter(Use==1)
+  )
+rdd_fit3 <- 
+  lm_robust(
+    AGGBefore ~ Treat * PointsFromCutpoint,
+    data = data
+  )
+screenreg(
+  list(main = rdd_fit, 
+       trimmed = rdd_fit2,
+       placebo = rdd_fit3),
+  include.ci = F,
+  digits = 3
+)
+```
+
+
+Some better figures:
+```{r}
+data %>%
+  mutate(
+    diff = AGGAfter - AGGBefore
+  ) %>%
+  group_by(diff, PointsFromCutpoint, Treat) %>%
+  summarize(
+    n = n()
+  ) %>%
+  ungroup() %>%
+  mutate(
+    pred = fitted(
+      lm(diff ~ PointsFromCutpoint * Treat,
+         weights = n)
+    )
+  ) %>%
+  ggplot() +
+  aes(x = PointsFromCutpoint,
+      y = diff) +
+  geom_point(
+    aes(size = n),
+    size = 1
+  ) +
+  geom_line(
+    aes(y = pred),
+    color = "blue"
+  )
+```
+
+```{r}
+ggplot(data) +
+  aes(
+    x = PointsFromCutpoint,
+    y = AGGAfter - AGGBefore,
+    group = Treat
+  ) +
+  geom_smooth(
+    method = lm,
+    level = 0.83
+  ) +
+  geom_vline(
+    xintercept = 0,
+    lty = 2
+  ) +
+  labs(
+    x = "Points from Cutpoint",
+    y = "Frequency of MID Initiation",
+    title = "Making it to the World Cup and Aggression",
+    caption = "Data: Bertoli (2017), ISQ"
+  )
+```
+
+
+## With cleaner data
+
+```{r}
+clean_data <- 
+  data %>%
+    transmute(
+      ## Outcome data:
+      pre_agg = AGGBefore,
+        # No. MIDs post qualification +2 years
+      post_agg = AGGAfter,
+        # No. MIDs pre qualification -2 years
+      change_agg = post_agg - pre_agg,
+        # The post-pre difference
+      
+      ## Treatment and running variable
+      treatment = Treat,
+        # 1 = went to the World Cup
+      cutpoint_margin = PointsFromCutpoint,
+        # Point margin for threshold necessary to qualify
+      
+      ## Sample
+      use = Use,
+      
+      ## Covariates
+      military_spending = Milex,
+      total_pop = Tpop,
+      urban_pop = Upop,
+      us_ally = USAlly,
+      entrance_year = EntranceYear,
+      imports = Imports,
+      exports = Exports,
+      ongoing_civwar = EngagedCivilWar,
+      soccer_popular = SoccerMostPopular,
+      infant_mortality = InfantMortality,
+      life_expectancy = LifeExpectancy,
+      democracy = Democracy,
+    ) 
+clean_data
+```
+
+Visualize the regression discontinuity with geom_smooth. Set `method = lm` and `level = 0.83`, and inside `aes()` map the group aesthetic to treatment status.
+```{r}
+ggplot(clean_data) +
+  aes(x = cutpoint_margin, y = change_agg) +
+  geom_smooth(
+    aes(group = treatment),
+    method = lm,
+    level = 0.83
+  ) +
+  geom_vline(
+    xintercept = 0,
+    lty = 2
+  ) +
+  labs(
+    x = "Point Margin to Qualify",
+    y = "Change in MID Initiation",
+    title = "World Cup Qualification and Military Aggression"
+  )
+```
+
+Do it again, but this time use `method = "loess"`:
+```{r}
+ggplot(clean_data) +
+  aes(x = cutpoint_margin, y = change_agg) +
+  geom_smooth(
+    aes(group = treatment),
+    method = "loess",
+    level = 0.83
+  ) +
+  geom_vline(
+    xintercept = 0,
+    lty = 2
+  ) +
+  labs(
+    x = "Point Margin to Qualify",
+    y = "Change in MID Initiation",
+    title = "World Cup Qualification and Military Aggression"
+  )
+```
+
+Do these ways of analyzing the data provide the same or different inferences about the effect of the treatment?
+
+Some researchers recommend an alternative to measuring the LATE using the conventional regression approach. They argue that if we narrow the bandwidth enough and can assume treatment is truly as-if random within this bandwidth, we can analyze the data just as if it were generated in a randomized experiment.
+
+Narrow the data down to those within the +/-2 point range and do a simple difference in means test:
+```{r}
+difference_in_means(
+  change_agg ~ treatment, 
+  data = clean_data %>% 
+    filter(between(cutpoint_margin, -2, 2))
+) %>%
+  screenreg()
+```
+
+Is this sufficient to make apples-to-apples comparisons?
+```{r}
+samp_data <- clean_data %>%
+  filter(between(cutpoint_margin, -2, 2))
+cov_names <- names(samp_data)[7:18]
+bal_fits <- lm_robust(
+  as.matrix(samp_data[, cov_names]) ~ treatment,
+  data = samp_data
+)
+bal_fits %>%
+  tidy() %>%
+  filter(term == "treatment") %>%
+  ggplot() +
+  aes(
+    x = statistic,
+    xmin = statistic - 1.96,
+    xmax = statistic + 1.96,
+    y = outcome
+  ) +
+  geom_pointrange() +
+  geom_vline(
+    xintercept = c(-2, 0, 2), 
+    lty = c(1, 2, 1),
+    color = c("darkblue", "black", "darkblue")
+  )
+```
+
+## To Do
+
+- save the cleaned data and make available to students:
+
+```{r}
+write_csv(
+  clean_data,
+  here::here("DPR 201", "Data", "world_cup.csv")
+)
+```
+
+- make MA prompt 
