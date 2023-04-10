@@ -1,0 +1,260 @@
+---
+title: "Does Ethnic Fractionalization Promote Civil War?"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+We've been talking about writing functions and R style guides. Building on what we've already discussed, today we're going to discuss trouble-shooting code.
+
+In groups of 3-4, your task is to troubleshoot the code below required to run an analysis looking at whether ethnic fractionalization---a measure of how numerous, large, and geographically disbursed different ethnic groups are within a society---is a contributing factor to the breakout of civil war in countries.
+
+Many speculate that more ethnic fractionalization makes cooperation within a society more difficult. The idea is that more ethnic fractionalization makes political compromise less tenable. This in turn stokes tensions and possibly spurs violent contestation over political power or territory.
+
+The code below is meant to perform an analysis that tests this claim. However, the analyst who wrote it was in a hurry and much of the code needs to be debugged. It's your job to fix it. 
+
+The sections below come from a .Rmd file that contained the original code chunks and in-text writeup by the analyst. Go through it, and see if you can't bring this code back to life so we can figure out whether ethnic fractionalization really does increase the probability of civil war.
+
+
+## Original Code and Writeup
+
+First, I need to open up some packages then read in my data. A bunch of data relevant for testing claims about political conflict has been compiled in an R package called `{peacesciencer}`. The unit of analysis in the data is a country-year, and the time span runs from 1946 to 2017.
+
+```{r}
+## Packages
+library(tidyverse)
+library(peacesciencer)
+library(modelr)
+library(estimatr)
+library(texreg)
+theme_set(ggthemes::theme_clean())
+
+## Data
+dt <- create_stateyears(
+  system = "gw",
+  subset_years = 1946:2017
+) %>%
+  add_ccode_to_gw() %>%
+  add_ucdp_acd(type = "intrastate") %>%
+  add_creg_fractionalization() %>%
+  add_sdp_gdp() %>%
+  add_rugged_terrain() %>%
+  add_democracy() %>%
+  add_igos()
+```
+
+Alright, with the data in hand, let's first just look at the rate of new conflict intitiation over time. The relevant variable is `ucdponset`. 
+
+```{r}
+dt %>%
+  group_by(year) %>%
+  summarize(
+    wars_started = sum(ucdponset, na.rm=T)
+  ) %>%
+  ggplot() +
+  aes(x = year, y = wars_started) +
+  geom_line(size = 1) +
+  labs(
+    x = NULL,
+    y = "Civil Wars Started",
+    title = "New Civil Wars over Time, 1945-2015"
+  ) +
+  scale_x_continuous(
+    breaks = seq(1945, 2015, by = 5)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 10, by = 2)
+  ) +
+  theme(
+    axis.text.x = 
+      element_text(
+        angle = 45, 
+        hjust = 1
+      )
+  )
+```
+
+It looks like there's been a lot of fluctuation in the number of new civil wars started over time. It seems like a modest increase has taken place over the timespan after WWII.
+
+Next, let's look at the relationship between ethnic fractionalization and conflict. The relevant variable is `ethfrac`. This takes a value between 0 and 1 where 0 means no or negligible amounts of fractionalization and 1 is a substantial amount of fractionalization. Since the outcome is binary, I won't do a scatter plot. Instead I'll just use geom_smooth() to plot the change in the mean of conflict onset by the level of ethnic fractionalization.
+
+```{r}
+ggplot(dt) +
+  aes(x = ethfrac, y = ucdponset) +
+  geom_smooth() +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "Ethnic Fractionalization",
+    y = "(%) Likelihood of Civil War",
+    title = "Fractionalization and Conflict"
+  )
+```
+
+In the above, we can see a clear positive relationship between fractionalization and conflict. However, there may be other factors related to fractionalization that could also explain why countries descend into civil war. Some past studies point to a number of possible factors.
+
+Let's first estimate a simple regression model and then a multiple regression model that controls for other possible confounding factors like GDP per capita, democracy, and rugged mountainous terrain.
+
+```{r}
+fit_1 <- lm_robust(
+  ucdpongoing ~ ethfrac,
+  data = dt,
+  se_type = "stata",
+  clusters = gwcode
+)
+fit_2 <- lm_robust(
+  ucdpongoing ~ ethfrac + 
+    wbgdppc2011est + wbpopest + rugged + 
+    v2x_polyarchy + sum_igo_full + 
+    poly(year, 3),
+  data = dt,
+  se_type = "stata",
+  clusters = gwcode
+)
+screenreg(
+  list(fit_1, fit_2),
+  include.ci = F
+)
+```
+
+Even after controling for covariates and also including this thing called a "cubic time trend" with the poly() function on year, there's still a strong positive relationship between ethnic fractionalization and civil war.
+
+Let's make a "coefficient plot" to better visualize the results:
+
+```{r}
+`%nin%` <- Negate(`%in%`)
+tidy(fit_2) %>%
+  filter(
+    term %nin% c(
+      "poly(year, 3)1",
+      "poly(year, 3)2",
+      "poly(year, 3)3",
+      "(Intercept)"
+    )
+  ) %>%
+  ggplot() +
+  aes(
+    x = estimate,
+    xmin = conf.low,
+    xmax = conf.high,
+    y = term
+  ) +
+  geom_pointrange(
+    size = .1
+  ) +
+  geom_vline(
+    xintercept = 0,
+    lty = 2
+  ) +
+  scale_y_discrete(
+    labels = c(
+      "Ethnic\nFractionalization",
+      "Rugged Terrain",
+      "No. IGO\nMemberships",
+      "Quality of\nDemocracy",
+      "Income\n(GDP per capita)",
+      "Population Size"
+    )
+  ) +
+  labs(
+    x = "Regression Coefficient",
+    y = NULL,
+    title = "OLS Estimates",
+    caption = "95% CIs shown"
+  )
+```
+
+Ethnic fractionalization seems to be an important predictor. But measuring predictive importance is best done via cross-validation. 
+
+```{r}
+forms <- 
+  list(
+    # null model
+    ucdpongoing ~ 1,
+    
+    # just the controls
+    ucdpongoing ~ 
+      wbgdppc2011est + wbpopest +
+      rugged + v2x_polyarchy + 
+      sum_igo_full + poly(year, 3),
+    
+    # adding ethnic fractionalization
+    ucdpongoing ~ ethfrac +
+      wbgdppc2011est + wbpopest +
+      rugged + v2x_polyarchy + 
+      sum_igo_full + poly(year, 3)
+  )
+
+dt %>%
+  crossv_mc(n = 100) %>%
+  expand_grid(
+    .,
+    forms = forms
+  ) %>%
+  mutate(
+    model_num = rep(1:3, len = n()),
+    models = map2(
+      forms, 
+      train,
+      ~ lm(.x, .y)
+    ),
+    rmse = map2(
+      models, 
+      test,
+      ~ rmse(.x, .y)
+    )
+  ) %>%
+  select(.id, model_num, rmse) %>%
+  unnest() -> cv_results
+```
+
+
+Alright, so we have the cross-validation results. Let's visualize to compare. Based on the main regression analysis, we'd expect ethnic fractionalization to really improve our ability to make predictions.
+
+```{r}
+cv_results %>%
+  group_by(model_num) %>%
+  mutate(median = median(rmse)) %>%
+  ggplot() +
+  aes(
+    x = model_num,
+    y = rmse,
+    group = .id
+  ) +
+  geom_point(
+    color = "gray"
+  ) +
+  geom_line(
+    color = "gray"
+  ) +
+  geom_point(
+    aes(y = median)
+  ) +
+  geom_line(
+    aes(y = median)
+  ) +
+  scale_x_continuous(
+    breaks = 1:3,
+    labels = c(
+      "Null",
+      "Just Controls",
+      "+ Ethnic\nFractionalization"
+    ),
+    limits = c(0.5, 3.5)
+  ) +
+  labs(
+    x = NULL,
+    y = "RMSE",
+    title = "The impact of fractionalization on\nmodel performance"
+  )
+```
+
+Well...that's surprising.
+

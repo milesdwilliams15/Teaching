@@ -1,0 +1,85 @@
+---
+title: "Difference-in-Differences Designs"
+output: 
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%")
+```
+
+## Goals
+
+- When treatment status changes over time for some observations but not others, we can possibly use a *difference-in-differences* or DD design.
+- DD designs let us control for all non-time-varying confounders.
+- But, DD designs require some assumptions to be met.
+
+What you'll need to run the code in these notes:
+```{r}
+library(tidyverse)
+library(geomtextpath)
+library(coolorrr)
+set_theme()
+set_palette()
+```
+
+
+## Counterfactuals in a DD Design
+
+```{r}
+dd_data <-
+  tibble(
+    x = c(1, 2, 1, 2, 1, 2),
+    y = c(1, 2, 1.5, 3, 1.5, 2.5),
+    tr = c("No", "No", "Yes", "Yes", "Yes", "Yes"),
+    label = c("Control", "Control", "Treated", "Treated",
+              "Counterfactual", "Counterfactual")
+  )
+ggplot(dd_data) +
+  aes(
+    x = x,
+    y = y,
+    color = tr,
+    label = label
+  ) +
+  geom_point(
+    show.legend = F
+  ) +
+  geom_textline(
+    aes(
+      linetype = tr, 
+      group = label
+    ),
+    show.legend = F
+  ) +
+  ggpal() +
+  scale_x_continuous(
+    breaks = 1:2,
+    labels = c("Time t", "Time t + 1"),
+    limits = c(0.75, 2.25)
+  ) +
+  labs(
+    x = "Time",
+    y = "Outcomes",
+    title = "Parallel Trends and the DD Design"
+  )
+```
+
+The difference between treated and control units at *t + 1* is our estimate of the treatment effect.
+
+
+## The Standard DD Design
+
+
+## The Generalized DD Design
+
+
+## Checking Pre-Trends
+
+
+## Application with International Order

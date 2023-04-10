@@ -1,0 +1,32 @@
+---
+title: "MA4: [YOUR TITLE HERE]"
+author: "[YOUR NAME]"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      warning = F,
+                      message = F,
+                      dpi = 500,
+                      out.width = "75%")
+
+## Add the code to read in the data here
+
+## Make your recodes here
+
+```
+
+
+## Introduction
+
+
+## Data and Design
+
+
+## Analysis
+
+
+## Conclusion
+
+
