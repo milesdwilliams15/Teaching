@@ -22,7 +22,7 @@ library(estimatr)
 congress_dt <- read_csv("https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/CongressionalData.csv")
 ```
 
-The outcome variable is `cvp`. This stands for "conservative vote probability" and is a score given to each member of Congress in each term summarizing their roll-call voting. It meausres the probability that each member voted conservatively across all bills relative to the median member in that session. That means it is a *relative* probability and can take either positive or negative values. Postive means that a member voted more conservatively than the median member of Congress in a given term.
+The outcome variable is `cvp`. This stands for "conservative vote probability" and is a score given to each member of Congress in each term summarizing their roll-call voting. It measures the probability that each member voted conservatively across all bills relative to the median member in that session. That means it is a *relative* probability and can take either positive or negative values. Positive means that a member voted more conservatively than the median member of Congress in a given term.
 
 The causal variable of interest is `republican` which is 1 if the member was a Republican and 0 if they were a Democrat.
 
@@ -32,8 +32,8 @@ For the RD design, you'll use `rep_voteshare` as your running variable. Note tha
 
 Finally, for the DD design, you can follow the example from our Monday lecture notes.
 
-After you estimate all three designs, compare your estimates of the effect of party membership on member voting. Do these research designs provide similar or very different estimates?
+After you estimate all three designs, compare your estimates of the effect of party membership on member voting to answer the question: *Do these research designs provide similar or very different estimates?*
 
-**1 extra bonus point if you compare the results using a coefficient plot!**
+In providing your answer make sure that you fully and accurately interpret the regression coefficient for `republican` and the associated p-value. **1 extra bonus point if you compare the results using a coefficient plot!**
 
 Upload a knitted .Rmd file to Canvas that includes your code and comparison of the results.
