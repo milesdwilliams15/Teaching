@@ -21,7 +21,7 @@ I've made the data from Bertoli's study available. The code to read it into R is
 - The running variable: `cutpoint_margin`, which is the point margin relative to the threshold necessary to qualify for the World Cup.
 
 Here's what you need to read in the data:
-```
+```{r}
 ## packages you'll need
 library(tidyverse)
 library(estimatr)
@@ -37,14 +37,58 @@ For this analysis challenge, I want you to perform the following tasks and answe
 
 2. Visualize the regression discontinuity with geom_smooth. Set `method = lm` and `level = 0.83`, and inside `aes()` map the group aesthetic to treatment status.
 
+```{r}
+ggplot(data) +
+  aes(x = cutpoint_margin, y = change_agg, group = treatment) +
+  geom_smooth(
+    method = lm,
+    level = 0.83
+  )
+```
+
+
 3. Do it again, but this time use `method = "loess"`. Do you notice any difference?
+
+```{r}
+ggplot(data) +
+  aes(x = cutpoint_margin, y = change_agg, group = treatment) +
+  geom_smooth(
+    method = "loess",
+    level = 0.83
+  )
+```
+
 
 4. Implement the RD design the way we discussed in class and interpret the results. What is your estimate of the LATE? What does it mean in substantive terms? Can you reject the null?
 
+```{r}
+rdd_fit1 <- lm_robust(
+  change_agg ~ treatment * cutpoint_margin,
+  data = data
+)
+texreg::screenreg(rdd_fit1)
+```
+
+
 5. Try narrowing the bandwidth to just +/-2 points from qualifying and just calculate the simple difference in means in the outcome given treatment. What is your estimate? What does it mean in substantive terms? Can you reject the null?
 
+```{r}
+lm_robust(change_agg ~ treatment,
+          data = data %>%
+            filter(between(cutpoint_margin, -2, 2)))
+```
+
+
 6. With the same bandwidth, implement the RD design like in 3. How do the results change?
+
+```{r}
+lm_robust(change_agg ~ treatment * cutpoint_margin,
+          data = data %>%
+            filter(between(cutpoint_margin, -2, 2)))
+```
+
 
 7. Does this research design still seem plausible to you? Even if you don't buy the link between the World Cup and nationalism, do you think nationalism can cause international aggression?
 
 8. There are other covariates in the data. Is treatment correlated with any other factors that might influence aggression?
+

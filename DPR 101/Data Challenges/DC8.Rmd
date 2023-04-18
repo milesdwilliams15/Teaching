@@ -1,0 +1,115 @@
+---
+title: "Data Challenge 8"
+author: "Miles D. Williams"
+date: '2023-04-17'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "90%")
+library(tidyverse)
+library(coolorrr)
+set_theme()
+set_palette()
+library(googlesheets4)
+gs4_deauth()
+d23 <- range_speedread("https://docs.google.com/spreadsheets/d/1tjXE5es_6kXC4HNFGlQL_xMJ80DH14nS7wNP-rd3nME/edit?usp=share_link")
+```
+
+
+
+```{r}
+d23 %>%
+  select(
+    Q11_1:Q11_16
+  ) -> selected_dt
+FT_names <- 
+  c(
+    "Donald Trump",
+    "Joe Biden",
+    "United States",
+    "Denison Dems",
+    "Adam Weinberg",
+    "BLM",
+    "Students who vape",
+    "Students who smoke",
+    "Greek life",
+    "Denison Admin",
+    "Denison College Reps",
+    "DCGA",
+    "Denison Forward",
+    "onetwentyseven.blog"
+  )
+names(selected_dt) <- FT_names
+selected_dt
+```
+
+```{r}
+selected_dt %>%
+  pivot_longer(
+    cols = everything()
+  ) %>%
+  group_by(name) %>%
+  mutate(
+    value_cut = cut(
+      value,
+      breaks = c(0, 25, 50, 75, 100),
+      include.lowest = T,
+      ordered_result = T
+    ),
+    value_mean = mean(value, na.rm=T)
+  ) -> plot_dt
+```
+
+```{r, fig.height=5, fig.width=7}
+plot_dt %>%
+  group_by(name, value_cut) %>%
+  summarize(
+    n = n(),
+    mean = unique(value_mean)
+  ) %>%
+  drop_na() %>%
+  group_by(name) %>%
+  mutate(pct = n / sum(n)) %>%
+  ggplot() +
+  aes(
+    x = pct,
+    y = reorder(name, mean),
+    fill = value_cut
+  ) +
+  geom_col(
+    position = position_stack(reverse = T)
+  ) +
+  geom_vline(
+    xintercept = 1.1,
+    size = 20,
+    color = "gray"
+  ) +
+  geom_text(
+    aes(x = 1.1, label = round(mean)),
+    color = "white"
+  ) +
+  scale_x_continuous(
+    breaks = c(0, .25, .5, .75, 1, 1.1),
+    labels = c(
+      "0%",
+      "25%",
+      "50%",
+      "75%",
+      "100%",
+      "Mean"
+    )
+  ) +
+  labs(
+    x = "% Of Feeling Thermometer Responses",
+    y = NULL,
+    title = "How do DU students feel about...",
+    fill = "Feeling Thermometer:"
+  )
+
+```
+

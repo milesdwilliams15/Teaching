@@ -1,0 +1,13 @@
+name: Example-Shiny-App
+title: Example-Shiny-App
+username:
+account: milesdwilliams15
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8889699
+bundleId: 7106954
+url: https://milesdwilliams15.shinyapps.io/Example-Shiny-App/
+when: 1681860081.35416
+lastSyncTime: 1681860081.3542
+asMultiple: FALSE
+asStatic: FALSE
