@@ -16,7 +16,7 @@ Using the Congressional data below ([read more about the data](https://github.co
 
 Here's the code to read in the data and open the packages you'll need:
 
-```
+```{r}
 library(tidyverse)
 library(estimatr)
 congress_dt <- read_csv("https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/CongressionalData.csv")
@@ -28,12 +28,65 @@ The causal variable of interest is `republican` which is 1 if the member was a R
 
 For the SOO design, you'll estimate a multiple regression model that controls for `rep_twoparty_pres`. This variable is the average Republican two-party vote share for US President in congressional districts from 2004 and 2008. You can think of it as a proxy (indirect measure) of the political ideology of a district.
 
+```{r}
+soo_fit <- lm_robust(
+  cvp ~ republican + rep_twoparty_pres,
+  data = congress_dt
+)
+```
+
+
 For the RD design, you'll use `rep_voteshare` as your running variable. Note that you'll need to adjust for the fact that the discontinuity is at the 0.5 vote share value. 
+
+```{r}
+rdd_fit <- lm_robust(
+  cvp ~ republican * I(rep_voteshare - 0.5),
+  data = congress_dt
+)
+```
+
 
 Finally, for the DD design, you can follow the example from our Monday lecture notes.
 
+```{r}
+dnd_fit <- lm_robust(
+  cvp ~ republican,
+  fixed_effects = ~ cong + state_dist,
+  data = congress_dt
+)
+```
+
+
 After you estimate all three designs, compare your estimates of the effect of party membership on member voting to answer the question: *Do these research designs provide similar or very different estimates?*
 
+```{r}
+library(texreg)
+screenreg(
+  list(
+    "SOO" = soo_fit,
+    "RD" = rdd_fit,
+    "D-in-D" = dnd_fit
+  ),
+  include.ci = F,
+  custom.coef.map = list(
+    "republican" = "Republican"
+  )
+)
+```
+
+
 In providing your answer make sure that you fully and accurately interpret the regression coefficient for `republican` and the associated p-value. **1 extra bonus point if you compare the results using a coefficient plot!**
+
+```{r}
+bind_rows(
+  tidy(soo_fit),
+  tidy(rdd_fit),
+  tidy(dnd_fit)
+) %>%
+  filter(term == "republican") %>%
+  ggplot() +
+  aes(x = )
+```
+
 
 Upload a knitted .Rmd file to Canvas that includes your code and comparison of the results.

@@ -1,0 +1,424 @@
+---
+title: "Majors, Stress, and Smoking"
+author: "Miles D. Williams"
+date: '`r Sys.Date()`'
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%",
+                      fig.height = 4,
+                      fig.width = 7)
+library(tidyverse)
+library(coolorrr)
+library(estimatr)
+set_theme()
+set_palette()
+library(socsci)
+library(patchwork)
+library(googlesheets4)
+gs4_deauth()
+d23 <- range_speedread("https://docs.google.com/spreadsheets/d/1tjXE5es_6kXC4HNFGlQL_xMJ80DH14nS7wNP-rd3nME/edit?usp=share_link")
+
+## Do some recodes
+
+d23 <- d23 %>%
+  mutate(
+    Q23_1 = ifelse(Q23_1 == 1, "Social Sciences", ""),
+    Q23_2 = ifelse(Q23_2 == 1, "Sciences", ""),
+    Q23_3 = ifelse(Q23_3 == 1, "Humanities", ""),
+    Q23_4 = ifelse(Q23_4 == 1, "Arts", ""),
+    Q23_5 = ifelse(Q23_5 == 1, "Interdisciplinary", ""),
+    Q23_6 = ifelse(Q23_6 == 1, "Undecided"),
+    stress = Q18_1 
+  ) %>%
+  unite(
+    major,
+    Q23_1:Q23_6,
+    remove = F,
+    na.rm = T,
+    sep = ", "
+  ) %>%
+  mutate(
+    vaping = frcode(
+      Q6 == 1 ~ "Never",
+      Q6 == 2 ~ "Seldom",
+      Q6 == 3 ~ "Sometimes",
+      Q6 == 4 ~ "Often",
+      Q6 == 5 ~ "Very Often"
+    ),
+    smoking = frcode(
+      Q7 == 1 ~ "Never",
+      Q7 == 2 ~ "Seldom",
+      Q7 == 3 ~ "Sometimes",
+      Q7 == 4 ~ "Often",
+      Q7 == 5 ~ "Very Often"
+    ),
+    year = frcode(
+      Q55 == 4 ~ "Freshman",
+      Q55 == 3 ~ "Sophomore",
+      Q55 == 2 ~ "Junior",
+      Q55 == 1 ~ "Senior"
+    )
+  )
+```
+
+## Introduction
+
+Do certain major areas of study at Denison University make students feel more stressed? Does this stress drive unhealthy behaviors like vaping and smoking to cope? I answer these questions with the Feb. 2023 wave of the DU student survey. 
+
+Finding answers to these questions matter for two reasons. First, if certain majors lend themselves to higher levels of stress, it might be worthwhile to consider how to target resources at students who have high stress academic tracks. Second, if this stress in turn leads to unhealthy behaviors to cope, this makes the importance of addressing student stress all the more prescient.
+
+Interestingly, I find no strong evidence that links academic major to student stress levels. There are some differences between majors, but the average student across areas of study reports only moderate levels of stress---consistent with being challenged, but not overwhelmed. There is quite a lot of variation in stress overall, however. While the average student is not overwhelmed, some certainly are.
+
+While there is no strong link between academics and stress, I do find compelling evidence that stress is linked to vaping and smoking. Students that vape or smoke with greater frequency also tend to report higher levels of stress. Steps should be taken to help provide students with healthier ways to cope.
+
+## Data and Design
+
+Denison students were surveyed online in Feb. of 2023 and asked a suite of questions about their academics, social and political behaviors and attitudes, and background. `r ncol(d23)` students participated in the survey, or just over a fourth of the DU student population. 
+
+Helpful for answering the research questions mentioned at the outset, the survey asked students about the area of study associated with their declared major(s), their reported levels of stress on a 0-100 scale, and their frequency of vaping and smoking on a scale from "never" to "very often."
+
+## Academics as a driver of stress?
+
+Figure 1 shows the distribution of respondents in the DU survey who had a declared major in the sciences, social sciences, humanities, art, interdisciplinary programs, or who remained undecided. The percentage of students is shown using a column plot with major area sorted by the percentage of respondents from most to least. Both the sciences and the social sciences are the most common areas in which students major with almost 34% and 30% of students having at least one declared major in these areas, respectively. Having a declared major in the humanities is the third most common (almost 15%), while the least common are interdisciplinary programs and the arts (both less than 10%). A small share of students who took the survey (just less than 4%) remained undecided.
+
+```{r}
+d23 %>%
+  summarize(
+    across(Q23_1:Q23_6, ~ sum(!is.na(.x)))
+  ) %>%
+  pivot_longer(
+    cols = everything()
+  ) %>%
+  mutate(
+    name = c(
+      "Social Sciences",
+      "Sciences",
+      "Humanities",
+      "Arts",
+      "Interdisciplinary",
+      "Undecided"
+    ),
+    pct = value / sum(value)
+  ) %>%
+  ggplot() +
+  aes(x = reorder(name, -pct), y = pct) +
+  geom_col(
+    width = 0.5,
+    color = "white",
+    fill = "gray"
+  ) +
+  geom_text(
+    aes(label = paste0(round(pct * 100, 1), "%")),
+    vjust = -1.5
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, 0.4)
+  ) +
+  labs(
+    x = "Area of Declared Major",
+    y = NULL,
+    title = "Figure 1: Distribution of Majors at DU",
+    subtitle = "Percentage declaring at least one of..."
+  )
+```
+
+Different majors come with different responsibilities and time commitments for students. Does this place students under varying degrees of stress? Figure 2 shows the average reported level of stress by having a declared major in a certain area. Values are sorted from greatest to least by average stress. Overall, the level of stress varies little by academic area, though it is interesting to note that those in the arts and the sciences report the highest levels of stress. Meanwhile, those doing an interdisciplinary program have the lowest reported levels of stress. The difference between these groups is a little over 10 points, which is modest but nothing to sneeze at either. But in practical terms, all groups report average levels of stress higher than 50 on a 0-100 scale. And even the groups that report the highest levels of stress average just north of 60. That tells us that regardless of area of study, students are on average challenged by their coursework, but not systemically overwhelmed. That's a good thing!
+
+```{r}
+## Let's check out the level of stress by major
+lm_robust(
+  stress ~ I(!is.na(Q23_1)) + 
+    I(!is.na(Q23_2)) + 
+    I(!is.na(Q23_3)) + 
+    I(!is.na(Q23_4)) + 
+    I(!is.na(Q23_5)) + 
+    I(!is.na(Q23_6)),
+  data = d23,
+  se_type = "stata",
+  alpha = 0.17
+) %>%
+  tidy() %>%
+  mutate(
+    term = c(
+      "Baseline",
+      "Social Sciences",
+      "Sciences",
+      "Humanities",
+      "Arts",
+      "Interdisciplinary",
+      "Undecided"
+    )
+  ) %>%
+  mutate(
+    across(
+      c(estimate, conf.low, conf.high),
+      ~ .x + estimate[1]
+    )
+  ) %>%
+  .[-1, ] %>%
+  ggplot() +
+  aes(
+    x = reorder(term, -estimate),
+    y = estimate,
+    ymin = conf.low,
+    ymax = conf.high
+  ) +
+  geom_col(
+    width = 0.5,
+    color = "white",
+    fill = "gray"
+  ) +
+  geom_errorbar(
+    width = 0.2
+  ) +
+  labs(
+    x = NULL,
+    y = "Stress",
+    title = "Figure 2: Are any majors more stressful?",
+    subtitle = "Feeling thermometer: 0 = 'cool as a cucumber', 1 = 'stressed to full capacity'"
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 70, by = 10)
+  )
+```
+
+There are of course students who major in more than one area of study. When we take this into consideration, the number of buckets into which we can sort students is quite large. Figure 3 shows the number of students by their unique combination of areas of study. The most common scenario for students is to have a declared major or major(s) within a single area. The sciences and social sciences top the list. But looking further down the list of combinations in Figure 3, we can see a lot of students majoring in two or even three areas of study. Interestingly, some indicated they were undecided even while having a declared major. This may either be the result of user error when taking the survey or else indicate that some students are still shopping around for a second or third major.
+
+```{r}
+d23 %>%
+  ct(major, show_na = F) %>%
+  .[-1, ] %>%
+  ggplot() +
+  aes(
+    y = reorder(major, n),
+    x = n
+  ) +
+  geom_col(
+    color = "white",
+    fill = "gray"
+  ) +
+  labs(
+    x = "Number of Students",
+    y = NULL,
+    title = "Figure 3: Students by Declared Major(s)",
+    subtitle = "Number of students reported by area(s) of study"
+  ) +
+  theme(
+    axis.text.y = element_text(size = 8)
+  )
+```
+
+Looking at the more diverse landscape of possible combinations of majors students can take on, it's worth asking whether any combinations are particularly more or less stressful beyond just the averages reported in Figure 2. However, Figure 4 should caution us against drawing too many strong conclusions from the data. I plotted average level of stress by the size of the groups that fall into one of the many possible combinations of majors. The relationship looks just like one would expect if stress were driven mainly by factors outside of area of study. That is, it looks like any differences may have more to do with sampling error than actual differences in stress by major(s). Smaller cohorts simply have more variation than larger ones.
+
+```{r}
+## Does having a larger cohort help?
+d23 %>%
+  group_by(major) %>%
+  mean_ci(stress, ci = 0.83) %>%
+  ggplot() +
+  aes(x = n, y = mean) +
+  geom_point() +
+  geom_smooth(
+    method = lm,
+    color = "darkred"
+  ) +
+  labs(
+    x = "Size of Major(s) Group",
+    y = "Stress",
+    title = "Figure 4: Reported Stress by Size of Major",
+    subtitle = "Stress reported per unique cohort"
+  )
+```
+
+
+## Does stress lead to unhealthy habits?
+
+```{r}
+## Does stress promote bad habits?
+# ggplot(d23 %>% drop_na(vaping)) +
+#   aes(x = stress, y = vaping) +
+#   geom_jitter(height = .2) +
+#   geom_smooth(
+#     aes(y = as.numeric(vaping)),
+#     method = lm,
+#     color = "darkred"
+#   ) +
+#   labs(
+#     x = "Stress",
+#     y = NULL,
+#     title = "Stress and Vaping",
+#     subtitle = "Frequency of vaping by stress level"
+#   )
+```
+
+```{r}
+# ggplot(d23 %>% drop_na(smoking)) +
+#   aes(x = stress, y = smoking) +
+#   geom_jitter(height = .2) +
+#   geom_smooth(
+#     aes(y = as.numeric(smoking)),
+#     method = lm,
+#     color = "darkred"
+#   ) +
+#   labs(
+#     x = "Stress",
+#     y = NULL,
+#     title = "Stress and Smoking",
+#     subtitle = "Frequency of smoking by stress level"
+#   )
+```
+
+While there is no clear link between academic major and stress, is stress linked to either vaping or smoking? Figure 5 summarizes the distribution of vaping and smoking frequencies among DU students who took the survey. A strong majority of students indicate that they have never vaped nor smoked (more than 70% in both cases). Rates of both activities follow similar trends from seldom to very often users with rates of vaping and smoking across each remaining category clocking in at near or less than 10%.
+
+```{r}
+p1 <- ggplot(d23 %>% drop_na(vaping)) +
+  aes(x = vaping) +
+  geom_bar(
+    aes(y = ..prop.., group = 1)
+  ) + 
+  labs(
+    x = NULL,
+    y = NULL,
+    subtitle = "Frequency of Vaping"
+  )
+p2 <- ggplot(d23 %>% drop_na(smoking)) +
+  aes(x = smoking) +
+  geom_bar(
+    aes(y = ..prop.., group = 1)
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    subtitle = "Frequency of Smoking"
+  )
+p1 + p2 +
+  plot_annotation(
+    title = "Figure 5: How many students vape or smoke?"
+  ) &
+  scale_y_continuous(
+    limits = c(0, 0.8),
+    breaks = seq(0, 0.8, by = 0.1),
+    labels = scales::percent
+  ) &
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+```
+
+Do vaping and smoking both tend to go hand-in-hand? Figure 6 shows reported smoking frequency by vaping frequency. While there is a positive relationship, the correlation isn't one-to-one. In fact, it looks like frequent vaping may substitute for frequent smoking. [That's possibly a good thing](https://www.nhs.uk/better-health/quit-smoking/vaping-to-quit-smoking/#:~:text=Vaping%20exposes%20users%20to%20fewer,like%20heart%20attack%20and%20stroke.) since vaping exposes people to fewer cancer-causing toxins than smoking, though the long-term effects of vaping have yet to be fully identified.
+
+```{r}
+ggplot(d23 %>% drop_na(vaping, smoking)) +
+  aes(x = vaping, y = smoking) +
+  geom_tile(
+    fill = "white",
+    size = 0,
+    alpha = 0
+  ) +
+  geom_jitter(
+    aes(x = as.numeric(vaping), y = as.numeric(smoking)),
+    position = ggforce::position_jitternormal(
+      sd_x = 0.1,
+      sd_y = 0.1
+    ),
+    alpha = 0.4,
+    color = "darkgray"
+  ) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    lty = 2,
+    color = "darkblue"
+  ) +
+  geom_smooth(
+    aes(x = as.numeric(vaping), y = as.numeric(smoking)),
+    method = lm,
+    color = "darkred",
+    fill = "darkred",
+    formula = y ~ poly(x, 2)
+  ) +
+  labs(
+    x = "Vaping",
+    y = "Smoking",
+    title = "Figure 6: Do vaping and smoking go hand-in-hand?",
+    subtitle = "Student smoking by vaping frequencies"
+  )
+```
+
+Mercifully, vaping and smoking are relatively rare, but definitely are habits that a sizable minority of students engage in. Is this at all linked to stress? The idea that individuals might turn to tobacco based products or nicotine as a way to mitigate stress is ubiquitous, so it's reasonable to hypothesize that higher reported levels of stress are linked to more frequent vaping or smoking.
+
+Figure 7 shows the average stress levels of DU students grouped by their reported frequency of vaping. There is a clear trend in the data, with the most frequent vapers reporting the highest levels of stress. Interestingly, seldom users report lower levels of stress than never users. This begs the question about whether vaping leads to modest improvements in stress. Perhaps this is why the most stressed students report vaping very often? Answering this question is well outside my area of expertise, but it's an interesting trend in the data. 
+
+```{r}
+d23 %>%
+  group_by(vaping) %>%
+  mean_ci(stress, ci = 0.83) %>%
+  drop_na() %>%
+  ggplot() +
+  aes(x = mean, y = vaping, xmin = lower, xmax = upper) +
+  geom_pointrange() +
+  labs(
+    x = "Stress",
+    y = NULL,
+    title = "Figure 7: Stress and Vaping",
+    subtitle = "Frequency of vaping by stress level"
+  )
+```
+
+What about smoking? Figure 8 shows average stress by frequency of smoking. The trend is similar to vaping, but the wider confidence intervals tell us that there's much more noise in the data for smoking. This could partially be linked to the relatively lower rates of smoking versus vaping.
+
+```{r}
+d23 %>%
+  group_by(smoking) %>%
+  mean_ci(stress, ci = 0.83) %>%
+  drop_na() %>%
+  ggplot() +
+  aes(x = mean, y = smoking, xmin = lower, xmax = upper) +
+  geom_pointrange() +
+  labs(
+    x = "Stress",
+    y = NULL,
+    title = "Figure 8: Stress and Smoking",
+    subtitle = "Frequency of smoking by stress level"
+  )
+```
+
+```{r}
+# d23 %>%
+#   group_by(year) %>%
+#   mean_ci(stress, ci = 0.83) %>%
+#   drop_na() %>%
+#   ggplot() +
+#   aes(
+#     x = year,
+#     y = mean,
+#     ymin = lower,
+#     ymax = upper
+#   ) +
+#   geom_col(
+#     color = "white",
+#     fill = "gray"
+#   ) +
+#   geom_errorbar(
+#     width = 0.2
+#   ) +
+#   labs(
+#     x = NULL,
+#     y = "Stress",
+#     title = "Stress by Class",
+#     subtitle = "Avg. reported stress by cohort"
+#   )
+```
+
+## Conclusion
+
+While it looks like academic major doesn't have an obvious relationship with levels of stress, it does seem clear that stress is tied to vaping and smoking. DU already provides students some excellent resources for mental health and academic success, but clearly some students are using nicotine to help take the edge off. While a majority of students don't engage in these behaviors, more than 1 out of 5 Denison students do. Are there any additional levers the DU administration can pull to help?

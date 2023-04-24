@@ -67,33 +67,33 @@ selected_dt %>%
 
 ```{r, fig.height=5, fig.width=7}
 plot_dt %>%
-  group_by(name, value_cut) %>%
-  summarize(
-    n = n(),
-    mean = unique(value_mean)
-  ) %>%
   drop_na() %>%
-  group_by(name) %>%
-  mutate(pct = n / sum(n)) %>%
+  # group_by(name, value_cut) %>%
+  # summarize(
+  #   n = n(),
+  #   mean = unique(value_mean)
+  # ) %>%
+  # drop_na() %>%
+  # group_by(name) %>%
+  # mutate(pct = n / sum(n)) %>%
   ggplot() +
   aes(
-    x = pct,
-    y = reorder(name, mean),
+    x = reorder(name, value_mean),
     fill = value_cut
   ) +
-  geom_col(
-    position = position_stack(reverse = T)
+  geom_bar(
+    position = position_fill(reverse = T)
   ) +
-  geom_vline(
-    xintercept = 1.1,
+  geom_hline(
+    yintercept = 1.1,
     size = 20,
     color = "gray"
   ) +
   geom_text(
-    aes(x = 1.1, label = round(mean)),
+    aes(y = 1.1, label = round(value_mean)),
     color = "white"
   ) +
-  scale_x_continuous(
+  scale_y_continuous(
     breaks = c(0, .25, .5, .75, 1, 1.1),
     labels = c(
       "0%",
@@ -105,11 +105,12 @@ plot_dt %>%
     )
   ) +
   labs(
-    x = "% Of Feeling Thermometer Responses",
-    y = NULL,
+    y = "% Of Feeling Thermometer Responses",
+    x = NULL,
     title = "How do DU students feel about...",
     fill = "Feeling Thermometer:"
-  )
+  ) +
+  coord_flip()
 
 ```
 
