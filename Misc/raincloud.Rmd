@@ -1,0 +1,147 @@
+---
+title: "Making it Rain"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%",
+                      fig.height = 4,
+                      fig.width = 6)
+```
+
+## Summary
+
+This page provides a quick tutorial on how to make a raincloud plot. The code is inspired by a blog post by [Cedric Scherer](https://www.cedricscherer.com/2021/06/06/visualizing-distributions-with-raincloud-plots-and-how-to-create-them-with-ggplot2/).
+
+## Getting started
+
+Okay, start by opening packages:
+
+```{r}
+library(tidyverse)
+library(coolorrr)
+set_theme()
+set_palette()
+```
+
+Next, we'll create a function to produce a "raincloud plot":
+
+```{r}
+raincloud <- function(df, x, y, 
+                      fill = NULL, 
+                      alpha = 1,
+                      flip = FALSE) {
+  x <- enquo(x)
+  y <- enquo(y)
+  fill <- enquo(fill)
+  
+  ggplot(df) +
+    aes(x = !! x, y = !! y, fill = !! fill) +
+  ## add half-violin from {ggdist} package
+  ggdist::stat_halfeye(
+    ## customize thickness
+    aes(thickness = stat(pdf*n)),
+    ## custom bandwidth
+    adjust = .5, 
+    ## adjust height
+    width = .6, 
+    ## move geom to the right
+    justification = -.2, 
+    ## set alpha
+    alpha = alpha,
+    ## remove slab interval
+    .width = 0, 
+    point_colour = NA
+  ) + 
+  geom_boxplot(
+    width = .12, 
+    ## remove outliers
+    outlier.color = NA ## `outlier.shape = NA` works as well
+  ) +
+  ## add dot plots from {ggdist} package
+  ggdist::stat_dots(
+    ## orientation to the left
+    side = "left", 
+    ## move geom to the left
+    justification = 1.1, 
+    ## adjust grouping (binning) of observations 
+    binwidth = .25,
+    linewidth = 0
+  ) -> plot ## save new plot object
+  
+  ## option to flip the coordinates
+  if(flip) { ## if flip = TRUE
+    plot + 
+      coord_flip()
+  } else {   ## if flip = FALSE
+    plot
+  }
+}
+```
+
+
+## How it works
+
+The function can be used a few different ways. I'll illustrate using the `mtcars` dataset available in R.
+
+First, I want car cylinders to be a factor:
+
+```{r}
+mtcars <- mtcars |>
+  mutate(cyl = as.factor(cyl))
+```
+
+Next, I'll create a raincloud plot using cylinders as my grouping factor and miles per gallon or mpg as the variable to be summarized. 
+```{r}
+raincloud(mtcars, x = cyl, y = mpg)
+```
+
+If you want to flip the coordinates so the output looks like true rainclouds, just set `flip = TRUE`:
+
+```{r}
+raincloud(mtcars, cyl, mpg, flip = T)
+```
+
+If you want to update labels or other settings, you can do this like with any other ggplot() object. Just remember that when you set `flip = T` that the x and y axis labels will be reversed.
+
+```{r}
+raincloud(mtcars, cyl, mpg, flip = T) +
+  labs(
+    y = "Miles per Gallong",
+    x = NULL,
+    title = "MPG by number of cylinders"
+  )
+```
+
+## Adding color
+
+Sometimes adding color can be a nice touch, even if it's a tad redundant. It's easy to do this and customize using `ggpal()` from `{coolorrr}`. All you need to do is set `fill` in the raincloud function.
+
+```{r}
+raincloud(mtcars, cyl, mpg, fill = cyl, flip = T) +
+  labs(
+    x = NULL,
+    y = "Miles per Gallon",
+    fill = "Cylinders"
+  ) +
+  ggpal(aes = "fill")
+```
+
+If you want to use color more substantively, you can do that too. Just map the fill aesthetic to a different categorical variable. When you do this, it helps to increase the transparency of the density "cloud" since these will overlap in the figure. Just use the `alpha` command in the raincloud function.
+
+```{r}
+## make the 'am' column categorical
+mtcars |>
+  mutate(
+    am = ifelse(am == 0, "Auto", "Manual")
+  ) -> mtcars
+
+## plot
+raincloud(mtcars, cyl, mpg, am, 0.5, flip = T) +
+  ggpal(type = "binary", aes = "fill")
+```
+
