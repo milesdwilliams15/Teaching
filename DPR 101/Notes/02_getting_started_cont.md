@@ -1,24 +1,34 @@
-Getting Started (Continued)
+Getting Started, Part II
 ================
 
-This is part 2 of our “getting started” notes for DPR 101. \[[Check out
-part
-1](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md)\]
+- [Goals](#goals)
+- [Reading data into R](#reading-data-into-r)
+  - [Way 1: From my GitHub](#way-1-from-my-github)
+  - [Way 2: From Google Drive](#way-2-from-google-drive)
+  - [Way 3: R Packages](#way-3-r-packages)
+- [Making a figure](#making-a-figure)
+- [Helpful Resources for Learning
+  More](#helpful-resources-for-learning-more)
+- [Wrapping up](#wrapping-up)
+- [Where to next?](#where-to-next)
 
-Last time we focused on some basics of working in RStudio and using .Rmd
-files to write your code, make notes, and save your work.
+<center>
 
-In these notes, we’ll cover:
+[\<– Getting Started, Part
+I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [`ggplot()` Basics, Part I
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
 
-1.  Getting data into R
-2.  Making your first data viz
-3.  Some helpful resources if you want to go deeper into the details of
-    using R
+</center>
 
 ## Goals
 
--   Be able to read a dataset into R
--   Take a first pass at making a data viz using `ggplot()`
+- Get data into R
+- Make your first data viz
+- Cover some helpful resources if you want to go deeper into the details
+  of using R
 
 ## Reading data into R
 
@@ -55,11 +65,15 @@ library(tidyverse)
 
     ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
     ## ✔ ggplot2 3.4.0     ✔ purrr   0.3.4
-    ## ✔ tibble  3.1.8     ✔ dplyr   1.0.9
+    ## ✔ tibble  3.2.1     ✔ dplyr   1.1.2
     ## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
     ## ✔ readr   2.1.2     ✔ forcats 0.5.1
 
     ## Warning: package 'ggplot2' was built under R version 4.2.2
+
+    ## Warning: package 'tibble' was built under R version 4.2.3
+
+    ## Warning: package 'dplyr' was built under R version 4.2.3
 
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
@@ -71,7 +85,7 @@ Data <- read_csv(
 )
 ```
 
-    ## Rows: 10160 Columns: 4
+    ## Rows: 3047 Columns: 4
     ## ── Column specification ────────────────────────────────────────────────────────
     ## Delimiter: ","
     ## chr (1): country
@@ -206,18 +220,18 @@ gapminder %>%
 ```
 
     ## # A tibble: 10 × 6
-    ##    country    continent  year lifeExp      pop gdpPercap
-    ##    <fct>      <fct>     <int>   <dbl>    <int>     <dbl>
-    ##  1 Mauritania Africa     1992    58.3  2119465     1361.
-    ##  2 Reunion    Africa     1992    73.6   622191     6101.
-    ##  3 Mauritius  Africa     1972    62.9   851334     2575.
-    ##  4 Chad       Africa     1997    51.6  7562011     1005.
-    ##  5 Slovenia   Europe     1992    73.6  1999210    14215.
-    ##  6 Finland    Europe     1982    74.6  4826933    18533.
-    ##  7 Germany    Europe     1992    76.1 80597764    26505.
-    ##  8 Turkey     Europe     1992    66.1 58179144     5678.
-    ##  9 Jordan     Asia       1967    51.6  1255058     2742.
-    ## 10 Lesotho    Africa     1977    52.2  1251524      745.
+    ##    country     continent  year lifeExp      pop gdpPercap
+    ##    <fct>       <fct>     <int>   <dbl>    <int>     <dbl>
+    ##  1 Yemen, Rep. Asia       1982    49.1  9657618     1978.
+    ##  2 Netherlands Europe     1997    78.0 15604464    30246.
+    ##  3 Liberia     Africa     2007    45.7  3193942      415.
+    ##  4 Oman        Asia       1987    67.7  1593882    18115.
+    ##  5 El Salvador Americas   1967    55.9  3232927     4359.
+    ##  6 Kuwait      Asia       1957    58.0   212846   113523.
+    ##  7 Ecuador     Americas   1992    69.6 10748394     7104.
+    ##  8 Denmark     Europe     1967    73.0  4838800    15937.
+    ##  9 Namibia     Africa     1962    48.4   621392     3173.
+    ## 10 Eritrea     Africa     1992    50.0  3668440      583.
 
 Using this data, we can make a simple scatter plot showing how per
 capita GDP predicts life expectancy:
@@ -300,9 +314,9 @@ This class is not about how to use R in its entirety. But, you may find
 it helpful to get more familiar with it. Here are some resources for you
 to check out on your own time:
 
--   [swirlstats.com](https://swirlstats.com/)
--   [Datacamp](https://www.datacamp.com/data-courses/r-courses)
--   [Posit cheatsheets](https://posit.co/resources/cheatsheets/)
+- [swirlstats.com](https://swirlstats.com/)
+- [Datacamp](https://www.datacamp.com/data-courses/r-courses)
+- [Posit cheatsheets](https://posit.co/resources/cheatsheets/)
 
 My personal favorite is swirlstats.com, because it lets you work at your
 own pace directly in R, and **for free**.
@@ -318,6 +332,19 @@ We’ll get more into the details of working with ggplot in the coming
 weeks. But for now, you should have at minimum some helpful examples for
 how to:
 
--   Read data into R
--   Make a scatter plot using ggplot
--   Access other resources for working in R
+- Read data into R
+- Make a scatter plot using ggplot
+- Access other resources for working in R
+
+## Where to next?
+
+<center>
+
+[\<– Getting Started, Part
+I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [`ggplot()` Basics, Part I
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
+
+</center>

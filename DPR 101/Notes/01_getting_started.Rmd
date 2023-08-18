@@ -1,13 +1,21 @@
 ---
-title: "Getting Started"
-output: github_document
+title: "Getting Started, Part I"
+output: 
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## First things first
+<center>
+
+[Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Getting Started, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/02_getting_started_cont.md)
+
+</center>
+
+## Goals
 
 Learning objectives:
 
@@ -22,9 +30,12 @@ Learning objectives:
 
 In this class we'll use R and RStudio for data visualization. Before we get started, it's essential that you familiarize yourself with the RStudio environment.
 
-First, access the [RStudio server](r.denison.edu) and log-in with your Denison credentials.
+First, access the [RStudio server](r.denison.edu) and log-in with your Denison credentials. If you're off campus, you'll need a VPN connection to access the server. You can read more about how to do that via one of the following links:
 
-Once you get in, you may already be in a project space. If not, you'll need to start a new session.
+-  [For Windows Users](https://docs.google.com/document/d/1z1eapXs8Lp0yA7TBXmLfViiz6U67ADvLgpFeWJoSLLA/edit#heading=h.48vu9pu55b3s)
+-  [For Mac Users](https://docs.google.com/document/d/1FaJN4et9H9eKsJIVinwqC903NbKA5A-IYfvDPlFwwXk/edit#heading=h.48vu9pu55b3s)
+
+Once you access the R-server, you may already be in a project space. If not, you'll need to start a new session.
 
 The RStudio environment has a lot of components. It may look like a lot at first. If you feel overwhelmed, that's okay. In time, it'll all make more sense.
 
@@ -32,15 +43,15 @@ For now, I want to direct your attention to a few things:
 
 1. **The R console:** This is the window in the lower-left side of the screen. This is where the code you write runs and where output from code appears. While you can work directly in the console, I almost never recommend doing so (but I'll let you know when there's an exception).
 2. **Files**: On the lower-right you'll see a window with a few different tabs, one of which says "Files." This is where you'll save your work. In a bit, I'll give you some instructions for how I want you to set up your files.
-3. **RMarkdown or .Rmd files**: Almost all of the coding you do in this class will take place in .Rmd or RMarkdown files. These let you work in plain text (taking notes, making comments, etc.) alongside your code. You can open a new RMarkdown file by clicking on the white "+" button on top of a green circle on top of a white box in the upper left. You'll see a dropdown menu open. Select "R Markdown" from the list of options. The file you see when you open this is an RMarkdown file. It has some boilerplate script in it that summarizes what it is and how you can use it.
+3. **RMarkdown or .Rmd files**: Almost all of the coding you do in this class will take place in .Rmd or RMarkdown files. These let you work in plain text (taking notes, making comments, etc.) alongside your code. You can open a new RMarkdown file by clicking on the "+" button in the upper left. You'll see a drop-down menu open. Select "R Markdown" from the list of options. The file you see when you open this is an RMarkdown file. It has some boilerplate script in it that summarizes what it is and how you can use it.
 
-That's some helpful stuff in RStudio, but what is RStudio? It is an "integrated development environment" (IDE), and it is a separate application from R itself. R is actually pretty spartan all on its own, and it definitely falls short as far as user-friendly software goes. RStudio provides a better interface with R proper that lets you organize files, save your work in projects, and write reports within a single environment.
+At this point you should be able to tell that a lot is going on in RStudio. That's because RStudio is an "integrated development environment" (IDE). It actually is a separate application from R itself. R is pretty spartan all on its own, and it definitely falls short as far as user-friendly software goes. RStudio provides a better interface with R proper that lets you organize files, save your work in projects, and write reports within a single environment.
 
 ## Starting a project
 
-The best way to work in RStudio is to save your work in "projects." This lets you organize all your work according to (clears throat) projects that you may be working on.
+The best way to work in RStudio is to save your work in projects. This lets you organize all your work in a tidy way. I highly recommend working in projects.
 
-If you look at the upper right corner, you can see a cube with an "R" in it. If you select that you'll see a dropdown menu. Select "New Project" > "New Directory" >  "New Project" > enter a new directory name for your project > use "brows"  to find a place in your files you'd like to save your work > then create. For this class, I recommend creating a project in a folder called "DPR 101" that way it's obvious to your future self that this is where your work for this class is located.
+If you look at the upper right corner, you can see a cube with an "R" in it. If you select that you'll see a drop-down menu. Select "New Project" > "New Directory" >  "New Project" > enter a new directory name for your project > use "brows"  to find a place in your files you'd like to save your work > then create. For this class, I recommend creating a project called "DPR 101" that way it's obvious to your future self that this is where your work for this class is located.
 
 After you create your project, create two new folders in your files. Call one "Data" and the other "Code." One will be where you save different datasets you use in this class. The other will be where you save the RMarkdown files you use in this class for notes and course assignments.
 
@@ -56,17 +67,17 @@ You can also use these documents to write reports, but we'll talk more about tha
 
 These features of working in RMarkdown are great for learning to code with `ggplot()`, which is the way you'll create your data visualizations in this course. By being able to write your code together with your notes, it makes it really easy to move back and forth between tasks 1-3 listed above. You can make notes to yourself in plain text about what data you're working with and what your code is supposed to be doing. You can create your code. You can run it. Then you can adjust based on the output, make new notes, and repeat.
 
-There are lots of helpful cheatsheets out there for working with RMarkdown. For example, this is a [great one](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.235103752.840764392.1674585715-719901239.1627613290).
+There are lots of helpful cheatsheets out there for working with RMarkdown. This is a [great one](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.235103752.840764392.1674585715-719901239.1627613290).
 
-When you work with Markdown, you can create section headers using `#` (where more hastags = smaller headings). For example, here's text you would write to make a header:
+When you work with Markdown, you can create section headers using `#` (where more hashtags = smaller headings). For example, here's text you would write to make a header:
 
 `## Header`
 
-Here's what it looks like after you "Knit" your document:
+Here's what it looks like after you "Knit" your document (I'll get to what "Knit" means in a second):
 
 ## Header
 
-I'll get to what "Knit" means in a second. But, headers don't only have value for creating reports. They provide you with a convenient way to navigate your notes and code. If you create a new section header, you can click on the orange hashtag at the bottom left of your RMarkdown file. You'll see a menu pop up that lists all the different headers you have in your document. If you click on one of these headers, you instantly are transported to that place in your file.
+Headers don't only have value for creating reports. They provide you with a convenient way to navigate your notes and code. If you create a new section header, you can click on the orange hashtag at the bottom left of your RMarkdown file. You'll see a menu pop up that lists all the different headers you have in your document. If you click on one of these headers, you instantly are transported to that place in your file.
 
 When you're done with a document, you can feed it to R using the "Knit" button at the top (the one that has the ball of yarn picture next to it). You can *knit* your document into various kinds of files like HTML, PDF, or Word. Try knitting to a Word doc and see what happens.
 
@@ -84,16 +95,16 @@ Change `echo = TRUE` to `echo = FALSE` then knit your document again. Do you see
 
 When you use RMarkdown, your notes/comments/writing in plain text will be interspersed with [**code chunks**](https://rmarkdown.rstudio.com/lesson-3.html).
 
-A code chunk is just created using three backticks followed by an "r" in brackets, and then it's closed with three more backticks.
+A code chunk is created using three backticks ("```") followed by an "r" in brackets, and then it's closed with three more backticks.
 
 Think of each code chunk as a self-contained space for writing and running a specific bit of code. 
 
 After you make a code chunk and write some code in it, you have a bunch of different options for running it.
 
-1. Click the green arrow to the right top side of the chunk.
+1. Click the green arrow to the right top side of the chunk, OR
 2. On Windows, with your cursor somewhere inside the chunk, use "control + shift + enter" or in Mac use "command + shift + return".
 
-A nice feature of working with RMarkdown is that you can make notes in plain text outside of your code chunks. But, you can make notes inside code chunks, too. Anything that follows a `#` in a bit of R code is "commented out." That means R knows not to run anything that follows the hashtag in the code. For example:
+In addition to making notes in plain text around your code chunks, you can make notes inside code chunks as well. Anything that follows a `#` in a bit of R code is "commented out." That means R knows not to run anything that follows the hashtag in the code. For example:
 
 ```{r}
 # this is a comment that won't run any code
@@ -157,11 +168,11 @@ c(4, 5, 6) -> y
 You can technically use the `=` operator to assign things, too, but there are some things to note about this:
 
 1. It only works in the "normal" direction for assignment (right to left)
-2. It there are some objects that it won't play nice with it
+2. It there are some objects that it won't play nice with
 
 Generally, it's considered bad grammar to use `=` for assignment. Instead, we use `=` inside of functions (coming up next) to set commands or feed objects to functions when we want to perform an operation.
 
-Speaking of functions, just about **everything you do in R with be with a function**. A function is a special kind of object that performs actions for you. You feed it some kind of input (like an object!) and it provides an output (which you can assign to a new object for later use).
+Speaking of functions, just about **everything you do in R with be with a function**. A function is a special kind of object that performs actions for you. You feed it some kind of input (like an object) and it provides an output (which you can assign to a new object for later use).
 
 For example, there's a function called `mean()` which we can use on the object `my_numbers`:
 
@@ -199,15 +210,15 @@ library(tidyverse)
 
 Some packages have already been pre-installed for you if you're using the Denison server. If you aren't, you'll need to install these using the `install.packages()` function. 
 
-Some packages have been produced by users and aren't yet accessible from the "CRAN." For these functions, you have to take some additional steps to install the package. 
+Also note that some packages have been produced by users and aren't yet accessible from the "CRAN." For these functions, you have to take some additional steps to install the package. 
 
-One in particular is the coolorrr package that I'll have you use this semester. This is package that I developed. To install it, you'll need to run the following in your console:
+One in particular is the coolorrr package that I'll have you use this semester. This is a package that I developed to help with color palettes. To install it, you'll need to run the following in your console:
 
 ```
 devtools::install_github("milesdwilliams15/coolorrr")
 ```
 
-Notice in the above that I used double colons `::`. If you ever only want to access a single function from a package, but don't want to attach the full package in R, you can write the package name followed by `::` to call the function you want. The syntax will be something like `package_name::function_name()`
+Notice in the above that I used double colons `::` after `devtools`. If you ever only want to access a single function from a package (`devtools` is a package that helps with installing packages from sources like GitHub), but don't want to attach the full package in R, you can write the package name followed by `::` to call the function you want. The syntax will be something like `package_name::function_name()`
 
 ## More details about R
 
@@ -231,7 +242,7 @@ x %in% y # are x values in y?
 
 Notice that mathematical operators return numerical outputs, while logical operators return logical outputs (`TRUE` or `FALSE`).
 
-R also will treat logical values as 0-1 values. For example, you can take the mean of a vector of `TRUE` and `FALSE` values:
+Note that R treats logical values as 0-1 values. For example, you can take the mean of a vector of `TRUE` and `FALSE` values:
 
 ```{r}
 mean(x = c(0, 1))
@@ -273,10 +284,10 @@ You can use `summary()` to get some quick summary statistics that tell you about
 summary(mtcars_tb)
 ```
 
-You can use the `str()` function to check the data's structure:
+You can use the `glimpse()` function to check the data's structure:
 
 ```{r}
-str(mtcars_tb)
+glimpse(mtcars_tb)
 ```
 
 ## Closing RStudio
@@ -286,6 +297,8 @@ Every time you're done working, make sure you do a few things:
 1. Close out the project session
 2. DO NOT save your workspace image
 3. DO save changes to files
+
+You should always perform the above three steps when you close out (with special emphasis placed on step 2). This ensures R is always running smoothly and efficiently.
 
 ## Wrapping up
 
@@ -297,3 +310,11 @@ I can't possibly anticipate every possible issue you may run into as you use R, 
 - Sometimes you may not realize that you've only run part of your code and not all of it. You can see if this is the case if you check the console. If you see a `>` at the bottom of the console, all is good. If you see a `+` then something only partially ran.
 - Give new objects that you create new and unique names. I can't tell you how many times I've seen someone's code break down because they created an object called `x`, then ran a function on it and saved the output as `x`, then tried to go back an run an old chunk on `x` only to find that it spits out an error. The old `x` that used to work with a function now no longer does because the new `x` isn't the same thing! 
 - Don't forget to create new objects. If you don't, changes that you make to an object won't be saved in R's environment.
+
+## Where to next?
+
+<center>
+
+[Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Getting Started, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/02_getting_started_cont.md)
+
+</center>

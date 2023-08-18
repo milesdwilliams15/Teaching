@@ -1,27 +1,26 @@
 ---
-title: "Getting Started (Continued)"
-output: github_document
+title: "Getting Started, Part II"
+output: 
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This is part 2 of our "getting started" notes for DPR 101. [[Check out part 1](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md)]
+<center>
 
-Last time we focused on some basics of working in RStudio and using .Rmd files to write your code, make notes, and save your work. 
+[<-- Getting Started, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [`ggplot()` Basics, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
 
-In these notes, we'll cover:
-
-1. Getting data into R
-2. Making your first data viz
-3. Some helpful resources if you want to go deeper into the details of using R
+</center>
 
 
 ## Goals
 
-- Be able to read a dataset into R
-- Take a first pass at making a data viz using `ggplot()`
+- Get data into R
+- Make your first data viz
+- Cover some helpful resources if you want to go deeper into the details of using R
 
 
 ## Reading data into R
@@ -181,3 +180,11 @@ We'll get more into the details of working with ggplot in the coming weeks. But 
 - Read data into R
 - Make a scatter plot using ggplot
 - Access other resources for working in R
+
+## Where to next?
+
+<center>
+
+[<-- Getting Started, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/01_getting_started.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [`ggplot()` Basics, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
+
+</center>

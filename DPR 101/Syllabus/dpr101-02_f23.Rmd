@@ -396,12 +396,10 @@ You will use R and RStudio to wrangle and visualize data. By the time you have f
 
 # Analysis Software
 
-Students will use R and RStudio, which are free and open source! We will primarily use the RStudio version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN:
+Students will use R and RStudio, which are free and open source! We will primarily use the RStudio version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN follow the instructions at one of the help pages below:
 
-1.  Go to myDenison.
-2.  Head to MyApps.
-3.  Select Remote Access.
-4.  Follow the instructions to download and use the VPN.
+1.  [For Windows Users](https://docs.google.com/document/d/1z1eapXs8Lp0yA7TBXmLfViiz6U67ADvLgpFeWJoSLLA/edit#heading=h.48vu9pu55b3s)
+2.  [For Mac Users](https://docs.google.com/document/d/1FaJN4et9H9eKsJIVinwqC903NbKA5A-IYfvDPlFwwXk/edit#heading=h.48vu9pu55b3s)
 
 All necessary R packages for the course are already installed in the server version. While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and RStudio on your laptop. Follow [this guide](https://www.rstudio.com/products/rstudio/download/).
 
