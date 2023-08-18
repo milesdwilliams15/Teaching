@@ -1,0 +1,91 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: '2023-06-15'
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = T,
+                      message = F,
+                      warning = F,
+                      dpi = 500,
+                      out.width = "75%",
+                      fig.height = 4,
+                      fig.width = 7)
+library(tidyverse)
+library(coolorrr)
+library(estimatr)
+set_theme()
+set_palette()
+library(socsci)
+library(patchwork)
+library(googlesheets4)
+gs4_deauth()
+d23 <- range_speedread("https://docs.google.com/spreadsheets/d/1tjXE5es_6kXC4HNFGlQL_xMJ80DH14nS7wNP-rd3nME/edit?usp=share_link")
+
+## Do some recodes
+
+d23 <- d23 %>%
+  
+  ## Recode columns for major(s):
+  mutate(
+    Q23_1 = ifelse(Q23_1 == 1, "Social Sciences", ""),
+    Q23_2 = ifelse(Q23_2 == 1, "Sciences", ""),
+    Q23_3 = ifelse(Q23_3 == 1, "Humanities", ""),
+    Q23_4 = ifelse(Q23_4 == 1, "Arts", ""),
+    Q23_5 = ifelse(Q23_5 == 1, "Interdisciplinary", ""),
+    Q23_6 = ifelse(Q23_6 == 1, "Undecided", "")
+  ) %>%
+  
+  ## Unite responses into a single column called "major"
+  unite(
+    major,
+    Q23_1:Q23_6,
+    remove = F,
+    na.rm = T,
+    sep = ", "
+  ) %>%
+  
+  ## We can do the same thing with race:
+  mutate(
+    Q50_1 = ifelse(Q50_1 == 1, "White", ""),
+    Q50_2 = ifelse(Q50_2 == 1, "Hispanic", ""),
+    Q50_3 = ifelse(Q50_3 == 1, "Black", ""),
+    Q50_4 = ifelse(Q50_4 == 1, "Asian", ""),
+    Q50_5 = ifelse(Q50_5 == 1, "other", "")
+  ) %>%
+  unite(
+    race,
+    Q50_1:Q50_5,
+    remove = F,
+    na.rm = T,
+    sep = ", "
+  ) %>%
+  
+  ## Let's add some other variables:
+  mutate(
+    pub_sector = frcode(Q5 == 1 ~ "very unfulfilling",
+                        Q5 == 2 ~ "unfulfilling",
+                        Q5 == 3 ~ "neither fulfulling nor unfulfiling",
+                        Q5 == 4 ~ "fulfilling",
+                        Q5 == 5 ~ "very fulfilling"),
+     econ_class = frcode(Q51 == 1 ~ "Lower class",
+                      Q51 == 2 ~ "Lower Middle class",
+                      Q51 == 3 ~ "Middle class",
+                      Q51 == 4 ~ "Upper Middle class",
+                      Q51 == 5 ~ "Upper class")
+  ) %>%
+  
+  ## Let's show how to break things down by vaping:
+  mutate(
+    vaping = frcode(
+      Q6 == 1 ~ "Never",
+      Q6 == 2 ~ "Seldom",
+      Q6 == 3 ~ "Sometimes",
+      Q6 == 4 ~ "Often",
+      Q6 == 5 ~ "Very Often"
+    )
+  )
+```
+

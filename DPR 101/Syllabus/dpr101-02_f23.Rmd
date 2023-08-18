@@ -1,0 +1,547 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 101: Data Visualization for Political Research"
+author: Dr. Miles D. Williams
+date: "Fall 2023"
+
+email: "williamsmd@dension.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MWF 2:30-3:30 pm"
+office: "Higley 401C"
+classroom: "Knapp Hall 105"
+classhours: "MWF 10:30-11:20 am"
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath,graphicx,amssymb}
+---
+
+<!-- CCCCCCCCnncdxxxxxxx -->
+
+<!-- Fun fact: my cat added this comment as she walked over the keyboard while I was working on this template. -->
+
+<!-- I'm going to keep it going forward. Long live Queen Bea. -->
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+# library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+# bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. 
+
+## First Monday of semester
+
+mon <- ymd(20230828)
+
+## dates of no class
+not_here_dates <- c(
+  # APSA,
+  ymd(20230901),
+  # Fall break
+  seq(ymd(20231016), ymd(20231017), by = 1),
+  # IPES? Maybe I'll make this ISAMW instead (Nov 17-19)
+  ymd(20231117),
+  # Thanksgiving
+  seq(ymd(20231120), ymd(20231124), by = 1))
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# writing (MA) assignments:
+ma_dates <- c(ymd(20231006), 
+              ymd(20231027),
+              ymd(20231110),
+              ymd(20231217)) 
+  # Final date set to Thursday, Dec. 14, 2:00-4:00 p.m. for section 01
+  # Final date set to Sunday, Dec. 17, 2:00-4:00 p.m. for section 02
+# graph challenges:
+gc_dates <- c(ymd(20230906),
+              ymd(20230913),
+              ymd(20230920),
+              ymd(20230927),
+              ymd(20231011),
+              ymd(20231018),
+              ymd(20231101),
+              ymd(20231115),
+              ymd(20231129))
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: Aug. 28 to Dec. 17
+semester_dates <- seq(ymd(20230828), ymd(20231217), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20230801), ymd(20231231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
+         gcs = ifelse(date %in% gc_dates, 1, 0), # is it a GC assignment?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(mas == 1, "MA Due", ccategory),
+         ccategory = ifelse(gcs == 1, "DC Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("MA Due" = "firebrick", 
+               "DC Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("MA Due", "DC Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: APSA (01 Sept.), Fall Break (09-10 Oct.), ISA-Midwest (17 Nov.),\nThanksgiving (20-24 Nov.), Final Day of Instruction (12 Dec.)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+Is democracy worldwide in decline? Are wars becoming less frequent and deadly? Have politics really become more polarized? These are weighty questions, and depending on whom you ask, different people will provide you with different answers.
+
+One of the primary culprits of divergent views in politics is the alternate bases of fact on which people draw conclusions. While there is no simple way to reconcile differences in values, it often helps to document the nature of our political and social world with transparency and consistency. This offers an objective basis of fact where anecdote and speculation would normally reign.
+
+One of the most impactful ways of communicating documented facts about our political and social world is through data visualization. Data are being generated around us all the time. When people vote, data are generated. When members of parliament open their mouths, we have data. Court cases, polling, protests, passing legislation, raising money, civil wars -- we have data. Especially with large datasets, we really have no idea what we have until we can **see it**.
+
+Data visualization is the primary way in which we communicate trends and relationships to audiences, both public and private. Therefore, a course on data visualization is primarily a course on communication, where the data viz tells a story that can be clearly understood with methods that can be used by anyone to tell the same story.
+
+This course will help you understand data and what to do with it. That means we will confront all sorts of data and gain techniques to wrangle it (understand, alter, or give it structure) and then explore a wide variety of visualization techniques available to us. By the end of the course, you will "speak" data and have a sizable data visualization toolkit. In addition, you will be able to articulate theories of visualization to explain why you chose a certain visualization and, though secondary, attach written communication that is as clear as your data viz.
+
+\newpage
+
+# Class Schedule
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
+
+class_cal + 
+  theme_steve_ms() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top',
+    axis.ticks = element_blank()
+  ) -> p
+ggsave(
+  plot = p,
+  here::here('DPR 101','schedule-02.png'),
+  height = 6,
+  width = 8
+)
+knitr::include_graphics(
+  here::here("DPR 101", "schedule-02.png")
+)
+```
+
+```{=tex}
+\singlespacing
+\setlength{\parskip}{0pt}
+```
+
+\hrulefill
+
+\bigskip
+
+*Note:* When "Discussion" is listed for a given day, the assigned readings are on Canvas. Unless otherwise indicated, due dates are by midnight. "H" = the Healy textbook. "DC" = Data Challenge (due Wednesdays). "MA" = Main Assignment (due Fridays).
+
+# Getting Started
+
+## `r advdate(mon, 1)`: Welcome!
+
+- Day 1: Course Intro
+
+- Day 2: H Ch1 "Look at Data" 
+
+- Day 3: NO CLASS (APSA conference)
+
+# Part I: Cross-sectional Data and Elections
+
+## `r advdate(mon, 2)`: Getting Started
+
+- Day 1: H Ch2 (2.1 - 2.4) 
+
+- Day 2: H Ch2 (2.5 - 2.7)  \hfill \textit{DC0 due Wed.}
+
+- Day 3: Discussion
+
+## `r advdate(mon, 3)`: Making a Plot
+
+- Day 1: H Ch3 (3.1 - 3.4) 
+
+- Day 2: H Ch3 (3.5 - 3.8) \hfill \textit{DC1 due Wed.}
+
+- Day 3: Discussion 
+
+## `r advdate(mon, 4)`: Show the Right Numbers
+
+- Day 1: H Ch4 (4.1 - 4.4) 
+
+- Day 2: H Ch4 (4.5 - 4.8) \hfill \textit{DC2 due Wed.}
+
+- Day 3: Discussion 
+
+## `r advdate(mon, 5)`: Draw Maps
+
+- Day 1: H Ch7 (7.1 - 7.3) 
+
+- Day 2: H Ch7 (7.4 - 7.6) \hfill \textit{DC3 due Wed.}
+
+- Day 3: Discussion 
+
+## `r advdate(mon, 6)`: Finalize MA1
+
+- Day 1: Work on MA1 
+
+- Day 2: Work on MA1 
+
+- Day 3: Work on MA1 \hfill \textit{MA1 due Fri.}
+
+# Part II: Time-series Data, Conflict, and Democracy
+
+## `r advdate(mon, 7)`: Tables, Labels, and Notes
+
+- Day 1: FALL BREAK!
+
+- Day 2: H Ch5 (5.1 - 5.3) \hfill \textit{DC4 due Wed.}
+
+- Day 3: H Ch5 (5.4 - 5.7)
+
+## `r advdate(mon, 8)`: Refining Plots
+
+- Day 1: H Ch8 (8.1 - 8.2) 
+
+- Day 2: H Ch8 (8.3 - 8.4) \hfill \textit{DC5 due Wed.}
+
+- Day 3: Discussion 
+
+
+## `r advdate(mon, 9)`: More Refining and Finalize MA2
+
+- Day 1: H Ch8 (8.5 - 8.6) 
+
+- Day 2: Work on MA2 
+
+- Day 3: Work on MA2 \hfill \textit{MA2 due Fri.}
+
+# Part III: Survey Data
+
+## `r advdate(mon, 10)`: Dealing with Survey Data
+
+- Day 1: Survey data 
+
+- Day 2: Using a code book \hfill \textit{DC6 due Wed.}
+
+- Day 3: Discussion 
+
+## `r advdate(mon, 11)`: Finalize MA3
+
+- Day 1: Work on MA3 
+
+- Day 2: Work on MA3 
+
+- Day 3: Work on MA3 \hfill \textit{MA3 due Fri.}
+
+# Part IV: Choose-your-own-adventure
+
+## `r advdate(mon, 12)`: Your Adventure Starts!
+
+- Day 1: Start Choose-your-own-adventure 
+
+- Day 2: Pitch your research \hfill \textit{DC7 due Wed.}
+
+- Day 3: NO CLASS (ISA-Midwest Conference)
+
+## `r advdate(mon, 13)`:
+
+*THANKSGIVING BREAK!*
+
+## `r advdate(mon, 14)`: The Adventure Continues
+
+- Day 1: Work on MA4 
+
+- Day 2: Work on MA4 \hfill \textit{DC8 due Wed.}
+
+- Day 3: Work on MA4
+
+## `r advdate(mon, 15)`: Finalizing MA4
+
+- Day 1: MA4 Presentations
+
+- Day 2: MA4 Presentations
+
+- Day 3: Work on MA4
+
+## `r advdate(mon, 16)`: You Made It!
+
+- Day 1: Course evals \hfill \textit{MA4 due 12.17 by 4:00 pm}
+
+\newpage
+
+
+```{=tex}
+\singlespacing
+\setlength{\parskip}{5pt}
+```
+
+
+# Course Objectives
+
+In this course, you'll develop a number of skills.
+
+#### Quantitative
+
+You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively visualized to describe and draw inferences for maximum impact.
+
+#### Writing
+
+A picture may be worth a thousand words, but it helps if words are included. When you visualize data you will also write up your results. This will enhance your writing skills and reinforce the idea that data visualization is not a mechanical skill; it is a method of inquiry intended for public communication.
+
+#### Critical Thinking
+
+Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data, create effective visualizations, and draw conclusions.
+
+#### Statistical Programming
+
+You will use R and RStudio to wrangle and visualize data. By the time you have finished this course you may not be an expert programmer, but you will be well versed in the basics of R and how to use the `{tidyverse}` suite of packages to assemble, organize, and visualize data.
+
+# Analysis Software
+
+Students will use R and RStudio, which are free and open source! We will primarily use the RStudio version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN:
+
+1.  Go to myDenison.
+2.  Head to MyApps.
+3.  Select Remote Access.
+4.  Follow the instructions to download and use the VPN.
+
+All necessary R packages for the course are already installed in the server version. While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and RStudio on your laptop. Follow [this guide](https://www.rstudio.com/products/rstudio/download/).
+
+# Required Readings
+
+In addition to reading some short pieces written by journalists, academics, and others available online, we will primarily draw on Kieran Healy's excellent book on data viz:
+
+> Healy, Kieran. 2019. *Data Visualization: A Practical Introduction*. Princeton: Princeton University Press.
+
+# Resources
+
+## We Have a TA!
+
+[X] is the Teaching Assistant for DPR 101. If you have questions about assignments or need help troubleshooting code, Will is an excellent resource.
+
+**Office Hours**: Tues. 11:00 am - 12:30 pm / Thurs. 5:00 pm - 6:00 pm
+
+**Location**: Higley 408
+
+**Contact**: [duquet_w1@denison.edu ](mailto:duquet_w1@denison.edu ){.email}
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials. The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer ([thayerk\@denison.edu](mailto:thayerk@denison.edu){.email}). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center's page (<https://my.denison.edu/campus-resources/writing-center>) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at [englishhelp\@denison.edu](mailto:englishhelp@denison.edu){.email}.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+## R Resources & Cheat Sheets
+
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. 
+
+| **Grading Scale** |             |        |
+|-------------------|:------------|:-------|
+| A+:	98%+		      | A:	92%			| A-:	90%|
+| B+:	88%			      | B:	82%			| B-:	80%|
+| C+:	78%			      | C:	72%			| C-:	70%|
+| D+:	68%			      | D:	62%			| D-:	60%|
+| F: below 60       |             |        |
+
+
+*Attendance and Participation* **10pts**
+
+> You should show up to class and participate! Because of the technical nature of some of our material, missing multiple days of class can leave holes in your skillset that make doing assignments down the road more difficult. We'll also have some class days dedicated to in-depth discussion of an academic article or other reading material. If you don't show up, you can't participate in the discussion or provide me with evidence that you even did the reading. As an incentive to show up (both physically and mentally) to class, 10 percent of your grade will come from attendance and participation. Your first unexcused absence will be a free-bie. After that, you'll lose 1/2 (5 points) of your attendance and participation grade per each of two subsequent unexcused absences. That means after 3 unexcused absences you'll lose your entire grade for attendance and participation. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too!*]
+
+*4 Main Assignments* **15pts Each**
+
+> You'll have four main writing assigments to complete in this course. These will be anywhere from 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find. Two of these assignments will be done in groups, and two will be done individually. For group assignments, grades will be given on a group rather than an individual basis. The final assigment will be done individually, and includes a presentation component, which is graded as completed/not completed, and will factor in to your 15 points for your final assigment grade.
+
+*8 Data Challenges* **3pts Each**
+
+> These are intended to be a fun and challenging way to practice some data wrangling and data viz skills. You'll be given data and make a graph that tells a story from the data better than what could be communicated by just looking at the data on its own. You'll get the necessary data for these at least 5 days in advance of when they are due. These will be graded using a mastery-based approach. That means that if you completed the challenge successfully, that's awesome! You mastered the skills necessary to do the challenge and you get the full 3pts. But if you complete the challenge and it doesn't quite cut it, that's okay. You can try again (and again) until you nail it. Once you do, you'll get the full 3pts. Until then, you'll get 1pt as a place-holder.
+
+*Post a Viz* **6pts Total**
+
+> This is a low stakes weekly assigment to post before class on Mondays. You're job is simple. Find a visualization out in nature, post it to Canvas with its source url, and write a paragraph describing it. Did its creators make smart display choices? Is there anything that makes it interesting? Is it just terrible? This assigment will be graded based on completion (unless it's clear that you didn't try at all). On the Monday it's due, we'll spend about the first five minutes in class discussing 3-4 people's data viz selections.
+
+$$
+\begin{aligned}
+6pts& \text{ (Post a Viz)} \\
+10pts  & \text{ (Attendance and Participation)} \\
+4 \times 15pts = 60pts  & \text{ (Main Assigments)} \\
+\underline{+ \space 8 \times 3pts = 24pts} &  \text{ (Data Challenges)} \\
+100pts & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I have a simple email policy, and it is targeted at achieving one goal: **maximizing your and my work-life balance**. The policy is this:
+
+> I promise a timely response to **relevant** emails I receive between **9:00 AM** and **5:00 PM** Monday to Friday.
+
+You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.[^1] But, this does mean that if you email me outside of these windows, I may not respond until the next 9-5 workday.
+
+[^1]: By this, I simply mean classic societal expectations about working vs. leisure hours.
+
+
+## Make-Up Assigment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. 
+
+## Second Chances Policy
+
+The data challenges have built-in second-chances. That means if your submission didn't show that you clearly mastered the skills necessary to do the challenge well, you can try again. The main assignments are a different story. With these, you have one chance. But only one chance should be necessary. There are days in class specifically carved out to work on these. This gives you every opportunity to ask me questions, have me take a look at your writing and data viz, and check your overall write-up before you submit it. Take advantage of these opportunities for feedback *before* you submit. You won't get a second chance after.
+
+## Attendance Policy
+
+Attendance is part of your grade (see "Grading Policy"). However, sometimes life happens. There's an emergency, you get sick, you're an athlete and you have to be out of town, etc. Any of these exigencies can be the basis for an excused absence (which means missing class won't count against your final grade). All I ask is that you do me the courtesy of telling me **in advance** of your absence and your justification. After the fact is too late (except in the case of a true and immediate emergency). 
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive and the RStudio server, all your work will be backed up and easy to access.
+
+## Late Assigments
+
+We have a lot of work to do in this class. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. As incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose 5 percent from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade.
+
+The exception to this rule is if a student and I have worked out an arrangement for submitting an assignment at a later date. 
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is also a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class***.
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## Academic Dishonest and Generative AI
+
+Remember the previous section where I said you shouldn't cheat? That also applies to GenAI (Generative Artificial Intelligence) tools like ChatGPT. ***But***, there's some nuance to my attitude about GenAI and academic dishonesty. GenAI is a powerful *tool*, and it's a tool that you need to learn to use well because, let's face it, a lot of other people are using it, too. I want to be very clear that ***I am okay if you use GenAI tools to help you with your work.*** I've started using ChatGPT to help me with some aspects of my own research and programming. It would be unfair to me to hold you all to a different standard than I hold myself. 
+
+So, here's my policy on using GenAI: You can use it, but I want you to be honest about it, and I DO NOT want you to use it uncritically or unthinkingly. What does this look like? **Do not** copy and paste responses or output from tools like ChatGPT and pass them off as your own. **Do** use ChatGPT if you get stuck and need help (just make sure you tell me about it, and that you add your own thoughts, writing, and ideas into the mix as well).
+
+Ultimately, I hope this policy strikes a realistic balance between honesty and exploration of the potential uses of GenAI and ensuring your own "sweat equity" (effort) goes into your course work as well. I want you to be honest if and when you use GenAI because I'm genuinely curious about its applications. I'm still learning how to use it, too, and I hope that we all can learn how to use it better *together.* Further, I want you to use it critically and thoughtfully because it doesn't work perfectly. While it's powerful (and shockingly so), it is not all-powerful. You need to put in plenty of your own work as well. 
+
+You'll probably see a wide variety of attitudes toward GenAI from different faculty on campus. Some attitudes will differ from mine. As instructors, we're still trying to figure out the best policy. Have patience with us!

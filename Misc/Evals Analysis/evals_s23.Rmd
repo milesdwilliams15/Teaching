@@ -1,0 +1,69 @@
+---
+title: "Evals: Spring 2023"
+author: "Miles D. Williams"
+date: '2023-06-22'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F)
+library(tidyverse)
+library(kableExtra)
+library(socsci)
+library(googlesheets4)
+gs4_deauth()
+```
+
+Get the student evals:
+
+```{r}
+ids <- c(
+  "1B4vTzbM3zOAyrThTlve-M0aX1gcUUG2y",
+  "1RrFjA6fXNvdUZdduosIWBBpnrdGrkMsb",
+  "17aTc57uUKXHDOne7qnS6i6uBCwWaRKsl"
+)
+urls <- sprintf("https://docs.google.com/uc?id=%s&export=download", ids)
+names(urls) <- c(
+  "DA101",
+  "DPR101",
+  "DPR201"
+)
+urls |>
+  map(
+    ~ read.csv(.x)
+  ) -> Data
+Data$DA101$course <- names(urls)[1]
+Data$DPR101$course <- names(urls)[2]
+Data$DPR201$course <- names(urls)[3]
+Data <- bind_rows(Data)
+```
+
+
+Okay, let's summarize by course.
+
+```{r}
+Data |>
+  select(course, where(is.numeric), -Year) |>
+  pivot_longer(-course) |>
+  group_by(course, name) |>
+  mean_ci(value >= 4) |>
+  mutate(mean = paste0(round(100 * mean, 2), "%")) |>
+  select(1:3) |>
+  pivot_wider(names_from = course,
+              values_from = mean) |>
+  mutate(
+    name = str_replace(name, "\\.", " ")
+  ) |>
+  rename(
+    Metric = name
+  ) -> out_s23
+write_csv(
+  out_s23,
+  here::here("Misc",
+             "Evals Analysis",
+             "course_evals_s23.csv")
+)  
+```
+
