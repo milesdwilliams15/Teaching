@@ -1,7 +1,7 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  22 AUG 2023 14:04
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  22 AUG 2023 14:00
 entering extended mode
-**./dpr101-02_f23.tex
-(dpr101-02_f23.tex
+**./dpr190_f23.tex
+(dpr190_f23.tex
 LaTeX2e <2016/03/31>
 Babel <3.9r> and hyphenation patterns for 75 language(s) loaded.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -263,16 +263,16 @@ e/RRM/JK)
 ) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\dvipsnam.def"
 File: dvipsnam.def 2015/12/30 v3.0k Driver-dependent file (DPC,SPQR)
 ))
-Package hyperref Info: Option `breaklinks' set `true' on input line 88.
+Package hyperref Info: Option `breaklinks' set `true' on input line 87.
 
 Package hyperref Warning: Option `bookmarks' has already been used,
-(hyperref)                setting the option has no effect on input line 88.
+(hyperref)                setting the option has no effect on input line 87.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\se-ascii-print.def"
 File: se-ascii-print.def 2016/05/16 v1.11 stringenc: Printable ASCII characters
 
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 88.
+Package hyperref Info: Option `colorlinks' set `true' on input line 87.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
 Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
@@ -630,16 +630,56 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 635.
 \mathdisplay@stack=\toks36
 LaTeX Info: Redefining \[ on input line 2739.
 LaTeX Info: Redefining \] on input line 2740.
-) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
-Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\symAMSa=\mathgroup5
-\symAMSb=\mathgroup6
-LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (dpr101-02_f23.aux)
-\openout1 = `dpr101-02_f23.aux'.
+) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\multicol.sty"
+Package: multicol 2016/04/07 v1.8p multicolumn formatting (FMi)
+\c@tracingmulticols=\count143
+\mult@box=\box45
+\multicol@leftmargin=\dimen191
+\c@unbalance=\count144
+\c@collectmore=\count145
+\doublecol@number=\count146
+\multicoltolerance=\count147
+\multicolpretolerance=\count148
+\full@width=\dimen192
+\page@free=\dimen193
+\premulticols=\dimen194
+\postmulticols=\dimen195
+\multicolsep=\skip70
+\multicolbaselineskip=\skip71
+\partial@page=\box46
+\last@line=\box47
+\maxbalancingoverflow=\dimen196
+\mult@rightbox=\box48
+\mult@grightbox=\box49
+\mult@gfirstbox=\box50
+\mult@firstbox=\box51
+\@tempa=\box52
+\@tempa=\box53
+\@tempa=\box54
+\@tempa=\box55
+\@tempa=\box56
+\@tempa=\box57
+\@tempa=\box58
+\@tempa=\box59
+\@tempa=\box60
+\@tempa=\box61
+\@tempa=\box62
+\@tempa=\box63
+\@tempa=\box64
+\@tempa=\box65
+\@tempa=\box66
+\@tempa=\box67
+\@tempa=\box68
+\c@columnbadness=\count149
+\c@finalcolumnbadness=\count150
+\last@try=\dimen197
+\multicolovershoot=\dimen198
+\multicolundershoot=\dimen199
+\mult@nat@firstbox=\box69
+\colbreak@box=\box70
+\mc@col@check@num=\count151
+) (dpr190_f23.aux)
+\openout1 = `dpr190_f23.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 135.
 LaTeX Font Info:    ... okay on input line 135.
@@ -697,21 +737,21 @@ File: t1ppl.fd 2001/06/04 font definitions for T1/ppl.
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
 (lastpage)             ! on input line 135.
-\AtBeginShipoutBox=\box45
+\AtBeginShipoutBox=\box71
 Package hyperref Info: Link coloring ON on input line 135.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count143
+\c@section@level=\count152
 )
 LaTeX Info: Redefining \ref on input line 135.
 LaTeX Info: Redefining \pageref on input line 135.
 LaTeX Info: Redefining \nameref on input line 135.
-(dpr101-02_f23.out) (dpr101-02_f23.out)
+(dpr190_f23.out) (dpr190_f23.out)
 \@outlinefile=\write4
-\openout4 = `dpr101-02_f23.out'.
+\openout4 = `dpr190_f23.out'.
 
 ABD: EveryShipout initializing macros
 LaTeX Font Info:    Try loading font information for OT1+ppl on input line 138.
@@ -739,30 +779,6 @@ LaTeX Font Info:    Try loading font information for OT1+zplm on input line 138
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\ot1zplm.fd"
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 138.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 138.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 138.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 138.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 138.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 138.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 145.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 145.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 145.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 145.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 145.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 145.
 LaTeX Font Info:    Try loading font information for T1+cmtt on input line 148.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
@@ -771,54 +787,55 @@ File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 160.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 180.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 179.
 [1
 
 ]
 File: figs/calendar.pdf Graphic file (type QTm)
 <use  "figs/calendar.pdf" >
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 224.
-LaTeX Font Info:    Try loading font information for OMS+ppl on input line 228.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 235.
+LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 239.
+LaTeX Font Info:    Try loading font information for OMS+ppl on input line 243.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psnfss\omsppl.fd"
 File: omsppl.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ppl/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 228.
-[2] [3] [4] [5] [6] [7] [8]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 243.
+[2] [3]
+LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <14.4> not available
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 422.
+[4] [5] [6] [7
+
+] [8] [9] [10] [11]
 File: figs/unnamed-chunk-1.pdf Graphic file (type QTm)
-<use  "figs/unnamed-chunk-1.pdf" > [9]
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 778.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 5.21004pt on input line 778.
-LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/it' tried instead on input line 786.
-[10] [11] 
+<use  "figs/unnamed-chunk-1.pdf" > [12] [13] [14] 
 AED: lastpage setting LastPage
-[12]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 917.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 917.
-(dpr101-02_f23.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 917.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 917.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 917.
+[15]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1176.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1176.
+(dpr190_f23.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1176.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1176.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1176.
  ) 
 Here is how much of TeX's memory you used:
- 20438 strings out of 428410
- 350601 string characters out of 3159547
- 414367 words of memory out of 3000000
- 23540 multiletter control sequences out of 15000+200000
- 34445 words of font info for 82 fonts, out of 3000000 for 9000
+ 20288 strings out of 428410
+ 349746 string characters out of 3159547
+ 418298 words of memory out of 3000000
+ 23395 multiletter control sequences out of 15000+200000
+ 36292 words of font info for 79 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 55i,11n,54p,407b,393s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,12n,54p,1155b,410s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on dpr101-02_f23.pdf (12 pages).
+Output written on dpr190_f23.pdf (15 pages).
 
-! stdin -> dpr101-02_f23.pdf
-! [1][2][3][4][5][6][7][8][9][10][11][12]
+! stdin -> dpr190_f23.pdf
+! [1][2][3][4][5][6][7][8][9][10][11][12][13][14][15]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
+! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 
-! 151789 bytes written
+! 146479 bytes written

@@ -1,0 +1,909 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 190: War, Wealth, and World Politics"
+author: Dr. Miles D. Williams
+date: "Fall 2023"
+
+email: "williamsmd@denison.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MWF 2:30-3:30 pm"
+office: "Higley 401C"
+classroom: "Knapp Hall 208"
+classhours: "MWF 1:30-2:20 pm"
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath}
+   - \usepackage{multicol}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+# library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+# bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. 
+
+## First Monday of semester
+
+mon <- ymd(20230828)
+
+## dates of no class
+not_here_dates <- c(
+  # APSA,
+  ymd(20230901),
+  # Drs apt w/ Sarah
+  ymd(20230918),
+  # Fall break
+  seq(ymd(20231016), ymd(20231017), by = 1),
+  # IPES? Maybe I'll make this ISAMW instead (Nov 17-19)
+  ymd(20231117),
+  # Thanksgiving
+  seq(ymd(20231120), ymd(20231124), by = 1))
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# 3 short essays:
+sa_dates <- c(ymd(20230929), 
+              ymd(20231103),
+              ymd(20231214)) 
+  # Final date set to Thursday, Dec. 14, 9:00-11:00 a.m.
+# 3 talking with data:
+td_dates <- c(ymd(20231006),
+              ymd(20231027),
+              ymd(20231204))
+
+# grade the AI will be weekly unless otherwise specified.
+# i won't add these to the calendar
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: Aug. 28 to Dec. 17
+semester_dates <- seq(ymd(20230828), ymd(20231217), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20230801), ymd(20231231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         mas = ifelse(date %in% sa_dates, 1, 0), # is it an MA assignment?
+         gcs = ifelse(date %in% td_dates, 1, 0), # is it a GC assignment?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(mas == 1, "SE Due", ccategory),
+         ccategory = ifelse(gcs == 1, "TD Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("SE Due" = "firebrick", 
+               "TD Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("SE Due", "TD Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: APSA (01 Sept.), Fall Break (09-10 Oct.), ISA-Midwest (17 Nov.),\nThanksgiving (20-24 Nov.), Final Day of Instruction (12 Dec.)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+War, wealth, and world politics are in the title of this course, but this course is not really about war *or* wealth *or* world politics. It is about the study of collective action problems under anarchy.
+
+These problems involve war, wealth, and world politics, but the field of International Relations (IR) at its root is about how actors interact and solve (or fail to solve) problems in the absence of government. IR scholars use a variety of theories to explain why countries interact the way the do, and a range of tools to test those theories. In this class, you'll be introduced to some of these theories and (since this is a *Data* for Political Research course) quantitative data used to put these theories to the test.
+
+Some of the issues we'll consider range from:
+
+> **Disease and Climate** \space \space Health crises like COVID-19 and climate change pose an existential threats to the world's population. How can the governments of the world come together to address crises like these that don't respect sovereign borders?
+
+> **Violent Conflict** \space \space Russia's invasion of Ukraine has resulted in the deaths of nearly half a million (so far) and the displacement of millions more, all the while producing disastrous economic reverberations throughout the globe. Are there ways to resolve disputes short of war, and why is violence sometimes unavoidable?
+
+> **Rivalry and Competition** \space \space China has risen from a minor actor in geopolitics and the world economy to a major military rival and economic competitor with the United States and its allies. Will Beijing learn to play by the rules of the Liberal International Order, or will it establish a new international order based on its geopolitical and economic interests?
+
+We'll consider these problems and more in this course. Though we won't be able to solve all of them, what is most important is that you come to learn how IR scholars understand, study, and bring the tools of scientific inquiry to bear in examining these complicated and weighty issues.
+
+\newpage
+
+# Class Schedule^[As the instructor, I retain the right to amend this schedule if the need arises.]
+
+\hrulefill
+
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+
+class_cal + 
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top'
+  )
+ggsave(
+  here::here('01_schedule.png'),
+  height = 6,
+  width = 8
+)
+```
+
+\singlespacing
+\setlength{\parskip}{0pt}
+
+\bigskip
+
+\hrulefill
+
+*Note:* "SE" = Short Essay. "TD" = Talking with Data Assignment. Unless otherwise specified, all due dates for assignments are midnight.
+
+# Getting Started
+
+## `r advdate(mon, 1)`: Welcome!
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Course introduction and syllabus.
+
+\item Day 2: Listen to Paul Poast, \href{https://open.spotify.com/episode/5FHM9YyzclsjYLUhtRLk70}{"So, what do IR scholars actually do?"} and Read Haass (p. 1-57).
+
+\item Day 3: NO CLASS (I'll be at APSA)
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+# Unit 1: Actors, Issues, & Globalization
+
+## `r advdate(mon, 2)`: Sovereignty & Anarchy
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Haass (p. 253-263). 
+
+\item Day 2: Stephen Krasner, \href{https://www.foreignaffairs.com/articles/andorra/2009-03-30/who-gets-state-and-why}{"Who Gets a State and Why?"}; and Katy Collin, \href{https://www.brookings.edu/blog/order-from-chaos/2017/09/29/the-referendum-in-catalonia-explained/}{"The Referendum in Catalonia Explained"}.
+
+\item Day 3: John Glaser, \href{https://www.cato-unbound.org/2019/09/18/john-glaser/anarchy-international-relations/}{"The Anarchy of International Relations"}.
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 3)`: Governance, Hierarchy, & Escape from Nature
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Haass (p. 264-279)
+
+\item Day 2: David Lake, \href{http://quote.ucsd.edu/lake/files/2018/07/Lake-IS-32-1.pdf}{"Escape from the State of Nature"}
+
+\item Day 3: Michael Mandelbaum, \href{https://www.foreignaffairs.com/articles/europe/2017-08-15/pay-europe} {"Pay Up, Europe;"} and Mira Rapp-Hooper, \href{https://www.foreignaffairs.com/articles/united-states/2020-02-10/saving-americas-alliances}{"Saving America's Alliances."}
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+
+##  `r advdate(mon, 4)`: Globalization 
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: NO CLASS
+
+\item Day 2: Haass (p. 155-165), "Globalization;" Peterson Institute, \href{https://www.piie.com/microsites/globalization/what-is-globalization}{"What is Globalization?"} and Our World in Data, \href{https://ourworldindata.org/trade-and-globalization#trade-from-a-historical-perspective}{"Trade from a Historical Perspective."}
+
+\item Day 3: Henry Farrell and Abraham Newman, \href{https://www.foreignaffairs.com/articles/united-states/2019-12-10/chained-globalization}{"Chained to Globalzation"} and \href{https://www.foreignaffairs.com/articles/2020-03-16/will-coronavirus-end-globalization-we-know-it}{"Will the Coronavirus End Globalization as we Know It?"}
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 5)`: Collective Action Problems
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Haass (p. 166-182, 201-207).
+
+\item Haass (p. 183-200, 208-214).
+
+\item Haass (p. 215-250).
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+SE1 due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+\newpage
+
+##  `r advdate(mon, 6)`: Wrapping up
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Summary of collective action problems. Review Haass (p. 155-250).
+
+\item Day 2: In-class group work on TD1
+
+\item Day 3: In-class presentations for TD1.
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+TD1 due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+
+# Unit 2: Theories (and *Zombies*)
+
+##  `r advdate(mon, 7)`: The Undead (and other useful fictions) 
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: FALL BREAK!
+
+\item Day 2: Drezner, "Introduction...to the Undead." Listen to: Hopkins Podcast on Foreign Affairs, \href{https://hopkinspofa.com/2018/01/20/ir-theory-aliens/}{"IR Theory and Aliens!"}
+
+\item Day 3: Drezner, "The Zombie Literature," "Defining a Zombie," and "Distracting Debates about Flesh-eating Ghouls."
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 8)`: The Big 3 of IR
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Drezner, "The Realpolitik of the Living Dead".
+
+\item Day 2: Drezner, "Regulating the Undead in a Liberal World Order."
+
+\item Day 3: Drezner, "The Social Construction of Zombies" and introduce TD2.
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 9)`: Critical Theories and Networks
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Drezner, "The Supergendered Politics of the Posthuman World."
+
+\item Day 2: Drezner, "Subalternity and the Living Dead: Postcolonial Approaches to a Posthuman World" and "A Very Important Note about Zombie Networks."
+
+\item Day 3: Presentations for TD2. 
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+TD2 due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+\newpage
+
+##  `r advdate(mon, 10)`: Looking Inside the State
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Drezner, "Domestic Politics: Are All Zombie Politics Local?"
+
+\item Day 2: Drezner, "Bureaucratic Politics: The 'Pulling and Hauling' of Zombies."
+
+\item Day 3: Drezner, "We're Only Human: Psychological Responses to the Undead" and "Conclusion...or so You Think."
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+SE2 due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+# Unit 3: War and Order
+
+##  `r advdate(mon, 11)`: Is War on the Decline? Reasons for Skepticism
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Braumoeller, "Preface" and "Introduction" (p. xi-17).
+
+\item Day 2: "Reasons for Skepticism, Part I: Data" (p. 21-46).
+
+\item Day 3: Braumoeller, "Reasons for Skepticism, Part II: Explanation" (p. 47-72)
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 12)`: Using Data to Find an Answer
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Braumeoller, "Is International Conflict Going out of Style?" (p. 75-99).
+
+\item Day 2: Braumoeller, "Is International Conflict Getting Less Deadly?" (p. 100-130) and "Are the Causes of International Conflict Becoming Less Potent?" (p. 131-139).
+
+\item Day 3: NO CLASS (ISA-Midwest)
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+## `r advdate(mon, 13)`: 
+
+*THANKSGIVING BREAK!*
+
+
+##  `r advdate(mon, 14)`: Making Sense of the Data with International Order
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: Braumoeller, "International Order" (p. 143-177).
+
+\item Day 2: Braumoeller, "History and International Order" (p. 178-211) and "Conclusion and Implications" (p. 215-224).
+
+\item Day 3: In-class group work on TD3.
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+Grade the AI due Fri.
+
+\end{flushright}
+
+\end{multicols}
+
+
+##  `r advdate(mon, 15)`: The Future of Order
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize}
+
+\item Day 1: In-class presentations for TD3
+
+\item Day 2: G. John Ikenberry, \href{https://watermark.silverchair.com/iix241.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArgwggK0BgkqhkiG9w0BBwagggKlMIICoQIBADCCApoGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMmvNmPUQrjGzOH1cEAgEQgIICa46bVbYQMMIAnXOVSxX24aIcW7dPVAXpm5-3dJ7prKdvtqKeJMhggBTfwFrwPeSm112dIEScmPTZfjNsRJcEHxs5ZzYXZvENhxBP1ezkdCLPxujOG9w5I6T5GZzXgHo5k-xwMJRZF6o1dSIYCnvs18ytxHCNes2CFy0Lw0frPeGOSlT5JfJ8u1sUOKtfjT8v00Ji1PdY05DWUlWxmt56AChy3aM8ZiEFX0oNpiydbzYpIF-GFMi1CG3kbhEUO4OzB-jz-TaSKnEJyHjHx3u_GxZCSaywU4msPU-KGeNC7J0DIZW3OIvay9qM9e4pkOs4d5uQd7D06aFNga1l25Qk6K3cDUJgLwCUBpRrC1ErqU0lCNTTwkdycbtXPphZ_yiQnYhdD9haZKq9fOJhF8L6ykKfH2kJqLtFpgb940RTM1iJYF0uYd9fudlIRazxMFBbDOg1Dxlgy3_pNVPHecI7KbUYY3AeZxEKSsuKJjQsf77B_esZ30b-_uF4aIC9sSLEuQ8mPCnVK5Cr9uBXsJP6dsd3_80LRKKubF58EnEE6iwCHZwlGxFggiDCmjx0yTkzz7Br-lJ1l1c-LtFauHEYeIYdBfEGoWAvXt4nzBgA8ZUzy8XNloYvRPdlHh07pf7gO1azWqrD4H_QHlWY1VLIok5Xu4cw1u2l4eAGdHcoGquTqseeYMXfxy2pt3ZCAHVCTww8S4kQZTsCNk4LerHyVG5cczh7bcP46PPa-Gt7r0cjZVBItY0oVv5y0aP4-EtbslKFztVrhVfCof0XNoF6Y-1cjsqjA6ilZX26Vq0C4TML_Eygay-07Cj10tQ}{"The End of Liberal International Order?"}.
+
+\item Day 3: Braumoeller and Sartori, \href{https://drive.google.com/file/d/1-QQRAw_6j2YBWQ2_RgWz6IRp-GA7hbyf/view?usp=sharing}{"The Promise and Perils of Statistics in International Relations"}
+
+\end{itemize}
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+TD3 due Mon.
+
+\end{flushright}
+
+\end{multicols}
+
+##  `r advdate(mon, 16)`: Finals Week
+
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+\begin{itemize} 
+
+\item Day 1: Course evals and final discussion.
+
+\item Day 2 + 3: NO CLASS (Finals start).
+
+\end{itemize}
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+SE3 due 12.14 (Th.) by 11 am.
+
+\end{flushright}
+
+\end{multicols}
+
+\onehalfspacing
+
+\setlength{\parskip}{5pt}
+
+
+\clearpage
+
+# Course Objectives
+
+- Understand the actors, issues, and theories relevant for understanding and explaining international politics.
+- Along the way, gain exposure to the ways IR scholars use quantitative data.
+- Become a better informed, critical consumer of current events by developing the ability to put a single global event into its broader context. That is, learn to ask, "what is this recent event *an example of*?" rather than "what are the specifics of a recent event?"
+- Practice written and verbal communication, working as an individual and in groups.
+- Practice critically evaluating GenAI (Generative AI) as a resource for understanding world politics.
+
+# Course Outline
+
+To meet these objectives, the course is structured around three units:
+
+#### Unit 1: Actors, Issues, & Globalization
+
+In this first unit, we'll set the stage for international politics. We'll identify key actors (*states* and *non-state actors*) and concepts (*sovereignty*, *anarchy*, *hierarchy*, *governance*), and discuss a range of issues (from *trade* and *migration*, to *political violence* and *climate change*).
+
+#### Unit 2: Theories (and *Zombies*)
+
+In the second unit, we'll consider various theories of international politics. We'll discuss the "big 3" (*Realism*, *Liberalism*, and *Constructivism*) as well as other important theories (*Feminism*, *Postcolonialism*, *Network Theory*, and much more). As we discuss these theories, we'll take a brief detour from reality to consider what IR theories predict would happen if there were a global zombie apocalypse.
+
+#### Unit 3: War and Order
+
+In the final unit, we'll conclude by taking a close look at trends in international conflict (one of the most provocative and destructive turns international politics can take). Has conflict become less common and deadly over time? What role does **international order** play in the waxing and waning of violence? 
+
+# Required Readings
+
+In the order you'll need them:
+
+1. Haass, Richard. *The World: A Brief Introduction.* Penguin, 2021.
+
+2. Drezner, Daniel W. *Theories of International Politics and Zombies: Apocalypse Edition.* Princeton University Press, 2022.
+
+3. Braumoeller, Bear F. *Only the Dead: The Persistence of War in the Modern Age.* Oxford University Press, 2019.
+
+Note that the Drezner book is [available electronically](https://www.jstor.org/stable/j.ctv244sssd) on JSTOR. You should have access with your Denison credentials.
+
+# Resources
+
+## The Instructor (that's me!)
+
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday, Wednesday, or Friday between 2:30-3:30 pm. No appointment necessary. If those hours don't work for you, we can email to work out a different time to meet. 
+
+You can also email me at [williamsmd@denison.edu](mailto:williamsmd@denison.edu ){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday.
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials. The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer ([thayerk\@denison.edu](mailto:thayerk@denison.edu){.email}). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center's page (<https://my.denison.edu/campus-resources/writing-center>) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at [englishhelp\@denison.edu](mailto:englishhelp@denison.edu){.email}.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. 
+
+| **Grading Scale** |             |        |
+|-------------------|:------------|:-------|
+| A+:	98%+		      | A:	92%			| A-:	90%|
+| B+:	88%			      | B:	82%			| B-:	80%|
+| C+:	78%			      | C:	72%			| C-:	70%|
+| D+:	68%			      | D:	62%			| D-:	60%|
+| F: below 60       |             |        |
+
+
+*Attendance and Participation* **10%**
+
+> You should show up to class and participate! Missing multiple days of class can leave gaps in your learning that make doing assignments down the road more difficult. We'll also have some class days dedicated to in-depth discussion of an academic article or other reading material. If you don't show up, you can't participate in the discussion or provide me with evidence that you even did the reading. As an incentive to show up (both physically and mentally) to class, 10 percent of your grade will come from attendance and participation. Your first unexcused absence will be a freebie. After that, you'll lose 1/2 of your attendance and participation grade per each of two subsequent unexcused absences. That means after 3 unexcused absences you'll lose your entire grade for attendance and participation. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too!*]
+
+*3 Short Essays* **15% Each**
+
+> You'll have three short essays to complete in this course. These will come at the end of each of our three units and should be anywhere from 700 to 1,200 words. You'll be given a prompt at least 2 weeks in advance of the essay due date. You'll be asked to take a stance on an issue or debate related to our unit material and provide supporting evidence or claims in suppport of your position. These will be worth 15% of your grade each and combined make up 45\% of your final grade. Prompts will be posted to Canvas.
+
+*3 Talking with Data Assignments* **10% Each**
+
+> These are collaborative (i.e., group) assignments that we will do three times throughout the semester. I will divide you into working-groups, and your task will be to explore and vizualize data related to a collective action problem in IR or break down an academic article and make its conclusions digestible for a smart (but unfamiliar) audience. This does not include a written component. Instead, you will put together a short presentation for the class (usually no longer than 10 minutes). No technical skills beyond using a drop-down menu and working with PowerPoint or Google Slides will be required. I will provide the relevant datasets (and web applications) or articles for you. Further details about these tasks will be provided on Canvas. These will be worth a combined 30\% of your final grade and will be graded on a group rather than individual basis.
+
+*Grade the AI* **15% Total**
+
+> This is a weekly individual assignment worth a combined 15% of your final grade. Generative AI (GenAI) is here, and it's here to stay. That means you need to learn how to use it, and using it well requires critical thinking. Not every response GenAI provides is accurate. If you've used tools like ChatGPT, you know that they can hallucinate, giving you nice sounding but ultimately inaccurate or misleading answers to your questions. That means an ability to check and evaluate the responses from GenAI is a critical skill to develop. In these weekly assignments, you'll get practice using this skill. I'll give you a prompt each week asking a question relavent to the material we cover in class. You'll then give this prompt to ChatGPT. You'll copy the response to a Google or Word doc, and then you give it a letter grade from "A"-"F" and write a short paragraph justifying your evaluation of the response. I'll then grade your effort in evaluating ChatGPT. 
+
+The following figure provides a summary of my grading strategy and philosophy. For each assignment you submit, I'll evaluate it on a discrete scale from 0 to 5. 5 = perfection and 0 = missing (e.g., you didn't turn anything in). Your points then get mapped to a percentage point grade for a given assignment. Notice that the linkages between my evaluation of your work and your actual grade are pretty generous. 5 out of 5 = 100% (an "A+"), but 4 out of 5 = 93% (still an "A") and 3 out of 5 = 85% (a "B"), and so on. If you do some simple math, you know that 4 out 5 should actually be 80% and 3 out of 5 should be 60%. Why this more complicated approach? My grading strategy gives me a simple scale to evaluate your work, but it also ensures that you get some benefit of the doubt. Did you completely bomb an assignment? My instinct is to give you a 1 out of 5, which gives you only 20% for your final grade on said assignment. That seems too harsh. My scale adjusts for my disappointment in the quality of your work and gives you 60% (a "D-") instead. That's still a poor grade, but not one that would be impossible to recover from.
+
+```{r echo=FALSE}
+the_max <- 5
+x <- seq(0, the_max, len = 1000)
+x0 <- 0:the_max
+a <- 0.32
+f <- function(x) ((x)^a / max((x)^a))
+ggplot() +
+  aes(x, f(x)) +
+  geom_line(
+    color = "royalblue"
+  ) +
+  geom_line(
+    aes(x, x / max(x)),
+    lty = 2
+  ) +
+  geom_ribbon(
+    aes(x, ymin = x / max(x), ymax = f(x)),
+    fill = "royalblue",
+    alpha = 0.2
+  ) +
+  geom_segment(
+    aes(
+      x = x0,
+      xend = x0,
+      y = 0,
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  geom_segment(
+    aes(
+      x = 0,
+      xend = x0,
+      y = f(x0),
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  annotate(
+    "text",
+    x = 1.5,
+    y = 0.45,
+    label = "GRACE",
+    color = "black",
+    face = "bold"
+  ) +
+  geom_point(
+    aes(x0, f(x0)),
+    color = "indianred3"
+  ) +
+  scale_x_continuous(
+    breaks = 0:5,
+    labels = paste0(
+      0:5,
+      c("\n(Missing)",
+        "\n(Bombed)",
+        "\n(You Tried)",
+        "\n(Rough but Good)",
+        "\n(Nearly Perfect)",
+        "\n(Perfection!)")
+    )
+  ) +
+  scale_y_continuous(
+    breaks = f(x0),
+    labels = scales::percent(round(f(x0), 2))
+  ) +
+  theme_minimal() +
+  labs(
+    x = "Points",
+    y = "% Grade per Points",
+    title = "What Points mean on the Grading Scale"
+  ) 
+  
+```
+
+
+$$
+\begin{aligned}
+15\% & \text{ (Grade the AI)} \\
+10\%  & \text{ (Attendance and Participation)} \\
+3 \times 15\% = 45\%  & \text{ (Short Essays)} \\
+\underline{+ \space 3 \times 10\% = 30\%} &  \text{ (Talking with Data)} \\
+100\% & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I have a simple email policy, and it is targeted at achieving one goal: **maximizing your and my work-life balance**. The policy is this:
+
+> I promise a timely response to **relevant** emails I receive between **9:00 AM** and **5:00 PM** Monday to Friday.
+
+You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.[^1] But, this does mean that if you email me outside of these windows, I may not respond until the next 9-5 workday.
+
+[^1]: By this, I simply mean classic societal expectations about working vs. leisure hours.
+
+
+## Make-Up Assigment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. 
+
+## Second Chances Policy
+
+You have only one chance with your assignments, but only one chance should be necessary. If you have questions or concerns, come visit me during office hours, send me and email, or take advantage of the various resources we have on campus. I and so many others on campus are eager and willing to help if you ask. Take advantage of these opportunities *before* you submit your work. You won't get a second chance after.
+
+## Attendance Policy
+
+Attendance is part of your grade (see "Grading Policy"). However, sometimes life happens. There's an emergency, you get sick, you're an athlete and you have to be out of town, etc. Any of these exigencies can be the basis for an excused absence (which means missing class won't count against your final grade). All I ask is that you do me the courtesy of telling me **in advance** of your absence and your justification. After the fact is too late (except in the case of a true and immediate emergency). 
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. If you use your Google Drive, all your work will be backed up and easy to access.
+
+## Late Assigments
+
+We have a lot of work to do in this class. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. As incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose 5 percent from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade.
+
+The exception to this rule is if a student and I have worked out an arrangement for submitting an assignment at a later date. 
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is also a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class***.
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## Academic Dishonest and Generative AI
+
+Remember the previous section where I said you shouldn't cheat? That also applies to GenAI (Generative Artificial Intelligence) tools like ChatGPT. ***But***, there's some nuance to my attitude about GenAI and academic dishonesty. GenAI is a powerful *tool*, and it's a tool that you need to learn to use well because, let's face it, a lot of other people are using it, too. That's why one of your assignments is specifically centered around evaluating GenAI. However, beyond this assignment I also want to be very clear that ***I am okay if you use GenAI tools to help you with your work.*** I've started using ChatGPT to help me with some aspects of my own research and programming. It would be unfair to me to hold you all to a different standard than I hold myself. 
+
+So, here's my policy on using GenAI: You can use it, but I want you to be honest about it, and I DO NOT want you to use it uncritically or unthinkingly. What does this look like? **Do not** copy and paste responses or output from tools like ChatGPT and pass them off as your own. **Do** use ChatGPT if you get stuck and need help (just make sure you tell me about it, and that you add your own thoughts, writing, and ideas into the mix as well). For "Grade the AI" assignments in particular, this means your evaluation of the generated response must be your own.
+
+Ultimately, I hope this policy strikes a realistic balance between honesty and exploration of the potential uses of GenAI and ensuring your own "sweat equity" (effort) goes into your course work as well. I want you to be honest if and when you use GenAI because I'm genuinely curious about its applications. I'm still learning how to use it, too, and I hope that we all can learn how to use it better *together.* Further, I want you to use it critically and thoughtfully because it doesn't work perfectly. While it's powerful (and shockingly so), it is not all-powerful. You need to put in plenty of your own work as well. 
+
+You'll probably see a wide variety of attitudes toward GenAI from different faculty on campus. Some attitudes will differ from mine. As instructors, we're still trying to figure out the best policy. Have patience with us!

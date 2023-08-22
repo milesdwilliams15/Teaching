@@ -1,0 +1,730 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 190-01: War, Wealth, and World Politics"
+author: Dr. Miles D. Williams
+date: "Fall 2022"
+
+email: "williamsmd@denison.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MWF 2:30-3:30 pm"
+office: "Higley 401C"
+classroom: "Fellows 208"
+classhours: "MWF 10:30-11:20 am"
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      fig.path = 'figs/',
+                      cache.path='cache/',
+                      warning=F,
+                      message=F)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+library(RefManageR)
+library(knitcitations)
+library(rcrossref)
+bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. In this example, 4 January 2021 (but no mas!).
+
+mon <- ymd(20220829)
+
+# What are some dates you won't be here? In this example, I had a conference on 7 January 2021.
+# Spring Break was 15 March 2021 to 19 March 2021.
+not_here_dates <- c(
+  # Fall break,
+  c(ymd(20221017), ymd(20221018)),
+  # Tanksgivin'
+  seq(ymd(20221121), ymd(20221125), by = 1))
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# My intro class was fairly simple: just exams.
+essay_dates <- c(ymd(20220916), ymd(20220930), ymd(20221104), ymd(20221216))
+data_dates <- c(seq(ymd(20221005), ymd(20221007), by = 1), 
+                seq(ymd(20221202), ymd(20221205), by = 1))
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: Aug. 29 to Dec. 13
+semester_dates <- seq(ymd(20220829), ymd(20221213), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20220801), ymd(20221231), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         essays = ifelse(date %in% essay_dates, 1, 0), # is it an essay?
+         data = ifelse(date %in% data_dates, 1, 0), # data task?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a category variable, for filling.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(category = NA,
+         category = ifelse(semester == 1, "Semester", category),
+         category = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), 
+                           "Class Day", category),
+         category = ifelse(essays == 1, "Essays", category),
+         category = ifelse(data == 1, "Data Tasks", category),
+         category = ifelse(not_here == 1, "Breaks", category),
+         category = ifelse(is.na(category), "NA", category)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=category), color="black", size=.45) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "white", # I like these whited out...
+                             "Essays"="firebrick",
+                             "Data Tasks"="gold"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Essays","Data Tasks","Breaks")) +
+  labs(fill = "", x="", y="",
+       caption = "Notable dates: Fall Break (17-18 Oct.), Thanksgiving (21-25 Nov.), Finals (14-19 Dec.)")  -> class_cal
+
+```
+
+# Course Description
+
+War, wealth, and world politics are in the title of this course, but this course is not really about war *or* wealth *or* world politics. It is about the study of collective action problems under anarchy.
+
+These problems can involve war, wealth, and world politics, but the field of International Relations (IR) at its root is about how actors interact and solve (or fail to solve) problems in the absence of government. In this class, you'll be introduced to the field of IR and to the data, tools, and theories IR scholars use to understand the collective action problems that confront the nations of the world, which include:
+
+> **Disease and Climate** \space \space The COVID-19 pandemic was (and still is) a global crisis, and climate change is increasingly posing an existential threat to the world's ecosystems and the long-term sustainability of global food supplies and natural resources. How can the governments of the world come together to address crises like these that don't respect sovereign borders?
+
+> **Violence and Aggression** \space \space Russia's invasion of Ukraine this very year has resulted in the deaths of thousands and the displacement of millions, all the while producing disastrous economic reverberations throughout the globe. Are there ways to resolve disputes short of war, and when is violence unavoidable?
+
+> **Rivalry and Competition** \space \space China, meanwhile, has risen from a minor actor in geopolitics and the world economy to a major military rival and economic competitor with the United States and its allies. Will Beijing learn to play by the rules of the Liberal International Order, or will it establish a new international order based on its geopolitical and economic interests?
+
+We'll consider these problems and more in this course. Though we won't be able to solve all of them, what is most important is that you come to learn how IR scholars understand, study, and bring the tools of scientific inquiry to bear in examining these complicated and weighty issues.
+
+
+# Course Objectives
+
+1. You'll learn how to write less like a student and more like a social scientist. This will empower you to use evidence to make compelling arguments and answer the kinds of questions you'll encounter in the social sciences and in applied research settings.
+
+2. You'll become not only a more sophisticated observer of current events in international politics, but also a more sophisticated student of *recurrent* events that characterize international politics.
+
+3. You'll be able to wield theory in service of objective 2.
+
+# Course Outline
+
+To meet these objectives, the course is structured around four units:
+
+#### Unit 1
+
+Before we can begin to solve any problems in international politics, we first need to define international actors (nation-states) and the environment in which they interact (the international system). As we do this, we'll need to better understand some concepts, such as **sovereignty** and **anarchy**, and be able to draw certain distinctions, such as between **government** and **governance**.
+
+#### Unit 2
+
+Next, it is impossible to solve problems if we don't know what they are. We therefore need to spend some time identifying and characterizing the kinds of **collective action problems** that exist among states.
+
+#### Unit 3
+
+After we've established actors and the problems they face, we can then consider the primary ways states interact to resolve their differences---**violent conflict**, **exchange**, and **contracts**. As we do this, we'll evaluate different IR theories and what they have to say about the prospects for cooperation among states as they interact in these various ways.
+
+#### Unit 4
+
+We'll conclude by taking a close look at **international order**, why international orders are important to maintain, and what the waning of international orders implies for international violence. Some claim that international orders play a critical role in supporting cooperation among their members, but these orders also have a dark side. While they promote peace within their boundaries, they can incite violence with rival orders when they exist in the international system.
+
+
+# Required Readings
+
+```{r, echo = FALSE, results="asis", eval=T} 
+bib
+``` 
+
+# Resources
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through their Accommodate MyAccommodations app on MyDenison. It is the student’s responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials.  The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer (thayerk@denison.edu). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center’s page (https://my.denison.edu/campus-resources/writing-center) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for
+appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at englishhelp@denison.edu.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University’s student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University’s Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at:
+https://denison.edu/campus/title-ix .
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc. The specifics will vary as I curve the scale depending on the overall class distribution.
+
+*Attendance and Participation* **10%** 
+
+> This should go without saying, but students should show up to class and ask questions and answer them. This is an intro class, so I won't be able to avoid some lecturing, but there will also be plenty of opportunity for active engagement. You will have **1 free absence** in this class (no questions asked---really). Beyond this first absence you can expect to lose 1/3 of your participation and attendance grade for each of 3 subsequent unexcused absences. If you do the math, that means if you have three unexcused absences, you lose all of your participation and attendance points. The way to avoid **unexcused** absences (other than not missing class) is to give me advanced warning of an upcoming absence---either via email or written notice at least **24 hours in advance**. 
+
+> For class participation, I will use a mix of "Think-Pair-Share" where the "share" part will done via the "Random Calling" method, which entails randomly drawing students from the class list to answer questions. I like this approach because when executed well it creates a more inclusive and equitable classroom experience. There will be no penalty for being wrong in your responses---in fact, being wrong is often the best way to learn (I'm wrong about things all the time!). Also, by the time you're called on to speak, you will (1) have had a chance to think about (even write down) your answer to a question and (2) have had a chance to share your thoughts will a small group of your peers. If the random-call method does create anxiety, a student may voluntarily remove themselves from the list. You can re-add yourself to the in-class random call list any time.  
+
+*4 Critical Writing Essays* **15% Each**
+
+> Throughout the semester, students will have the opportunity to flex their writing skills by writing 4 papers written in dialogue with our unit materials. There will be a paper for each of the four units in this course. A description of each of these assigments, along with details about formatting and length, can be found later in this syllabus.
+
+*2 Working-group Data Tasks* **15% Each**
+
+> 2 times during the semester, I will divide you into working-groups to explore and vizualize data related to a collective action problem in IR. No technical skills beyond using a drop-down menu will be required. I will provide the relevant datasets for you to explore and create Shiny Web Applications that will let you select variables and ways of presenting data. Together, you will collaborate to describe tends in a problem either over time or across countries and present the descriptive trends you discover to the class. Further details about these tasks are provided later in this syllabus.
+
+$$
+\begin{aligned}
+10\%  & \text{ (Attendance + Participation)} \\
+4 \times 15\% = 60\%  & \text{ (Critical Writing Essays)} \\
+\underline{+ \space 2 \times 15\% = 30\%} &  \text{ (Working-group Data Tasks)} \\
+100 \% & \text{ (Total Assigments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I have a simple email policy, and it is targeted at achieving one goal: **maximizing your and my work-life balance**. The policy is this:
+
+> I promise a timely response to **relevant** emails I receive between **9:00 AM** and **5:00 PM** Monday to Friday. 
+
+You may not think professors have lives (but we in fact do, and I like to live mine outside of normal working hours). That doesn't mean I expect students to abide by chrono-normative standards.^[By this, I simply mean classic societal expectations about working vs. leisure hours.] But, this does mean that if you email me outside of these windows, don't be alarmed if I do not respond until the next 9-5 workday.^[FYI, if you email me on a Saturday that you will be unable to attend class on Monday for an excusable reason, don't worry that I won't see your email until Monday. I'll be able to see when you sent me your notice.] 
+
+So that explains non-responses to emails sent outside of my normal working outs; what about **irrelevant** emails? What is an irrelevant email? It's an email that asks a question that can be answered by the student without need of consulting me. 
+
+1. Did you miss class and want to know what we covered? ***Read the syllabus***.
+2. Do you want to know how much of your total grade an assignment is worth? ***Read the syllabus***.
+3. Are you curious about a course policy? ***Read the syllabus***.
+4. Are you curious about a campus-wide policy? [***Consult Denison's academic policies***](https://denison.edu/academics/curriculum/academic-policies).
+5. Did you miss class, or are you going to miss class, and do you want to notify me of why? ***Read the attendance policy in the syllabus***. You have 1 free absence baked into your grade. I don't need or want an explanation for this first absence. It's yours to use as needed or desired. 
+6. Did you miss class for the second (or more) time and you want to retroactively get that absence excused? ***You should have notified me prior to the absence***. Barring the most extreme of emergencies,^[Medical emergencies, for example, would fall into this category. Note, however, if you have to be absent for an emergency, and it is your first absence, **you do NOT need to notify me**.] most excusable absences have advanced notice for you. It's your responsibility to give me advanced notice, too. Notice of an excusable absence after the fact is too late. You may give me your advanced notice up to 24 hours in advance of class via email or in writing. **A verbal notice will not count.** I'll inevitably forget that you told me, and there will be nothing in writing to prove that you notified me. 
+7. If a student would like to protest a grade on an assignment but fails to reference a specific point of objection, this does not require a response from me. As is noted in Denison's [Academic Grievance Policy](https://denison.edu/academics/curriculum/academic-policies), "Simple disagreement with the instructor's philosophy in assigning grades, or with the instructor's professional judgment about the quality of the work does not constitute a cause for petitioning." If you would like to improve your understanding of course material, or would like to preempt a poor grade, you are strongly encouraged to visit me during my office hours.
+8. Do you want to know if you can have an extension on an assignment? ***The answer will always be no***. There's too much subjective discretion involved on my part in deciding whether someone deserves an extension. Since there's no objective or consistent way of doing this, I won't do it at all.
+9. Do you want to know if you can have your grade rounded up? ***The answer will always be no***.^[["Grade grubbing"](https://marktomforde.com/academic/undergraduates/GradeGrubbing.html) is a bad look.]
+10. Do you want extra credit, which amounts to asking the professor to do more work? ***The answer will always be no***.
+
+
+## Make-Up Assigment Policy
+
+There are **NO** make-ups for missed assignments. But, if you anticipate missing an assignment and notify me ***in advance***, we can meet to work out a solution. "I'm really busy" is not a valid excuse. There's a lot of work to do in this course, but it is spaced out so that not all of this work is crammed into a single week. If you have a lot of assignments coming due for other classes, **PLAN AHEAD**.
+
+## Attendance Policy
+
+Come to class. My rule is that you get 1 free unexcused absence. Beyond this, you forfeit 1/3 of your attendance and participation points for each of up to three subsequent unexcused absences. If you do the math, that means three unexcused absences beyond your first freebie will result in a total loss of your attendance grade. If you attend class, but never participate in class discussion, expect to earn no more than 66% of your attendance and participation points. This should be hard to do, however, since you'll be automatically enrolled to the random call list and/or provide me with a short written response to a weekly question if you choose to opt out.
+
+## Late Assigments
+
+This is an intro class, and I don't believe any of the assignments in this course are overly burdensome. But, they will pile up if you don't complete them on time. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you soon will find yourself drowning in work. As incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose an additional 5% from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade. If your assignment is two days late, you will lose 10% from your grade. And so on.
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+
+## Academic Dishonesty Policy
+
+Don’t cheat. Just don't do it. 
+
+It should go without saying, but ***plagiarism*** is also a form of cheating and it includes:
+
+1. Copying or paraphrasing the ideas of others without citation or attribution. 
+2. Copying or paraphrasing the ideas of ***other students in the class***. 
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).^[Of course, if you have to ask yourself if something counts as cheating, then it probably is...] Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+\clearpage
+
+# Class Schedule^[As the instructor, I retain the right to amend this schedule if the need arises.]
+
+\hrulefill
+
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+
+class_cal + 
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top'
+  )
+ggsave(
+  here::here('01_schedule.png'),
+  height = 6,
+  width = 8
+)
+```
+
+\singlespacing
+\setlength{\parskip}{0pt}
+
+\bigskip
+
+\hrulefill
+
+# Unit 1: States and the International System
+
+
+## `r advdate(mon, 1)`: International Relations & Historical Background
+
+#### M
+
+ Course introduction and syllabus.
+
+#### W
+
+Listen to: Paul Poast, ["So, what do IR scholars actually do?"](https://open.spotify.com/episode/5FHM9YyzclsjYLUhtRLk70). Read: Haass (p. 1-28).
+
+#### F \space \space
+
+Read: Haass (p. 29-57).
+
+\bigskip
+
+## `r advdate(mon, 2)`: Sovereignty & Anarchy
+
+#### M
+
+Read: Haass (p. 253-263).
+
+#### W
+
+Read: Stephen Krasner, ["Who Gets a State and Why?"](https://www.foreignaffairs.com/articles/andorra/2009-03-30/who-gets-state-and-why); and Katy Collin, ["The Referendum in Catalonia Explained"](https://www.brookings.edu/blog/order-from-chaos/2017/09/29/the-referendum-in-catalonia-explained/).
+
+#### F \space \space
+
+Read: John Glaser, ["The Anarchy of International Relations"](https://www.cato-unbound.org/2019/09/18/john-glaser/anarchy-international-relations/).
+
+\bigskip
+
+##  `r advdate(mon, 3)`: Governance, Hierarchy, & Escape from Nature
+
+#### M
+
+Read: Haass (p. 264-279)
+
+#### W
+
+Read: David Lake, ["Escape from the State of Nature"](http://quote.ucsd.edu/lake/files/2018/07/Lake-IS-32-1.pdf)
+
+#### F \space \space
+
+Read: Michael Mandelbaum, ["Pay Up, Europe;"](https://www.foreignaffairs.com/articles/europe/2017-08-15/pay-europe) and Mira Rapp-Hooper, ["Saving America's Alliances."](https://www.foreignaffairs.com/articles/united-states/2020-02-10/saving-americas-alliances)
+
+\bigskip
+
+\begin{center}
+
+\fbox{\textbf{Essay 1 due 09.16 by midnight (12:00 AM). See prompt at the end of the syllabus.}}
+
+\end{center}
+
+\bigskip
+
+\hrulefill
+
+# Unit 2: Collective Action in an Interconnected World
+
+##  `r advdate(mon, 4)`: Globalization 
+
+#### M
+
+Read: Haass (p. 155-165), "Globalization;" and Peterson Institute, ["What is Globalization?"](https://www.piie.com/microsites/globalization/what-is-globalization)
+
+#### W
+
+Read: Our World in Data, ["Trade from a Historical Perspective."](https://ourworldindata.org/trade-and-globalization#trade-from-a-historical-perspective)
+
+
+#### F \space \space
+
+Read: Henry Farrell and Abraham Newman, ["Chained to Globalzation"](https://www.foreignaffairs.com/articles/united-states/2019-12-10/chained-globalization) and ["Will the Coronavirus End Globalization as we Know It?"](https://www.foreignaffairs.com/articles/2020-03-16/will-coronavirus-end-globalization-we-know-it)
+
+\bigskip
+
+##  `r advdate(mon, 5)`: Collective Action Problems
+
+#### M
+
+"Terrorism, Nuclear Weapons, and Cyber" --- Read: Haass (p. 166-182, 201-207).
+
+#### W
+
+"Climate, Health, and People" --- Read: Haass (p. 183-200, 208-214).
+
+#### F \space \space
+
+"Political Economy" --- Read: Haass (p. 215-250).
+
+\bigskip
+
+\begin{center}
+
+\fbox{\textbf{Essay 2 due 09.30 by midnight (12:00 AM). See prompt at the end of the syllabus.}}
+
+\end{center}
+
+\bigskip
+
+##  `r advdate(mon, 6)`: First Data Task
+
+#### M
+
+Summary of collective action problems. Review Haass (p. 155-250).
+
+#### W
+
+**In-class: Working-group Data Task (see prompt later in syllabus).**
+
+#### F \space \space
+
+**In-class: Working-group Presentations.**
+
+\bigskip
+
+\hrulefill
+
+# Unit 3: IR Theories & Solving Collective Action Problems
+
+##  `r advdate(mon, 7)`: The Undead (and other useful fictions) 
+
+#### M
+
+Read: Drezner (p. 1-36). Listen to: Hopkins Podcast on Foreign Affairs, ["IR Theory & Aliens!"](https://hopkinspofa.com/2018/01/20/ir-theory-aliens/).
+
+#### W
+
+Read: Kenneth Waltz, "Laws and Theories."
+
+#### F \space \space
+
+Read: David Lake, ["Theory is dead, long live theory."](https://journals.sagepub.com/doi/abs/10.1177/1354066113494330?journalCode=ejta)
+
+\bigskip
+
+##  `r advdate(mon, 8)`: The Big 3 of IR
+
+#### M
+
+**No Class!** Fall break.
+
+#### W
+
+Read: Drezner (p. 37-50), "The Realpolitik of the Living Dead" and Drezner (p. 51-64), "Regulating the Undead in a Liberal World Order."
+
+#### F \space \space
+
+Read: Drezner (p. 65-74), "The Social Construction of Zombies."
+
+\bigskip
+
+##  `r advdate(mon, 9)`: More Theories on the Living Dead
+
+#### M
+
+Read: Drezner (p. 75-86), "The Supergendered Politics of the Posthuman World."
+
+#### W
+
+Read: Drezner (p. 87-88), "A Very Important Note about Zombie Networks" and Drezner (p. 89-94), "Neoconservativism and the Axis of Evil Dead."
+
+#### F \space \space
+
+**I have a conference, so no class!**
+
+\bigskip
+
+##  `r advdate(mon, 10)`: Looking Inside the State
+
+#### M
+
+Read: Drezner (p. 95-105), "Domestic Politics: Are All Zombie Politics Local?"
+
+#### W
+
+Read: Drezner (p. 109-120), "Bureaucratic Politics: The 'Pulling and Hauling' of Zombies."
+
+#### F \space \space
+
+Read: Drezner (p. 121-136), "We're Only Human: Psychological Responses to the Undead" and "Conclusion...or so You Think."
+
+\bigskip
+
+\begin{center}
+
+\fbox{\textbf{Essay 3 due 11.04 by midnight (12:00 AM). See prompt at the end of the syllabus.}}
+
+\end{center}
+
+\bigskip
+
+\hrulefill
+
+# Unit 4: The Decline of War and Rise of Order?
+
+##  `r advdate(mon, 11)`: Is War on the Decline? Reasons for Skepticism
+
+#### M
+
+Read: Braumoeller, "Preface" and "Introduction" (p. xi-17).
+
+#### W
+
+Read: Braumoeller, "Reasons for Skepticism, Part I: Data" (p. 21-46).
+
+#### F \space \space
+
+Read: Braumoeller, "Reasons for Skepticism, Part II: Explanation" (p. 47-72)
+
+\bigskip
+
+##  `r advdate(mon, 12)`: Using Data to Find an Answer
+
+#### M
+
+Read: Braumeoller, "Is International Conflict Going out of Style?" (p. 75-99).
+
+#### W
+
+Read: Braumoeller, "Is International Conflict Getting Less Deadly?" (p. 100-130).
+
+#### F \space \space
+
+Read: Braumoeller, "Are the Causes of International Conflict Becoming Less Potent?" (p. 131-139).
+
+\bigskip
+
+## `r advdate(mon, 13)`: Thanksgiving
+
+***No Class (Thanksgiving)*** If you feel like it, spend this time either reading ahead and/or reviewing past material. But by all means, **take a break, too!**
+
+\bigskip
+
+##  `r advdate(mon, 14)`: Making Sense of the Data with International Order
+
+#### M
+
+Read: Braumoeller, "International Order" (p. 143-177).
+
+#### W
+
+Read: Braumoeller, "History and International Order" (p. 178-211) and "Conclusion and Implications" (p. 215-224).
+
+#### F \space \space
+
+**In-class: Working-group Data Task (see prompt later in syllabus).**
+
+
+##  `r advdate(mon, 15)`: Second Data Task
+
+#### M
+
+**In-class: Working-group Presentations.**
+
+#### W
+
+Read: G. John Ikenberry, ["The End of Liberal International Order?"](https://watermark.silverchair.com/iix241.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArgwggK0BgkqhkiG9w0BBwagggKlMIICoQIBADCCApoGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMmvNmPUQrjGzOH1cEAgEQgIICa46bVbYQMMIAnXOVSxX24aIcW7dPVAXpm5-3dJ7prKdvtqKeJMhggBTfwFrwPeSm112dIEScmPTZfjNsRJcEHxs5ZzYXZvENhxBP1ezkdCLPxujOG9w5I6T5GZzXgHo5k-xwMJRZF6o1dSIYCnvs18ytxHCNes2CFy0Lw0frPeGOSlT5JfJ8u1sUOKtfjT8v00Ji1PdY05DWUlWxmt56AChy3aM8ZiEFX0oNpiydbzYpIF-GFMi1CG3kbhEUO4OzB-jz-TaSKnEJyHjHx3u_GxZCSaywU4msPU-KGeNC7J0DIZW3OIvay9qM9e4pkOs4d5uQd7D06aFNga1l25Qk6K3cDUJgLwCUBpRrC1ErqU0lCNTTwkdycbtXPphZ_yiQnYhdD9haZKq9fOJhF8L6ykKfH2kJqLtFpgb940RTM1iJYF0uYd9fudlIRazxMFBbDOg1Dxlgy3_pNVPHecI7KbUYY3AeZxEKSsuKJjQsf77B_esZ30b-_uF4aIC9sSLEuQ8mPCnVK5Cr9uBXsJP6dsd3_80LRKKubF58EnEE6iwCHZwlGxFggiDCmjx0yTkzz7Br-lJ1l1c-LtFauHEYeIYdBfEGoWAvXt4nzBgA8ZUzy8XNloYvRPdlHh07pf7gO1azWqrD4H_QHlWY1VLIok5Xu4cw1u2l4eAGdHcoGquTqseeYMXfxy2pt3ZCAHVCTww8S4kQZTsCNk4LerHyVG5cczh7bcP46PPa-Gt7r0cjZVBItY0oVv5y0aP4-EtbslKFztVrhVfCof0XNoF6Y-1cjsqjA6ilZX26Vq0C4TML_Eygay-07Cj10tQ).
+
+#### F \space \space
+
+Read: Braumoeller and Sartori, ["The Promise and Perils of Statistics in International Relations"](https://drive.google.com/file/d/1-QQRAw_6j2YBWQ2_RgWz6IRp-GA7hbyf/view?usp=sharing)
+
+##  `r advdate(mon, 16)`: Finals Week
+
+#### M 
+
+In-class: Open discussion about the course and the future.
+
+#### W
+
+***Finals Week officially starts.***
+
+#### F \space \space
+
+***Finals continued.***
+
+\bigskip
+
+\begin{centering}
+
+\fbox{\textbf{Essay 4 due 12.16 by 4:00pm. See prompt at the end of the syllabus.}}
+
+\end{centering}
+
+\clearpage
+
+\onehalfspacing
+\setlength{\parskip}{5pt}
+
+# Critical Writing Essays
+
+These essays are intended to be short research papers. You will be given an important issue or problem in international relations and build an argument for or against a solution (or set of solutions). There is no penalty for "wrong" answers because there are no wrong answers to these essays. However, there is a penalty for **answering wrongly**. By that I mean you should avoid making claims rooted in bias or opinion. Strong essays will be clearly written, grounded in evidence, and logically sound.
+
+#### Format 
+Papers should conform to the [*University of Chicago Style Guide*](https://www.chicagomanualofstyle.org/tools_citationguide/citation-guide-2.html). Papers that fail to do so will automatically be given a grade no higher than a "C". Essays should be no longer than 3 pages (though your list of cited references may run over to the fourth page) and must be double spaced, use 12pt font, and use Times New Roman. The top left should list your name, the date, and the course number. The number of the essay will serve as the essay title and be center-spaced. If you don't want to deal with setting up the correct formatting, you can download and edit an example Word template that I've added to the course's Canvas page.
+
+#### Writing Style
+Clear writing will take you far in life. I wish it were true that the best ideas are accepted on the basis of their own merit, but this just isn't so. Out in the real world, good writing is equated with good ideas---fair or not. Note, however, that for writing to be good it doesn't have to be fancy. "Don't use a five-dollar word when a fifty-cent word will do."^[I don't care what [Tad Simons](http://www.readtadsimons.com/new-blog/2016/2/17/mark-twains-secret-to-success-use-better-words#:~:text=One%20of%20the%20best%2Dknown,sense%20to%20use%20cheaper%20words.) believes. I think Mark Twain's advice is sound.] Don't write like you're trying to convince me that you're right. Write like you're trying to convince a parent, a friend, or a roommate that you're right. If you need to use a technical term or jargon, define it. If you're advocating for one theoretical perspective over another, explain them both. Good writing is clear, and clear writing is accessible.
+
+Some other stylistic notes:
+
+- Don't be afraid to write in the first person: "I will argue that Realism is wrong for X, Y, and Z reasons."
+- When I first learned to write argumentative essays, I was taught to write in five paragraphs. These included an intro, three points of argument, and a conclusion. This isn't the only approach to writing argumentative essays, but it's a good one.
+- Following on the previous note, I expect your essays to draw on at least three points of evidence. If you only have two points of evidence, your grade will be no greater than a "B". If you have only one point of evidence, your grade will be no greater than a "C". ***Evidence matters!***
+
+#### Grading
+Below is a rubric for the critical writing essays:
+
+- **A**: In addition to drawing on a minimum of three points of evidence and following the *Chicago Style*, an "A" paper will have minimal or no typos and grammatical errors, have a clearly stated thesis, and draw on appropriately cited evidence to support this thesis.
+
+- **B**: A "B" paper falls short in one of the following ways: (1) the essay contains enough typos to be distracting, but the message is still clear; (2) there is a thesis, but it is ambiguous; (3) only two points of evidence are used to support the argument.
+
+- **C**: A "C" paper falls short in one of the following ways: (1) the essay contains many typos and grammatical errors such that the message is unclear; (2) there is no thesis or argument being made but only a recitation of descriptive facts; (3) Only one point of evidence is used to support the argument; (4) the paper lacks appropriate citations and/or citations fail to conform to the *Chicago Style*.
+
+- **D**: A "D" paper falls short in two of the following ways: (1) the essay contains many typos and grammatical errors such that the message is unclear; (2) there is no thesis or argument being made but only a recitation of descriptive facts; (3) Only one point of evidence is used to support the argument; (4) the paper lacks appropriate citations and/or citations fail to conform to the *Chicago Style*.
+
+- **F**: An "F" paper demonstrates negligible thought or effort: (1) it has sloppy/lazy writing; (2) it also contains no clear thesis; (3) it further draws on no evidence but only bias/opinion; and (4) it lacks any appropriate citation.
+
+\DeclareFontFamily{U}{skulls}{}
+\DeclareFontShape{U}{skulls}{m}{n}{ <-> skull }{}
+\newcommand{\skull}{\text{\usefont{U}{skulls}{m}{n}\symbol{'101}}}
+
+$\skull$ Be warned that plagiarism in these essays will not be tolerated and will trigger disciplinary action (see the Academic Dishonesty Policy).
+
+\newpage
+
+## Essay 1: Due 09.16
+
+**R2P and Ukraine --- A good idea or misguided?** \space \space Why has R2P (the [Responsibility to Protect](https://www.globalr2p.org/what-is-r2p/#:~:text=The%20Responsibility%20to%20Protect%20%E2%80%93%20known,cleansing%20and%20crimes%20against%20humanity.)) not been invoked with Russia's recent invasion of Ukraine? And, were it invoked, would that be a good idea? Some argue that R2P has a bad track record (see Libya in 2011), but others claim that there have been serious cases where R2P should have been invoked but wasn't (for example, the ongoing crisis in Syria).
+
+Your essay should make firm claims with respect to the two questions mentioned above. Clearly state why you think R2P has not been invoked since Russia's invasion of Ukraine, and state whether you think invoking it would be a good idea. Support your answer with at least three points of evidence and be sure to cite your sources.
+
+## Essay 2: Due 09.30
+
+**Global, Global, Global!** \space \space We live in a global era, and that generates all kinds of acute and chronic collective action problems for the world's countries to solve. Of the problems we discussed in Unit 2, state which three you believe pose the most serious challenge over the next 20 years. Draw evidence from online databases or track down scholarly articles written about your chosen issues to support your choices.
+
+## Essay 3: Due 11.04
+
+**Theories of IR and collective action** \space \space We discussed several IR theories in Unit 3, but we kept our discussion pretty abstract. You should know all about Realism's implications for zombie hoards and that for Constructivists, zombies are what states make of them. In your essay, I want you to talk about something a little more concrete. Select one of the collective action problems we talked about in Unit 2 and build a case for why one of the theories we talked about in Unit 3 provides the best framework for understanding your chosen problem. You can draw from Drezner and Haass to make your case, along with any number of other sources (online databases, academic articles, etc.). 
+
+## Essay 4: Due 12.16 by 4:00pm
+
+**Is order on the decline?** \space \space Critics of US foreign policy under the Trump Administration worried that America's role as leader of the Liberal International Order was put in jeopardy. Others claim that the decline of US leadership began well before Trump took office under his immediate Republican and Democratic predecessors (Bush Jr. and Obama), and some see the problem as running much deeper than any one US President. Is the Liberal International Order truly in crisis? If it is, will it survive? 
+
+\newpage
+
+# Data Tasks
+
+IR scholars use data to test theories and support their claims. In these group data tasks, you will have a chance to engage in some mini data analysis and visualization for the purpose of communicating evidence-based claims to an audience. They are meant to be collaborative and creative exercises. I will assign you to groups of 3-5 (depending on the size of the class). As a group, you will explore and visualize data that I will give you access to with an online Shiny Web Application. This application will contain a dataset for you to explore and provide a number of options for selecting and visualizing variables. No technical skills beyond using drop-down menus are required. 
+
+Together, you and your peers will collaborate on what data to present and how (either over time or across cases) and put together a short 10 minute presentation where you introduce the data you used, describe the trends that you found, and state what you believe these trends tell us about the problem or issue you examined. Good presentations will be clear and well organized.
+
+These data tasks will take place over a few days. Day 1 will be spent doing in-class collaboration to get started and so that you have an opportunity to ask me any questions you may have in person. You then will continue your collaboration outside of class. The next day of class we will have in-class presentations. The 10 minute time limit will be strongly enforced to ensure all groups have a chance to present.
+
+If you anticipate having a scheduling conflict with the dates of the group data tasks, notify me as soon as possible so that we can work out a solution.
+
+#### Organization
+Your presentation will follow a simple outline:
+
+1. Introduction: Provide background on the problem or issue you're talking about, describe the variables you choose to look at, and justify how you choose to examine trends (over time, across countries, a scatter plot showing the relationship between two different variables).
+2. Evidence: Introduce your data visualization and clearly describe to your audience what information it is intended to convey (we'll go over what this means in class).
+2. Conclusion: Tell us what conclusions you draw from the data. Why should we care? What should we take away from your presentation?
+
+#### Format
+Your presentation should be in PowerPoint. For reference, I've made an example slide deck and uploaded it to Canvas for your reference.
+
+#### Grading
+Grades will be assigned by groups, not individuals. The rubric for these presentations is as follows:
+
+- **A**: An "A" presentation will: (1) be well organized according to the outline shown above, (2) provide clear justification for your data choices [i.e., variables chosen and how they're visualized], and (3) have a clear take-away message.
+- **B**: A "B" presentation will fall short in one of the following ways: (1) lack clear justification for your data choices, (2) lack a take-home message for your audience.
+- **C**: A "C" presentation will fall short in one of the following ways: (1) entirely lack one of the elements in the presentation outline shown above, (2) both lack clear justification for your data choices and lack a take-home message for your audience.
+- **D**: A "D" presentation will fall short in all of the following ways: (1) entirely lack one of the elements in the presentation outline shown above, (2) both lack clear justification for your data choices and lack a take-home message for your audience.
+- **F**: An "F" presentation will display a complete lack of effort to participate in the assignment: (1) either no presentation is ready for class or (2) the presentation is of such poor quality that it is clear no thought was given to it.
+
+\newpage
+
+## Task 1 (10.05 - 10.07): Trends in Collective Action
+
+For this task you will summarize trends in one or more of the issue areas we covered in Unit 2. Is your chosen problem getting worse or better over time? Is it more serious for some countries than for others? Do trends in one issue area tend to correspond to trends in another? Explore the Shiny Application (link provided in Canvas) and put together a presentation for your peers showing what you found.
+
+## Task 2 (12.02 & 12.05):  Trends in International Order
+
+Braumoeller's book addresses the implications of International Orders for war between countries. What about other kinds of interaction among countries? I've made a Shiny Application that lets you cross reference Braumoeller's measure of membership in international orders with variables other than war (link provided in Canvas). What conclusions can you draw about the implications of order? Do you see any trends that may confound (we'll talk about what that means) the relationship between order and war? Put together a presentation for your peers showing what you found.
+
+

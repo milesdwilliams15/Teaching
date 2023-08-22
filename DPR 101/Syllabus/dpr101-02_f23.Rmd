@@ -89,6 +89,8 @@ mon <- ymd(20230828)
 not_here_dates <- c(
   # APSA,
   ymd(20230901),
+  # Drs apt w/ Sarah
+  ymd(20230918),
   # Fall break
   seq(ymd(20231016), ymd(20231017), by = 1),
   # IPES? Maybe I'll make this ISAMW instead (Nov 17-19)
@@ -203,7 +205,7 @@ This course will help you understand data and what to do with it. That means we 
 
 \hrulefill
 
-```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
 
 class_cal + 
   theme_steve_ms() +
@@ -211,15 +213,11 @@ class_cal +
     panel.grid = element_blank(),
     legend.position = 'top',
     axis.ticks = element_blank()
-  ) -> p
+  ) 
 ggsave(
-  plot = p,
   here::here('DPR 101','schedule-02.png'),
   height = 6,
   width = 8
-)
-knitr::include_graphics(
-  here::here("DPR 101", "schedule-02.png")
 )
 ```
 
@@ -264,11 +262,11 @@ knitr::include_graphics(
 
 ## `r advdate(mon, 4)`: Show the Right Numbers
 
-- Day 1: H Ch4 (4.1 - 4.4) 
+- Day 1: NO CLASS
 
-- Day 2: H Ch4 (4.5 - 4.8) \hfill \textit{DC2 due Wed.}
+- Day 2: H Ch4 (4.1 - 4.4) \hfill \textit{DC2 due Wed.}
 
-- Day 3: Discussion 
+- Day 3: H Ch4 (4.5 - 4.8)
 
 ## `r advdate(mon, 5)`: Draw Maps
 
@@ -458,29 +456,106 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 | F: below 60       |             |        |
 
 
-*Attendance and Participation* **10pts**
+*Attendance and Participation* **10%**
 
-> You should show up to class and participate! Because of the technical nature of some of our material, missing multiple days of class can leave holes in your skillset that make doing assignments down the road more difficult. We'll also have some class days dedicated to in-depth discussion of an academic article or other reading material. If you don't show up, you can't participate in the discussion or provide me with evidence that you even did the reading. As an incentive to show up (both physically and mentally) to class, 10 percent of your grade will come from attendance and participation. Your first unexcused absence will be a free-bie. After that, you'll lose 1/2 (5 points) of your attendance and participation grade per each of two subsequent unexcused absences. That means after 3 unexcused absences you'll lose your entire grade for attendance and participation. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too!*]
+> You should show up to class and participate! Because of the technical nature of some of our material, missing multiple days of class can leave holes in your skillset that make doing assignments down the road more difficult. We'll also have some class days dedicated to in-depth discussion of an academic article or other reading material. If you don't show up, you can't participate in the discussion or provide me with evidence that you even did the reading. As an incentive to show up (both physically and mentally) to class, 10% of your grade will come from attendance and participation. Your first unexcused absence will be a freebie. After that, you'll lose 1/2 of your attendance and participation grade per each of two subsequent unexcused absences. That means after 3 unexcused absences you'll lose your entire grade for attendance and participation. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too!*]
 
-*4 Main Assignments* **15pts Each**
+*4 Main Assignments* **15% Each**
 
-> You'll have four main writing assigments to complete in this course. These will be anywhere from 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find. Two of these assignments will be done in groups, and two will be done individually. For group assignments, grades will be given on a group rather than an individual basis. The final assigment will be done individually, and includes a presentation component, which is graded as completed/not completed, and will factor in to your 15 points for your final assigment grade.
+> You'll have four main writing assigments to complete in this course. These will be anywhere from 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find. Two of these assignments will be done in groups, and two will be done individually. For group assignments, grades will be given on a group rather than an individual basis. The final assigment will be done individually, and includes a presentation component, which is graded as completed/not completed, and will factor in to the 15% for your final assigment grade.
 
-*8 Data Challenges* **3pts Each**
+*8 Data Challenges* **3% Each**
 
-> These are intended to be a fun and challenging way to practice some data wrangling and data viz skills. You'll be given data and make a graph that tells a story from the data better than what could be communicated by just looking at the data on its own. You'll get the necessary data for these at least 5 days in advance of when they are due. These will be graded using a mastery-based approach. That means that if you completed the challenge successfully, that's awesome! You mastered the skills necessary to do the challenge and you get the full 3pts. But if you complete the challenge and it doesn't quite cut it, that's okay. You can try again (and again) until you nail it. Once you do, you'll get the full 3pts. Until then, you'll get 1pt as a place-holder.
+> These are intended to be a fun and challenging way to practice some data wrangling and data viz skills. You'll be given data and make a graph that tells a story from the data better than what could be communicated by just looking at the data on its own. You'll get the necessary data for these at least 5 days in advance of when they are due. These will be graded using a mastery-based approach. That means that if you completed the challenge successfully, that's awesome! You mastered the skills necessary to do the challenge and you get the full 3%. But if you complete the challenge and it doesn't quite cut it, that's okay. You can try again (and again) until you nail it. Once you do, you'll get the full 3%. Until then, you'll receive whatever lower grade I've assigned you.
 
-*Post a Viz* **6pts Total**
+*Post a Viz* **6% Total**
 
 > This is a low stakes weekly assigment to post before class on Mondays. You're job is simple. Find a visualization out in nature, post it to Canvas with its source url, and write a paragraph describing it. Did its creators make smart display choices? Is there anything that makes it interesting? Is it just terrible? This assigment will be graded based on completion (unless it's clear that you didn't try at all). On the Monday it's due, we'll spend about the first five minutes in class discussing 3-4 people's data viz selections.
 
+The following figure provides a summary of my grading strategy and philosophy. For each assignment you submit, I'll evaluate it on a discrete scale from 0 to 5 (accept Post-a-Viz, which will just be based on completion!). 5 = perfection and 0 = missing (e.g., you didn't turn anything in). Your points then get mapped to a percentage point grade for a given assignment. Notice that the linkages between my evaluation of your work and your actual grade are pretty generous. 5 out of 5 = 100% (an "A+"), but 4 out of 5 = 93% (still an "A") and 3 out of 5 = 85% (a "B"), and so on. If you do some simple math, you know that 4 out 5 should actually be 80% and 3 out of 5 should be 60%. Why this more complicated approach? My grading strategy gives me a simple scale to evaluate your work, but it also ensures that you get some benefit of the doubt. Did you completely bomb an assignment? My instinct is to give you a 1 out of 5, which gives you only 20% for your final grade on said assignment. That seems too harsh. My scale adjusts for my disappointment in the quality of your work and gives you 60% (a "D-") instead. That's still a poor grade, but not one that would be impossible to recover from.
+
+```{r echo=FALSE}
+the_max <- 5
+x <- seq(0, the_max, len = 1000)
+x0 <- 0:the_max
+a <- 0.32
+f <- function(x) ((x)^a / max((x)^a))
+ggplot() +
+  aes(x, f(x)) +
+  geom_line(
+    color = "royalblue"
+  ) +
+  geom_line(
+    aes(x, x / max(x)),
+    lty = 2
+  ) +
+  geom_ribbon(
+    aes(x, ymin = x / max(x), ymax = f(x)),
+    fill = "royalblue",
+    alpha = 0.2
+  ) +
+  geom_segment(
+    aes(
+      x = x0,
+      xend = x0,
+      y = 0,
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  geom_segment(
+    aes(
+      x = 0,
+      xend = x0,
+      y = f(x0),
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  annotate(
+    "text",
+    x = 1.5,
+    y = 0.45,
+    label = "GRACE",
+    color = "black",
+    face = "bold"
+  ) +
+  geom_point(
+    aes(x0, f(x0)),
+    color = "indianred3"
+  ) +
+  scale_x_continuous(
+    breaks = 0:5,
+    labels = paste0(
+      0:5,
+      c("\n(Missing)",
+        "\n(Bombed)",
+        "\n(You Tried)",
+        "\n(Rough but Good)",
+        "\n(Nearly Perfect)",
+        "\n(Perfection!)")
+    )
+  ) +
+  scale_y_continuous(
+    breaks = f(x0),
+    labels = scales::percent(round(f(x0), 2))
+  ) +
+  theme_minimal() +
+  labs(
+    x = "Points",
+    y = "% Grade per Points",
+    title = "What Points mean on the Grading Scale"
+  ) 
+  
+```
+
 $$
 \begin{aligned}
-6pts& \text{ (Post a Viz)} \\
-10pts  & \text{ (Attendance and Participation)} \\
-4 \times 15pts = 60pts  & \text{ (Main Assigments)} \\
-\underline{+ \space 8 \times 3pts = 24pts} &  \text{ (Data Challenges)} \\
-100pts & \text{ (Total Assignments)}
+6\%& \text{ (Post a Viz)} \\
+10\%  & \text{ (Attendance and Participation)} \\
+4 \times 15\% = 60\%  & \text{ (Main Assigments)} \\
+\underline{+ \space 8 \times 3\% = 24\%} &  \text{ (Data Challenges)} \\
+100\% & \text{ (Total Assignments)}
 \end{aligned}
 $$
 
