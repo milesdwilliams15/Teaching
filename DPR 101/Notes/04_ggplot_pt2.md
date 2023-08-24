@@ -1,11 +1,32 @@
-Making ggplots Part 2
+`ggplot()` Basics, Part II
 ================
+
+- [Goals](#goals)
+- [When to map or set aesthetics](#when-to-map-or-set-aesthetics)
+- [You can map aesthetics per geom layer or
+  globally](#you-can-map-aesthetics-per-geom-layer-or-globally)
+- [Pick and choose your aesthetics
+  wisely](#pick-and-choose-your-aesthetics-wisely)
+- [How to save your plots](#how-to-save-your-plots)
+- [Things to try](#things-to-try)
+- [Where to next?](#where-to-next)
+
+<center>
+
+[\<– `ggplot()` Basics, Part
+I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Showing the Right Numbers, Part I
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt1.md)
+
+</center>
 
 ## Goals
 
--   Understand the difference between mapping and setting aesthetics.
--   Set aesthetics globally vs. by geom.
--   Know how to save your data viz.
+- Understand the difference between mapping and setting aesthetics.
+- Set aesthetics globally vs. by geom.
+- Know how to save your data viz.
 
 ## When to map or set aesthetics
 
@@ -13,8 +34,8 @@ In the previous notes, we covered some of the basics of working with
 ggplot. \[[Check them out
 here.](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)\]
 
-In these notes, we’re going to go a little deeper. Up to now we’ve
-talked about the basic ggplot workflow:
+Now we’re going to go a little deeper. Remember the three-step ggplot
+workflow?
 
 1.  Feed `ggplot()` data.
 2.  Tell ggplot what relationships to show using `aes()`.
@@ -22,13 +43,13 @@ talked about the basic ggplot workflow:
     functions.
 
 There are some important things to keep in mind when doing steps 2 and
-3. Namely, it’s really easy to confuse when you want to *map an
+3. In particular, it’s really easy to confuse when you want to *map an
 aesthetic* for when you want to *set an aesthetic*.
 
 What’s the difference?
 
--   You map aesthetics inside `aes()`.
--   You set aesthetics inside `geom_*()`.
+- You map aesthetics inside the `aes()` function.
+- You set aesthetics inside `geom_*()` functions.
 
 Here’s an example. Let’s load the `gapminder` data and the `{tidyverse}`
 and make a plot with ggplot where we map the color aesthetic to
@@ -42,9 +63,11 @@ library(gapminder)
 # access the gapminder data frame
 
 ggplot(gapminder) + 
-  aes(x = gdpPercap, 
-      y = lifeExp,
-      color = continent) +
+  aes(
+    x = gdpPercap, 
+    y = lifeExp,
+    color = continent
+  ) +
   geom_point() +
   geom_smooth() + 
   scale_x_log10()
@@ -64,7 +87,7 @@ different colors to map to continent names.
 To do this, ggplot uses a default color palette for the mapping process
 (we’ll talk about how to customize this later). What it doesn’t do (at
 least using `aes()`) is let you set a specific color. Look at what
-happens if you try:
+happens if you try seeting `color = "gold"` inside `aes()`:
 
 ``` r
 ggplot(gapminder) + 
@@ -76,17 +99,18 @@ ggplot(gapminder) +
 
 <img src="04_ggplot_pt2_files/figure-gfm/unnamed-chunk-2-1.png" width="75%" />
 
-Does the output look “gold” to you? It sure doesn’t! Instead, it’s red.
-What went wrong here?
+Does the output look “gold” to you? It sure doesn’t. Instead, it’s red.
 
-This is a classic example of mapping an aesthetic when what we actually
-need to do is set an aesthetic. To set the color of points and lines, we
-don’t specify them by mapping. In the above example, setting a color in
-`aes()` leads ggplot to mistakenly conclude that we are adding a new
-column where each cell entry of that column is a category called “gold.”
-It then picks a color to map to that category.
+This is a classic example of *mapping* an aesthetic when what we
+actually need to do is *set* an aesthetic. To set the color of points
+and lines, we don’t specify them inside `aes()`. Doing so leads ggplot
+to mistakenly conclude that we are adding a new column to our data where
+each cell entry of that column is a category called “gold.” It then
+picks a color to map to that category. Since there’s only one category,
+it only maps one color. The default is red.
 
-To avoid this, we instead *set* aesthetics inside a `geom_*()` function:
+To avoid this, we instead *set* aesthetics inside a `geom_*()` function
+like so:
 
 ``` r
 ggplot(gapminder) +
@@ -164,9 +188,17 @@ continents. Conversely, the second code chunk maps color to continents
 only for the `geom_smooth()` layer. This is done by adding a new call to
 `aes()` inside the geom function.
 
+Remember in the [previous
+notes](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
+when I mentioned you could map variables using `aes()` in a few
+different places? This is why you can do that, and this in particular is
+a case where the location in your code that you include variables using
+`aes()` matters for your output.
+
 Notice, too, the difference in the legends ggplot produces for these
 figures. Ggplot legends will always faithfully reflect the aesthetic
-mappings you add to your plots.
+mappings you add to your plots. You can also change the location and
+appearance of legends, but this is a topic we’ll cover later.
 
 ## Pick and choose your aesthetics wisely
 
@@ -200,8 +232,7 @@ ggplot(gapminder) +
 
 There are a lot of empty dark grey spaces in the figure. That’s because
 when you produce a column plot, the color aesthetic colors the borders
-of the columns, not the inside. We instead need to use the fill
-aesthetic:
+of the columns; not inside. We instead need to use the fill aesthetic:
 
 ``` r
 ggplot(gapminder) +
@@ -210,6 +241,9 @@ ggplot(gapminder) +
 ```
 
 <img src="04_ggplot_pt2_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
+
+If you get confused about color versus fill, try to remember that you
+“fill” empty spaces.
 
 ## How to save your plots
 
@@ -227,8 +261,8 @@ copy and/or save to save it somewhere in your files.
 
 #### Save using `ggsave()`
 
-You can also using the `ggsave()` function to save a plot directly to
-somewhere in your files.
+You can save your plots using the `ggsave()` function to save a plot
+directly to somewhere in your files.
 
 Say you created a folder in your project called `Figures`. Here’s how
 you would use a combo of `here()` and `ggsave()` to save your work:
@@ -269,3 +303,16 @@ too.
 
 Try to save some of you figures and play around with `ggsave()` options
 to see what happens.
+
+## Where to next?
+
+<center>
+
+[\<– `ggplot()` Basics, Part
+I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt1.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Showing the Right Numbers, Part I
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt1.md)
+
+</center>
