@@ -760,7 +760,9 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 > This is a weekly individual assignment worth a combined 15% of your final grade. Generative AI (GenAI) is here, and it's here to stay. That means you need to learn how to use it, and using it well requires critical thinking. Not every response GenAI provides is accurate. If you've used tools like ChatGPT, you know that they can hallucinate, giving you nice sounding but ultimately inaccurate or misleading answers to your questions. That means an ability to check and evaluate the responses from GenAI is a critical skill to develop. In these weekly assignments, you'll get practice using this skill. I'll give you a prompt each week asking a question relavent to the material we cover in class. You'll then give this prompt to ChatGPT. You'll copy the response to a Google or Word doc, and then you give it a letter grade from "A"-"F" and write a short paragraph justifying your evaluation of the response. I'll then grade your effort in evaluating ChatGPT. 
 
-The following figure provides a summary of my grading strategy and philosophy. For each assignment you submit, I'll evaluate it on a discrete scale from 0 to 5. 5 = perfection and 0 = missing (e.g., you didn't turn anything in). Your points then get mapped to a percentage point grade for a given assignment. Notice that the linkages between my evaluation of your work and your actual grade are pretty generous. 5 out of 5 = 100% (an "A+"), but 4 out of 5 = 93% (still an "A") and 3 out of 5 = 85% (a "B"), and so on. If you do some simple math, you know that 4 out 5 should actually be 80% and 3 out of 5 should be 60%. Why this more complicated approach? My grading strategy gives me a simple scale to evaluate your work, but it also ensures that you get some benefit of the doubt. Did you completely bomb an assignment? My instinct is to give you a 1 out of 5, which gives you only 20% for your final grade on said assignment. That seems too harsh. My scale adjusts for my disappointment in the quality of your work and gives you 60% (a "D-") instead. That's still a poor grade, but not one that would be impossible to recover from.
+The following figure provides a summary of my grading strategy and philosophy. For each assignment you submit, I'll evaluate it on a discrete scale from 0 to 5. 5 = "Perfection!" and 0 = "Missing" (e.g., you didn't turn anything in). Your points then get mapped to a percentage point grade for a given assignment according to what I call a "Grace Curve." This means the linkages between my evaluation of your work on the 0-5 scale and your actual grade are not one-to-one. 5 out of 5 = 100% (an "A+"), but 4 out of 5 = 93% (still an "A") and 3 out of 5 = 85% (a "B"), and so on. If you do some simple math, you know that 4 out 5 should actually be 80% and 3 out of 5 should be 60% if I didn't apply the Grace Curve. My grading strategy gives me a simple scale to evaluate your work, but it also ensures that you get some benefit of the doubt. Did you completely bomb an assignment? My instinct is to give you a 1 out of 5, which gives you only 20% for your final grade on said assignment. That seems too harsh. My scale adjusts for my disappointment in the quality of your work and gives you 60% (a "D-") instead. That's still a poor grade, but not one that would be impossible to recover from.
+
+\bigskip
 
 ```{r echo=FALSE}
 the_max <- 5
@@ -818,8 +820,8 @@ ggplot() +
       0:5,
       c("\n(Missing)",
         "\n(Bombed)",
-        "\n(You Tried)",
-        "\n(Rough but Good)",
+        "\n(You Can Do\nBetter)",
+        "\n(Better but\nRough)",
         "\n(Nearly Perfect)",
         "\n(Perfection!)")
     )
@@ -837,8 +839,8 @@ ggplot() +
   
 ```
 
-
 $$
+\textbf{Tallying Your Grade:}
 \begin{aligned}
 15\% & \text{ (Grade the AI)} \\
 10\%  & \text{ (Attendance and Participation)} \\
