@@ -413,15 +413,15 @@ I've also compiled lecture notes that you can refer to as we progress through th
 
 # Resources
 
-## We Have a TA!
+## We Have two TAs!
 
-Brennan Kelley is the Teaching Assistant for DPR 101. If you have questions about assignments or need help troubleshooting code, Brennan is an excellent resource.
+Brennan Kelley and Joanna Passalaris are the Teaching Assistants for DPR 101. If you have questions about assignments or need help troubleshooting code, Brennan and Joanna are excellent resources.
 
 **Office Hours**: TBD
 
 **Location**: TBD
 
-**Contact**: [kelley_b1@denison.edu ](mailto:kelley_b1@denison.edu){.email}
+**Contact**: [kelley_b1@denison.edu](mailto:kelley_b1@denison.edu){.email}; [passal_j1@denison.edu](mailto:passal_j1@denison.edu){.email}
 
 ## Accessibility
 
