@@ -150,7 +150,7 @@ Cal %>%
          fcategory = ifelse(semester == 1, "Semester", fcategory),
          fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
          ccategory = ifelse(mas == 1, "MA Due", ccategory),
-         ccategory = ifelse(gcs == 1, "DC Due", ccategory),
+         ccategory = ifelse(gcs == 1, "GC Due", ccategory),
          fcategory = ifelse(not_here == 1, "Breaks", fcategory),
          fcategory = ifelse(is.na(fcategory), "NA", fcategory),
          ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
@@ -177,9 +177,9 @@ Cal %>%
                     breaks=c("Class Day","Breaks")) +
   scale_color_manual(
     values = c("MA Due" = "firebrick", 
-               "DC Due" = "darkblue", 
+               "GC Due" = "darkblue", 
                "NA" = "white"),
-    breaks = c("MA Due", "DC Due")
+    breaks = c("MA Due", "GC Due")
   ) +
   labs(fill = "", color = "", x="", y="",
        caption = "Notable dates: APSA (01 Sept.), Fall Break (09-10 Oct.), ISA-Midwest (17 Nov.),\nThanksgiving (20-24 Nov.), Final Day of Instruction (12 Dec.)"
@@ -230,7 +230,7 @@ ggsave(
 
 \bigskip
 
-*Note:* When "Discussion" is listed for a given day, the assigned readings are on Canvas. Unless otherwise indicated, due dates are by midnight. "H" = the Healy textbook. "DC" = Data Challenge (due Wednesdays). "MA" = Main Assignment (due Fridays).
+*Note:* When "Discussion" is listed for a given day, the assigned readings are on Canvas. Unless otherwise indicated, due dates are by midnight. "H" = the Healy textbook. "DC" = Graph Challenge (due Wednesdays). "MA" = Main Assignment (due Fridays).
 
 # Getting Started
 
@@ -469,7 +469,7 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 > You'll have four main writing assigments to complete in this course. These will be anywhere from 700 to 1,200 words and usually include at least 4 data visualizations. The prompts for these assigments will be made available during the course. These involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you find. Two of these assignments will be done in groups, and two will be done individually. For group assignments, grades will be given on a group rather than an individual basis. The final assigment will be done individually, and includes a presentation component, which is graded as completed/not completed, and will factor in to the 15% for your final assigment grade.
 
-*8 Data Challenges* **3% Each**
+*8 Graph Challenges* **3% Each**
 
 > These are intended to be a fun and challenging way to practice some data wrangling and data viz skills. You'll be given data and make a graph that tells a story from the data better than what could be communicated by just looking at the data on its own. You'll get the necessary data for these at least 5 days in advance of when they are due. These will be graded using a mastery-based approach. That means that if you completed the challenge successfully, that's awesome! You mastered the skills necessary to do the challenge and you get the full 3%. But if you complete the challenge and it doesn't quite cut it, that's okay. You can try again (and again) until you nail it. Once you do, you'll get the full 3%. Until then, you'll receive whatever lower grade I've assigned you.
 
@@ -564,7 +564,7 @@ $$
 6\%& \text{ (Post a Viz)} \\
 10\%  & \text{ (Attendance and Participation)} \\
 4 \times 15\% = 60\%  & \text{ (Main Assigments)} \\
-\underline{+ \space 8 \times 3\% = 24\%} &  \text{ (Data Challenges)} \\
+\underline{+ \space 8 \times 3\% = 24\%} &  \text{ (Graph Challenges)} \\
 100\% & \text{ (Total Assignments)}
 \end{aligned}
 $$
@@ -586,7 +586,7 @@ There are **NO** make-ups for missed assignments. Don't bother asking. But, if y
 
 ## Second Chances Policy
 
-The data challenges have built-in second-chances. That means if your submission didn't show that you clearly mastered the skills necessary to do the challenge well, you can try again. The main assignments are a different story. With these, you have one chance. But only one chance should be necessary. There are days in class specifically carved out to work on these. This gives you every opportunity to ask me questions, have me take a look at your writing and data viz, and check your overall write-up before you submit it. Take advantage of these opportunities for feedback *before* you submit. You won't get a second chance after.
+The Graph Challenges have built-in second-chances. That means if your submission didn't show that you clearly mastered the skills necessary to do the challenge well, you can try again. The main assignments are a different story. With these, you have one chance. But only one chance should be necessary. There are days in class specifically carved out to work on these. This gives you every opportunity to ask me questions, have me take a look at your writing and data viz, and check your overall write-up before you submit it. Take advantage of these opportunities for feedback *before* you submit. You won't get a second chance after.
 
 ## Attendance Policy
 
