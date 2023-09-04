@@ -1,30 +1,53 @@
-Making sure you show the right numbers, Part 1
+Showing the right numbers, Part 1
 ================
+
+- [Goals](#goals)
+- [Making a data viz is an iterative
+  process](#making-a-data-viz-is-an-iterative-process)
+- [Grouping geometry](#grouping-geometry)
+- [Small multiples](#small-multiples)
+- [Transforming data with geoms](#transforming-data-with-geoms)
+- [Where to next?](#where-to-next)
+
+<center>
+
+[\<– `ggplot()` Basics, Part
+II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Showing the Right Numbers, Part II
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+
+</center>
 
 ## Goals
 
--   Understand where different errors in plotting come from.
--   Understand how you can use ggplot commands to transform data.
+- Understand where different errors in plotting come from.
+- Understand how you can use ggplot commands to transform data.
 
 ## Making a data viz is an iterative process
 
-The first time you write some code to produce a data viz, it likely
-won’t look pretty. Sometimes you will try to tell R to do one thing, but
-the way you say it won’t be sensible or meaningful to R. You’ll have to
-write and rewrite your code until you get it right. I still have to do
-the same thing all the time.
+The first time you write some code to produce your data viz, it won’t
+always look amazing. Sometimes you will try to tell R to do one thing,
+but the way you say it won’t be sensible or meaningful to R. You’ll have
+to write and rewrite your code until you get it right. I still have to
+do the same thing all the time.
 
-If we open the `{socviz}` package we can access some data called
-`county_data`. This provides information at the county level in the US
-about different population demographics and election outcomes in 2018.
+You might also (correctly) tell R to do one thing and after the fact
+change your mind. Maybe there’s a typo in one of your labels. Maybe an
+entirely different geom would be a better choice. I personally find the
+process of tweaking my plots fun, but there’s no accounting for personal
+taste.
+
+Here’s an example of what this iterative process can look like. From the
+`{socviz}` package we’ll access some data called `county_data`. This
+provides information at the county level in the US about different
+population demographics and election outcomes in 2018.
 
 Let’s look at the relationship between population size and the share of
 the population that’s black. And let’s also try using `geom_line()`,
 which draws lines by connecting observations in order of the variable on
-the x-axis. This choices may seem sensible. We want to see how
-population relates to the share of the population that’s black. But,
-when we tell ggplot to show the relationship using `geom_line()` we get
-some wonky output.
+the x-axis. Does this seem like a sensible choice?
 
 ``` r
 library(tidyverse)
@@ -44,9 +67,9 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-1-1.png" width="75%" />
 
-What went wrong? We told R what to do, but our instructions weren’t
-terribly sensible. This is a case where a different geometry makes
-better sense. For example, `geom_point()`:
+What went wrong? R did exactly what we told it to do. It just so happens
+that our choice of geom was not the most useful way to show the data.
+Maybe `geom_point()` would be a better option? Let’s see.
 
 ``` r
 ggplot(Data) +
@@ -57,7 +80,21 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-2-1.png" width="75%" />
 
-We might also want to add a smoother to show the average trend.
+That looks much better! The problem with using a line plot to show the
+relationship between population and the share of the population that is
+black is that it creates the perception that the data points are
+related. The official term for this inference is *connection*, and it
+follows from a simple fact of human cognition: when things are visually
+tied or connected to each other, they are automatically interpreted as
+being related. Remember that a good data visualization is defined in
+reference to its goal. In this case, our goal is to show how the share
+of a population that is black is correlated with the overall county
+population size. We do not want to also convey the idea that one county
+is related to another.
+
+Other geoms are consistent with our goal as well. We might also add a
+smoother geom to show how the average of our variable in the y-axis
+changes given the variable on our x-axis.
 
 ``` r
 ggplot(Data) +
@@ -69,20 +106,26 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-3-1.png" width="75%" />
 
+## Grouping geometry
+
 There are a lot of points in this data and there’s a lot of noise, too.
-We might wonder how reliable this overall sample trend is. Maybe it
-would be better to do the trend by state.
+We might wonder how reliable the overall sample trend is. For instance,
+we might wonder whether it makes sense to show the relationship between
+population size and the share that’s black all together. Counties are
+organized into states, and maybe the trend in one state is different
+than in another. As it turns out, we can easily group our geoms by
+certain groups or categories when we plot them.
 
-But, but, but…
+The way we’ve done this before is to map an aesthetic, like color, to a
+particular category. We can do this with our data, but there’s one
+possible problem: there are 50 states! If we map color to state how will
+we even make sense of the plot, let alone have a legend that will fit in
+the data viz?
 
-Before we pull the trigger, we have a thought: there are 50 states! If
-we map something like color to state how will we even make sense of the
-plot, let alone have a legend that will fit in the data viz?
-
-It turns out, we have another option for mapping aesthetics: grouping.
+Thankfully we have another option for mapping aesthetics: grouping.
 Rather than map a color or something like that to state, we can just
 tell ggplot to draw a different smoothed trend per state but not to add
-different colors or a legend. Observe:
+different colors or a legend. Let’s try it out and see how it looks:
 
 ``` r
 ggplot(Data) +
@@ -96,8 +139,8 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-4-1.png" width="75%" />
 
-Whoa! That was supposed to be better. What happened? Let’s try a few
-more updates to the code:
+What do you think? It’s a little hard to look at. Maybe it would be
+better if we got rid of the confidence intervals.
 
 ``` r
 ggplot(Data) +
@@ -114,10 +157,10 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-5-1.png" width="75%" />
 
-Alright, that’s getting us *somewhere*, but we probably can do better
-still. Another option to try is to add a couple of different smoothed
-layers. One where we map groups to states and another that just shows
-the overall trend.
+That’s better, but we don’t have a finished product yet. Another option
+to try is to add a couple of different smoothed layers. One where we map
+groups to states and another that just shows the overall trend. We’ll
+drop the points geom, too.
 
 ``` r
 ggplot(Data) +
@@ -125,32 +168,34 @@ ggplot(Data) +
   geom_smooth(
     aes(group = state),
     se = F,
-    method = "lm",
     color = "gray"
   ) +
   geom_smooth(
-    se = F,
-    method = "lm"
+    se = F
   ) +
   scale_x_log10()
 ```
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-6-1.png" width="75%" />
 
-Eh…still not great, but getting better. At the very least we can see
-that the positive trend between these two variables doesn’t always hold
-up at the state level. In some states the relationship is actually
-negative and strongly so. Maybe we should add another tool to our
-toolkit to better interrogate the data. Enter `facet_wrap()`.
+Still not great, but getting better. We can clearly see that the overall
+trend is positive but that it doesn’t always hold up at the state level.
+In some states the relationship is actually negative and strongly so.
 
 ## Small multiples
 
-Among the various ways that we can tell ggplot to show our data is to
-**facet** it by a variable, creating a “small multiple” plot.
+In addition to grouping geoms by categories, we can also create multiple
+panels that show relationships by different groups. This might be
+another useful approach to incorporate as we visualize the relationship
+between population size and the share that is black.
 
-There’s a variable in our data called `census_region` that has four
-values indicating whether a state is in the Northeast, Midwest, South,
-or West. Let’s see what happens when we facet by this variable:
+Enter `facet_wrap()`. This function lets us **facet** our data by a
+variable (or multiple variables). The result is what’s a *small
+multiple* plot.
+
+Let’s see what this looks like by using the variable called
+`census_region`. This column in our data has four values indicating
+whether a state is in the Northeast, Midwest, South, or West.
 
 ``` r
 ggplot(Data) +
@@ -174,15 +219,17 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-7-1.png" width="75%" />
 
-Interesting! What `facet_wrap()` has done is tell ggplot to make four
-different sub-plots, one for each census region in the data. We used the
-phrase `~ census_region` inside the function to give it instructions to
-facet by the values in this column in the data.
+How does that look? What `facet_wrap()` has done is tell ggplot to make
+four different sub-plots, one for each census region in the data. We
+used the phrase `~ census_region` inside the function to give it
+instructions to facet by the values in the `census_region` column in the
+data.
 
-The output shows that the South is really weird. Just about everywhere
-else, as county population goes up, so does the share of the population
-that’s black. But in the South the relationship goes in the opposite
-direction in several states.
+This way of splitting up the data helps us to see a number of things.
+For example, the South is really weird. Just about everywhere else, as
+county population goes up, so does the share of the population that’s
+black. But in the South the relationship goes in the opposite direction
+in several states.
 
 We can add a few different customizations to our faceted plot. We might,
 for instance, want to give ggplot the freedom to fit the range of values
@@ -215,7 +262,7 @@ ggplot(Data) +
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-8-1.png" width="75%" />
 
 We can also use `facet_grid()` similarly to `facet_wrap()`. This
-function let’s you set easily facet by multiple categories at once.
+function let’s you easily facet by multiple categories at once.
 
 There’s actually a very helpful version of `facet_grid()` that we can
 access by installing and then loading the `{ggh4x}` package:
@@ -249,9 +296,9 @@ ggplot(Data) +
 
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
 
-Okay, so the South continues to look weird, but in particular counties
-in the South that voted disproportionately in favor of Clinton in 2018
-are the weirdest. Why do you think this would be?
+Breaking the data up like this, the South continues to look weird. In
+particular, counties in the South that voted disproportionately in favor
+of Clinton in 2018 are the weirdest. Why do you think this would be?
 
 ## Transforming data with geoms
 
@@ -324,5 +371,18 @@ ggplot(Data) +
 We’ll introduce some new functions later on that let us do many of these
 transformations and more before we even give the data to ggplot. In my
 opinion, writing some code to prep the data before giving it to ggplot
-is “better,” but it’s worthwhile to know that you can do some
-transformations of your data “under the hood” with ggplot, too.
+is better, but it’s worthwhile to know that you can do some
+transformations of your data under the hood with ggplot, too.
+
+## Where to next?
+
+<center>
+
+[\<– `ggplot()` Basics, Part
+II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Showing the Right Numbers, Part II
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+
+</center>
