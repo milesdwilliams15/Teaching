@@ -6,7 +6,11 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      out.width = "75%",
+                      dpi = 500)
 ```
 
 <center>
@@ -121,7 +125,7 @@ ggplot(gapminder) +
   geom_point()
 ```
 
-You can notice a few things about ggplot from the code used to produce the above figure. First, ggplot works by building figures in steps. We call these **layers**. Second, we **add** layers (literally) by using the `+` operator. While normally we use this for addition (i.e., `2 + 2`) when we use ggplot `+` acts a lot like this thing called a pipe operator (`%>%`), which we'll talk about more later. Basically, the `+` in ggplot just tells R that we want to add a new set of commands or instructions for creating a data viz.
+You can notice a few things about ggplot from the code used to produce the above figure. First, ggplot works by building figures in steps. We call these **layers**. Second, we **add** layers (literally) by using the `+` operator. While normally we use this for addition (i.e., `2 + 2`) when we use ggplot `+` acts a lot like this thing called a pipe operator (`%>%` or for later versions of R `|>`), which we'll talk about more later. Basically, the `+` in ggplot just tells R that we want to add a new set of commands or instructions for creating a data viz.
 
 More formally, the ggplot workflow looks like:
 

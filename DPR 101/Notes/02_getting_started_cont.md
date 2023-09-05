@@ -61,38 +61,10 @@ To read the data into R, we can use the `read_csv()` function like so:
 
 ``` r
 library(tidyverse)
-```
-
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
-    ## ✔ ggplot2 3.4.0     ✔ purrr   0.3.4
-    ## ✔ tibble  3.2.1     ✔ dplyr   1.1.2
-    ## ✔ tidyr   1.2.0     ✔ stringr 1.4.0
-    ## ✔ readr   2.1.2     ✔ forcats 0.5.1
-
-    ## Warning: package 'ggplot2' was built under R version 4.2.2
-
-    ## Warning: package 'tibble' was built under R version 4.2.3
-
-    ## Warning: package 'dplyr' was built under R version 4.2.3
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-
-``` r
 Data <- read_csv(
   "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/onset_and_wgi.csv"
 )
 ```
-
-    ## Rows: 3047 Columns: 4
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (1): country
-    ## dbl (3): year, sumonset1, wgi
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 Notice that I used quotation marks (`""`) around the url. Some things in
 R require the use of quotation marks (like data files or character
@@ -111,15 +83,6 @@ file_location <- here::here(
 )
 Data <- read_csv(file_location)
 ```
-
-    ## Rows: 3047 Columns: 4
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (1): country
-    ## dbl (3): year, sumonset1, wgi
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 You don’t have to use `here()`, but I like using it because it
 automatically adds all the pesky backtics I’d need to add to tell R
@@ -155,20 +118,6 @@ library(googlesheets4)
 gs4_deauth()
 turnout_data <- range_speedread(url)
 ```
-
-    ## ✔ Reading from "turnout_data".
-
-    ## ℹ Export URL:
-    ##   <https://docs.google.com/spreadsheets/d/19RaIaVoJMChVsNGO45OrqZcSE3to-EwQ-vywngHLbks/export?format=csv>
-
-    ## Rows: 10829 Columns: 7
-    ## ── Column specification ────────────────────────────────────────────────────────
-    ## Delimiter: ","
-    ## chr (2): phone_call, voter_type
-    ## dbl (5): household_size, ward_id, age, rep_or_dem, voted
-    ## 
-    ## ℹ Use `spec()` to retrieve the full column specification for this data.
-    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 To access Google Sheet files you need to open the `{googlesheets4}`
 package. It has a few functions for reading in data, but the best and
@@ -220,18 +169,18 @@ gapminder %>%
 ```
 
     ## # A tibble: 10 × 6
-    ##    country     continent  year lifeExp      pop gdpPercap
-    ##    <fct>       <fct>     <int>   <dbl>    <int>     <dbl>
-    ##  1 Yemen, Rep. Asia       1982    49.1  9657618     1978.
-    ##  2 Netherlands Europe     1997    78.0 15604464    30246.
-    ##  3 Liberia     Africa     2007    45.7  3193942      415.
-    ##  4 Oman        Asia       1987    67.7  1593882    18115.
-    ##  5 El Salvador Americas   1967    55.9  3232927     4359.
-    ##  6 Kuwait      Asia       1957    58.0   212846   113523.
-    ##  7 Ecuador     Americas   1992    69.6 10748394     7104.
-    ##  8 Denmark     Europe     1967    73.0  4838800    15937.
-    ##  9 Namibia     Africa     1962    48.4   621392     3173.
-    ## 10 Eritrea     Africa     1992    50.0  3668440      583.
+    ##    country           continent  year lifeExp      pop gdpPercap
+    ##    <fct>             <fct>     <int>   <dbl>    <int>     <dbl>
+    ##  1 Guatemala         Americas   1972    53.7  5149581     4031.
+    ##  2 Equatorial Guinea Africa     1967    39.0   259864      916.
+    ##  3 Mali              Africa     1987    46.4  7634008      684.
+    ##  4 Djibouti          Africa     2007    54.8   496374     2082.
+    ##  5 Uganda            Africa     1952    40.0  5824797      735.
+    ##  6 Bolivia           Americas   1982    53.9  5642224     3157.
+    ##  7 Benin             Africa     1962    42.6  2151895      949.
+    ##  8 Mexico            Americas   1972    62.4 55984294     6809.
+    ##  9 Colombia          Americas   1997    70.3 37657830     6117.
+    ## 10 Philippines       Asia       1997    68.6 75012988     2537.
 
 Using this data, we can make a simple scatter plot showing how per
 capita GDP predicts life expectancy:
@@ -242,16 +191,16 @@ ggplot(gapminder) +
   geom_point()
 ```
 
-![](02_getting_started_cont_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+<img src="02_getting_started_cont_files/figure-gfm/unnamed-chunk-7-1.png" width="75%" />
 
 You can notice a few things about ggplot from the code used to produce
 the above figure. First, ggplot works by building figures in steps. We
 call these **layers**. Second, we **add** layers (literally) by using
 the `+` operator. While normally we use this for addition (i.e.,
 `2 + 2`) when we use ggplot `+` acts a lot like this thing called a pipe
-operator (`%>%`), which we’ll talk about more later. Basically, the `+`
-in ggplot just tells R that we want to add a new set of commands or
-instructions for creating a data viz.
+operator (`%>%` or for later versions of R `|>`), which we’ll talk about
+more later. Basically, the `+` in ggplot just tells R that we want to
+add a new set of commands or instructions for creating a data viz.
 
 More formally, the ggplot workflow looks like:
 
@@ -284,7 +233,7 @@ tells R to produce the figure:
 p
 ```
 
-![](02_getting_started_cont_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+<img src="02_getting_started_cont_files/figure-gfm/unnamed-chunk-9-1.png" width="75%" />
 
 This feature of working with ggplot is great for reasons that will
 become more obvious later in the course. The biggest benefit is that it
@@ -299,7 +248,7 @@ All we need to do is add a new layer to `p` like so:
 p + scale_x_log10()
 ```
 
-![](02_getting_started_cont_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+<img src="02_getting_started_cont_files/figure-gfm/unnamed-chunk-10-1.png" width="75%" />
 
 Because I saved the first plot as the object `p`, I didn’t have to
 re-write the code to produce the old plot before adding a new layer.
