@@ -1,4 +1,4 @@
-## Clean up the election forecast data ##
+#### Clean up the election forecast data ----
 
 library(tidyverse)
 url <- "https://raw.githubusercontent.com/fivethirtyeight/checking-our-work-data/master/presidential_elections.csv"
@@ -54,4 +54,26 @@ change_Data <- Data %>%
 write_csv(
   change_Data,
   here::here("DPR 101", "Data", "538_prez_forecast_error_20162020.csv")
+)
+
+
+## Create data for graph challenge 0
+
+x <- c(
+  runif(250, 0, 1),
+  runif(50, 1.2, 1.4)
+)
+y <- rep(0, len = length(x))
+y[between(x, 0, 0.2)] <- 
+  runif(sum(between(x, 0, 0.2)), 0, 1)
+y[between(x, 0.2, 0.8)] <-
+  runif(sum(between(x, 0.2, 0.8)), 0.4, 0.6)
+y[between(x, 0.8, 1)] <-
+  runif(sum(between(x, 0.8, 1)), 0, 1)
+y[between(x, 1.2, 1.4)] <-
+  runif(sum(between(x, 1.2, 1.4)), 0, 1)
+plot(x, y)
+write_csv(
+  tibble(var1 = x, var2 = y),
+  here::here("DPR 101", "Data", "gc0.csv")
 )
