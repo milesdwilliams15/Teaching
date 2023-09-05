@@ -1,0 +1,236 @@
+---
+output: 
+  stevetemplates::beamer:
+    keep_tex: TRUE
+    latex_engine: pdflatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
+title: 'The Dangers of a Growing Anarchical Society'
+subtitle: "DPR 190: War, Wealth, & World Politics"
+author: Miles Williams
+institute: Data for Political Research
+# titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
+# scaletg: .9 # Optional, proportional (0, 1) to paper width. Defaults to .3
+fontsize: 12pt
+make149: TRUE
+# mainfont: "Open Sans" # Try out some font options if xelatex
+# titlefont: "Titillium Web" # Try out some font options if xelatex
+# specify color as six-digit RGB (no pound sign)
+# primarycolor: "990000" 
+# secondarycolor: "000099"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=F)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+knitr::opts_chunk$set(echo = F, message = F, warning = F,
+                      out.width = "95%",
+                      dpi = 500,
+                      fig.height = 4, 
+                      fig.width = 6)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+library(tidyverse)
+library(coolorrr)
+set_palette()
+set_theme()
+library(stevemisc)
+library(peacesciencer)
+create_dyadyears() |>
+  add_cow_wars(type = "inter") -> Data
+Data |>
+  filter(!is.na(cowinterongoing)) |>
+  rename(ccode = ccode1,
+         inter_ongoing = cowinterongoing,
+         inter_onset = cowinteronset) |>
+  select(ccode, year, inter_ongoing, inter_onset) -> Data
+cow_war_intra |>
+  rename(ccode = ccodea,
+         intra_ongoing = cowintraongoing,
+         intra_onset = cowintraonset) |>
+  select(ccode, year, intra_ongoing, intra_onset) |>
+  right_join(Data) -> Data
+Data |>
+  distinct() -> Data
+```
+
+# Introduction
+
+### Introduction
+
+We've been talking about the concept of sovereignty and how it gets upheld in international politics. The idea of an "anarchical society" was brought up to explain the tension inherent to supporting a peaceful state of affairs in international politics. In the anarchical society, the society members are countries rather than individuals. As long as these countries can agree to live and let live---that is, to respect the sovereignty of each member---there will be peace.
+
+\bigskip
+
+The problem is that this society (a term that invokes "order" or "rules") lacks a central authority with a monopoly on the legitimate use of violence to enforce the society's rules. Hence, the *anarchical* society. There are some measures that countries can take to support order, like maintaining a balance of power or forming alliances, but conflict is always lurking around the corner.
+
+### Introduction
+
+One point of tension that can threaten a peaceful state of affairs is sudden shifts in the international system. In particular, if the number of countries in the world changes, this can threaten a balance of power or endanger a system of alliances if, say, one country turns into two or more. 
+
+\bigskip
+
+This leads to a clear conflict between competing principals. On the one hand, the idea of self-determination sounds morally correct. If a group of people want to form their own country and govern themselves however they see fit, why shouldn't they have the right to do so? On the other hand, the formation of a new country rarely is so simple. Many parties can be affected both within and beyond the borders of the aspiring new country. It is nearly impossible for a new country to emerge without it leading to changes to international trade or geopolitical tensions.
+
+# A Hypothesis
+
+### A Hypothesis
+
+The tensions that inevitably surround the formation of new countries gives us a basis for proposing and testing a *hypothesis*. In the field of International Relations, one of our jobs as researchers is to study international politics through a *scientific* lens. When we look at the world and see a given event, we should seek not only to ask "what is event [x] an example of?" but also, "if [x] is an example of [y], what else should we expect to happen?"
+
+\bigskip
+
+A hypothesis is a statement rooted in a theoretical argument about what else we should expect to happen if [x] is an example of [y]. In the case of our anarchical society, we know that one point of tension that threatens the stability of the society is a change in the number of its members. If this is true, what should we expect to see in the world if the number of countries increases? We probably would see an increase in conflict.
+
+### A Hypothesis
+
+So, based on this approach to understanding international politics, we can propose a formal hypothesis:
+
+> **H:** *An increase in the number of countries leads to an increase in conflict.*
+
+# Testing our hypothesis
+
+### Testing our hypothesis
+
+The next thing we do as IR scholars is collect some data to test our hypothesis. For many researchers, this data is quantitative in nature, and we might use various data analysis tools to study it. This is exactly what we can do to test our hypothesis that an increase in the number of countries leads to an increase in conflict.
+
+\bigskip
+
+I collected and organized this data using some of my software. The next few slides walk through what I found.
+
+# Analysis
+
+### Analysis
+
+First, I needed to calculate the number of countries in the world in a given year. There's a lot of debate about who should count and different approaches will give you slightly different totals. I decided to collect some data from the Correlates of War conflict series. This is one of the most authoritative datasets in IR for studying conflict among the countries of the world. It covers the years 1816 to 2007. 
+
+\bigskip
+
+The next slide shows what the number of countries in the world looks like over this time-frame.
+
+### Analysis
+
+```{r}
+Data |>
+  count(year) |>
+  ggplot() +
+  aes(year, n) +
+  geom_line() +
+  labs(
+    x = "Years",
+    y = "Number of Countries",
+    title = 'The Growing "Anarchical Society"',
+    subtitle = "The number of countries in the international system in a given year",
+    caption = "Data: {peacesciencer} | @MDWilliamsPhD"
+  )
+```
+
+### Analysis
+
+Now that we have a measure of the number of countries in the world, we need a measure of the rate of conflict among these countries. To do that, I used the same data source (Correlates of War). For each given year, I counted the number of countries involved in some kind of war (either a major international war or a intra-state war, also called a civil war) that started in a given year. I then divided this total by the total number of countries in the world at a given time. This gives me a rate of conflict initiation in a given year per the number of countries in the international system. The next slide shows how the conflict rate varies over time.
+
+### Analysis
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    n = n(),
+    total_onset = sum(inter_onset = intra_onset, na.rm=T)
+  ) |>
+  ggplot() +
+  aes(x = year, y = total_onset / n) +
+  geom_line() +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "Year",
+    y = "Conflict rate (%)",
+    title = "Conflict over time",
+    subtitle = "Rate of conflict initation, 1816-2007",
+    caption = "Data: {peacesciencer} | @MDWilliamsPhD"
+  )
+```
+
+### Analysis
+
+The next thing to do is examine the correlation between the number of countries and conflict. I don't want to just look at the correlation between *total* countries and conflict, though. Our hypothesis is founded on the idea that a *change* in the number of countries is what leads to more conflict. So, before we look at the correlation, we need to transform the data to calculate the change in the number of countries in the world in a given year. 
+
+\bigskip
+
+After making this transformation, the next slide shows what the data tell us.
+
+### Analysis
+
+```{r}
+library(geomtextpath)
+Data |>
+  group_by(year) |>
+  summarize(
+    n = n(),
+    inter_onset = sum(inter_onset),
+    intra_onset = sum(intra_onset, na.rm=T),
+    total_onset = inter_onset + intra_onset,
+    .groups = "drop"
+  ) |>
+  arrange(year) |>
+  mutate(
+    change_n = c(0, diff(n))
+  ) |>
+  ggplot() +
+  aes(change_n, total_onset / n) +
+  geom_point(alpha = 0.4) +
+  geom_textsmooth(
+    method = "glm",
+    label = "Trend Line",
+    hjust = 0.8,
+    color = "blue",
+    linewidth = 1,
+    formula = y ~ x,
+    method.args = list(family = quasibinomial),
+    se = F
+  ) +
+  labs(
+    x = "Change in the size of the system",
+    y = "Conflict rate (%)",
+    title = "Are there growing pains?",
+    subtitle = "Share of countries at war per change in the number of countries",
+    caption = "Data: {peacesciencer} | @MDWilliamsPhD"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  )
+```
+
+### Analysis
+
+What does the data tell us? Does it support our hypothesis? The answer is "yes." An increase in the number of countries has a positive correlation with the rate of conflict in the world.
+
+\bigskip
+
+Of course, there are always other factors to consider. Things that we don't observe in the data (important events, trends in other variables, etc.) could make it look like the correlation between the change in the number of countries and conflict is positive when, in fact, the truth is that one doesn't have anything to do with the other. 
+
+\bigskip
+
+Even so, at least at first glance, the data support our hypothesis. By extension, that means the data support the value of our broader framework of characterizing the state of affairs among countries as an anarchical society.
+
+# Review
+
+### Review
+
+In review: 
+
+- We talked about sovereignty and the tensions inherent to respecting sovereignty among members of an anarchical society.
+- We put on our IR scholar hats and approached this issue from a scientific perspective. 
+- We reasoned that an increase in the number of countries in the world would lead to an increase in violence.
+- We tested this hypothesis using data and the data supported our hypothesis.
+
+The real practice of research in IR is more complicated than this, but this should give you a helpful model of what the process looks like.
+
