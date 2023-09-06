@@ -142,7 +142,7 @@ Data |>
   group_by(year) |>
   summarize(
     n = n(),
-    total_onset = sum(inter_onset = intra_onset, na.rm=T)
+    total_onset = sum(inter_onset | intra_onset, na.rm=T)
   ) |>
   ggplot() +
   aes(x = year, y = total_onset / n) +
@@ -175,9 +175,8 @@ Data |>
   group_by(year) |>
   summarize(
     n = n(),
-    inter_onset = sum(inter_onset),
-    intra_onset = sum(intra_onset, na.rm=T),
-    total_onset = inter_onset + intra_onset,
+    total_onset = sum(inter_onset | intra_ongoing,
+                      na.rm=T),
     .groups = "drop"
   ) |>
   arrange(year) |>
