@@ -1,0 +1,551 @@
+---
+output: 
+  stevetemplates::beamer:
+    keep_tex: TRUE
+    latex_engine: pdflatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
+title: 'The Dangers of a Growing Anarchical Society (Revisited)'
+subtitle: "DPR 190: War, Wealth, & World Politics"
+author: Miles Williams
+institute: Data for Political Research
+# titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
+# scaletg: .9 # Optional, proportional (0, 1) to paper width. Defaults to .3
+fontsize: 12pt
+make149: TRUE
+# mainfont: "Open Sans" # Try out some font options if xelatex
+# titlefont: "Titillium Web" # Try out some font options if xelatex
+# specify color as six-digit RGB (no pound sign)
+# primarycolor: "990000" 
+# secondarycolor: "000099"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=F)
+knitr::opts_chunk$set(fig.path='figs/')
+knitr::opts_chunk$set(cache.path='cache/')
+knitr::opts_chunk$set(echo = F, message = F, warning = F,
+                      out.width = "95%",
+                      dpi = 500,
+                      fig.height = 4, 
+                      fig.width = 6)
+
+knitr::opts_chunk$set(
+                  fig.process = function(x) {
+                      x2 = sub('-\\d+([.][a-z]+)$', '\\1', x)
+                      if (file.rename(x, x2)) x2 else x
+                      }
+                  )
+library(tidyverse)
+library(coolorrr)
+set_palette()
+set_theme()
+library(stevemisc)
+library(peacesciencer)
+library(here)
+library(socsci)
+library(priceR)
+
+## attach the new and shiny MIE data!
+mie_data <- read_csv(
+  here("DPR 190", "Data", "events", "mie-1.0.csv")
+)
+
+## aggregate to the country-year level:
+mie_data |>
+  group_by(ccode1, styear) |>
+  summarize(
+    endyear = max(endyear),
+    event = 1,
+    num_events = n(),
+    mindeaths = sum(
+      fatalmin1 + fatalmin2
+    ),
+    maxdeaths = sum(
+      fatalmax1 + fatalmax2
+    ),
+    .groups = "drop"
+  ) -> mie_country_year
+
+## add some correlates from {peacesciencer}
+create_stateyears(subset_years = 1816:2014) |>
+  add_democracy() |>
+  add_sdp_gdp() |>
+  add_nmc() |>
+  add_cow_majors() |>
+  add_igos() -> cov_data
+
+## make some new variables:
+## - n: num. of countries in the world in a given year
+## - country_age: indicator of how many years a country is in the data
+## - new_country: indicator of a new country
+cov_data |>
+  arrange(year) |>
+  group_by(year) |>
+  mutate(
+    n = n()
+  ) |>
+  group_by(ccode) |>
+  mutate(
+    country_age = 1:n(),
+    new_country = (country_age==1)+0
+  ) |>
+  ungroup() -> cov_data
+
+## merge the datasets
+left_join(
+  cov_data, mie_country_year |> 
+    rename(ccode = ccode1, year = styear),
+  by = c("ccode", "year")
+) -> Data
+
+## deal with missingness
+Data |>
+  mutate(
+    across(
+      endyear:maxdeaths,
+      ~ replace_na(.x, 0)
+    )
+  ) -> Data
+```
+
+# Why revisit the growing pains hypothesis?
+
+### Why revisit the growing pains hypothesis?
+
+- Confounding factors.
+- Are these new countries even directly responsible for the spike in conflicts?
+- Are there other mechanisms?
+
+# Looking at the data
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarise(
+    n = sum(num_events)
+  ) |>
+  ggplot() +
+  aes(year, n) +
+  geom_line(size = 1) +
+  scale_x_continuous(
+    n.breaks = 20
+  ) +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+  labs(
+    x = "Year",
+    y = "Number of Militarized Events",
+    title = "Militarized Interstate Disputes, 1816-2014"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    ),
+    panel.grid.major.x = element_blank()
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    events = sum(num_events),
+    n = n(),
+    "No. of New Countries" = sum(new_country),
+    .groups = "drop"
+  ) |>
+  ungroup() |>
+  mutate(
+    "Change in No. of Countries" = c(0, diff(n)),
+    "No. of New Countries" = 
+      ifelse(year==1816, 0, `No. of New Countries`)
+  ) |>
+  select(-n) |>
+  pivot_longer(
+    3:4
+  ) |>
+  ggplot() +
+  aes(value, events) +
+  facet_wrap(~ name, scales = "free_x",
+             strip.position = "bottom") +
+  geom_point(
+    alpha = 0.5
+  ) +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = quasipoisson),
+    se = F
+  ) +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+  theme(
+    strip.placement = "outside",
+    strip.background = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = "No. of Militarized Events",
+    title = "MIEs per Changes in the No. of Countries, 1816-2014"
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(event) |>
+  ct(new_country) |>
+  filter(event == 1) |>
+  mutate(
+    new_country = ifelse(new_country, "New Country", "Not New")
+  ) |>
+  ggplot() +
+  aes(new_country, pct) +
+  geom_col() +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "% of Militarized Events",
+    title = "Are new countries involved in MIEs?"
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  ggplot() +
+  aes(country_age, event) +
+  stat_smooth(
+    aes(group = ccode),
+    method = "glm",
+    method.args = list(family = binomial),
+    se = F,
+    color = "lightgray",
+    linewidth = 0.05
+  ) +
+  stat_smooth(
+    color = "black",
+    method = "glm",
+    method.args = list(family = binomial),
+    se = F
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "Country Age",
+    y = "(%) Likelihood of MIE",
+    title = "Are young countries more violent?"
+  ) -> p
+p
+```
+
+### Looking at the data
+
+```{r}
+newData <- Data |>
+      group_split(ccode) |>
+      map_dfr(
+        ~ {
+          d <- .x
+          fit <- glm(event ~ country_age, 
+                     data = d,
+                     family = binomial)
+          d$pos <- ifelse(
+            coef(fit)[2] > 0,
+            1, 0
+          )
+          d
+        }
+      ) 
+frac_neg <- newData |>
+  group_by(ccode) |>
+  count(pos) |>
+  ungroup() |>
+  summarize(neg = 1-mean(pos))
+p + 
+  stat_smooth(
+    data = newData |> filter(pos == 0),
+    aes(group = ccode),
+    method = "glm",
+    method.args = list(family = binomial),
+    se = F,
+    color = "royalblue",
+    linewidth = 0.1
+  ) +
+  annotate(
+    "text",
+    x = 175,
+    y = 0.8,
+    label = paste0(
+      round(frac_neg$neg*100, 2), "%"
+    ),
+    color = "royalblue"
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(new_country, year) |>
+  summarize(
+    "Surplus Domestic Product (log)" = mean(sdpest, na.rm=T),
+    "IGOs" = mean(sum_igo_anytype, na.rm=T),
+    "Democracy" = mean(v2x_polyarchy, na.rm=T)
+  ) |>
+  pivot_longer(
+    3:5
+  ) |>
+  ggplot() +
+  aes(year, value, color = ifelse(new_country == 1, "Yes", "No")) +
+  geom_point(
+    alpha = 0.4
+  ) +
+  geom_smooth(
+    linesize = 0.75,
+    se = F
+  ) +
+  facet_wrap(~ name, scales = "free_y",
+             strip.position = "left") +
+  theme(
+    strip.background = element_blank(),
+    strip.placement = "outside"
+  ) +
+  labs(
+    x = "Year",
+    y = NULL,
+    color = "New Country? ",
+    title = "What makes new countries unique?"
+  ) +
+  ggpal() +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+  
+```
+
+### Looking at the data
+
+```{r}
+bop <- function(x, y) {
+  # x <- replace_na(x, 0)
+  # y <- replace_na(y, 0)
+  x <- x / y
+  p <- x / sum(x, na.rm=T)
+  n <- sum(!is.na(x))
+  ssp <-  sum(p^2)
+  con <- sqrt((ssp - 1/n)/(1 - 1/n))
+  1 - con
+}
+Data |>
+  group_by(year) |>
+  summarize(
+    n = n(),
+    bop = bop(cinc, 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    change_n = c(0, diff(n)),
+    change_bop = c(0, diff(bop))
+  ) |>
+  ggplot() +
+  aes(change_n, bop) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = quasibinomial),
+    se = F
+  ) +
+  labs(
+    x = expression(Delta*" No. of Countries"),
+    y = "Balance of Power",
+    title = "Change in the system and the balance of power"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    n = n(),
+    bop = bop(cinc[cowmaj==1], 1)
+  ) |>
+  ungroup() |>
+  mutate(
+    change_n = c(0, diff(n)),
+    change_bop = c(0, diff(bop))
+  ) |>
+  ggplot() +
+  aes(change_n, bop) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = quasibinomial),
+    se = F
+  ) +
+  labs(
+    x = expression(Delta*" No. of Countries"),
+    y = "Balance of Power",
+    title = "Change in the system and the balance of power"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  annotate(
+    "text",
+    x = 12.5, y = .55,
+    label = "(BoP of Major Powers)",
+    color = "blue",
+    size = 3
+  )
+```
+
+### Looking at the data
+
+```{r}
+Data |>
+  group_by(year, cowmaj) |>
+  ct(event) |>
+  filter(event == 1) |>
+  ggplot() +
+  aes(year, pct, color = ifelse(cowmaj==1, "Major Power", "Minor Power")) +
+  geom_point(
+    alpha = 0.4
+  ) +
+  geom_smooth(
+    se = F
+  ) +
+  ggpal() +
+  labs(
+    x = "Year",
+    y = "Proportion of Events",
+    color = NULL,
+    title = "Who drives militarized events?"
+  ) +
+  scale_x_continuous(
+    n.breaks = 20
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+```
+
+### Looking at the data
+
+```{r}
+wm <- map_data("world")
+wm <- wm |>
+  mutate(
+    cname = countrycode::countrycode(
+      region, "country.name", "country.name"
+    )
+  )
+mp <- Data |>
+  group_by(statenme) |>
+  summarize(
+    cowmaj = any(cowmaj==1)+0
+  ) |>
+  ungroup() |>
+  mutate(
+    cname = countrycode::countrycode(
+      statenme, "country.name", "country.name"
+    )
+  )
+
+wm_dt <- left_join(wm, mp)
+ggplot(wm_dt) +
+  aes(long, lat, group = group) +
+  geom_polygon(
+    fill = "white",
+    color = "black", 
+    linewidth = 0.05
+  ) +
+  geom_polygon(
+    data = wm_dt |> filter(cowmaj == 1),
+    fill = "royalblue",
+    color = "black",
+    linewidth = .1
+  ) +
+  coord_fixed() +
+  scale_x_continuous(
+    breaks = NULL
+  ) +
+  scale_y_continuous(
+    breaks = NULL
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Who are the major powers?"
+  ) +
+  coord_fixed()
+```
+
+# Conclusions
+
+### Conclusions
+
+\begin{center}
+\textit{What do you all think?}
+\end{center}
+
+### Conclusions
+
+- Maybe it's the change in the balance of power?
+- As major powers try to manage the "Anarchical Society" new countries upset the balance.
+- This drives conflict, not involving the new countries that enter the world, but ***among major powers*** themselves.
+
+### Conclusions
+
+\begin{center}
+\textit{Maybe. Maybe not.}
+\end{center}
+
+# Elements of order
+
+### Elements of order
+
+- Respect for sovereignty
+- Balance of power
+- \textcolor{gray}{Alliances}
+- \textcolor{gray}{Democracy}
+- \textcolor{gray}{Economic interdependence}
+- \textcolor{gray}{Global governance}
+- \textcolor{gray}{International law}
+
+### Elements of order
+
+- Respect for sovereignty
+- Balance of power
+- \textcolor{blue}{Alliances}
+- \textcolor{blue}{Democracy}
+- \textcolor{blue}{Economic interdependence}
+- \textcolor{blue}{Global governance}
+- \textcolor{blue}{International law}
+
+# Next time
+
+### Next time
+
+-  David Lake, "Escape from the State
+of Nature"

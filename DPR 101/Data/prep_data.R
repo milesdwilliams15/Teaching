@@ -77,3 +77,42 @@ write_csv(
   tibble(var1 = x, var2 = y),
   here::here("DPR 101", "Data", "gc0.csv")
 )
+
+
+# ohio issue 1 data -------------------------------------------------------
+
+library(tidyverse)
+dt <- read_csv(
+  here::here("DPR 101", "Data", "2023_aug_ohio_turnout.csv")
+)
+names(dt) |>
+  str_replace_all(
+    " ", "_"
+  ) |>
+  tolower() -> names(dt)
+
+dt |>
+  filter(
+    county_name != "Total"
+  ) |>
+  mutate(
+    official_voter_turnout = 
+      100 * ballots_counted / registered_voters
+  ) -> dt
+write_csv(
+  dt,
+  file = here::here(
+    "DPR 101", "Data", 
+    "2023_aug_ohio_turnout_CLEANED.csv"
+  )
+)
+
+## example use:
+ggplot(dt) +
+  aes(registered_voters,
+      ballots_counted) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F
+  )

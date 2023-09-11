@@ -417,9 +417,9 @@ I've also compiled lecture notes that you can refer to as we progress through th
 
 Brennan Kelley and Joanna Passalaris are the Teaching Assistants for DPR 101. If you have questions about assignments or need help troubleshooting code, Brennan and Joanna are excellent resources.
 
-**Office Hours**: TBD
+**Office Hours**: 1:30-2:30 pm Wed. and Fri. (Brennan)
 
-**Location**: TBD
+**Location**: Library Atrium 
 
 **Contact**: [kelley_b1@denison.edu](mailto:kelley_b1@denison.edu){.email}; [passal_j1@denison.edu](mailto:passal_j1@denison.edu){.email}
 
