@@ -139,7 +139,7 @@ Data |>
   labs(
     x = "Year",
     y = "Number of Militarized Events",
-    title = "Militarized Interstate Disputes, 1816-2014"
+    title = "Militarized Interstate Events, 1816-2014"
   ) +
   theme(
     axis.text.x = element_text(
@@ -200,8 +200,8 @@ Data |>
 
 ```{r}
 Data |>
-  group_by(event) |>
-  ct(new_country) |>
+  group_by(new_country) |>
+  ct(event) |>
   filter(event == 1) |>
   mutate(
     new_country = ifelse(new_country, "New Country", "Not New")
@@ -214,7 +214,7 @@ Data |>
   ) +
   labs(
     x = NULL,
-    y = "% of Militarized Events",
+    y = "% Involved in Militarized Events",
     title = "Are new countries involved in MIEs?"
   )
 ```

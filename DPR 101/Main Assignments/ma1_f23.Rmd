@@ -1,0 +1,286 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: "2023-09-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## libraries
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+library(coolorrr)
+set_theme()
+set_palette(
+  sequential = c("white", "navy"),
+  from_coolors = F
+)
+## the api:
+census_api_key("3eccf6bb91b2507ae6809065f555f28501de53c0")
+```
+
+## census data
+
+```{r}
+ohio_dt <- get_acs(
+  geography = "county",
+  variables = c(
+    medincome = "B19013_001",
+    medage = "B01002_001",
+    popsize = "B01003_001",
+    popwhite = "B02008_001",
+    popblack = "B02009_001",
+    male = "B01001_002"
+  ),
+  state = "OH",
+  year = 2021
+)
+## clean
+ohio_dt |>
+  select(-moe) |>
+  pivot_wider(
+    names_from = variable,
+    values_from = estimate
+  ) -> ohio_dt
+## add some percentages
+ohio_dt |>
+  mutate(
+    pctmale = 100 * male / popsize,
+    pctwhite = 100 * popwhite / popsize,
+    pctblack = 100 * popblack / popsize
+  ) -> ohio_dt
+```
+
+
+## turnout data
+
+```{r}
+## bring in the outcome data for issue 1
+issue1_dt <- read_csv(
+  here::here(
+    "DPR 101", "Data",
+    "ohio_issue1_outcomes_CLEANED.csv"
+  )
+)
+issue1_dt |>
+  group_by(county_name) |>
+  mutate(
+    official_voter_turnout = 100 * (
+      ballots_counted / registered_voters
+    ),
+    pctyes = 100 * yes / (yes + no),
+    yes_margin = pctyes - 50
+  ) -> issue1_dt
+
+## bring in the outcome data for 2020
+vote2020_dt <- read_csv(
+  here::here(
+    "DPR 101", "Data",
+    "ohio_2020_president_outcomes.csv"
+  )
+)
+## fix the names
+names(vote2020_dt) |>
+  str_replace_all(
+    " ", "_"
+  ) |>
+  tolower() -> names(vote2020_dt)
+#summary(vote2020_dt)
+vote2020_dt |>
+  mutate(
+    pct_trump_ticket = 100 * trump_ticket / (
+      trump_ticket + biden_ticket
+    ),
+    trump_margin = pct_trump_ticket - 50,
+    official_voter_turnout = 100 * official_voter_turnout
+  ) -> vote2020_dt
+```
+
+## merge
+
+```{r}
+ohio_dt |>
+  mutate(
+    county_name = str_remove_all(
+      NAME,
+      " County, Ohio"
+    )
+  ) -> ohio_dt
+dt <- reduce(
+  list(issue1_dt, vote2020_dt, ohio_dt),
+  left_join,
+  by = "county_name"
+)
+```
+
+## Analysis
+
+### some scatter plots
+
+```{r}
+## function to make plotting quicker
+myplot <- function(x, y, data = NULL) {
+  if(is.null(data)) data <- dt
+  x <- enquo(x)
+  y <- enquo(y)
+  ggplot(data) +
+    aes(x = !!x, y = !!y, size = popsize) +
+    geom_point(
+      color = "gray"
+    ) +
+    geom_smooth(
+      method = "lm",
+      se = F,
+      color = "navy"
+    ) +
+    theme(
+      legend.position = "none"
+    )
+}
+```
+
+```{r}
+myplot(trump_margin, yes_margin) +
+  geom_abline(
+    slope = 1, intercept = 0,
+    color = "navy",
+    size = 1, linetype = 2
+  ) +
+  labs(
+    x = "Trump's 2020 Margin",
+    y = "Issue 1 Margin",
+    title = "Where did Issue 1 underperform?",
+    subtitle = paste0(
+      "Avg. underperformance = ",
+      with(dt, mean(yes_margin - trump_margin)) |>
+        round(2),
+      " % points"
+    )
+  ) +
+  annotate(
+    "text",
+    x = -10,
+    y = 15,
+    label = "Point Size = Population"
+  )
+```
+
+```{r}
+myplot(medincome, yes_margin - trump_margin) +
+  scale_x_log10()
+```
+
+```{r}
+myplot(long, yes_margin,
+       ohio_map |>
+         group_by(county_name) |>
+         summarize(
+           long = mean(long),
+           yes_margin = mean(yes_margin - trump_margin),
+           popsize = mean(popsize)
+         )) +
+  labs(
+    x = expression(
+      "East "%->%" (Longitude)"
+    ),
+    y = '"Yes" vs. Trump Margin'
+  )
+```
+
+
+### A map of turnout
+
+```{r}
+ohio_map <- map_data(
+  "county", region = "Ohio"
+)
+ohio_map <- left_join(
+  ohio_map,
+  dt |> mutate(subregion = tolower(county_name))
+)
+```
+
+```{r}
+ggplot(ohio_map) +
+  aes(long, lat, group = group) +
+  geom_polygon(
+    aes(fill = yes_margin - trump_margin),
+    linewidth = 0.01,
+    color = "black"
+  ) +
+  ggpal("diverging", "fill") +
+  theme_void() +
+  coord_fixed() +
+  labs(
+    fill = "% Yes vs. % Trump",
+    title = "Voting on Issue 1"
+  )
+```
+
+
+```{r}
+ggplot(ohio_map) +
+  aes(long, lat, group = group) +
+  geom_polygon(
+    aes(fill = yes_margin - trump_margin),
+    linewidth = 0.01,
+    color = "black"
+  ) +
+  ggpal("diverging", "fill") +
+  theme_void() +
+  coord_fixed() +
+  labs(
+    fill = "% Yes vs. % Trump",
+    title = "Voting on Issue 1"
+  ) +
+  geom_point(
+    data = ohio_map |>
+      group_by(county_name) |>
+      summarize(
+        lat = mean(lat),
+        long = mean(long),
+        medincome = mean(medincome),
+        group = mean(group)
+      ),
+    aes(long, lat, size = medincome),
+    color = "white"
+  ) +
+  geom_point(
+    data = ohio_map |>
+      group_by(county_name) |>
+      summarize(
+        lat = mean(lat),
+        long = mean(long),
+        medincome = mean(medincome),
+        group = mean(group)
+      ),
+    aes(long, lat, size = medincome),
+    pch = 1
+  ) +
+  labs(
+    size = "Med. Income"
+  )
+```
+
+```{r}
+ggplot(ohio_map) +
+  aes(long, lat, group = group) +
+  geom_polygon(
+    aes(fill = trump_margin),
+    linewidth = 0.01,
+    color = "black"
+  ) +
+  ggpal("diverging", "fill") +
+  theme_void() +
+  coord_fixed() +
+  labs(
+    fill = "Trump Margin",
+    title = "Voting on Issue 1"
+  )
+```
+

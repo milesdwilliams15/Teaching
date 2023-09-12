@@ -116,3 +116,28 @@ ggplot(dt) +
     method = "lm",
     se = F
   )
+
+dt <- read_csv(
+  here::here("DPR 101", "Data", "ohio_issue1_outcomes.csv")
+)
+names(dt) |>
+  str_replace_all(
+    " ", "_"
+  ) |>
+  tolower() -> names(dt)
+
+dt |>
+  filter(
+    county_name != "Total"
+  ) |>
+  mutate(
+    official_voter_turnout = 
+      100 * ballots_counted / registered_voters
+  ) -> dt
+write_csv(
+  dt,
+  file = here::here(
+    "DPR 101", "Data", 
+    "ohio_issue1_outcomes_CLEANED.csv"
+  )
+)
