@@ -296,7 +296,7 @@ Grade the AI due Fri.
 
 \item Day 2: David Lake, \href{http://quote.ucsd.edu/lake/files/2018/07/Lake-IS-32-1.pdf}{"Escape from the State of Nature"}
 
-\item Day 3: Michael Mandelbaum, \href{https://www.foreignaffairs.com/articles/europe/2017-08-15/pay-europe} {"Pay Up, Europe;"} and Mira Rapp-Hooper, \href{https://www.foreignaffairs.com/articles/united-states/2020-02-10/saving-americas-alliances}{"Saving America's Alliances."}
+\item Day 3: Michael Mandelbaum, \href{https://drive.google.com/file/d/1Eo1Y96gsgn6wLHh8HI4FNyPr-mUh481v/view?usp=sharing} {"Pay Up, Europe;"} and Mira Rapp-Hooper, \href{https://drive.google.com/file/d/1Xh4OhxpTK-Hbm80COYLnIH8h7x9AMvui/view?usp=sharing}{"Saving America's Alliances."}
 
 \end{itemize}
 
