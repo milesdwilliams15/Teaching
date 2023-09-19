@@ -1,0 +1,462 @@
+---
+output: 
+  stevetemplates::beamer:
+    keep_tex: TRUE
+    latex_engine: pdflatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
+title: Globalization
+subtitle: DPR 190
+author: Miles D. Williams
+institute: Data for Political Research
+# titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
+# scaletg: .9 # Optional, proportional (0, 1) to paper width. Defaults to .3
+fontsize: 12pt
+make149: TRUE
+# mainfont: "Open Sans" # Try out some font options if xelatex
+# titlefont: "Titillium Web" # Try out some font options if xelatex
+# specify color as six-digit RGB (no pound sign)
+# primarycolor: "990000" 
+# secondarycolor: "000099"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(cache=F,
+                      message = F,
+                      warning = F,
+                      echo = F,
+                      #dpi = 500,
+                      out.width = "90%",
+                      fig.height = 4.5,
+                      fig.width = 7.5)
+library(tidyverse)
+library(stevemisc)
+library(peacesciencer)
+library(priceR)
+library(coolorrr)
+set_theme()
+set_palette()
+
+data_exists <- file.exists(
+  here::here("DPR 190", "Data", "global_trade.csv")
+)
+if(data_exists) {
+  Data <- read_csv(
+    here::here("DPR 190", "Data", "global_trade.csv")
+  )
+} else {
+  Data <- create_dyadyears() |>
+    add_cow_trade() |>
+    add_sdp_gdp()
+  
+  Data |> 
+  mutate(
+    ## add regional indicators
+    region1 = countrycode::countrycode(
+      ccode1, "cown", "region"
+    ),
+    region2 = countrycode::countrycode(
+      ccode2, "cown", "region"
+    ),
+    same_region = ifelse(
+      region1 == region2,
+      yes = "Yes", no = "No"
+    )
+  ) -> Data
+
+  ## save it
+  write_csv(
+    Data,
+    here::here("DPR 190", "Data", "global_trade.csv")
+  )
+}
+
+## set up for adjusting prices
+country <- "US"
+inflation_dataframe <- retrieve_inflation_data(country)
+countries_dataframe <- show_countries()
+  
+```
+
+
+# Globalization
+
+### Globalization
+
+\begin{centering}
+
+What is \textit{globalization}?
+
+\end{centering}
+
+### Globalization
+
+\begin{centering}
+
+\textbf{Globalization} usually is a term used to describe increasing \textit{cross-border} interconnections across the globe.
+
+\end{centering}
+
+### Globalization
+
+\begin{centering}
+
+How can we \textit{measure} globalization?
+
+\end{centering}
+
+### Globalization
+
+\begin{centering}
+
+A common way to measure globalization is \textit{trade}.
+
+\end{centering}
+
+# When did globalization begin?
+
+### When did globalization begin?
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  # mutate(
+  #   ## adjust the price of trade to 2011 USD
+  #   trade = afi(
+  #     trade, year, country, to_date = 2011,
+  #     inflation_dataframe, countries_dataframe
+  #   ),
+  #   trade_per_gdp = trade / gdp
+  # ) |>
+  ggplot() +
+  aes(x = year, y = trade / 1e09) +
+  geom_point(color = "gray") +
+  geom_line(
+    aes(y = zoo::rollmean(trade / 1e09, 5, na.pad = T)),
+    size = 1,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::dollar
+  ) +
+  scale_x_continuous(
+    breaks = seq(1850, 2020, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "Global Trade\n(Billions)",
+    title = "When did globalization begin?",
+    subtitle = "Total trade per year in current prices"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+```
+
+### When did globalization begin?
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  mutate(
+    ## adjust the price of trade to 2011 USD
+    trade = afi(
+      trade, year, country, to_date = 2011,
+      inflation_dataframe, countries_dataframe
+    ),
+    trade_per_gdp = trade / gdp
+  ) |>
+  ggplot() +
+  aes(x = year, y = trade / 1e09) +
+  geom_point(color = "gray") +
+  geom_line(
+    aes(y = zoo::rollmean(trade / 1e09, 5, na.pad = T)),
+    size = 1,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::dollar
+  ) +
+  scale_x_continuous(
+    breaks = seq(1850, 2020, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "Global Trade\n(Billions)",
+    title = "When did globalization begin?",
+    subtitle = "Total trade per year in 2011 prices"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+```
+
+
+### When did globalization begin?
+
+```{r}
+Data |>
+  group_by(year) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  mutate(
+    ## adjust the price of trade to 2011 USD
+    trade = afi(
+      trade, year, country, to_date = 2011,
+      inflation_dataframe, countries_dataframe
+    ),
+    trade_per_gdp = trade / gdp
+  ) |>
+  ggplot() +
+  aes(x = year, y = trade_per_gdp) +
+  geom_point(color = "gray") +
+  geom_line(
+    aes(y = zoo::rollmean(trade_per_gdp, 5, na.pad = T)),
+    size = 1,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    breaks = seq(1850, 2020, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "Global Trade per GDP (%)",
+    title = "When did globalization begin?",
+    subtitle = "Total trade per real GDP in 2011 USD"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  )
+```
+
+# How global is globalization?
+
+### How global is globalization?
+
+- A key part of globalization is the idea that growing cross-border interconnections are *global*.
+- Does this seem right to you?
+- How could we check?
+
+### How global is globalization?
+
+```{r}
+Data |>
+  group_by(year, same_region) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  drop_na() |>
+  group_by(year) |>
+  mutate(
+    gdp = sum(gdp)
+  ) |>
+  ungroup() |>
+  mutate(
+    ## adjust the price of trade to 2011 USD
+    trade = afi(
+      trade, year, country, to_date = 2011,
+      inflation_dataframe, countries_dataframe
+    ),
+    trade_per_gdp = trade / gdp
+  ) |>
+  group_by(same_region) |>
+  mutate(
+    roll_avg = zoo::rollmean(
+      trade_per_gdp, 5, na.pad = T
+    )
+  ) |>
+  ungroup() |>
+  ggplot() +
+  aes(x = year, y = trade_per_gdp, color = same_region) +
+  geom_point(alpha = 0.3) +
+  geom_line(
+    aes(y = roll_avg),
+    size = 0.75
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    breaks = seq(1850, 2020, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "Global Trade per GDP (%)",
+    title = "How global is globalization?",
+    subtitle = "Total trade per real GDP in 2011 USD",
+    color = "Same Region?\n"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  ) +
+  ggpal()
+```
+
+### How global is globalization?
+
+```{r}
+Data |>
+  group_by(year, same_region) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  drop_na() |>
+  group_by(year) |>
+  mutate(
+    trade_per_region = trade / sum(trade)
+  ) |>
+  group_by(same_region) |>
+  mutate(
+    roll_avg = zoo::rollmean(
+      trade_per_region, 5, na.pad = T
+    )
+  ) |>
+  ungroup() |>
+  ggplot() +
+  aes(x = year, y = trade_per_region, fill = same_region) +
+  geom_area(
+    show.legend = F
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    breaks = seq(1870, 2015, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "(%) of Global Trade",
+    title = "How global is globalization?",
+    subtitle = "Share of trade within versus across regions"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    ),
+    panel.grid.major.x = element_blank()
+  ) +
+  ggpal(aes = "fill") +
+  annotate(
+    "text",
+    x = 1885, y = .3,
+    label = "Within Region\nTrade"
+  ) +
+  annotate(
+    "text",
+    x = 1980, y = .7,
+    label = "Bewteen Region\nTrade",
+    color = "white"
+  ) +
+  geom_hline(
+    yintercept = c(.5, .5),
+    color = c("black", "white"),
+    linewidth = c(1, 0.75)
+  ) 
+```
+
+
+### How global is globalization?
+
+```{r}
+Data |>
+  group_by(year, same_region) |>
+  summarize(
+    trade = sum(flow1 + flow2, na.rm = T) * 1e06,
+    gdp   = sum(exp(wbgdp2011est1) + exp(wbgdp2011est2), na.rm = T),
+    n     = n(),
+    .groups = "drop"
+  ) |>
+  filter(trade > 0) |>
+  drop_na() |>
+  group_by(year) |>
+  mutate(
+    gdp = sum(gdp)
+  ) |>
+  ungroup() |>
+  mutate(
+    ## adjust the price of trade to 2011 USD
+    trade = afi(
+      trade, year, country, to_date = 2011,
+      inflation_dataframe, countries_dataframe
+    ),
+    trade_per_gdp = (trade) / n
+  ) |>
+  group_by(same_region) |>
+  mutate(
+    roll_avg = zoo::rollmean(
+      trade_per_gdp / 1e09, 5, na.pad = T
+    )
+  ) |>
+  ungroup() |>
+  ggplot() +
+  aes(x = year, y = trade_per_gdp / 1e09, color = same_region) +
+  geom_point(alpha = 0.3) +
+  geom_line(
+    aes(y = roll_avg),
+    size = 0.75
+  ) +
+  scale_y_continuous(
+    labels = scales::dollar
+  ) +
+  scale_x_continuous(
+    breaks = seq(1850, 2020, by = 5)
+  ) +
+  labs(
+    x = "Year",
+    y = "Average Trade\n(Billions)",
+    title = "How global is globalization?",
+    subtitle = "Average trade within and between regions in 2011 USD",
+    color = "Same Region?\n"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    )
+  ) +
+  ggpal()
+```
+
+### How global is globalization?
+
+- Cross-border connections have been growing.
+- But these cross-border connections remain disproportionately *regional* rather than *global*.
+- Do you think this conclusion would be the same if we tried to measure globalization a different way?
+
+# Next Time
+
+### Next Time
+
+Henry Farrell and Abraham Newman, "Chained to Globalization" and "Will the Coronavirus End Globalization as we Know It?"
