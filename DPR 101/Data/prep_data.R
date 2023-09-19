@@ -141,3 +141,29 @@ write_csv(
     "ohio_issue1_outcomes_CLEANED.csv"
   )
 )
+
+
+
+# clean up some MIE data --------------------------------------------------
+
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20190/Data/events/mie-1.0.csv"
+mie_data <- read_csv(url)
+mie_data |>
+  filter(styear >= 2000) |>
+  group_by(ccode1) |>
+  summarize(
+    n_events = n(),
+    fatalmin = sum(fatalmin1),
+    fatalmax = sum(fatalmax1),
+    .groups = "drop"
+  ) |> 
+  mutate(
+    country = countrycode::countrycode(
+      ccode1, "cown", "country.name"
+    )
+  ) -> mie_small
+
+write_csv(
+  mie_small,
+  here::here("DPR 101", "Data", "MIE_2000-2014.csv")
+)

@@ -1,11 +1,19 @@
 ---
 title: "Showing the right numbers, part 2"
-output: github_document
+output: 
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<center>
+
+[<-- Show the Right Numbers, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Drawing Maps, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md)
+
+</center>
 
 
 ## Goals
@@ -17,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Frequency plots for showing summaries
 
-Some geoms transform or summarize the data for us when we plot it. We talked about using `geom_bar()` last time. This function really shines when we want to break the data down by multiple categories at once---imagine the data viz equivalent of a cross-tab.
+Some geoms transform or summarize the data for us when we plot it. We talked about using `geom_bar()` to do this before. This function really shines when we want to break the data down by multiple categories at once---imagine the data viz equivalent of a cross-tab.
 
 ```{r}
 library(tidyverse)
@@ -28,7 +36,7 @@ ggplot(gss_sm) +
   geom_bar()
 ```
 
-The above summarizes the number of observations by census region in the GSS 2016 dataset from the `{socviz}` package. By mapping fit to religion, it further breakds down the count by self-identified region among survey respondents.
+The above summarizes the number of observations by census region in the GSS 2016 dataset from the `{socviz}` package. By mapping fit to religion, it further breaks down the count by self-identified region among survey respondents.
 
 By updating just one option we can convert this output from a raw count to a proportion. 
 
@@ -38,9 +46,7 @@ ggplot(gss_sm) +
   geom_bar(position = "fill")
 ```
 
-By setting `position = "fill"` the output now shows proportions by our x variable. We can now see the share of respondents by region that self-identy with a particular religion.
-
-We could show the proportions side-by-side to make comparisons even clearer. But we have to take a few more steps than you might think. For example, say we tried using `position = "dodge`:
+By setting `position = "fill"` the output now shows proportions by our x variable. We can now see the share of respondents by region that self-identify with a particular religion. We also could show the proportions side-by-side to make comparisons even clearer, but we have to take a few more steps than you might think. For example, say we tried using `position = "dodge"`:
 
 ```{r}
 ggplot(gss_sm) +
@@ -71,7 +77,7 @@ ggplot(gss_sm) +
   )
 ```
 
-Instead of mapping fill to religion, we could facet by region to avoid the need to map fill.
+If we don't like having to do two mappings for a single variable, we instead could facet by region to avoid the need to map the fill aesthetic. 
 
 ```{r}
 ggplot(gss_sm) +
@@ -88,10 +94,11 @@ ggplot(gss_sm) +
   )
 ```
 
+The above is, in some ways, much better than using fill. The above provides a nice summary of the distribution of religious affiliations across different regions in the U.S. It also makes it clear that proportions are based on region.
 
 ## Show distributions
 
-Bar plots provide a useful way to show the distribution of observations across discrete categories. We can use other geoms to summarize numerical variables. 
+Speaking of *distributions*, bar plots provide a useful way to show the distribution of observations across discrete categories. We can use other geoms to summarize numerical variables, too. 
 
 Here's some data on fatalities from political violence events, including battles, protests, etc., in Ukraine. The data is at the month level from 2018 to 2022.
 
@@ -202,3 +209,11 @@ ggplot(oecd_sum) +
 
 The data `oecd_sum` already is summarized in the appropriate way to make mapping the data to aesthetics straightforward.
 
+
+## Where to next?
+
+<center>
+
+[<-- Show the Right Numbers, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Drawing Maps, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md)
+
+</center>

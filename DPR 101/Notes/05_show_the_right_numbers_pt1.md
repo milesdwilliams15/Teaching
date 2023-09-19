@@ -158,19 +158,29 @@ ggplot(Data) +
 <img src="05_show_the_right_numbers_pt1_files/figure-gfm/unnamed-chunk-5-1.png" width="75%" />
 
 That’s better, but we don’t have a finished product yet. Another option
-to try is to add a couple of different smoothed layers. One where we map
+to try is to add a couple of different smoothed layers, one where we map
 groups to states and another that just shows the overall trend. We’ll
-drop the points geom, too.
+add some transparency to the points, too. We’ll also introduce a new
+function called `stat_smooth()`. This is a lot like `geom_smooth()` but
+it lets us customize a few extra things such as line transparency.
 
 ``` r
 ggplot(Data) +
   aes(x = pop, y = black) +
-  geom_smooth(
-    aes(group = state),
-    se = F,
+  geom_point(
+    alpha = 0.5,
     color = "gray"
   ) +
+  stat_smooth(
+    aes(group = state),
+    geom = "line",
+    se = F,
+    color = "gray30",
+    linewidth = 0.5,
+    alpha = 0.5
+  ) +
   geom_smooth(
+    color = "black",
     se = F
   ) +
   scale_x_log10()
