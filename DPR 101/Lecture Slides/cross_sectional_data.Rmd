@@ -1,0 +1,99 @@
+---
+output: 
+  stevetemplates::beamer:
+    keep_tex: TRUE
+    latex_engine: pdflatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
+title: Cross-sectional Data
+subtitle: DPR 190
+author: Miles D. Williams
+institute: Data for Political Research
+# titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
+# scaletg: .9 # Optional, proportional (0, 1) to paper width. Defaults to .3
+fontsize: 12pt
+make149: TRUE
+# mainfont: "Open Sans" # Try out some font options if xelatex
+# titlefont: "Titillium Web" # Try out some font options if xelatex
+# specify color as six-digit RGB (no pound sign)
+# primarycolor: "990000" 
+# secondarycolor: "000099"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F,
+  message = F
+)
+library(tidyverse)
+library(stevemisc)
+library(kableExtra)
+
+## some data
+path <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv"
+mie_data <- read_csv(path)
+```
+
+
+# Cross-sectional data
+
+### Cross-sectional data
+
+\begin{centering}
+
+What is it?
+
+\end{centering}
+
+### Cross-sectional data
+
+**A dataset:**
+
+```{r}
+mie_data |>
+  filter(fatalmin > 0) |>
+  sample_n(5) 
+```
+
+### Cross-sectional data
+
+*Tidy* cross-sectional data:
+
+- Each *row* is a unique unit of observation
+- Each *column* is a variable for a unique unit
+- Each *cell* contains only one value
+
+### Cross-sectional data
+
+**Not a cross-sectional dataset**:
+
+```{r}
+gapminder::gapminder |>
+  slice_head(n = 5) 
+```
+
+### Cross-sectional data
+
+\begin{centering}
+If a unit makes \textbf{makes more than one appearance} in the data, the data is either not tidy or not cross-sectional.
+\end{centering}
+
+# Uses of cross-sectional data
+
+### Uses of cross-sectional data
+
+- What's a benefit of cross-sectional data?
+- What's a limitation?
+
+
+### Uses of cross-sectional data
+
+- \textcolor{purple}{Efficient, snap-shot, case comparisons, generate hypotheses}
+- What's a limitation?
+
+
+### Uses of cross-sectional data
+
+- \textcolor{purple}{Efficient, snap-shot, case comparisons, generate hypotheses}
+- \textcolor{purple}{Apples-to-oranges, selection bias}
