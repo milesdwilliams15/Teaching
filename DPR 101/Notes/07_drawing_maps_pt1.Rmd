@@ -486,7 +486,7 @@ ggplot(map_forecast_data) +
     fill = probwin
   ) +
   geom_polygon(
-    color = "white",
+    color = "black",
     size = 0.1
   ) +
   facet_wrap(
