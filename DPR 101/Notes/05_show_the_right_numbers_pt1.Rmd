@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 <center>
 
-[<-- `ggplot()` Basics, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Showing the Right Numbers, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+[<-- `ggplot()` Basics, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/04_ggplot_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Showing the Right Numbers, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/06_show_the_right_numbers_pt2.md)
 
 </center>
 
@@ -267,6 +267,6 @@ We'll introduce some new functions later on that let us do many of these transfo
 
 <center>
 
-[<-- `ggplot()` Basics, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Showing the Right Numbers, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+[<-- `ggplot()` Basics, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/04_ggplot_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Showing the Right Numbers, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/06_show_the_right_numbers_pt2.md)
 
 </center>

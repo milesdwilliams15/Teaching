@@ -1,4 +1,4 @@
-Showing the right numbers, part 2
+Showing the right numbers, Part II
 ================
 
 - [Goals](#goals)

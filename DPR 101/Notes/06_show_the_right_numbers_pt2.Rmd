@@ -1,5 +1,5 @@
 ---
-title: "Showing the right numbers, part 2"
+title: "Showing the right numbers, Part II"
 output: 
   github_document:
     toc: yes

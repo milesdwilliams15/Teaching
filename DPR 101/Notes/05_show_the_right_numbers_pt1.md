@@ -12,11 +12,11 @@ Showing the right numbers, Part 1
 <center>
 
 [\<– `ggplot()` Basics, Part
-II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md)
+II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/04_ggplot_pt2.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
 \| [Showing the Right Numbers, Part II
-–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/06_show_the_right_numbers_pt2.md)
 
 </center>
 
@@ -389,10 +389,10 @@ transformations of your data under the hood with ggplot, too.
 <center>
 
 [\<– `ggplot()` Basics, Part
-II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/03_ggplot_pt2.md)
+II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/04_ggplot_pt2.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
 \| [Showing the Right Numbers, Part II
-–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/05_show_the_right_numbers_pt2.md)
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/06_show_the_right_numbers_pt2.md)
 
 </center>
