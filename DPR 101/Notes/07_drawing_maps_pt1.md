@@ -595,65 +595,88 @@ Above, we used small-multiples with a geographically informed
 arrangement to make something like a map. We can also use
 small-multiples with actual maps to show how trends evolve over time.
 
-Here’s an example using FiveThirtyEight 2020 US Presidential election
-forecasts by state. The data contains a few different columns. The unit
-of observation is at the state-day level, and key outcomes of interest
-include Joe Biden’s predicted vote share on a given day in a given state
-and his predicted probability of winning a majority of votes in that
-state. The data has been filtered down to only include predictions for
-the first day of the month for September, October, and November.
+Here’s an example using the gapminder dataset. Let’s access the data and
+look at the year column.
 
 ``` r
-url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/538_prez_forecast_small_2020.csv"
-forecast_data <- read_csv(url)
+library(gapminder)
+unique(gapminder$year)
 ```
 
-With the data read in, we just need to merge it with `us_state` data
-which we read into R earlier.
+    ##  [1] 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 2002 2007
+
+We have a bunch of years in the data. To keeps things simple, let’s just
+pick three years:
 
 ``` r
-# cross-walk the data
-forecast_data$region <- tolower(usdata::abbr2state(forecast_data$state))
-  # we need a region column in election to match the column in us_states
-
-# join the data
-map_forecast_data <- left_join(us_states, forecast_data)
+years_to_keep <- c(1957, 1982, 2007)
+gapminder_sm <- gapminder |>
+  filter(year %in% years_to_keep)
 ```
 
-We now have what we need to draw three different maps, one for the first
-of September, the first of October, and the first of November. All we
-need to do is make our ggplot and facet by the variable `forecast_date`.
+Remember, this dataset is for countries, so instead of a map of only the
+U.S. we need a map of the world. The below code uses the `map_data()`
+function to get the coordinates to draw a world map. It then joins this
+data with the gapminder dataset:
 
 ``` r
-ggplot(map_forecast_data) +
+world_map <- map_data("world")
+
+## cross-walk the data
+gapminder_sm <- gapminder_sm |>
+  mutate(
+    country = countrycode::countrycode(
+      country, "country.name", "country.name"
+    )
+  )
+world_map <- world_map |>
+  mutate(
+    country = countrycode::countrycode(
+      region, "country.name", "country.name"
+    )
+  )
+
+## merge
+world_data <- left_join(
+  world_map, gapminder_sm, by = "country"
+) 
+```
+
+We now have what we need to draw three different maps, one for 1957, one
+for 1982, and one for 2007. Let’s show how life expectancy has changed
+across countries over time:
+
+``` r
+ggplot(drop_na(world_data, year)) +
   aes(
     x = long,
     y = lat,
-    group = group,
-    fill = probwin
+    group = group
   ) +
   geom_polygon(
+    data = world_map,
+    color = "black",
+    size = 0.1,
+    fill = "lightgray"
+  ) +
+  geom_polygon(
+    aes(fill = lifeExp),
     color = "black",
     size = 0.1
   ) +
   facet_wrap(
-    ~ forecast_date,
+    ~ year,
     ncol = 2
   ) +
-   coord_map(
-    projection = "albers",
-    lat0 = 39,
-    lat1 = 45
-  ) +
+  coord_fixed() +
   # Adding some special sauce...
   ggpal(
     type = "sequential",
-    aes = "fill",
-    labels = scales::percent
+    aes = "fill"
   ) +
   labs(
-    caption = "Biden's Probability of Victory (2020)",
-    fill = "% Probability"
+    caption = "Life Expectancy over Time",
+    fill = "Avg. Life Expectancy"
   ) +
   theme_void() +
   theme(
@@ -666,12 +689,9 @@ ggplot(map_forecast_data) +
   )
 ```
 
-<img src="07_drawing_maps_pt1_files/figure-gfm/unnamed-chunk-23-1.png" width="75%" />
+<img src="07_drawing_maps_pt1_files/figure-gfm/unnamed-chunk-24-1.png" width="75%" />
 
-The figure shows three versions of the US map. The hue of states
-corresponds with the probability that Biden wins the popular vote. Is
-there much movement in FiveThirtyEight’s forecast over these three
-months?
+And there we go!
 
 <center>
 
