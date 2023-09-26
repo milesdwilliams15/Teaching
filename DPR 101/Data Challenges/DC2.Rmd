@@ -1,0 +1,166 @@
+---
+title: "Example solutions for GC2"
+author: "Miles D. Williams"
+date: "2023-09-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F,
+                      out.width = "80%",
+                      dpi = 500)
+```
+
+## Prompt for GC2
+
+For this graph challenge I want you to use the following dataset (linked to below) which has for over 120 countries the number of "militarized interstate events" each has been a part of between 2001 and 2014. For each country, there are also columns that show the minimum and maximum total estimated fatalities associated with these events for the country involved.
+
+With this data I want you to:
+
+Create a new summary data object which contains a summary of the proportion of events and the proportion of the maximum total estimated fatalities by world region (you'll need to add a region column to the data to do this).
+Using this summary data object, find a creative way to plot how the proportion of militarized events per region is correlated with the proportion of total deaths from these militarized events a region is responsible for.
+Write a short paragraph (2-5 sentences) summarizing this relationship.
+As usual, your work should be submitted as a knitted .html or word document.
+
+Here's the data: <https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv> to an external site.
+
+
+## Solution
+
+First, we need to read in and prep the data:
+
+```{r}
+library(tidyverse)
+library(ggtext)
+library(coolorrr)
+set_theme()
+set_palette()
+Data <- read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv"
+)
+```
+
+Next, we need to create a region column:
+
+```{r}
+Data <- Data |>
+  mutate(
+    region = countrycode::countrycode(
+      country, "country.name", "region"
+    )
+  )
+```
+
+
+Next, we need to create a new summary dataset that has the proportion of militarized events by region and the proportion of maximum estimated fatalities from militarized events.
+
+```{r}
+prop_data <- Data |> # start with the data
+  # then group by region
+  group_by(region) |>
+  # summarize the total no. of events and deaths per region
+  summarize(
+    events = sum(n_events),
+    fatalmax = sum(fatalmax),
+    .groups = "drop" # drop the group by region
+  ) |>
+  # add two new columns that convert the counts to proportions
+  mutate(
+    prop_events = events / sum(events),
+    prop_fatalmax = fatalmax / sum(fatalmax)
+  )
+```
+
+Now, with the data we can visualize the distribution of event and fatality proportions. There are a few possible approaches you could take.
+
+### Visualization 1
+
+We could make a bar chart.
+
+```{r}
+prop_data |>
+  pivot_longer(
+    cols = prop_events:prop_fatalmax
+  ) |>
+  ggplot() +
+  aes(y = reorder(region, value)) +
+  geom_col(
+    aes(x = value, fill = name),
+    position = "dodge"
+  ) +
+  labs(
+    x = "Proportion",
+    y = NULL,
+    title = "Proportion of MIEs versus MIE fatalities",
+    fill = NULL
+  ) +
+  ggpal(aes = "fill", labels = c("prop_events" = "Events",
+                                "prop_fatalmax" = "Fatalities")) 
+```
+
+## Visualization 2
+
+A more advanced solution might call for points rather than bars.
+
+```{r}
+ggplot(prop_data) +
+  aes(y = reorder(region, prop_events)) +
+  geom_segment(
+    aes(x = prop_events, xend = prop_fatalmax,
+        yend = reorder(region, prop_events)),
+    color = "darkgrey",
+    size = 1
+  ) +
+  geom_point(
+    aes(x = prop_events),
+    color = "blue"
+  ) +
+  geom_point(
+    aes(x = prop_fatalmax),
+    color = "red"
+  ) +
+  labs(
+    x = "Proportion",
+    y = NULL,
+    title = "Proportion of <i style = 'color:blue;'>MIEs</i> and <i style = 'color:red;italic;bold;'>fatalities</i>"
+  ) +
+  theme(
+    plot.title = element_textbox_simple()
+  )
+```
+
+### Visualization 3
+
+You could also use a scatter plot:
+
+```{r}
+ggplot(prop_data) +
+  aes(x = prop_events, y = prop_fatalmax) +
+  geom_point(color = "gray") +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = 2
+  ) +
+  geom_point(
+    data = prop_data |>
+      filter(prop_fatalmax==max(prop_fatalmax)),
+    color = "navy",
+    size = 2
+  ) +
+  geom_text(
+    data = prop_data |>
+      slice_max(prop_fatalmax, n = 1),
+    aes(label = region),
+    hjust = -0.25,
+    color = "navy"
+  ) +
+  labs(
+    x = "Proportion of events",
+    y = "Proportion of fatalities",
+    title = "Are MIEs and MIE fatalities concentrated\nin the same places?"
+  )
+```
+

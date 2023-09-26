@@ -1,0 +1,57 @@
+---
+title: "GC3"
+author: "Miles D. Williams"
+date: "2023-09-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F)
+```
+
+## read in the packages
+
+```{r}
+library(tidyverse)
+library(socviz)
+```
+
+## merge and filter the data
+
+```{r}
+cty_map_data <- left_join(county_map, county_data)
+st_map_data <- cty_map_data |>
+  filter(state == "OH")
+```
+
+## plot
+
+show the change in the GOP or Dem vote share between 2016 and 2012:
+
+```{r}
+st_map_data |>
+  mutate(
+    diff_per_gop = 100 * (per_gop_2016 - per_gop_2012)
+  ) |>
+  ggplot() +
+  aes(
+    x = long,
+    y = lat,
+    group = group,
+    fill = diff_per_gop
+  ) +
+  geom_polygon(
+    color = "black",
+    size = 0.05
+  ) +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red") +
+  theme_void() +
+  coord_fixed() +
+  labs(
+    fill = "% point change",
+    title = "Which OH counties became redder in 2016?"
+  )
+```
+

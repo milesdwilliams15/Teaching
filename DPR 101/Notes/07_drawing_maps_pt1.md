@@ -1,4 +1,4 @@
-Drawing maps, part 1
+Drawing maps, Part I
 ================
 
 - [Goals](#goals)
