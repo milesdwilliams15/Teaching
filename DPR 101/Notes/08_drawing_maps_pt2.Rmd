@@ -219,13 +219,14 @@ elect_night |>
     x = "2016 Forecast Error",
     y = "2020 Forecast Error",
     title = "Are forecast errors correlated?",
+    subtitle = "Blue is the regression line and red is a 90-degree angle",
     caption = "Data: FiveThirtyEight"
   )
 ```
 
 There is a clear positive relationship, which suggests that there may be some systematic biases in FiveThirtyEight's prediction model. However, the errors are not 1-to-1 correlated. Notice how the regression line has a shallower slope than the 90-degree angle? This is a classic example of a phenomenon called *reversion* or *regression to the mean*. Places where FiveThirtyEight's forecast did exceptionally well (better than average) in 2016 tended to see an increase in prediction error in 2020, while places where the forecast error was exceptionally bad (worse than average) in 2016 tended to see an improvement in prediction error in 2020.
 
-As a final step in telling a story about FiveThirtyEight's forecast errors, we might conclude by summarizing where prediction errors worsened or improved in 2020 relative to 2016. This is an ideal taks for a map, but instead of making a full blown map, we can just use a geofaceted small multiple. The below figure shows the percentage point improvement in FiveThirtyEight's forecast in different states in 2020 relative to 2016. Positive values mean that the forecast was more accurate, and negative values mean it was less accurate. We can see that across states the forecast seemed to generally get worse in 2020; though there were some pockets of improvement.
+As a final step in telling a story about FiveThirtyEight's forecast errors, we might conclude by summarizing where prediction errors worsened or improved in 2020 relative to 2016. This is an ideal task for a map, but instead of making a full blown map, we can just use a geofaceted small multiple. The below figure shows the percentage point improvement in FiveThirtyEight's forecast in different states in 2020 relative to 2016. Positive values mean that the forecast was more accurate, and negative values mean it was less accurate. We can see that across states the forecast seemed to generally get worse in 2020; though there were some pockets of improvement.
 
 ```{r}
 library(geofacet)

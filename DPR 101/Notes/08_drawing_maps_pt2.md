@@ -266,6 +266,7 @@ elect_night |>
     x = "2016 Forecast Error",
     y = "2020 Forecast Error",
     title = "Are forecast errors correlated?",
+    subtitle = "Blue is the regression line and red is a 90-degree angle",
     caption = "Data: FiveThirtyEight"
   )
 ```
@@ -285,7 +286,7 @@ average) in 2016 tended to see an improvement in prediction error in
 
 As a final step in telling a story about FiveThirtyEight’s forecast
 errors, we might conclude by summarizing where prediction errors
-worsened or improved in 2020 relative to 2016. This is an ideal taks for
+worsened or improved in 2020 relative to 2016. This is an ideal task for
 a map, but instead of making a full blown map, we can just use a
 geofaceted small multiple. The below figure shows the percentage point
 improvement in FiveThirtyEight’s forecast in different states in 2020
