@@ -280,7 +280,7 @@ The colors are off, of course. We’ll talk more about advanced
 customization options for color palettes in a few weeks. As a preview,
 I’ve made some of those updates below using the `{coolorrr}` package
 which you can install by writing
-`devtools::install_github("milesdwilliams15/coolorrr")`
+`devtools::install_github("milesdwilliams15/coolorrr")`.
 
 ``` r
 library(coolorrr)
