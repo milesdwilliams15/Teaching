@@ -13,7 +13,13 @@ knitr::opts_chunk$set(echo = TRUE,
                       out.width = "75%")
 ```
 
-## Learning Objectives
+<center>
+
+[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
+
+</center>
+
+## Goals
 
 - Apply the main `{dplyr}` functions to mutate and summarize a dataset.
 - Layer complexity by chaining together multiple `{dplyr}` functions.
@@ -201,13 +207,11 @@ Data |>
   arrange(warname)
 ```
 
-Awesome. Now all the data is sorted using warname in alphabetical order. Where do you think the NAs went? How would we check? 
-
-Hint: NAs are always sorted to the end, whether you use ascending or descending order.
+Awesome. Now all the data is sorted using warname in alphabetical order. Where do you think the NAs went? NAs are always sorted to the end, whether you use ascending or descending order.
 
 ### select()
 
-Here’s another one. `select()` is another way to “slice” our dataframe. Usually, we don’t need ALL the variables for a given data analysis, so it is more efficient to just look at the ones that we need. 
+Here’s another one. `select()` is another way to slice our dataframe. Usually, we don’t need ALL the variables for a given data analysis, so it is more efficient to just look at the ones that we need. 
 
 How many columns does the data have? Use `ncol()`
 
@@ -222,14 +226,14 @@ Data |>
   select(statenme, year, cowintraongoing, sideadeaths, sidebdeaths)
 ```
 
-What if we wanted most of the columns, but just not surplus domestic product? Do we have to name all the other columsn? Thankfully, no!
+What if we wanted most of the columns, but just not surplus domestic product? Do we have to name all the other columns? Thankfully, no!
 
 ```{r}
 Data |>
   select(-sdpest)
 ```
 
-We can even use some “helper functions” inside of select() to get even more specific. A few examples are:
+We can even use some helper functions inside of select() to get even more specific. A few examples are:
 
 - `starts_with("")` 
 - `end_with("")`
@@ -245,9 +249,9 @@ Data |>
 
 ### mutate()
 
-Sometimes we need to create new variables. This might be a function of an existing column. We tried this, too, recently.
+Sometimes we need to create new variables. We can do that using `mutate()`.
 
-This is our fourth `{dplyr}` command - let’s start chaining some of these together to see how they work! Here’s one that we did before, to select just 5 columns:
+Since this is our fourth `{dplyr}` function, let’s start chaining some of these together to see how they work! Here’s one that we did before, to select just 5 columns:
 
 ```
 Data |>
@@ -278,9 +282,9 @@ Data |>
   )
 ```
 
-See above, we can even do this all at once, by referring to columns that we have just created!
+See above we can even do this all at once, by referring to columns that we have just created!
 
-Or we can do it all in one equation, if we don’t need to save out a column for height in meters.
+We could also just make a deaths per capita column without the extra step:
 
 ```{r}
 Data |>
@@ -292,9 +296,9 @@ Data |>
 ```
 
 
-Note that as things are getting more complex, we just did one step at a time, and then went back to edit what we just did, making sure each step along the way worked before making it more complicated. This is a good recipe for success, and to cut down on frustration!
+Note that as things are getting more complex, it's helpful to do things one step at a time rather than all at once. This is a good recipe for success, and will help cut down on frustration.
 
-You could use any mathematical operators, here, including `sum(x)`, `y - mean(y)`, `log()`, `log2()`, `log10()`, `lead()`
+You could use many mathematical operators to create new columns, including `sum(x)`, `y - mean(y)`, `log()`, `log2()`, `log10()`, `lead()`
 
 
 ### summarize() and group_by()
@@ -360,8 +364,8 @@ Data |>
   ) |>
   group_by(year) |>
   summarize(
-    gdp_pc = mean(gdp_pc),
-    N = n()
+    gdp_pc = median(gdp_pc),
+    N_obs = n()
   )
 ```
 
@@ -392,7 +396,7 @@ Data |>
   ) |>
   ggplot() +
   aes(x = year, y = conflict_rate) +
-  geom_col() +
+  geom_area() +
   labs(
     x = NULL,
     y = "Rate of Initiation",
@@ -401,3 +405,145 @@ Data |>
   )
 ```
 
+## Pivoting data with `{tidyr}`
+
+There are some instances where we may want to pivot our data to make it longer or wider prior to plotting as well. Our dataset contains three different measures of democracy. Let's compare how average quality of democracy looks over time based on the measure we use:
+
+```{r}
+dem_per_year <- Data |>
+  ## first we need to put these measures on the same scale:
+  mutate(
+    across(v2x_polyarchy:xm_qudsest, scale)
+  ) |>
+  ## then group by year
+  group_by(
+    year
+  ) |>
+  ## then take the average of each per year
+  summarize(
+    across(v2x_polyarchy:xm_qudsest, ~  mean(.x, na.rm=T))
+  ) 
+```
+
+If we look at the data we can see that it gives us a summary of the average democracy score in what we call standard deviation units per each measure:
+
+```{r}
+dem_per_year
+```
+
+Now, we could use this data as-is for plotting. We can just give it to ggplot then add a geom_line() for each variable:
+
+```{r}
+ggplot(dem_per_year) +
+  aes(x = year) +
+  geom_line(
+    aes(y = v2x_polyarchy),
+    color = "navy"
+  ) +
+  geom_line(
+    aes(y = polity2),
+    color = "gray"
+  ) +
+  geom_line(
+    aes(y = xm_qudsest),
+    color = "red"
+  )
+```
+
+That's okay, but we now have to figure out how to add a legend. We can do this using a few hacks, but as a rule I like to avoid relying on too many of these. 
+
+Enter the pivot functions. These live in the `{tidyr}` package, which, like `{dplyr}`, is part of the tidyverse and is opened automatically when you run `library(tidyverse)`. 
+
+To help with plotting democracy trends using each of the measures we have in our dataset, the function we need to use is `pivot_longer()`:
+
+```{r}
+dem_per_year |>
+  pivot_longer(
+    cols = v2x_polyarchy:xm_qudsest
+  )
+```
+
+As you can see above, I used `pivot_longer()` to reshape my dataset. Specifically, I made it *un*tidy. As a general rule of thumb, we like tidy data, which, if you remember, has three characteristics:
+
+1. Each row is an observation.
+2. Each column is a variable.
+3. Each cell has a single entry.
+
+By pivoting the data, it no longer has characteristics 1 and 2. Though this is normally bad, it is actually ideal for plotting our democracy data side-by-side with ggplot. This is because, with the data pivoted, we can do this:
+
+```{r}
+dem_per_year |>
+  pivot_longer(
+    v2x_polyarchy:xm_qudsest
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = value,
+    color = name
+  ) +
+  geom_line()
+```
+
+By pivoting the data, we produced our plot using much less code and we have a legend automatically produced for us with different colors associated with each measure of democracy. 
+
+This approach also could have come in handy in one of our earlier Graph Challenges where I asked you to show me how the proportion of militarized interstate events across world regions was related to the proportion of fatalities across world regions associated with these events:
+
+```{r}
+## read in the data
+Data <- read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv"
+)
+
+## add a region column
+Data <- Data |>
+  mutate(
+    region = countrycode::countrycode(
+      country, "country.name", "region"
+    )
+  )
+
+## calculate the regional proportions
+prop_data <- Data |> # start with the data
+  # then group by region
+  group_by(region) |>
+  # summarize the total no. of events and deaths per region
+  summarize(
+    events = sum(n_events),
+    fatalmax = sum(fatalmax),
+    .groups = "drop" # drop the group by region
+  ) |>
+  # add two new columns that convert the counts to proportions
+  mutate(
+    prop_events = events / sum(events),
+    prop_fatalmax = fatalmax / sum(fatalmax)
+  )
+
+## make the plot
+prop_data |>
+  pivot_longer(
+    cols = prop_events:prop_fatalmax
+  ) |>
+  ggplot() +
+  aes(y = reorder(region, value)) +
+  geom_col(
+    aes(x = value, fill = name),
+    position = "dodge"
+  ) +
+  labs(
+    x = "Proportion",
+    y = NULL,
+    title = "Proportion of MIEs versus MIE fatalities",
+    fill = NULL
+  )
+```
+
+
+
+## Where to next?
+
+<center>
+
+[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
+
+</center>
