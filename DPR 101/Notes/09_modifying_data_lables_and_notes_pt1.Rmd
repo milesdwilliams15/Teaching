@@ -1,5 +1,5 @@
 ---
-title: "Modifying data with `{dplyr}`"
+title: "Modifying data with `{dplyr}` and `{tidyr}`"
 output: 
   github_document:
     toc: yes
@@ -15,20 +15,21 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ## Learning Objectives
 
-- Apply the main `{dplyr}` functions to manipulate a dataset
-- Layer complexity by chaining together multiple `{dplyr}` functions to solve a problem.
+- Apply the main `{dplyr}` functions to mutate and summarize a dataset.
+- Layer complexity by chaining together multiple `{dplyr}` functions.
+- Use `{tidyr}` functions to reshape datasets.
 
 
-## Using `{dplyr}` for data manipulation/wrangling
+## Using `{dplyr}` for data mutation and summaries
 
 The `{dplyr}` package is a powerful tool for letting us transform a dataframe into what we need for analysis and data visualization. This package is part of the `{tidyverse}` and is automatically opened when you use `library(tidyverse)`.
 
 There are 6 key `{dplyr}` functions that you need to know about:
 
 - `filter()`: Choose observations based on their values (==, !=, >, <, >=, <=)
-- `arrange()`: Reorder the rows (sort based on a variable)
+- `arrange()`: Reorder the rows of a dataset based on the values of a variable
 - `select()`: Choose variables (columns) based on their names
-- `mutate()`: Use existing variables to create new variables
+- `mutate()`: Create new variables or modify existing ones
 - `summarize()`: Collapse many variables into a single summary 
 - `group_by()`: Specify the scope of the function that you want to perform (for example, calculate the average votes cast for a candidate by education level). ORDERING MATTERS!
 
@@ -43,20 +44,22 @@ While the functions available with `{dplyr}` are functions, sometimes we call th
 
 `filter(data, colname == "value" & colname >= 1000)`
 
-We can chain together multiple dplyr “layers”, like with ggplot, but we use the `%>%` pipe instead of `+`.
+We can chain together multiple dplyr “layers”, like with ggplot, but to do this we use the `|>` pipe instead of `+`. We've already seen this in action in some previous code. Once upon a time, to pipe we need to use the slightly more verbose `|>`. You can still use this version of the pipe, but the most up-to-date version of R provides `|>` as a new alternative. There are just a few minor differences in how they work, but these differences usually don't matter, except for one. A nice feature of `|>` is that it is computationally faster than `|>` (in addition to being slightly quicker to write). If you have a lot of code to run and lots of computations to deal with, any small efficiency gain is a win.
 
-1. First, we start with the data frame
-2. Then, we add arguments that describe what to do with the data frame, using the column (variable) names. Note that we don’t need to put the column names in quotes, because we’ve already specified the data frame that they are contained in, R will be able to find them as a “known” object. 
-3. The output is a new data frame
+Here's how the workflow generally works:
 
-Do you recall using `filter()` for your last data challenge? What do we need to add if we want to save the output so we can do things with it later? Any time we filter data, if we want to save it we need to make sure we assign the output a name so that it is a known object in R's memory.
+1. First, we start with data object.
+2. Then, we add arguments that describe what to do with the data, using the column (variable) names. Note that we don’t need to put the column names in quotes. Because we’ve already specified the data object that they are contained in, R will be able to find them as a “known” object. 
+3. The output is a new data frame, which we can save as a new object.
+
+For example, say we wanted to create a smaller version of our dataset that only contains certain observations. We would write:
 
 ```
-filtered_data <- data %>%
+filtered_data <- data |>
 	filter(column_name == "some text")
 ```
 
-To filter, we need to remember and know how to use the comparison operators: 
+To filter data correctly, we need to know how to use the comparison operators: 
 
 - Greater than `>`
 - Less than `<`
@@ -96,13 +99,18 @@ library(peacesciencer)
 
 This package has a lot of useful data for studying conflict, which is a core subject of study in the political science field called international relations or IR.
 
-We can call the data we want and customize it using a variety of functions (and we can do this all using the `%>%` operator from `{dplyr}`!).
+We can call the data we want and customize it using a variety of functions (and we can do this all using the `|>` operator!).
 
 ```{r}
-create_stateyears() %>%
-  add_cow_majors() %>%
-  add_cow_wars(type = "intra") %>%
-  add_democracy() %>%
+## start with function that creates state-year data
+create_stateyears() |>
+  ## then use this function to add major power indicators
+  add_cow_majors() |>
+  ## add indicators for whether countries experience civil war
+  add_cow_wars(type = "intra") |>
+  ## add information about the quality of democracy in countries
+  add_democracy() |>
+  ## add economic info
   add_sdp_gdp() -> Data
 ```
 
@@ -111,7 +119,7 @@ In the above, we made a dataset where the unit of observation is a country-year 
 1. Whether the country is classified as a "major power."
 2. Whether the country experienced a intra-state war or civil war.
 3. Information about the quality of democracy.
-4. Information about economic wellbeing.
+4. Information about economic well being.
 
 We can use the `dim()` function to check out the size of the data.
 
@@ -123,42 +131,40 @@ With this data, we'll walk through the different `{dplyr}` "verbs" for manipulat
 
 ### filter()
 
-Let’s just practice filter first, which we’ve already seen in action. Let’s say we only want data for major powers.
+Let’s just practice filter first, which we’ve already seen in action. Let’s say we only want data for major powers. When an observation is a major power, the data codes it as 1. So if we write the following, we'll only keep the rows in the data where a country is a major power:
 
 ```{r}
-Data %>%
+Data |>
   filter(cowmaj == 1)
 ```
 
-OK but what if we want to filter on two variables, major powers that are experiencing civil wars?
+OK but what if we want to filter on two variables. Say we wanted major powers that also are experiencing civil wars? We just include the and operator `&` and include a new logical condition:
 
 ```{r}
-Data %>%
+Data |>
   filter(cowmaj == 1 & cowintraongoing == 1)
 ```
 
-OK but what if we want to filter on two variables but make it either or?
+OK but what if we want to filter on two variables but make it either-or? We just use the or operator `|` instead:
 
 ```{r}
-Data %>%
+Data |>
   filter(cowmaj == 1 | cowintraongoing == 1)
 ```
-
-What does this give us? Rows are either major powers or countries experiencing civil war.
 
 Note: `filter()` only includes rows where the condition is `TRUE`. So if we want to keep in NA (missing) values, then we need to ask for them explicitly, for example:
 
 What would we do if we wanted only rows where values in a column were blank (indicated by NA on the computer). Would this work?
 
 ```
-Data %>%
+Data |>
   filter(warnum == NA)
 ```
 
-Nope! Since NA is a special value that indicates missing data, it cannot be equal to anything, or not equal to anything. This means we can only include or exclude NA using functions designed to do that. For example, is.na() or na.rm=TRUE. The example below would work/
+Nope! Since NA is a special value that indicates missing data, it cannot be equal to anything, or not equal to anything. This means we can only include or exclude NA using functions designed to do that. For example, is.na() or na.rm=TRUE. The example below would work:
 
 ```{r}
-Data %>%
+Data |>
   filter(is.na(warnum))
 ```
 
@@ -170,25 +176,33 @@ We haven’t seen this yet, but it works similarly to `filter()`, except instead
 Let’s sort the dataset by year:
 
 ```{r}
-Data %>%
+Data |>
   arrange(year)
 ```
 
-OK, cool, but what if we want to see most recent years first? We can specify the order, and change the default:
+OK, cool, but what if we want to see the most recent years first? We can specify the order, and change the default:
 
 ```{r}
-Data %>%
+Data |>
   arrange(desc(year))
 ```
 
-But what if we really want to use the warname category? Do you think we can sort on a factor or character? Let’s try! We can try anything in R...
+This would work, too:
+
+```
+Data |>
+  arrange(-year)
+```
+
+But what if we want to use the warname category? Do you think we can sort on a factor or character? Let’s try! We can try anything in R...
 
 ```{r}
-Data %>%
+Data |>
   arrange(warname)
 ```
 
-Awesome. Where do you think the NAs went? How would we check? 
+Awesome. Now all the data is sorted using warname in alphabetical order. Where do you think the NAs went? How would we check? 
+
 Hint: NAs are always sorted to the end, whether you use ascending or descending order.
 
 ### select()
@@ -204,14 +218,14 @@ ncol(Data)
 Let's just get the ones we want.
 
 ```{r}
-Data %>%
+Data |>
   select(statenme, year, cowintraongoing, sideadeaths, sidebdeaths)
 ```
 
 What if we wanted most of the columns, but just not surplus domestic product? Do we have to name all the other columsn? Thankfully, no!
 
 ```{r}
-Data %>%
+Data |>
   select(-sdpest)
 ```
 
@@ -224,7 +238,7 @@ We can even use some “helper functions” inside of select() to get even more 
 For example, we have a couple columns that contain "war". We can only select those by writing:
 
 ```{r}
-Data %>%
+Data |>
   select(contains("war"))
 ```
 
@@ -236,16 +250,16 @@ Sometimes we need to create new variables. This might be a function of an existi
 This is our fourth `{dplyr}` command - let’s start chaining some of these together to see how they work! Here’s one that we did before, to select just 5 columns:
 
 ```
-Data %>%
+Data |>
   select(statenme, year, cowintraongoing, sideadeaths, sidebdeaths)
 ```
 
-To chain on another command, we use the pipe `%>%`, just like in ggplot where we added layers to our graphic using `+`. Let's make our own calculation of total war deaths.
+To chain on another command, we use the pipe `|>`, just like in ggplot where we added layers to our graphic using `+`. Let's make our own calculation of total war deaths.
 
 ```{r}
-Data %>%
+Data |>
   select(statenme, year, cowintraongoing, 
-         sideadeaths, sidebdeaths) %>%
+         sideadeaths, sidebdeaths) |>
   mutate(
     total_deaths = sideadeaths + sidebdeaths
   )
@@ -255,9 +269,9 @@ Data %>%
 Here's one showing how you can build on new columns you make in `mutate()` within the same call to the function:
 
 ```{r}
-Data %>%
+Data |>
   select(statenme, year, cowintraongoing, 
-         sideadeaths, sidebdeaths, wbpopest) %>%
+         sideadeaths, sidebdeaths, wbpopest) |>
   mutate(
     total_deaths = sideadeaths + sidebdeaths,
     deaths_pc = total_deaths / exp(wbpopest)
@@ -269,9 +283,9 @@ See above, we can even do this all at once, by referring to columns that we have
 Or we can do it all in one equation, if we don’t need to save out a column for height in meters.
 
 ```{r}
-Data %>%
+Data |>
   select(statenme, year, cowintraongoing, 
-         sideadeaths, sidebdeaths, wbpopest) %>%
+         sideadeaths, sidebdeaths, wbpopest) |>
   mutate(
     deaths_pc = (sideadeaths + sidebdeaths) / exp(wbpopest)
   )
@@ -288,7 +302,7 @@ You could use any mathematical operators, here, including `sum(x)`, `y - mean(y)
 These can be used to collapse a dataframe to a single row, or a set of rows (if we use group_by()). For example, here's the mean number of civil wars in the data:
 
 ```{r}
-Data %>%
+Data |>
   summarize(
     mean_wars = mean(cowintraongoing, na.rm=T)
   )
@@ -297,8 +311,8 @@ Data %>%
 And here's that grouped by year:
 
 ```{r}
-Data %>%
-  group_by(year) %>%
+Data |>
+  group_by(year) |>
   summarize(
     mean_wars = mean(cowintraongoing, na.rm=T)
   )
@@ -307,12 +321,12 @@ Data %>%
 We could also filter this down so it's not just the total mean per year. Say we only want to look at major powers. And say we want to look at yearly deaths per capita:
 
 ```{r}
-Data %>%
-  filter(cowmaj==1) %>%
+Data |>
+  filter(cowmaj==1) |>
   mutate(
     deaths_pc = (sideadeaths + sidebdeaths) / exp(wbpopest)
-  ) %>%
-  group_by(year) %>%
+  ) |>
+  group_by(year) |>
   summarize(
     mean_deaths = mean(deaths_pc, na.rm=T)
   )
@@ -321,12 +335,12 @@ Data %>%
 Finally, we also have data on democracy. What if we only look at those that scored a 0.5 or higher on the polyarchy index?
 
 ```{r}
-Data %>%
-  filter(cowmaj==1 & v2x_polyarchy > 0.5) %>%
+Data |>
+  filter(cowmaj==1 & v2x_polyarchy > 0.5) |>
   mutate(
     deaths_pc = (sideadeaths + sidebdeaths) / exp(wbpopest)
-  ) %>%
-  group_by(year) %>%
+  ) |>
+  group_by(year) |>
   summarize(
     mean_deaths = mean(deaths_pc, na.rm=T)
   )
@@ -337,14 +351,14 @@ Adding a column for count to go along with your summary can also be helpful, bec
 Note: We can also calculate median (midpoint of the data), which tells us a little different information from mean (average)
 
 ```{r}
-Data %>%
-  filter(cowmaj==1, v2x_polyarchy > 0.5) %>%
+Data |>
+  filter(cowmaj==1, v2x_polyarchy > 0.5) |>
   mutate(
     pop = exp(wbpopest),
     gdp = exp(wbgdp2011est),
     gdp_pc = gdp / pop
-  ) %>%
-  group_by(year) %>%
+  ) |>
+  group_by(year) |>
   summarize(
     gdp_pc = mean(gdp_pc),
     N = n()
@@ -371,11 +385,11 @@ There a lot of different functions you can use:
 Sometimes it will make sense to do a combination of `summarize()` and `group_by()` with your data before using `ggplot()` to plot relationships.
 
 ```{r}
-Data %>%
-  group_by(year) %>%
+Data |>
+  group_by(year) |>
   summarize(
     conflict_rate = mean(cowintraonset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year, y = conflict_rate) +
   geom_col() +

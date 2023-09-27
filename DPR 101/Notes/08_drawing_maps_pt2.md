@@ -42,6 +42,12 @@ the state-level predictions for Biden in 2020 and for Clinton in 2016
 across the range of dates for which FiveThirtyEight created forecasts
 for the respective election years.
 
+``` r
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/538_prez_forecast.csv"
+library(tidyverse)
+forecast_data <- read_csv(url)
+```
+
 If we look at the data with the `glimpse()` function from `{dplyr}`, we
 can see it has six columns.
 
@@ -171,6 +177,21 @@ Let’s try out an example by filtering the forecast data down to the
 election nights in 2016 and 2020. Our goal will be to summarize
 variation in election night forecast errors and draw comparisons between
 2016 and 2020.
+
+``` r
+## filter the data:
+elect_night <- forecast_data |>
+  ## group by the election year
+  group_by(election) |>
+  ## keep the latest date per election year
+  slice_max(forecast_date, n = 1)
+
+## add a measure of prediction error:
+elect_night <- elect_night |>
+  mutate(
+    error = abs(projected_voteshare - actual_voteshare)
+  )
+```
 
 With our data in hand we might start simple, say with a bar plot
 summarizing the errors in each election on election night:
