@@ -146,13 +146,13 @@ ggplot(prop_data) +
   ) +
   geom_point(
     data = prop_data |>
-      filter(prop_fatalmax==max(prop_fatalmax)),
+      filter(region == "Sub-Saharan Africa"),
     color = "navy",
     size = 2
   ) +
   geom_text(
     data = prop_data |>
-      slice_max(prop_fatalmax, n = 1),
+      filter(region == "Sub-Saharan Africa"),
     aes(label = region),
     hjust = -0.25,
     color = "navy"
@@ -161,6 +161,19 @@ ggplot(prop_data) +
     x = "Proportion of events",
     y = "Proportion of fatalities",
     title = "Are MIEs and MIE fatalities concentrated\nin the same places?"
+  )
+```
+
+```{r}
+ggplot(prop_data) +
+  aes(x = prop_events, y = prop_fatalmax, color = region) +
+  geom_point(
+    size = 4
+  ) +
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = 2
   )
 ```
 

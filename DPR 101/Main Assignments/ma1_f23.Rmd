@@ -26,16 +26,26 @@ census_api_key("3eccf6bb91b2507ae6809065f555f28501de53c0")
 
 ## census data
 
+Let's search through the data to see what our options are:
+
+```{r}
+load_variables("acs5", year = 2021, cache = T) -> acs5
+view(acs5)
+```
+
+
 ```{r}
 ohio_dt <- get_acs(
   geography = "county",
   variables = c(
-    medincome = "B19013_001",
-    medage = "B01002_001",
-    popsize = "B01003_001",
-    popwhite = "B02008_001",
-    popblack = "B02009_001",
-    male = "B01001_002"
+    median_income = "B19013_001",
+    median_age = "B01002_001",
+    population = "B01003_001",
+    white_population = "B02008_001",
+    black_population = "B02009_001",
+    male_population = "B01001_002",
+    college_degree = "B15003_022",
+    noncitizen = "B05001_006"
   ),
   state = "OH",
   year = 2021
@@ -46,13 +56,6 @@ ohio_dt |>
   pivot_wider(
     names_from = variable,
     values_from = estimate
-  ) -> ohio_dt
-## add some percentages
-ohio_dt |>
-  mutate(
-    pctmale = 100 * male / popsize,
-    pctwhite = 100 * popwhite / popsize,
-    pctblack = 100 * popblack / popsize
   ) -> ohio_dt
 ```
 
@@ -68,13 +71,8 @@ issue1_dt <- read_csv(
   )
 )
 issue1_dt |>
-  group_by(county_name) |>
-  mutate(
-    official_voter_turnout = 100 * (
-      ballots_counted / registered_voters
-    ),
-    pctyes = 100 * yes / (yes + no),
-    yes_margin = pctyes - 50
+  select(
+    -official_voter_turnout
   ) -> issue1_dt
 
 ## bring in the outcome data for 2020
@@ -92,13 +90,11 @@ names(vote2020_dt) |>
   tolower() -> names(vote2020_dt)
 #summary(vote2020_dt)
 vote2020_dt |>
-  mutate(
-    pct_trump_ticket = 100 * trump_ticket / (
-      trump_ticket + biden_ticket
-    ),
-    trump_margin = pct_trump_ticket - 50,
-    official_voter_turnout = 100 * official_voter_turnout
-  ) -> vote2020_dt
+  rename(
+    registered_voters_2020 = registered_voters,
+    ballots_counted_2020 = ballots_counted
+  ) |>
+  select(-official_voter_turnout) -> vote2020_dt
 ```
 
 ## merge
@@ -113,10 +109,39 @@ ohio_dt |>
   ) -> ohio_dt
 dt <- reduce(
   list(issue1_dt, vote2020_dt, ohio_dt),
-  left_join,
-  by = "county_name"
+  left_join
+)
+dt |>
+  select(-NAME) -> dt
+```
+
+## Save
+
+```{r}
+write_csv(
+  dt,
+  here::here(
+    "DPR 101", "Data",
+    "ma1_data.csv"
+  )
 )
 ```
+
+## MA1 Prompt
+
+Why and how people vote in elections is one of the most basic yet important questions we can ask in political science. For this first main assignment, your task will be to ask this question in the context of the recent vote on Issue 1 held in Ohio just a couple of months ago. The vote on Issue 1 is puzzling for many reasons. The first is voter turnout, which was much higher than would be expected for an off-cycle election. Second, Issue 1 was tightly connected to a highly partisan and polarizing issue in American politics (abortion). However, voter attitudes toward Issue 1 clearly did not fall neatly along partisan lines. While Ohio was won by Donald Trump (the incumbent US President and Republican Party nominee) by a comfortable margin in 2020, "no" on Issue 1 (which was portrayed by partisans as the pro-choice or pro-abortion option) also won by a comfortable margin. The Republican Party is known for being pro-life, while the Democratic Party is known for being pro-choice. So why did Issue 1 fail in a state that disproportionately favored the Republican Party candidate for President just three years earlier?
+
+I've provided a link below to some data I put together that links electoral and demographic information at the county level for all 88 counties in the state of Ohio. With this data, I want you to try to find an answer to this question. You'll provide your answer in the form of a paper that has at least 4 data visualizations (at least one of which should be a county-level map summarizing the distribution of some variable for the state of Ohio). I expect your paper to follow a specific outline:
+
+1. Introduction: State the research question and why it matters. This will be roughly 2 paragraphs.
+2. Data and Design: Describe the data and variables you will use to answer your research question, and tell me what relationships you plan to explore.
+3. Analysis: This section will contain your data visualizations and your summary of them. Your first visualization should be a map of Ohio, showing the distribution of the vote margin in favor of Issue 1. Your next 3+ visualizations should support your effort to explain variation in support for Issue 1. There are lots of variables to choose from in the data. Be creative and think about how your variable and visualization choices will impact the story you tell. I expect each visualization to be numbered and to have a title to the effect of "Figure [X]: Description here". For each figure, you should have a paragraph summarizing what kind of visualization it is and what it shows. Your text describing the figure should always come before it appears.
+4. Conclusion: Talk about the implications of what you found. Did you find an answer to the research question? What should we do about it? Think big, and uses sources where necessary.
+
+Some additional rules:
+- If you cite any sources, use hyperlinks.
+- Your final submission will be in the form of a knitted Word Document. 
+- Your paper should have a title and include all group member names.
 
 ## Analysis
 
