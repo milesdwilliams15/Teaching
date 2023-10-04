@@ -1,0 +1,183 @@
+---
+title: "MA1: Ohio Issue 1"
+author: "Miles D. Williams"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F,
+                      warning = F,
+                      message = F,
+                      dpi = 500,
+                      out.width = "80%")
+
+## packages
+library(tidyverse)
+library(coolorrr)
+set_theme()
+set_palette()
+
+## data
+
+Data <- read_csv("https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/ma1_data.csv")
+```
+
+## Introduction
+
+
+## Data and Design
+
+
+## Analysis
+
+
+```{r}
+## recodes
+Data |>
+  mutate(
+    yespct = 100 * (yes / ballots_counted),
+    trumppct = 100 * (trump_ticket / ballots_counted_2020),
+    yes_v_trump = yespct - trumppct,
+    diff_turnout = 100 * ((ballots_counted/registered_voters) -
+      (ballots_counted_2020/registered_voters_2020))
+  ) -> Data
+## make a map
+ohio_map <- map_data("county") |>
+  filter(region == "ohio")
+ohio_map_data <- left_join(
+  ohio_map, Data |> mutate(subregion = tolower(county_name))
+)
+ggplot(ohio_map_data) +
+  aes(
+    x = long,
+    y = lat,
+    group = group,
+    fill = yes_v_trump
+  ) +
+  geom_polygon(
+    color = "black",
+    size = 0.05
+  ) +
+  ggpal("diverging", "fill") +
+  theme_void() +
+  labs(
+    fill = "Issue 1 v. Trump\nMargin (%)",
+    subtitle = "Figure 1: Where did Issue 1 underperform relative to Trump?"
+  ) +
+  coord_fixed() 
+```
+
+```{r}
+Data |>
+  group_by(media_market) |>
+  summarize(
+    issue1 = mean(yes_v_trump),
+    turnout = mean(diff_turnout)
+  ) |>
+  pivot_longer(
+    issue1:turnout
+  ) |>
+  ggplot() +
+  aes(value, reorder(media_market, value), color = name) +
+  geom_pointrange(
+    aes(xmin = 0, xmax = value),
+    position = ggstance::position_dodgev(-.5)
+  ) +
+  ggpal(
+    labels = c("Issue 1 v.\nTrump", "'23 v. '20\nTurnout")
+  ) +
+  labs(
+    x = "% Point Difference",
+    y = NULL,
+    subtitle = "Figure 2: Media markets and Issue 1 performance\nrelative to 2020 support for Trump",
+    color = NULL
+  )
+```
+
+
+```{r}
+Data |>
+  ggplot() +
+  aes(x = diff_turnout, yes_v_trump) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 1)) +
+  labs(
+    x = "Turnout Margin in Aug. 2023 vs. Nov. 2020",
+    y = '"Yes" on Issue 1 vs. Trump',
+    subtitle = "Figure 3: Lower Turnout and Issue 1 Underperformance"
+  )
+```
+
+```{r}
+Data |>
+  ggplot() +
+  aes(x = median_income, y = diff_turnout) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_log10(
+    labels = scales::dollar
+  ) +
+  labs(
+    x = "Median Income (log-10)",
+    y = "Turnout in '23 vs. '20",
+    subtitle = "Figure 4: Median Income and Lower Turnout"
+  )
+```
+
+```{r}
+ggplot(Data) +
+  aes(x = 100 * (college_degree / population),
+      y = diff_turnout) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(
+    x = "% with a College Degree",
+    y = "Turnout in '23 vs. '20",
+    subtitle = "Figure 5: Education and Lower Turnout"
+  )
+```
+
+```{r}
+library(estimatr)
+lm_robust(
+  yes_v_trump ~ turnoutpct + collegepct + log(median_income) + log(population) +
+    malepct + whitepct,
+  data = Data |> 
+    mutate(
+      collegepct = 100 * college_degree / population,
+      malepct = 100 * male_population / population,
+      whitepct = 100 * white_population / population,
+      turnoutpct = 100 * (ballots_counted / registered_voters)
+    ),
+  se_type = "stata"
+) |>
+  estimatr::tidy() |>
+  filter(term!="(Intercept)") |>
+  ggplot() +
+  aes(
+    x = estimate,
+    xmin = conf.low,
+    xmax = conf.high,
+    y = term
+  ) +
+  geom_pointrange(size = .2) +
+  geom_vline(
+    xintercept = 0,
+    lty = 2
+  ) + 
+  scale_y_discrete(
+    labels = c("% College Degree", 
+               "Income (log)", "Population (log)",
+               "% Male", "% Turnout", "% White")
+  ) +
+  labs(
+    x = "OLS Estimate with 95% CI",
+    y = NULL,
+    subtitle = 'Figure 6: Regression Estimates for "Yes" vs. Trump Margin'
+  )
+```
+
+
+## Conclusion
+
+

@@ -383,7 +383,7 @@ SE1 due Fri.
 
 \item Day 2: In-class group work on TD1
 
-\item Day 3: In-class presentations for TD1.
+\item Day 3: In-class group work on TD1.
 
 \end{itemize}
 
@@ -393,7 +393,7 @@ SE1 due Fri.
 
 \textbf{\textit{Due}}
 
-TD1 due Fri.
+Nothing!
 
 \end{flushright}
 
@@ -402,7 +402,7 @@ TD1 due Fri.
 
 # Unit 2: Theories (and *Zombies*)
 
-##  `r advdate(mon, 7)`: The Undead (and other useful fictions) 
+##  `r advdate(mon, 7)`: The Undead and Realism 
 
 \begin{multicols}{2}
 
@@ -410,11 +410,11 @@ TD1 due Fri.
 
 \begin{itemize}
 
-\item Day 1: FALL BREAK!
+\item Day 1: In-class TD1 presentations.
 
-\item Day 2: Drezner, "Introduction...to the Undead." Listen to: Hopkins Podcast on Foreign Affairs, \href{https://hopkinspofa.com/2018/01/20/ir-theory-aliens/}{"IR Theory and Aliens!"}
+\item Day 2: Drezner, "Introduction...to the Undead," "The Zombie Literature," "Defining a Zombie," and "Distracting Debates about Flesh-eating Ghouls." Listen to: Hopkins Podcast on Foreign Affairs, \href{https://hopkinspofa.com/2018/01/20/ir-theory-aliens/}{"IR Theory and Aliens!"}
 
-\item Day 3: Drezner, "The Zombie Literature," "Defining a Zombie," and "Distracting Debates about Flesh-eating Ghouls."
+\item Day 3: Drezner, "The Realpolitik of the Living Dead".
 
 \end{itemize}
 
@@ -430,7 +430,7 @@ Grade the AI due Fri.
 
 \end{multicols}
 
-##  `r advdate(mon, 8)`: The Big 3 of IR
+##  `r advdate(mon, 8)`: Liberalism and Constructivism
 
 \begin{multicols}{2}
 
@@ -438,7 +438,7 @@ Grade the AI due Fri.
 
 \begin{itemize}
 
-\item Day 1: Drezner, "The Realpolitik of the Living Dead".
+\item Day 1: FALL BREAK!
 
 \item Day 2: Drezner, "Regulating the Undead in a Liberal World Order."
 

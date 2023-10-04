@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  27 SEP 2023 13:16
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  4 OCT 2023 11:50
 entering extended mode
 **./dpr190_f23.tex
 (dpr190_f23.tex
@@ -824,7 +824,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1179.
 Here is how much of TeX's memory you used:
  20292 strings out of 428410
  349796 string characters out of 3159547
- 418298 words of memory out of 3000000
+ 418280 words of memory out of 3000000
  23399 multiletter control sequences out of 15000+200000
  37972 words of font info for 81 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -838,4 +838,4 @@ Output written on dpr190_f23.pdf (15 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 
-! 142973 bytes written
+! 142770 bytes written
