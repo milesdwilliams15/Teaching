@@ -288,19 +288,20 @@ ggsave(
 
 ## `r advdate(mon, 7)`: Tables, Labels, and Notes
 
-- Day 1: FALL BREAK!
+- Day 1: H Ch5 (5.1 - 5.3) 
 
-- Day 2: H Ch5 (5.1 - 5.3) \hfill \textit{GC4 due Wed.}
+- Day 2: H Ch5 (5.4 - 5.7) \hfill \textit{GC4 due Wed.}
 
-- Day 3: H Ch5 (5.4 - 5.7)
+- Day 3: Discussion
 
 ## `r advdate(mon, 8)`: Refining Plots
 
-- Day 1: H Ch8 (8.1 - 8.2) 
+- Day 1: FALL BREAK!
 
-- Day 2: H Ch8 (8.3 - 8.4) \hfill \textit{GC5 due Wed.}
+- Day 2: H Ch8 (8.1 - 8.2) \hfill \textit{GC5 due Wed.} 
 
-- Day 3: Discussion 
+- Day 3: H Ch8 (8.3 - 8.4)
+
 
 
 ## `r advdate(mon, 9)`: More Refining and Finalize MA2

@@ -99,40 +99,78 @@ Data |>
 Data |>
   ggplot() +
   aes(x = diff_turnout, yes_v_trump) +
-  geom_point() +
-  geom_smooth(method = "lm", formula = y ~ poly(x, 1)) +
+  geom_point(
+    aes(size = population),
+    color = "gray40", 
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    aes(weight = population),
+    method = "lm",
+    color = "navy"
+  ) +
+  scale_size_continuous(
+    labels = scales::comma,
+    breaks = c(250000, 750000, 1250000)
+  ) +
   labs(
     x = "Turnout Margin in Aug. 2023 vs. Nov. 2020",
     y = '"Yes" on Issue 1 vs. Trump',
-    subtitle = "Figure 3: Lower Turnout and Issue 1 Underperformance"
-  )
+    subtitle = "Figure 3: Lower Turnout and Issue 1 Underperformance",
+    size = "County\nPopulation"
+  ) 
 ```
 
 ```{r}
 Data |>
   ggplot() +
-  aes(x = median_income, y = diff_turnout) +
-  geom_point() +
-  geom_smooth(method = "lm") +
+  aes(x = median_income, y = yes_v_trump) +
+  geom_point(
+    aes(size = population),
+    color = "gray40", 
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    aes(weight = population),
+    method = "lm",
+    color = "navy"
+  ) +
+  scale_size_continuous(
+    labels = scales::comma,
+     breaks = c(250000, 750000, 1250000)
+  ) +
   scale_x_log10(
     labels = scales::dollar
   ) +
   labs(
     x = "Median Income (log-10)",
-    y = "Turnout in '23 vs. '20",
-    subtitle = "Figure 4: Median Income and Lower Turnout"
+    y = '"Yes" on Issue 1 vs. Trump',
+    subtitle = "Figure 4: Median Income and Issue 1 Underperformance",
+    size = "County\nPopulation"
   )
 ```
 
 ```{r}
 ggplot(Data) +
   aes(x = 100 * (college_degree / population),
-      y = diff_turnout) +
-  geom_point() +
-  geom_smooth(method = "lm") +
+      y = yes_v_trump) +
+  geom_point(
+    aes(size = population),
+    color = "gray40", 
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    aes(weight = population),
+    method = "lm",
+    color = "navy"
+  ) +
+  scale_size_continuous(
+    labels = scales::comma,
+     breaks = c(250000, 750000, 1250000)
+  ) +
   labs(
     x = "% with a College Degree",
-    y = "Turnout in '23 vs. '20",
+    y = '"Yes" on Issue 1 vs. Trump',
     subtitle = "Figure 5: Education and Lower Turnout"
   )
 ```
@@ -140,15 +178,18 @@ ggplot(Data) +
 ```{r}
 library(estimatr)
 lm_robust(
-  yes_v_trump ~ turnoutpct + collegepct + log(median_income) + log(population) +
+  yes_v_trump ~ turnoutpct + collegepct + log(median_income) + 
+    log(population) +
     malepct + whitepct,
   data = Data |> 
     mutate(
       collegepct = 100 * college_degree / population,
       malepct = 100 * male_population / population,
       whitepct = 100 * white_population / population,
-      turnoutpct = 100 * (ballots_counted / registered_voters)
+      #turnoutpct = 100 * (ballots_counted / registered_voters)
+      turnoutpct = diff_turnout
     ),
+  weights = population,
   se_type = "stata"
 ) |>
   estimatr::tidy() |>
@@ -160,7 +201,14 @@ lm_robust(
     xmax = conf.high,
     y = term
   ) +
-  geom_pointrange(size = .2) +
+  geom_pointrange(
+    aes(alpha = ifelse(p.value < 0.05, "yes", "no")),
+    size = .2
+  ) +
+  geom_text(
+    aes(label = round(estimate, 2)),
+    vjust = -0.5
+  ) +
   geom_vline(
     xintercept = 0,
     lty = 2
@@ -173,7 +221,8 @@ lm_robust(
   labs(
     x = "OLS Estimate with 95% CI",
     y = NULL,
-    subtitle = 'Figure 6: Regression Estimates for "Yes" vs. Trump Margin'
+    subtitle = 'Figure 6: Regression Estimates for "Yes" vs. Trump Margin',
+    alpha = "p < 0.05"
   )
 ```
 
