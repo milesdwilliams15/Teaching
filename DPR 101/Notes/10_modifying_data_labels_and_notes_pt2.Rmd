@@ -16,6 +16,12 @@ library(coolorrr)
 set_theme()
 ```
 
+<center>
+
+[<-- Modifying Data with `{dplyr}` and `{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Color Palettes -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md)
+
+</center>
+
 ## Goals
 
 - Build on our knowledge of `{dplyr}` tools.
@@ -35,10 +41,10 @@ library(peacesciencer)
 library(countrycode)
 
 # Read in the data...
-create_dyadyears(subset_years = 1816:2007) %>%
-  add_cow_majors() %>%
-  add_cow_wars(type = "inter") %>%
-  add_democracy() %>%
+create_dyadyears(subset_years = 1816:2007) |>
+  add_cow_majors() |>
+  add_cow_wars(type = "inter") |>
+  add_democracy() |>
   add_sdp_gdp() -> Data
 ```
 
@@ -46,11 +52,11 @@ The data comes from the `{peacesciencer}` package, and is similar to what we use
 
 We need to do some extra work to make the data ready for analysis. Instead of country-pair-year-war level, we just want the data to be for countries per year. We'll fix this below, and along the way we're going to use the `countrycode()` function from `{countrycode}` to convert the COW codes for countries to their actual country names.
 ```{r}
-Data %>%
+Data |>
   mutate(
     country = countrycode(ccode1, "cown", "country.name")
-  ) %>%
-  group_by(country, year) %>%
+  ) |>
+  group_by(country, year) |>
   summarize(
     across(
       c(cowinteronset, cowinterongoing, batdeath1),
@@ -85,11 +91,11 @@ Each point is the number of recorded international wars in which a country parti
 
 This is obviously a useful but also noisy way to show the data. It would be better if we could show a cleaner yearly trend, which we can do by doing some prep work before we give the data to ggplot:
 ```{r}
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_wars = mean(cowinterongoing)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = mean_wars) +
@@ -104,10 +110,10 @@ cyData %>%
 
 We can riff on the above figure by modifying our code to do a few different things. First, let's say we wanted to compare a couple of countries, like the US and Russia. We can filter down to those countries and then just give the data to ggplot.
 ```{r}
-cyData %>%
+cyData |>
   filter(
     country %in% c("United States", "Russia")
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = cowinterongoing) +
@@ -124,12 +130,12 @@ cyData %>%
 
 Or, say we wanted to contrast the average number of newly started wars a country is engaged in to the average number of ongoing wars. We could try something like this:
 ```{r}
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_area(
@@ -158,12 +164,12 @@ The last figure above would be better if we added some labels to highlight which
 
 We can use `annotate()`:
 ```{r}
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_area(
@@ -195,12 +201,12 @@ cyData %>%
 We can also use tools from the `{geomtextpath}` package:
 ```{r}
 library(geomtextpath)
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_textpath(
@@ -247,12 +253,12 @@ ggplot(cyData) +
 
 We can also set labels to highlight certain points in time. This can be a nice touch in time-series plots. Let's look at war deaths per capita and add labels for WWI and WWII:
 ```{r}
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     deaths_pc = 100000 * sum(batdeath1, na.rm=T) / 
       sum(exp(wbpopest1), na.rm=T)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = deaths_pc) +
@@ -296,20 +302,20 @@ my_stand_fun <- function(x) (x - min(x, na.rm=T)) /
   (max(x, na.rm=T) - min(x, na.rm=T))
 
 # Update the data and summarize:
-cyData %>%
+cyData |>
   mutate(
     across(
       c(v2x_polyarchy1, polity21, xm_qudsest1),
       my_stand_fun
     )
-  ) %>%
-  group_by(year) %>%
+  ) |>
+  group_by(year) |>
   summarize(
     across(
       c(v2x_polyarchy1, polity21, xm_qudsest1),
     ~ mean(.x, na.rm=T)
     )
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_labelline(
@@ -339,3 +345,11 @@ cyData %>%
        caption = "Data: {peacesciencer}")
 ```
 
+
+## Where to next?
+
+<center>
+
+[<-- Modifying Data with `{dplyr}` and `{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Color Palettes -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md)
+
+</center>

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = T,
 
 <center>
 
-[<-- Drawing Maps, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
+[<-- Drawing Maps, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data with `{dplyr}` and `{tidyr}` -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 
 </center>
 
@@ -264,6 +264,6 @@ This is all just hypothetical, and the order in which I did this analysis is not
 
 <center>
 
-[<-- Drawing Maps, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part I -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
+[<-- Drawing Maps, Part I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data with `{dplyr}` and `{tidyr}` -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 
 </center>

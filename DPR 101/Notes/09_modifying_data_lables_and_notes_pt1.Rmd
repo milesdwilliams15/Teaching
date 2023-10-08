@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 <center>
 
-[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
+[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Layer Complexity and Adding Labels and Text -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
 
 </center>
 
@@ -544,6 +544,6 @@ prop_data |>
 
 <center>
 
-[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Modifying Data, Labels, and Notes, Part II -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
+[<-- Drawing Maps, Part II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Layer Complexity and Adding Labels and Text -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
 
 </center>

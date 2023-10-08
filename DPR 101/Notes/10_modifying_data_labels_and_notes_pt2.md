@@ -1,19 +1,31 @@
 Layering Complexity and Adding Labels and Text
 ================
 
--   [Goals](#goals)
--   [Review of summarizing data](#review-of-summarizing-data)
--   [Looking at trends over time and layering
-    complexity](#looking-at-trends-over-time-and-layering-complexity)
--   [Layering complexity](#layering-complexity)
--   [Adding text](#adding-text)
--   [Common scales](#common-scales)
+- [Goals](#goals)
+- [Review of summarizing data](#review-of-summarizing-data)
+- [Looking at trends over time and layering
+  complexity](#looking-at-trends-over-time-and-layering-complexity)
+- [Layering complexity](#layering-complexity)
+- [Adding text](#adding-text)
+- [Common scales](#common-scales)
+- [Where to next?](#where-to-next)
+
+<center>
+
+[\<– Modifying Data with `{dplyr}` and
+`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Color Palettes
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md)
+
+</center>
 
 ## Goals
 
--   Build on our knowledge of `{dplyr}` tools.
--   Learn about adding text and labels to figures along the way.
--   Introduce the `{geomtextpath}` package.
+- Build on our knowledge of `{dplyr}` tools.
+- Learn about adding text and labels to figures along the way.
+- Introduce the `{geomtextpath}` package.
 
 ## Review of summarizing data
 
@@ -30,10 +42,10 @@ library(peacesciencer)
 library(countrycode)
 
 # Read in the data...
-create_dyadyears(subset_years = 1816:2007) %>%
-  add_cow_majors() %>%
-  add_cow_wars(type = "inter") %>%
-  add_democracy() %>%
+create_dyadyears(subset_years = 1816:2007) |>
+  add_cow_majors() |>
+  add_cow_wars(type = "inter") |>
+  add_democracy() |>
   add_sdp_gdp() -> Data
 ```
 
@@ -49,11 +61,11 @@ to use the `countrycode()` function from `{countrycode}` to convert the
 COW codes for countries to their actual country names.
 
 ``` r
-Data %>%
+Data |>
   mutate(
     country = countrycode(ccode1, "cown", "country.name")
-  ) %>%
-  group_by(country, year) %>%
+  ) |>
+  group_by(country, year) |>
   summarize(
     across(
       c(cowinteronset, cowinterongoing, batdeath1),
@@ -102,11 +114,11 @@ be better if we could show a cleaner yearly trend, which we can do by
 doing some prep work before we give the data to ggplot:
 
 ``` r
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_wars = mean(cowinterongoing)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = mean_wars) +
@@ -127,10 +139,10 @@ countries, like the US and Russia. We can filter down to those countries
 and then just give the data to ggplot.
 
 ``` r
-cyData %>%
+cyData |>
   filter(
     country %in% c("United States", "Russia")
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = cowinterongoing) +
@@ -152,12 +164,12 @@ country is engaged in to the average number of ongoing wars. We could
 try something like this:
 
 ``` r
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_area(
@@ -192,12 +204,12 @@ few different ways.
 We can use `annotate()`:
 
 ``` r
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_area(
@@ -232,12 +244,12 @@ We can also use tools from the `{geomtextpath}` package:
 
 ``` r
 library(geomtextpath)
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     mean_ongoing = mean(cowinterongoing),
     mean_started = mean(cowinteronset)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_textpath(
@@ -294,12 +306,12 @@ a nice touch in time-series plots. Let’s look at war deaths per capita
 and add labels for WWI and WWII:
 
 ``` r
-cyData %>%
-  group_by(year) %>%
+cyData |>
+  group_by(year) |>
   summarize(
     deaths_pc = 100000 * sum(batdeath1, na.rm=T) / 
       sum(exp(wbpopest1), na.rm=T)
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year,
       y = deaths_pc) +
@@ -337,17 +349,16 @@ variables in the same figure. We did something like this with war onset
 and ongoing wars. But say we wanted to look at democracy over time. The
 data contains three different democracy measures.
 
--   `v2x_polyarchy1`: This comes from the Varieties of Democracy project
-    and takes a value between 0 and 1 where 1 is the most democratic and
-    0 is the least.
--   `polity21`: This comes from the Polity V project and takes values
-    between -10 and 10 where 10 is the most democratic and -10 is the
-    least.
--   `xm_qudsetst1`: Xavier Marquez wrote a paper in 2016 where he
-    developed a method to extend the Unified Democracy Scores, a
-    democracy measure created by other scholars. This is a “normalized”
-    measure of democracy set to have a mean of 0 and standard deviation
-    of 1.
+- `v2x_polyarchy1`: This comes from the Varieties of Democracy project
+  and takes a value between 0 and 1 where 1 is the most democratic and 0
+  is the least.
+- `polity21`: This comes from the Polity V project and takes values
+  between -10 and 10 where 10 is the most democratic and -10 is the
+  least.
+- `xm_qudsetst1`: Xavier Marquez wrote a paper in 2016 where he
+  developed a method to extend the Unified Democracy Scores, a democracy
+  measure created by other scholars. This is a “normalized” measure of
+  democracy set to have a mean of 0 and standard deviation of 1.
 
 While each of these measures are an attempt to capture the same basic
 concept, they are produced not only using very different methods but
@@ -361,20 +372,20 @@ my_stand_fun <- function(x) (x - min(x, na.rm=T)) /
   (max(x, na.rm=T) - min(x, na.rm=T))
 
 # Update the data and summarize:
-cyData %>%
+cyData |>
   mutate(
     across(
       c(v2x_polyarchy1, polity21, xm_qudsest1),
       my_stand_fun
     )
-  ) %>%
-  group_by(year) %>%
+  ) |>
+  group_by(year) |>
   summarize(
     across(
       c(v2x_polyarchy1, polity21, xm_qudsest1),
     ~ mean(.x, na.rm=T)
     )
-  ) %>%
+  ) |>
   ggplot() +
   aes(x = year) +
   geom_labelline(
@@ -405,3 +416,16 @@ cyData %>%
 ```
 
 <img src="10_modifying_data_labels_and_notes_pt2_files/figure-gfm/unnamed-chunk-11-1.png" width="75%" />
+
+## Where to next?
+
+<center>
+
+[\<– Modifying Data with `{dplyr}` and
+`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md)
+\| [Back to Notes
+Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+\| [Color Palettes
+–\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md)
+
+</center>

@@ -19,7 +19,7 @@ Modifying data with `{dplyr}` and `{tidyr}`
 II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
-\| [Modifying Data, Labels, and Notes, Part II
+\| [Layer Complexity and Adding Labels and Text
 –\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
 
 </center>
@@ -970,7 +970,7 @@ prop_data |>
 II](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/08_drawing_maps_pt2.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
-\| [Modifying Data, Labels, and Notes, Part II
+\| [Layer Complexity and Adding Labels and Text
 –\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/10_modifying_data_labels_and_notes_pt2.md)
 
 </center>

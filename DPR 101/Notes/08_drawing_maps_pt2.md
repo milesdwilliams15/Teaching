@@ -13,7 +13,7 @@ Drawing maps, Part II
 I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
-\| [Modifying Data, Labels, and Notes, Part I
+\| [Modifying Data with `{dplyr}` and `{tidyr}`
 –\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 
 </center>
@@ -360,7 +360,7 @@ base your data visualization choices around that.
 I](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/07_drawing_maps_pt1.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
-\| [Modifying Data, Labels, and Notes, Part I
+\| [Modifying Data with `{dplyr}` and `{tidyr}`
 –\>](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 
 </center>
