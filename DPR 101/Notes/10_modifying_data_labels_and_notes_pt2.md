@@ -23,15 +23,15 @@ Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes
 
 ## Goals
 
-- Build on our knowledge of `{dplyr}` tools.
+- Build on our knowledge of `{dplyr}` and `{tidyr}` tools.
 - Learn about adding text and labels to figures along the way.
 - Introduce the `{geomtextpath}` package.
 
 ## Review of summarizing data
 
-Last time we talked about how to manipulate data with `{dplyr}` “verbs.”
-We’re going to build on some of these skills while also honing our data
-viz.
+Last time we talked about how to manipulate data with `{dplyr}` and
+`{tidyr}` tools. Now, we’re going to build on some of these skills while
+also honing our data viz.
 
 First, let’s get our data ready to use:
 
@@ -51,11 +51,13 @@ create_dyadyears(subset_years = 1816:2007) |>
 
 The data comes from the `{peacesciencer}` package, and is similar to
 what we used last time. But there are a few differences. The data is at
-the dyadic or country-pair-year-war level. It also provides information
-about international wars instead of civil wars.
+the dyadic or country-pair-year level. We also calls this *dyad-year*
+data. We need the data to be at the dyad-year level rather than the
+country-year level because we’re dealing with international wars rather
+than civil wars.
 
 We need to do some extra work to make the data ready for analysis.
-Instead of country-pair-year-war level, we just want the data to be for
+Instead of country-pair-year level, we just want the data to be for
 countries per year. We’ll fix this below, and along the way we’re going
 to use the `countrycode()` function from `{countrycode}` to convert the
 COW codes for countries to their actual country names.
@@ -110,8 +112,11 @@ country participated in or was engaged in a given year. The smoothed
 line tells us the average trend over time.
 
 This is obviously a useful but also noisy way to show the data. It would
-be better if we could show a cleaner yearly trend, which we can do by
-doing some prep work before we give the data to ggplot:
+be better if we could show a cleaner yearly trend, which we can do with
+some prep work before we give the data to ggplot. The below code starts
+with the country-year data, then for each year it calculates the average
+number of international wars a country was involved in. Then, it gives
+the updated data to ggplot and uses `geom_area()` to show the trend.
 
 ``` r
 cyData |>
@@ -346,8 +351,8 @@ cyData |>
 Speaking of layering complexity and adding labels, sometimes when we
 show trends over time we may want to show two related but distinct
 variables in the same figure. We did something like this with war onset
-and ongoing wars. But say we wanted to look at democracy over time. The
-data contains three different democracy measures.
+and ongoing wars. Let’s do something similar with democracy. The data
+contains three different democracy measures.
 
 - `v2x_polyarchy1`: This comes from the Varieties of Democracy project
   and takes a value between 0 and 1 where 1 is the most democratic and 0
@@ -416,6 +421,10 @@ cyData |>
 ```
 
 <img src="10_modifying_data_labels_and_notes_pt2_files/figure-gfm/unnamed-chunk-11-1.png" width="75%" />
+
+We can clearly see from the above that each of the measures are
+correlated over time. However, V-Dem’s polyarchy scale is much less
+optimistic than the others.
 
 ## Where to next?
 
