@@ -1,0 +1,249 @@
+---
+title: "Untitled"
+author: "Miles D. Williams"
+date: "2023-10-09"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Prompt: "Democracies at War"
+
+The democratic peace (the idea that democracies rarely go to war against each other) is one of the few features of international politics that occurs with law-like regularity. Democratic Peace Theory is the set of explanations that IR scholars have come up with to explain why the democratic peace exists. A subset of this body of research considers the effectiveness of democracies while at war. While democracies rarely fight each other, they do go war with non-democracies (e.g., countries with authoritarian regimes or military dictatorships). Do democracies have a competitive advantage when going to war? Do the wars that they fight come to a close more quickly? Do they suffer fewer losses relative to their adversaries? Are they less likely to be the ones to start a war in the first place?
+
+I've provided some data for you to explore to answer these questions (linked below). The dataset consists of time-series data of 95 major international wars fought between 1816 and 2007. For each war, the data have the year the war started, how long it lasted, and outcomes for each side of the conflict. It also contains information about the quality of democracy on each side of the war based on three different democracy measures. With this data, put together an analysis summarizing how well democracies fare in war. 
+
+You have a significant amount of freedom in how you proceed, but I have a few requirements for how the paper should be structured. It should have:
+
+1. Introduction: State the research question and why it matters. 
+2. Data and Design: Describe the data and variables you will use to answer your research question, and tell me what relationships you plan to explore. For each of the democracy measures in particular, I want you to compare and contrast how they measure democracy and talk about possible strengths and weaknesses of each.
+3. Analysis: This section will contain your data visualizations and your summary of them. You should have a minimum of 5 visualizations, but you can include more. Your first visualization should be a time-series plot showing the total number of wars started in a given year. Your second visualization should be a time-series plot showing the minimum democracy scores of countries fighting wars over time. This figure should include all three of the alternative measures of democracy in the same plot. Your remaining visualizations should support your effort to summarize how quality of democracy among countries fighting a war influences factors like war duration, who started the war, which side suffered more fatalities, which side won, etc. Be creative and think about how your variable and visualization choices will impact the story you tell. I expect each visualization to be numbered and to have a title to the effect of "Figure [X]: Description here". For each figure, you should have a paragraph summarizing what kind of visualization it is and what it shows. Your text describing the figure should always come before it appears.
+4. Conclusion: Talk about the implications of what you found. Did you find an answer to the research question? What should we do about it? Think big, and uses sources where necessary.
+
+Some additional rules:
+- If you cite any sources, use hyperlinks.
+- Your final submission will be in the form of a knitted Word Document. 
+- Your paper should have a title and include your name.
+
+
+```{r}
+library(tidyverse)
+library(peacesciencer)
+library(coolorrr)
+set_theme()
+set_palette()
+library(geomtextpath)
+```
+
+
+
+
+
+```{r}
+Data <- create_dyadyears() |>
+  #add_cow_wars(type = "inter") |>
+  left_join(cow_war_inter) |>
+  add_democracy()
+Data |>
+  mutate(
+    across(v2x_polyarchy1:xm_qudsest2, scale)
+  ) -> Data
+Data |>
+  mutate(
+    min_polyarchy = ifelse(
+      v2x_polyarchy1 < v2x_polyarchy2,
+      v2x_polyarchy1, v2x_polyarchy2
+    ),
+    min_polity2 = ifelse(
+      polity21 < polity22,
+      polity21, polity22
+    ),
+    min_qudsest = ifelse(
+      xm_qudsest1 < xm_qudsest2,
+      xm_qudsest1, xm_qudsest2
+    )
+  ) -> Data
+Data |> filter(cowinterongoing == 1) |>
+  group_by(warnum) |>
+  summarize(
+    start_year = min(year),
+    duration = max(year) - min(year) + 1,
+    side1_initiator = max(
+      initiator1[sidea1==1], na.rm = T
+    ),
+    side2_initiator = max(
+      initiator1[sidea1==2], na.rm = T
+    ),
+    side1_winner = min(
+      outcome1[sidea1==1] == 1, na.rm = T
+    ),
+    side2_winner = min(
+      outcome1[sidea1==2]==1, na.rm = T
+    ),
+    side1_deaths = sum(
+      batdeath1[sidea1==1 & batdeath1 > 0], na.rm = T
+    ),
+    side2_deaths = sum(
+      batdeath1[sidea1==2 & batdeath1 > 0], na.rm = T
+    ),
+    side1_polyarchy = mean(
+      v2x_polyarchy1[sidea1==1], na.rm = T
+    ),
+    side2_polyarchy = mean(
+      v2x_polyarchy1[sidea1==2], na.rm = T
+    ),
+    side1_polity2 = mean(
+      polity21[sidea1==1], na.rm = T
+    ),
+    side2_polity2 = mean(
+      polity21[sidea1==2], na.rm = T
+    ),
+    side1_qudsest = mean(
+      xm_qudsest1[sidea1==1], na.rm = T
+    ),
+    side2_qudsest = mean(
+      xm_qudsest1[sidea1==2], na.rm = T
+    ),
+    min_polyarchy = min(v2x_polyarchy1, na.rm = T),
+    min_polity2 = min(polity21, na.rm = T),
+    min_qudsest = min(xm_qudsest1, na.rm = T)
+  ) -> sm_data
+apply(sm_data, c(1, 2), function(x) ifelse(is.infinite(x), NA, x)) |>
+  as_tibble() -> sm_data
+```
+
+```{r}
+write_csv(
+  sm_data,
+  here::here(
+    "DPR 101",
+    "Data",
+    "ma2_data.csv"
+  )
+)
+```
+
+
+```{r}
+sum_dt <- sm_data |>
+  group_by(start_year) |>
+  summarize(
+    n = n(),
+    size = sum(side1_deaths + side2_deaths)
+  )
+library(ggrepel)
+ggplot(sum_dt) +
+  aes(
+    x = start_year,
+    y = n
+  ) +
+  geom_col(
+    width = 0.1,
+    color = "gray"
+  ) +
+  geom_point(
+    aes(size = size),
+    color = "navy",
+    alpha = 0.6
+  ) +
+  geom_text_repel(
+    data = sum_dt |>
+      slice_max(size, n = 5),
+    aes(label = scales::comma(size)),
+    #point.padding = 50,
+    min.segment.length = unit(0, 'lines'),
+    nudge_y = 1.5
+  ) +
+  scale_x_continuous(
+    breaks = seq(1820, 2010, by = 10)
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(
+      angle = 45, hjust = 1
+    ),
+    legend.position = "none"
+  ) +
+  labs(
+    x = NULL,
+    y = "Number of Wars Started",
+    title = "Wars over time, 1816-2007",
+    subtitle = "Point size: Total killed\nTop 5 deadliest sets of wars are labeled"
+  )
+```
+
+
+```{r}
+sm_data |>
+  pivot_longer(
+    min_polyarchy:min_qudsest
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = durration
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = quasipoisson)
+  ) +
+  facet_wrap(~ name)
+```
+
+```{r}
+sm_data |>
+  pivot_longer(
+    c(side1_polyarchy, side1_polity2, side1_qudsest)
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = side1_initiator
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = binomial)
+  ) +
+  facet_wrap(~ name)
+```
+
+
+```{r}
+sm_data |>
+  pivot_longer(
+    c(side1_polyarchy, side1_polity2, side1_qudsest)
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = (side1_deaths) / (side1_deaths + side2_deaths)
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = quasibinomial)
+  ) +
+  facet_wrap(~ name)
+```
+
+
+```{r}
+sm_data |>
+  pivot_longer(
+    min_polyarchy:min_qudsest
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = rank(side1_deaths + side2_deaths)
+  ) +
+  geom_point() +
+  stat_smooth(
+    method = "lm"
+  ) +
+  facet_wrap(~ name)
+```

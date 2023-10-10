@@ -1,0 +1,27 @@
+---
+title: "Democracies at War"
+author: "Your name here"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F,
+  message = F,
+  dpi = 500,
+  out.width = "90%"
+)
+```
+
+## Introduction
+
+
+## Data and Design
+
+
+## Analysis
+
+
+## Conclusion
+

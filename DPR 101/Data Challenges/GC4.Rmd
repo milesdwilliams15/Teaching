@@ -1,0 +1,51 @@
+---
+title: "GC4"
+author: "Miles D. Williams"
+date: "2023-10-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(geomtextpath)
+library(peacesciencer)
+```
+
+```{r}
+dt <- create_stateyears() |>
+  add_democracy()
+```
+
+```{r}
+dt |>
+  mutate(
+    polity2 = (polity2 + 10) / 20
+  ) |>
+  filter(
+    statenme == "United States of America"
+  ) |>
+  select(
+    year, v2x_polyarchy, polity2
+  ) |>
+  pivot_longer(v2x_polyarchy:polity2) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = value,
+    color = name
+  ) +
+  geom_point(
+    alpha = 0.4,
+    show.legend = F
+  ) +
+  geom_labelsmooth(
+    aes(label = name),
+    show.legend = F,
+    linewidth = 1
+  )
+```
+
