@@ -776,7 +776,51 @@ Data |>
 There are some instances where we may want to pivot our data to make it
 longer or wider prior to plotting as well. Our dataset contains three
 different measures of democracy. Let’s compare how average quality of
-democracy looks over time based on the measure we use:
+democracy looks over time based on the measure we use. The code below
+creates an object called `dem_per_year` which has a row for each year in
+the dataset. For each year, it gives in three separate columns the
+average democracy score for countries in the world based on each of the
+three different measures of democracy.
+
+Important to note, it does not create a yearly average for the raw
+scores. The reason is that each of the democracy measures is on
+different scales. One goes from -10 to 10, another from 0 to 1. To fix
+that, the below code uses the `scale` function, which transforms data to
+“standard deviation units” and sets them to have a mean of 0.
+
+Since we want to apply the same transformation to multiple columns, we
+can use a handy function called `across()` inside `mutate()`. Note the
+syntax below. After the transformations have been applied, we can then
+group by year and then summarize to get the mean of the transformed
+democracy scores per year. Notice that we can also use `across()` inside
+`summarize()`. However, I do something slightly different here than when
+I used `scale` to transform the data in `mutate()`. There I just had to
+write `across(v2x_polyarchy:xm_qudsest, scale)`. In `summarize()` I need
+to write `across(v2x_polyarchy:xm_qudsest, ~ mean(.x, na.rm = T))`.
+
+Why couldn’t I just write `across(v2x_polyarchy:xm_qudsest, mean)`? The
+reason is that there are missing or `NA` values in some of the democracy
+scores for some countries. By default, `mean()` handles these by just
+returning a mean of `NA`. Since we want to update how `mean()` deals
+with missing values, we need to create what’s called a “local function.”
+This is like the same thing as making a new mean function like so:
+
+``` r
+my_mean <- function(x) {
+  mean(x, na.rm = T)
+}
+```
+
+Instead of needing to create a new function like this, we can do so
+*locally* inside `across()` using slightly different syntax:
+
+    ~ mean(.x, na.rm = T)
+
+That’s much shorter. The `~` tells `across()` that you’re making a new
+function, and `.x` is the placeholder for what ever you want to give to
+the new function to perform an operation on.
+
+Okay, here’s all the code put together:
 
 ``` r
 dem_per_year <- Data |>
@@ -795,8 +839,7 @@ dem_per_year <- Data |>
 ```
 
 If we look at the data we can see that it gives us a summary of the
-average democracy score in what we call standard deviation units per
-each measure:
+average democracy score per year in standard deviation units:
 
 ``` r
 dem_per_year
@@ -817,8 +860,10 @@ dem_per_year
     ## 10  1825        -0.897  -0.954      -1.16
     ## # ℹ 197 more rows
 
-Now, we could use this data as-is for plotting. We can just give it to
-ggplot then add a geom_line() for each variable:
+Now, without performing any other transformations of the data, we can
+give it directly to `ggplot()` for plotting. Since we want to see all
+three democracy measures side-by-side, we can just add a `geom_line()`
+layer for each:
 
 ``` r
 ggplot(dem_per_year) +
@@ -837,11 +882,13 @@ ggplot(dem_per_year) +
   )
 ```
 
-<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-27-1.png" width="75%" />
+<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-28-1.png" width="75%" />
 
-That’s okay, but we now have to figure out how to add a legend. We can
-do this using a few hacks, but as a rule I like to avoid relying on too
-many of these.
+That’s pretty simple, and it doesn’t look too bad. But, one problem with
+this approach is that we don’t have a legend to indicate which line
+corresponds to which democracy measure. We can do this using a few
+hacks, but as a rule I like to avoid relying on too many of these. An
+alternative solution is to reshape our data.
 
 Enter the pivot functions. These live in the `{tidyr}` package, which,
 like `{dplyr}`, is part of the tidyverse and is opened automatically
@@ -872,9 +919,10 @@ dem_per_year |>
     ## 10  1819 v2x_polyarchy -0.932
     ## # ℹ 611 more rows
 
-As you can see above, I used `pivot_longer()` to reshape my dataset.
-Specifically, I made it *un*tidy. As a general rule of thumb, we like
-tidy data, which, if you remember, has three characteristics:
+As you can see above, I used `pivot_longer()` to reshape the dataset. In
+the process of doing this, I made it *un*tidy. As a general rule of
+thumb, we like tidy data, which, if you remember, has three
+characteristics:
 
 1.  Each row is an observation.
 2.  Each column is a variable.
@@ -899,7 +947,7 @@ dem_per_year |>
   geom_line()
 ```
 
-<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-29-1.png" width="75%" />
+<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-30-1.png" width="75%" />
 
 By pivoting the data, we produced our plot using much less code and we
 have a legend automatically produced for us with different colors
@@ -960,7 +1008,7 @@ prop_data |>
   )
 ```
 
-<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-30-1.png" width="75%" />
+<img src="09_modifying_data_lables_and_notes_pt1_files/figure-gfm/unnamed-chunk-31-1.png" width="75%" />
 
 ## Where to next?
 

@@ -7,13 +7,13 @@ Layering Complexity and Adding Labels and Text
   complexity](#looking-at-trends-over-time-and-layering-complexity)
 - [Layering complexity](#layering-complexity)
 - [Adding text](#adding-text)
-- [Common scales](#common-scales)
+- [Updating legend and label names](#updating-legend-and-label-names)
 - [Where to next?](#where-to-next)
 
 <center>
 
 [\<– Modifying Data with `{dplyr}` and
-`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md)
+`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
 \| [Color Palettes
@@ -33,7 +33,10 @@ Last time we talked about how to manipulate data with `{dplyr}` and
 `{tidyr}` tools. Now, we’re going to build on some of these skills while
 also honing our data viz.
 
-First, let’s get our data ready to use:
+First, let’s get our data ready to use. Last time we looked at a mix of
+civil war data and democracy data. This time we’re going to look at
+international wars. To do that with tools in the `{peacesciencer}`
+package, we need to do a few different things:
 
 ``` r
 # Let's get ready to go...
@@ -51,16 +54,17 @@ create_dyadyears(subset_years = 1816:2007) |>
 
 The data comes from the `{peacesciencer}` package, and is similar to
 what we used last time. But there are a few differences. The data is at
-the dyadic or country-pair-year level. We also calls this *dyad-year*
+the dyadic or country-pair-year level. We also call this *dyad-year*
 data. We need the data to be at the dyad-year level rather than the
 country-year level because we’re dealing with international wars rather
-than civil wars.
+than civil wars. This at minimum involves *pairs* of countries rather
+than single countries.
 
 We need to do some extra work to make the data ready for analysis.
-Instead of country-pair-year level, we just want the data to be for
-countries per year. We’ll fix this below, and along the way we’re going
-to use the `countrycode()` function from `{countrycode}` to convert the
-COW codes for countries to their actual country names.
+Instead of dyad-year level, we just want the data to be for countries
+per year. We’ll fix this below, and along the way we’re going to use the
+`countrycode()` function from `{countrycode}` to convert the COW codes
+for countries to their actual country names.
 
 ``` r
 Data |>
@@ -81,13 +85,11 @@ Data |>
   ) -> cyData
 ```
 
-Notice the use of `across()` in the above code. This is a relatively
-recent addition to `{dplyr}`, and it’s an amazing little tool. It lets
-us apply a function to multiple columns at once rather than having to
-apply a function to each column individually. Using it, I can easily
-apply `sum()` to a few select columns and `mean()` to others. And I can
-use column names directly or use functions like `contains()` to pick
-columns based on words or symbols they contain.
+Notice the use of `across()` in the above code. We introduced this
+yesterday. This is a more complex example of how it can be used. Using
+it, I can easily apply `sum()` to a few select columns and `mean()` to
+others. And I can use column names directly or use functions like
+`contains()` to pick columns based on words or symbols they contain.
 
 ## Looking at trends over time and layering complexity
 
@@ -346,13 +348,14 @@ cyData |>
 
 <img src="10_modifying_data_labels_and_notes_pt2_files/figure-gfm/unnamed-chunk-10-1.png" width="75%" />
 
-## Common scales
+## Updating legend and label names
 
 Speaking of layering complexity and adding labels, sometimes when we
-show trends over time we may want to show two related but distinct
-variables in the same figure. We did something like this with war onset
-and ongoing wars. Let’s do something similar with democracy. The data
-contains three different democracy measures.
+show trends over time we may want to show two or more related but
+distinct variables in the same figure. We covered how to do this with
+democracy measures in the previous notes. However, we didn’t deal
+specifically with how we can update the labels of the variable names in
+our plot. Recall, we have three measures of democracy in the data:
 
 - `v2x_polyarchy1`: This comes from the Varieties of Democracy project
   and takes a value between 0 and 1 where 1 is the most democratic and 0
@@ -367,21 +370,22 @@ contains three different democracy measures.
 
 While each of these measures are an attempt to capture the same basic
 concept, they are produced not only using very different methods but
-also are on very different scales. If we want to compare them, we need
-to adjust for this before plotting. This is easy enough to do using
-`{dplyr}` verbs:
+also are on very different scales. We walked through how to deal with
+this last time. But we can add just a little more code to create new
+labels for each one of the variable names along the way. The below code
+does this by using `mutate()` after the data has been pivoted using
+`pivot_longer()`. There, a function called `case_when()` is used to
+change the names of the democracy measures in the `name` column to
+something more intuitive. You can see the difference this makes by
+looking at the plot we produce with the data:
 
 ``` r
-# Make a function to put vars on a 0-1 scale:
-my_stand_fun <- function(x) (x - min(x, na.rm=T)) / 
-  (max(x, na.rm=T) - min(x, na.rm=T))
-
 # Update the data and summarize:
 cyData |>
   mutate(
     across(
       c(v2x_polyarchy1, polity21, xm_qudsest1),
-      my_stand_fun
+      scale
     )
   ) |>
   group_by(year) |>
@@ -391,47 +395,46 @@ cyData |>
     ~ mean(.x, na.rm=T)
     )
   ) |>
+  pivot_longer(
+    cols = v2x_polyarchy1:xm_qudsest1
+  ) |>
+  mutate(
+    name = case_when(
+      name == "v2x_polyarchy1" ~ "V-Dem",
+      name == "polity21" ~ "Polity",
+      name == "xm_qudsest1" ~ "UDS"
+    )
+  ) |>
   ggplot() +
-  aes(x = year) +
-  geom_labelline(
-    aes(y = v2x_polyarchy1),
-    label = "V-Dem",
-    color = "darkblue",
-    text_smoothing = 50,
-    hjust = 0.25 
+  aes(x = year, y = value, color = name) +
+  geom_point(
+    alpha = 0.4
   ) +
-  geom_labelline(
-    aes(y = xm_qudsest1),
-    label = "XM-UD",
-    color = "darkgreen",
-    text_smoothing = 50,
-    hjust = 0.35
-  ) +
-  geom_labelline(
-    aes(y = polity21),
-    label = "Polity",
-    color = "darkred",
-    text_smoothing = 25,
-    hjust = 0.53
+  geom_labelsmooth(
+    aes(label = name),
+    hjust = 0.4
   ) +
   labs(x = NULL,
        y = "Quality of Democracy",
        title = "Democracy over time, 1816-2007",
-       caption = "Data: {peacesciencer}")
+       caption = "Data: {peacesciencer}") +
+  theme(
+    legend.position = "none"
+  )
 ```
 
 <img src="10_modifying_data_labels_and_notes_pt2_files/figure-gfm/unnamed-chunk-11-1.png" width="75%" />
 
-We can clearly see from the above that each of the measures are
-correlated over time. However, V-Dem’s polyarchy scale is much less
-optimistic than the others.
+Using `mutate()` and `case_when()` after you’ve pivoted data is a nice
+strategy to keep in mind when you go from summarizing, to pivoting, to
+plotting.
 
 ## Where to next?
 
 <center>
 
 [\<– Modifying Data with `{dplyr}` and
-`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_labels_and_notes_pt1.md)
+`{tidyr}`](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/09_modifying_data_lables_and_notes_pt1.md)
 \| [Back to Notes
 Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
 \| [Color Palettes

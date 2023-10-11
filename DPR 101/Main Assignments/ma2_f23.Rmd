@@ -2,11 +2,16 @@
 title: "Untitled"
 author: "Miles D. Williams"
 date: "2023-10-09"
-output: html_document
+output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = F,
+                      warning = F,
+                      message = F,
+                      dpi = 500,
+                      out.width = "100%",
+                      fig.pos = "center")
 ```
 
 ## Prompt: "Democracies at War"
@@ -42,7 +47,8 @@ library(geomtextpath)
 
 
 ```{r}
-Data <- create_dyadyears() |>
+library(socsci)
+Data <- create_dyadyears(directed = T) |>
   #add_cow_wars(type = "inter") |>
   left_join(cow_war_inter) |>
   add_democracy()
@@ -77,7 +83,7 @@ Data |> filter(cowinterongoing == 1) |>
       initiator1[sidea1==2], na.rm = T
     ),
     side1_winner = min(
-      outcome1[sidea1==1] == 1, na.rm = T
+      outcome1[sidea1==1]==1, na.rm = T
     ),
     side2_winner = min(
       outcome1[sidea1==2]==1, na.rm = T
@@ -154,6 +160,7 @@ ggplot(sum_dt) +
     aes(label = scales::comma(size)),
     #point.padding = 50,
     min.segment.length = unit(0, 'lines'),
+    nudge_x = -3,
     nudge_y = 1.5
   ) +
   scale_x_continuous(
@@ -168,9 +175,25 @@ ggplot(sum_dt) +
   ) +
   labs(
     x = NULL,
-    y = "Number of Wars Started",
-    title = "Wars over time, 1816-2007",
-    subtitle = "Point size: Total killed\nTop 5 deadliest sets of wars are labeled"
+    y = NULL,
+    title = "Figure 1",
+    subtitle = "Number of wars started per year",
+    caption = "(Total deaths from the top 5 deadliest sets of wars are shown)"
+  ) +
+  annotate(
+    "point",
+    x = 1840,
+    y = 3.5,
+    size = 3,
+    color = "navy",
+    alpha = 0.6
+  ) +
+  annotate(
+    "text",
+    x = 1840,
+    y = 3.5,
+    label = " = Number of deaths",
+    hjust = -0.05
   )
 ```
 
@@ -180,35 +203,119 @@ sm_data |>
   pivot_longer(
     min_polyarchy:min_qudsest
   ) |>
+  mutate(
+    name = case_when(
+      name == "min_polyarchy" ~ "(2) V-Dem",
+      name == "min_polity2" ~ "(1) Polity 2",
+      name == "min_qudsest" ~ "(3) UDS"
+    )
+  ) |>
   ggplot() +
   aes(
     x = value,
-    y = durration
+    y = duration
   ) +
-  geom_point() +
+  geom_point(
+    alpha = 0.4,
+    color = "gray"
+  ) +
   stat_smooth(
     method = "glm",
-    method.args = list(family = quasipoisson)
+    method.args = list(family = quasipoisson),
+    color = "navy"
   ) +
-  facet_wrap(~ name)
+  facet_wrap(~ name) +
+  labs(
+    x = "Minimum Democracy Score",
+    y = NULL,
+    title = "Figure 2",
+    subtitle = "War duration in years"
+  )
 ```
 
 ```{r}
 sm_data |>
+  mutate(
+    diff_polyarchy = side1_polyarchy - side2_polyarchy,
+    diff_polity2 = side1_polity2 - side2_polity2,
+    diff_qudsest = side1_qudsest - side2_qudsest
+  ) |>
   pivot_longer(
-    c(side1_polyarchy, side1_polity2, side1_qudsest)
+    c(diff_polyarchy:diff_qudsest)
+  ) |>
+  mutate(
+    name = case_when(
+      name == "diff_polyarchy" ~ "(2) V-Dem",
+      name == "diff_polity2" ~ "(1) Polity 2",
+      name == "diff_qudsest" ~ "(3) UDS"
+    )
   ) |>
   ggplot() +
   aes(
     x = value,
     y = side1_initiator
   ) +
-  geom_point() +
+  geom_jitter(
+    alpha = 0.4,
+    color = "gray",
+    height = 0.05,
+    width = 0
+  ) +
   stat_smooth(
     method = "glm",
-    method.args = list(family = binomial)
+    method.args = list(family = binomial),
+    color = "navy"
   ) +
-  facet_wrap(~ name)
+  facet_wrap(~ name) +
+  labs(
+    x = "Avgerge Democracy Score for Side 1 vs. Side 2",
+    y = NULL,
+    title = "Figure 3",
+    subtitle = "Likelihood that Side 1 Starts a War"
+  )
+```
+
+
+```{r}
+sm_data |>
+  mutate(
+    diff_polyarchy = side1_polyarchy > side2_polyarchy,
+    diff_polity2 = side1_polity2 > side2_polity2,
+    diff_qudsest = side1_qudsest > side2_qudsest
+  ) |>
+  pivot_longer(
+    c(diff_polyarchy:diff_qudsest)
+  ) |>
+  mutate(
+    name = case_when(
+      name == "diff_polyarchy" ~ "(2) V-Dem",
+      name == "diff_polity2" ~ "(1) Polity 2",
+      name == "diff_qudsest" ~ "(3) UDS"
+    )
+  ) |>
+  group_by(name, value) |>
+  mean_ci(side1_winner) |>
+  drop_na() |>
+  ggplot() +
+  aes(
+    x = name,
+    y = mean,
+    fill = ifelse(value, "More\nDemocratic", "Less\nDemocratic")
+  ) +
+  geom_col(
+    position = "dodge"
+  ) +
+  labs(
+    x = "Democracy Measure",
+    y = NULL,
+    fill = "Side 1 is: ",
+    title = "Figure 4",
+    subtitle = "(%) wins for side 1"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  ggpal(aes = "fill")
 ```
 
 
@@ -217,33 +324,36 @@ sm_data |>
   pivot_longer(
     c(side1_polyarchy, side1_polity2, side1_qudsest)
   ) |>
+  mutate(
+    name = case_when(
+      name == "side1_polyarchy" ~ "(2) V-Dem",
+      name == "side1_polity2" ~ "(1) Polity 2",
+      name == "side1_qudsest" ~ "(3) UDS"
+    )
+  ) |>
   ggplot() +
   aes(
     x = value,
     y = (side1_deaths) / (side1_deaths + side2_deaths)
   ) +
-  geom_point() +
+  geom_point(
+    color = "gray",
+    alpha = 0.4
+  ) +
   stat_smooth(
     method = "glm",
-    method.args = list(family = quasibinomial)
+    method.args = list(family = quasibinomial),
+    color = "navy"
   ) +
-  facet_wrap(~ name)
+  facet_wrap(~ name) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "Average Democracy Score for Side 1",
+    y = NULL,
+    title = "Figure 5",
+    subtitle = "(%) of total loses suffered"
+  )
 ```
 
-
-```{r}
-sm_data |>
-  pivot_longer(
-    min_polyarchy:min_qudsest
-  ) |>
-  ggplot() +
-  aes(
-    x = value,
-    y = rank(side1_deaths + side2_deaths)
-  ) +
-  geom_point() +
-  stat_smooth(
-    method = "lm"
-  ) +
-  facet_wrap(~ name)
-```
