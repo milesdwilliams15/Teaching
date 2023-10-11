@@ -22,7 +22,8 @@ knitr::opts_chunk$set(echo = T,
 ## Goals
 
 - Use tools in `{coolorrr}` to update color palettes.
-- Continue working with `{geomtextpath}`.
+- Understand the different kinds of palettes you can choose from.
+- Select your own palettes.
 
 ## Cooler colors with `{coolorrr}`
 

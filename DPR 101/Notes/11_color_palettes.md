@@ -23,7 +23,8 @@ Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes
 ## Goals
 
 - Use tools in `{coolorrr}` to update color palettes.
-- Continue working with `{geomtextpath}`.
+- Understand the different kinds of palettes you can choose from.
+- Select your own palettes.
 
 ## Cooler colors with `{coolorrr}`
 
