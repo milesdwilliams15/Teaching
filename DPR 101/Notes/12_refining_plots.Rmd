@@ -1,5 +1,5 @@
 ---
-title: "Refining Plots"
+title: "Refining Your Plots"
 output: 
   github_document:
     toc: yes
@@ -13,18 +13,23 @@ knitr::opts_chunk$set(echo = T,
                       warning = F)
 ```
 
+<center>
+
+[<-- Color Palettes](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Case Studies -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/13_case_studies.md)
+
+</center>
 
 ## Goals 
 
 - Cover some ways to customize your plots using examples.
 - Talk about setting themes globally.
-- Update settings.
+- How to update settings.
 
 ## Advanced Options for Your Markdown File
 
 For now, we've stuck to the basics of data viz. But there's so much more you can do. Not only can we update things "in-line" using "+" operators in ggplot, we can also set some options globally.
 
-I find it helps me to have a more productive session in R when I start by gathering all my tools and updating my .Rmd settings in the very first code chunk in my markdown file.
+I find it helps me to have a more productive session in R when I start by gathering all my tools and updating my .Rmd settings in the very first code chunk in my markdown file. 
 
 Here's what I'm using in my current session to produce these notes:
 ```{r setup, include=TRUE}
@@ -54,9 +59,9 @@ set_palette(
 set_theme()
 
 # Here's the data I need:
-create_stateyears(subset_years = 1945:2007) %>%
-  add_cow_wars(type = "intra") %>%
-  add_sdp_gdp() %>%
+create_stateyears(subset_years = 1945:2007) |>
+  add_cow_wars(type = "intra") |>
+  add_sdp_gdp() |>
   add_democracy() -> Data
 ```
 
@@ -66,124 +71,153 @@ I recommend doing this with your your own code as well. The more prep work you d
 
 ## Setting Themes
 
-You'll notice that in the above code I used the function `set_theme()`. This comes from the `{coolorrr}` package and is my own personal ggplot theme that I like to use in my R sessions. It's based on FiveThirtyEight's theme but with a few of my own modifications. By running `set_theme()`, it sets my personal theme *globally*. That means that all ggplot figures I make will now use this theme rather than the default "gray" theme.
+You'll notice that in the above code I used the function `set_theme()`. This comes from the `{coolorrr}` package, which we talked about in the previous notes. This is my own personal ggplot theme that I like to use in my R sessions, and it's available for you to use (if you like it) once you open the `{coolorrr}` package. It's based on FiveThirtyEight's theme but with a few of my own modifications. By running `set_theme()`, it sets my personal theme *globally*. That means that all ggplot figures I make will now use this theme rather than the default "gray" theme.
 
 Check it out:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007")
+Data |>
+  group_by(year) |>
+  summarize(
+    conflict_rate = mean(cowintraongoing)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = conflict_rate
+  ) +
+  geom_point(
+    color = "gray",
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    se = F,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Countries at War",
+    title = "Civil wars post-WWII, 1945-2007"
+  )
 ```
 
 If I wanted to go back to the default, I can just use the appropriate `theme_()` function:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
+Data |>
+  group_by(year) |>
+  summarize(
+    conflict_rate = mean(cowintraongoing)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = conflict_rate
+  ) +
+  geom_point(
+    color = "gray",
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    se = F,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Countries at War",
+    title = "Civil wars post-WWII, 1945-2007"
+  ) +
   theme_gray()
 ```
 
-There are many different themes you can use, like:
+There are many different themes you can use. Let's save the original figure as an object called `my_plot` and then check out a few of the available theme options.
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  theme_bw()
+my_plot <- Data |>
+  group_by(year) |>
+  summarize(
+    conflict_rate = mean(cowintraongoing)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = conflict_rate
+  ) +
+  geom_point(
+    color = "gray",
+    alpha = 0.6
+  ) +
+  geom_smooth(
+    se = F,
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Countries at War",
+    title = "Civil wars post-WWII, 1945-2007"
+  )
 ```
 
-```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  theme_classic()
-```
+
+Here's an example with `theme_bw()`:
 
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  theme_dark()
+my_plot + theme_bw()
 ```
 
+Here's an example with `theme_classic()`:
+
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  theme_light()
+my_plot + theme_classic()
+```
+
+Here's `theme_dark()`:
+
+```{r}
+my_plot + theme_dark()
+```
+
+Here's `theme_light()`:
+
+```{r}
+my_plot + theme_light()
 ```
 
 And on and on it goes...
 
-You can access even more specialized themes using the `{ggthemes}` package. Here's the FiveThirtyEight theme:
+You can access even more specialized themes using the `{ggthemes}` package. You can install it by writing and running `install.packages("ggthemes")` in the R console. 
+
+Here's the FiveThirtyEight theme:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  ggthemes::theme_fivethirtyeight()
+library(ggthemes)
+my_plot + theme_fivethirtyeight()
 ```
 
 The Wallstreet Journal theme:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII\n1945-2007") +
-  ggthemes::theme_wsj()
+my_plot + 
+  theme_wsj() +
+  ## I need to adjust the title
+  labs(
+    title = "Civil wars post-WWII",
+    subtitle = "1945-2007"
+  )
 ```
 
 The Economist theme:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  ggthemes::theme_economist()
+my_plot + theme_economist()
 ```
 
 There's even a Tufte theme:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") +
-  ggthemes::theme_tufte()
+my_plot + theme_tufte()
 ```
 
 Remember that Tufte was the guy who said we should minimize our ink to data ratio. His theme certainly does.
@@ -192,22 +226,16 @@ Remember that Tufte was the guy who said we should minimize our ink to data rati
 
 The `set_theme()` function I used in the first code chunk set my own person theme globally. You can set your own theme globally, too.
 
-Say you like the clean theme from ggthemes. Just run:
+Say you like the clean theme from `{ggthemes}`. Just run:
 ```{r}
-theme_set(ggthemes::theme_clean())
+theme_set(theme_clean())
 ```
 
-Notice that this function is `theme_set()`. How confusing! But that's how it goes with R sometimes.
+Notice that this function is `theme_set()` rather than `set_theme()`. How confusing! But that's how it goes with R sometimes.
 
-Even so, it works. Any new plots you make will follow the theme you set with `theme_set()`:
+After you run the above, any new plots you make will follow the theme you set without having to add an extra line of code to your plot:
 ```{r}
-ggplot(Data) +
-  aes(x = year,
-      y = cowintraongoing) +
-  geom_smooth() +
-  labs(x = NULL,
-       y = "Ongoing Conflict Rate",
-       title = "Civil wars post-WWII, 1945-2007") 
+my_plot
 ```
 
 I'm partial to my own, so I'm going to set it back with `set_theme()` from `{coolorrr}`:
@@ -218,27 +246,33 @@ set_theme()
 
 ## Going In-Depth with Labels and Colors
 
-Once you master settings like themes and colors (like we talked about last time), you start to think about how to build up to more complicated visuals.
+Once you master settings like themes and colors, it's time to start thinking about how to build up to more complicated visuals.
 
 Here's an example. Let's start by filtering our data down to the year 1990:
 ```{r}
-Data %>%
+Data |>
   filter(year == 1990) -> data_90
 ```
 
 Next, let's build a base plot---a scatter plot showing GDP per capita on the x axis and quality of democracy on the y axis:
 ```{r}
 p <- ggplot(data_90) +
-  aes(x = exp(wbgdppc2011est),
-      y = v2x_polyarchy) +
-  geom_point(alpha = 0.5,
-             color = "gray") +
+  aes(
+    x = exp(wbgdppc2011est), # it's in logs already. I want a natural scale.
+    y = v2x_polyarchy
+  ) +
+  geom_point(
+    alpha = 0.6,
+    color = "gray"
+  ) +
   scale_x_log10(labels = scales::dollar) +
-  labs(x = "GDP per capita",
-       y = "Quality of Democracy",
-       title = "Economic Health, Democracy, and Conflict",
-       subtitle = "Data for 1990",
-       caption = "Source: {peacesciencer}")
+  labs(
+    x = "GDP per capita",
+    y = "Quality of Democracy",
+    title = "Economic Health, Democracy, and Conflict",
+    subtitle = "Data for 1990",
+    caption = "Source: {peacesciencer}"
+  )
 p # print
 ```
 
@@ -247,56 +281,69 @@ Note that I saved the plot as an object called `p`.
 Next, let's use color to highlight countries experiencing civil war:
 ```{r}
 p2 <- p +
-  geom_point(data = filter(data_90, 
-                           cowintraongoing == 1),
-             color = "red")
+  geom_point(
+    data = data_90 |>
+      filter(cowintraongoing == 1),
+    color = "red",
+    size = 2
+  )
 p2
 ```
 
-In the next layer, we'll add some text to tell us which countries experience conflict in 1990:
+In the next layer, we'll add some text to tell us which countries experience conflict in 1990. We can use the `geom_text_repel()` function from `{ggrepel}`:
 ```{r}
+library(ggrepel)
 p3 <- p2 + 
-  ggrepel::geom_text_repel(
-    data = filter(data_90, cowintraongoing == 1),
+  geom_text_repel(
+    data = data_90 |>
+      filter(cowintraongoing == 1),
     aes(label = statenme),
-    size = 2
+    size = 3,
+    nudge_y = .1,
+    min.segment.length = unit(0, "inches")
   )
 p3
 ```
 
-That's not, too bad. Say we didn't care for the theme. We can try out some alternatives:
+That's not too bad, but I want to add one more element to the plot. Countries experiencing conflict are highlighted using their names and the color red. I'd be nice to have an efficient way to tell people what red means in the plot. There's a great package called `{ggtext}` that makes it really easy to edit and customize text in labels using HTML code. 
+
+Check it out:
+
 ```{r}
-## This looks like the baseR plot() function theme:
-p3 + ggthemes::theme_base()
+## open the package
+library(ggtext)
 
-## The calc theme
-p3 + ggthemes::theme_calc()
+## create a title object to keep things tidy
+## and use paste0() to separate the normal text
+## from the HTML part of the text
+new_title <- paste0(
+  "Economic Health, Democracy, and ",
+  "<span style = 'color:red'>***Civil War***</span>"
+)
 
-## The clean theme
-p3 + ggthemes::theme_clean()
-
-## The new excel theme (I don't hate it)
-p3 + ggthemes::theme_excel_new()
-
-## The Few theme
-p3 + ggthemes::theme_few()
-
-## FiveThirtyEight (notice it drops axis titles)
-p3 + ggthemes::theme_fivethirtyeight()
-
-## A google doc theme
-p3 + ggthemes::theme_gdocs()
-
-## And more
-p3 + ggthemes::theme_pander()
-
-## Trick your friends into thinking you use Stata!
-p3 + ggthemes::theme_stata()
+## update the plot with the new title and then
+## tell ggplot how to read the HTML code
+p3 + 
+  labs(
+    title = new_title
+  ) +
+  theme(
+    plot.title = element_markdown()
+  )
 ```
+
 
 
 ## Wrapping up
 
-Okay that was a lot. The point is not to cover all the ways you can customize your plot but to give you an impression of just how many elements can be updated. We haven't even talked about the `theme()` function which gives you even more control over the look of your data viz.
+My goal with the above examples wasn't to cover everything you can possibly do to refine your plots. That would be impossible, because your options are practically limitless. Instead, I wanted to leave you with an impression of just how many elements can be updated as you design your data visualizations. We haven't even talked about the `theme()` function which gives you even more control over the look of your data viz.
 
 You won't master this in a single class, or a single semester for that matter. The key with all of this is to practice.
+
+## Where to next?
+
+<center>
+
+[<-- Color Palettes](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/11_color_palettes.md) | [Back to Notes Homepage](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md) | [Case Studies -->](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/13_case_studies.md)
+
+</center>
