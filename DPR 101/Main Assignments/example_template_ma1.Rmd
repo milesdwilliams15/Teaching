@@ -9,13 +9,18 @@ knitr::opts_chunk$set(echo = F,
                       warning = F,
                       message = F,
                       dpi = 500,
-                      out.width = "80%")
+                      fig.height = 4,
+                      fig.width = 6,
+                      out.width = "100%")
 
 ## packages
 library(tidyverse)
 library(coolorrr)
 set_theme()
-set_palette()
+set_palette(
+  diverging = c("blue", "white", "red"),
+  from_coolors = F
+)
 
 ## data
 
@@ -24,14 +29,25 @@ Data <- read_csv("https://raw.githubusercontent.com/milesdwilliams15/Teaching/ma
 
 ## Introduction
 
+Why did Ohio Issue 1, a ballot measure that would have changed the rules for amending the Ohio Constitution, fail to pass? Issue 1 was voted on in August of 2023, making it an off-cycle election. Such elections generally see dismal voter turnout, and this was a fact that Ohio's Republican dominated Congress was counting on to improve the chances that Issue 1 would receive majority support. These Republican elites were operating under the conventional wisdom in American politics that lower turnout tends to give the Republican Party an advantage at the ballot box. However, that's not how things panned out. Instead, turnout was much higher than would be expected for an off-cycle election, and Issue 1 failed to receive the majority of the vote.
+
+Issue 1 is politically significant for a number of reasons, not the least of which is its connection to a November 2023 vote on a similarly named Issue 1 ballot initiative to amend Ohio's constitution to enshrine abortion rights. If the August 2023 Issue 1 initiative had passed, the bar for amending Ohio's constitution would be a 60% super-majority vote rather than the current 50% (+1) majority threshold. This new proposed threshold is no accident. [Polls of Ohio voters](https://fivethirtyeight.com/features/a-special-election-in-ohio-shows-voters-still-care-about-abortion/) put support for abortion rights at roughly 57%, just shy of the proposed 60% threshold that would have been required to amend Ohio's Constitution had Issue 1 passed. With the new threshold in place, a pro-abortion amendment to Ohio's constitution would likely fail. Perhaps recognizing the significance of Issue 1 in the August vote, the initiative was rejected by voters, with 57% of the electorate voting "no"---an outcome conspicuously similar to the 57% of Ohio voters in favor of abortion access.
+
+Abortion is a polarizing issue in American politics, with opinions typically falling along partisan lines (Democrats generally support abortion rights and Republicans generally favor abortion restrictions). Given its partisan links, it's worth investigating why Issue 1 failed in Ohio. Ohio has become a reliably red (e.g., Republican) state in general elections, and in 2020 its voters supported the Republican incumbent for the US Presidency (Donald J. Trump) by a large margin. Support for Issue 1 was framed as the Republican option in August 2023. Many Ohio Republican Party officials ([including Ohio's Republican Secretary of State](https://www.axios.com/local/columbus/2023/08/16/frank-larose-ohio-issue-1)) explicitly called on voters to support the measure in August. Despite this, in addition to holding the election at an unusual time of year, Republican elites failed to get the outcome they were looking for.
+
+Using county level data for the state of Ohio, I look for factors that might explain why Issue 1 did so poorly in an otherwise strongly Republican state. Among the factors I examine, perhaps the most surprising is the margin between voter turnout in August 2023 versus November 2020. While the Ohio Republican Party believed *low* turnout in an off-cycle election would benefit them (e.g., help Issue 1 to pass), Issue 1 under-performed by a larger margin in counties where voter turnout was much *lower* relative to 2020.
 
 ## Data and Design
 
+Data for the analysis comes from a combination of sources. Election data comes from voter files from the Ohio Secretary of State's Office. Demographic data for Ohio counties comes from the American Values Survey (5-year aggregates) which are accurate as of 2021. The combined dataset provides counts by Ohio counties of total ballots cast, registered voters, and votes in favor of Trump or Biden from the general election in 2020. It also provides counts by Ohio counties of total ballots cast, registered voters, and votes in favor or opposed to Issue 1 in August 2023. For each county, it also provides demographic data, such as the population size, male population, number of individuals with a college degree, and number of non-citizen residents.
+
+The main outcome I'm interested in is the difference in the percentage of "yes" votes for Issue 1 relative to the percentage of votes for Donald J. Trump in 2020 for each county. I consider a few possible factors that might explain variation in how well Issue 1 performed relative to Mr. Trump. Specifically, I look at the difference in voter turnout, median county income, the share of the county population with a college degree, and the share of the county population that's male.
 
 ## Analysis
 
+I'll begin by first summarizing how Issue 1 performed in 2023 relative to Mr. Trump in 2020. Figure 1 shows two maps of the state of Ohio. The one to the left shows Trump's vote share in 2020 and the one to the right shows Issue 1's vote share in 2023. The redder the county, the more the vote share was in support of Trump and Issue 1, respectively. The bluer the county, the more the vote share was against Trump or Issue 1, respectively. A comparison of the maps makes it clear that support for Issue 1 is correlated with support for Trump. But at the same time, Issue 1 generally under-performed relative to Trump in nearly every county.
 
-```{r}
+```{r fig.cap=" "}
 ## recodes
 Data |>
   mutate(
@@ -47,55 +63,114 @@ ohio_map <- map_data("county") |>
 ohio_map_data <- left_join(
   ohio_map, Data |> mutate(subregion = tolower(county_name))
 )
-ggplot(ohio_map_data) +
+library(patchwork)
+p1 <- ggplot(ohio_map_data) +
   aes(
     x = long,
     y = lat,
     group = group,
-    fill = yes_v_trump
+    fill = trumppct
   ) +
   geom_polygon(
     color = "black",
     size = 0.05
   ) +
-  ggpal("diverging", "fill") +
+  ggpal(
+    "diverging",
+    "fill",
+    midpoint = 50,
+    breaks = c(0, 25, 50, 75, 100),
+    limits = c(0, 100)
+  ) +
   theme_void() +
   labs(
-    fill = "Issue 1 v. Trump\nMargin (%)",
-    subtitle = "Figure 1: Where did Issue 1 underperform relative to Trump?"
+    fill = "(%)\n",
+    subtitle = "Trump's 2020 Vote Margin"
   ) +
   coord_fixed() 
-```
-
-```{r}
-Data |>
-  group_by(media_market) |>
-  summarize(
-    issue1 = mean(yes_v_trump),
-    turnout = mean(diff_turnout)
-  ) |>
-  pivot_longer(
-    issue1:turnout
-  ) |>
-  ggplot() +
-  aes(value, reorder(media_market, value), color = name) +
-  geom_pointrange(
-    aes(xmin = 0, xmax = value),
-    position = ggstance::position_dodgev(-.5)
+p2 <- ggplot(ohio_map_data) +
+  aes(
+    x = long,
+    y = lat,
+    group = group,
+    fill = yespct
+  ) +
+  geom_polygon(
+    color = "black",
+    size = 0.05
   ) +
   ggpal(
-    labels = c("Issue 1 v.\nTrump", "'23 v. '20\nTurnout")
+    "diverging",
+    "fill",
+    midpoint = 50,
+    breaks = c(0, 25, 50, 75, 100),
+    limits = c(0, 100)
   ) +
+  theme_void() +
   labs(
-    x = "% Point Difference",
-    y = NULL,
-    subtitle = "Figure 2: Media markets and Issue 1 performance\nrelative to 2020 support for Trump",
-    color = NULL
+    fill = "(%)\n",
+    subtitle = '"Yes" Margin in 2023'
+  ) +
+  coord_fixed() 
+p1 + p2 + 
+  plot_annotation(
+    title = "Figure 1",
+    subtitle = "Electoral outcomes for Trump vs. Issue 1"
+  ) +
+  plot_layout(
+    guides = "collect"
+  ) &
+  theme(
+    legend.position = "bottom"
   )
 ```
 
+That Issue 1 did worse in nearly every county relative to Trump is apparent in Figure 2, which shows on the x-axis Trump's share of the vote and on the y-axis the share of individuals who voted "yes" for Issue 1. Each of the points is a Ohio county with the point size proportional to the county's population. The figure includes two lines. The dashed, dark gray line shows what a 1-to-1 relationship between support for Trump and Issue 1 would look like. The solid, navy blue line shows the actual line of best fit for the data. Looking at the figure, three things are clear. First, support for Issue 1 closely tracks with support for Donald Trump. Second, Issue 1 and Trump did better in smaller (e.g., rural) counties. Third, regardless of how much a county supported Trump in 2020 and its urban/rural status, support for Issue 1 lagged behind support for Trump by a nearly consistent margin across counties.
 
-```{r}
+```{r fig.cap=" "}
+library(geomtextpath)
+ggplot(Data) +
+  aes(
+    x = trumppct,
+    y = yespct
+  ) +
+  geom_point(
+    aes(size = population),
+    color = "gray",
+    alpha = 0.6
+  ) +
+  geom_textsmooth(
+    aes(weight = population),
+    color = "navy",
+    se = F,
+    method = "lm",
+    label = "Actual Relationship",
+    vjust = 1.5
+  ) +
+  geom_textabline(
+    slope = 1,
+    intercept = 0,
+    linetype = 2,
+    color = "gray20",
+    label = "1:1 Relationship",
+    vjust = -0.5
+  ) +
+  scale_size_continuous(
+    labels = scales::comma,
+    breaks = c(250000, 750000, 1250000)
+  ) +
+  labs(
+    x = "% Vote for Trump in 2020",
+    y = '% "Yes" on Issue 1',
+    title = "Figure 2",
+    subtitle = "Support for Issue 1 vs. Trump",
+    size = "County\nPopulation"
+  ) 
+```
+
+Are there any factors that might explain why Issue 1 under-performed relative to Trump by a larger or smaller margin? With the next few figures I consider some possible explanatory factors. First, Figure 1 shows how the margin between "yes" and Trump (y-axis) varies based on the margin between the 2023 turnout and the 2020 turnout (x-axis). The data points are for each county, with point size proportional to county population. The line of best fit is also included. Because the Republican Party hoped that lower turnout in an off-cycle election would improve the chances of Issue 1 passing, it's worth checking whether Issue 1 did better or worse than expected based on how people voted for Trump given variation in voter turnout. As it turns out, the counties where even fewer people turned out in 2023 relative to 2020 also tended to be the counties where Issue 1 did even worse than expected---contrary to the intuitions of Republican Party officials.
+
+```{r fig.cap = " "}
 Data |>
   ggplot() +
   aes(x = diff_turnout, yes_v_trump) +
@@ -107,21 +182,25 @@ Data |>
   geom_smooth(
     aes(weight = population),
     method = "lm",
-    color = "navy"
+    color = "navy",
+    se = F
   ) +
   scale_size_continuous(
     labels = scales::comma,
     breaks = c(250000, 750000, 1250000)
   ) +
   labs(
-    x = "Turnout Margin in Aug. 2023 vs. Nov. 2020",
-    y = '"Yes" on Issue 1 vs. Trump',
-    subtitle = "Figure 3: Lower Turnout and Issue 1 Underperformance",
+    x = "Turnout in Aug. 2023 vs. Nov. 2020",
+    y = NULL,
+    title = "Figure 3",
+    subtitle = "Relationship with Issue 1 Underperformance",
     size = "County\nPopulation"
   ) 
 ```
 
-```{r}
+Another factor to consider is income. Figure 4 shows the relationship between the margin of "yes" votes versus Trump votes and the median income per county. The data show that "yes" under-performed relative to Trump more in wealthier Ohio counties.
+
+```{r fig.cap = " "}
 Data |>
   ggplot() +
   aes(x = median_income, y = yes_v_trump) +
@@ -133,7 +212,8 @@ Data |>
   geom_smooth(
     aes(weight = population),
     method = "lm",
-    color = "navy"
+    color = "navy",
+    se = F
   ) +
   scale_size_continuous(
     labels = scales::comma,
@@ -144,13 +224,16 @@ Data |>
   ) +
   labs(
     x = "Median Income (log-10)",
-    y = '"Yes" on Issue 1 vs. Trump',
-    subtitle = "Figure 4: Median Income and Issue 1 Underperformance",
+    y = NULL,
+    title = "Figure 4",
+    subtitle = "Relationship with Issue 1 Underperformance",
     size = "County\nPopulation"
   )
 ```
 
-```{r}
+Figure 5 shows how the margin between "yes" and Trump fared based on the share of a county's population with a college degree. The line of best fit suggests a mild positive trend, meaning counties with more college educated voters tended to be counties where Issue 1's poor performance was slightly attenuated. However, the slope of the best fitting line is so shallow, that it's hard to tell if this is a true relationship or just spurious.
+
+```{r fig.cap = " "}
 ggplot(Data) +
   aes(x = 100 * (college_degree / population),
       y = yes_v_trump) +
@@ -162,7 +245,8 @@ ggplot(Data) +
   geom_smooth(
     aes(weight = population),
     method = "lm",
-    color = "navy"
+    color = "navy",
+    se = F
   ) +
   scale_size_continuous(
     labels = scales::comma,
@@ -170,63 +254,50 @@ ggplot(Data) +
   ) +
   labs(
     x = "% with a College Degree",
-    y = '"Yes" on Issue 1 vs. Trump',
-    subtitle = "Figure 5: Education and Lower Turnout"
+    y = NULL,
+    title = "Figure 5",
+    subtitle = "Relationship with Issue 1 Underperformance",
+    size = "County\nPopulation"
   )
 ```
 
-```{r}
-library(estimatr)
-lm_robust(
-  yes_v_trump ~ turnoutpct + collegepct + log(median_income) + 
-    log(population) +
-    malepct + whitepct,
-  data = Data |> 
-    mutate(
-      collegepct = 100 * college_degree / population,
-      malepct = 100 * male_population / population,
-      whitepct = 100 * white_population / population,
-      #turnoutpct = 100 * (ballots_counted / registered_voters)
-      turnoutpct = diff_turnout
-    ),
-  weights = population,
-  se_type = "stata"
-) |>
-  estimatr::tidy() |>
-  filter(term!="(Intercept)") |>
-  ggplot() +
-  aes(
-    x = estimate,
-    xmin = conf.low,
-    xmax = conf.high,
-    y = term
+Finally, Figure 6 shows how the margin between "yes" and Trump fared given the share of the county population that's male. Abortion is an issue that disproportionately impacts women, so a natural expectation would be that Issue 1 would under-perform Trump in counties with more women relative to men. Surprisingly, this isn't what the data says. Instead, counties with more men relative to women tended to support Issue 1 relative to Trump even less than counties where the male to female ratio is closer to parity. Before we make too much of this result, it's important to highlight that this finding is driven by a few outliers. The majority of counties have near parity between men and women, but a few smaller counties have a disproportionately high number of men. These are the same counties that are dragging the line of best fit in a negative direction.
+
+```{r fig.cap = " "}
+ggplot(Data) +
+  aes(x = 100 * (male_population / population),
+      y = yes_v_trump) +
+  geom_point(
+    aes(size = population),
+    color = "gray40", 
+    alpha = 0.6
   ) +
-  geom_pointrange(
-    aes(alpha = ifelse(p.value < 0.05, "yes", "no")),
-    size = .2
+  geom_smooth(
+    aes(weight = population),
+    method = "lm",
+    color = "navy",
+    se = F
   ) +
-  geom_text(
-    aes(label = round(estimate, 2)),
-    vjust = -0.5
-  ) +
-  geom_vline(
-    xintercept = 0,
-    lty = 2
-  ) + 
-  scale_y_discrete(
-    labels = c("% College Degree", 
-               "Income (log)", "Population (log)",
-               "% Male", "% Turnout", "% White")
+  scale_size_continuous(
+    labels = scales::comma,
+     breaks = c(250000, 750000, 1250000)
   ) +
   labs(
-    x = "OLS Estimate with 95% CI",
+    x = "% Population that's Male",
     y = NULL,
-    subtitle = 'Figure 6: Regression Estimates for "Yes" vs. Trump Margin',
-    alpha = "p < 0.05"
+    title = "Figure 6",
+    subtitle = "Relationship with Issue 1 Underperformance",
+    size = "County\nPopulation"
   )
 ```
 
 
 ## Conclusion
 
+My goal with this analysis was to explore factors that might explain why Ohio Issue 1 under-performed relative to Donald J. Trump. Ohio is a deeply red state that voted strongly in favor of Mr. Trump in 2020. However, its voters soundly rejected Issue 1 in August of 2023. At first glance, this outcome is surprising. Issue 1 was marketed to voters as the Republican option. It was deeply linked to an upcoming November 2023 ballot initiative (also called Issue 1) that, if it passes, will amend Ohio's Constitution to enshrine abortion rights. If the August initiative had succeeded, the threshold for passing amendments to Ohio's Constitution would have been changed from a simple majority of 50% (+1) to 60%. Given recent polling of Ohioan's support for abortion rights, this new threshold would be just enough to prevent the November initiative from succeeding.
 
+Republican Party elites in Ohio supported Issue 1, and they urged Ohio voters to vote "yes." They also hoped that holding the election at an odd, off-cycle time (in August rather than November), would lead to lower turnout. Republican elites assumed that lower turnout would bolster Issue 1's chances of passing. Despite these efforts, a majority of Ohioans (57%) voted "no" on Issue 1, and turnout, though lower than in a general election year, was much higher than would be expected for an off-cycle summer election.
+
+Looking at the data shows us a number of things about the way Ohioans voted on Issue 1. First, while Issue 1 tended to do better in counties where Trump performed well in 2020, the relationship was not 1-to-1. In fact, in nearly *every* Ohio county, support for Issue 1 lagged behind support for Donald Trump. That Issue 1 generally under-performed relative to Trump probably shouldn't be that surprising when you look at the bigger picture. Similar ballot measures have been tried and failed in other strongly Republican states, which highlights an often overlooked political reality in the American electorate. Though it's true that disproportionately more Republicans oppose abortion rights than do Democrats, there is a large contingent of Republican voters who support abortion access ([though in varying degrees](https://fivethirtyeight.com/features/dobbs-abortion-opinion-liability-republicans/)). The fact that support for Issue 1 lagged behind support for Trump by a nearly consistent margin across Ohio counties actually is what we should have expected to happen. Of course, hind-sight is always 20/20.
+
+While Issue 1 under-performed Trump in every Ohio county, the margin was not identical. So, I wanted to consider some county level demographic factors that might explain why it did disproportionately worse in some places versus others. The most interesting of these factors was the margin between county level turnout in August 2023 and November 2020. Contrary to the intuitions of Republican elites, the counties where Issue 1 under-performed the worst also tended to be the counties where turnout was *lower* relative to the last general election. That means the conventional wisdom that lower turnout would help the Republicans didn't hold up. It's impossible to say with this data alone, but Issue 1 might have done better had more voters showed up to the ballot box. At the very least, this finding is in line with [many other recent analyses](https://www.nationalaffairs.com/publications/detail/does-high-voter-turnout-help-one-party) that show the conventional wisdom that low turnout helps the Republican Party is outdated.
