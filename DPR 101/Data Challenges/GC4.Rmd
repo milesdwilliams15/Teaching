@@ -38,14 +38,11 @@ dt |>
     y = value,
     color = name
   ) +
-  geom_point(
-    alpha = 0.4,
-    show.legend = F
-  ) +
-  geom_labelsmooth(
+  geom_labelline(
     aes(label = name),
     show.legend = F,
-    linewidth = 1
+    linewidth = 1,
+    text_smoothing = 50
   )
 ```
 

@@ -71,11 +71,17 @@ Data |>
       xm_qudsest1, xm_qudsest2
     )
   ) -> Data
+clist <- function(x) {
+  x <- countrycode::countrycode(x, "cown", "country.name")
+  paste0(unique(x), collapse = ", ")
+}
 Data |> filter(cowinterongoing == 1) |>
   group_by(warnum) |>
   summarize(
     start_year = min(year),
     duration = max(year) - min(year) + 1,
+    side1 = clist(ccode1[sidea1==1]),
+    side2 = clist(ccode1[sidea1==2]),
     side1_initiator = max(
       initiator1[sidea1==1], na.rm = T
     ),
