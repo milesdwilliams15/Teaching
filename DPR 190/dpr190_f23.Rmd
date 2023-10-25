@@ -468,9 +468,9 @@ Grade the AI due Fri.
 
 \item Day 1: Drezner, "The Supergendered Politics of the Posthuman World."
 
-\item Day 2: Drezner, "Subalternity and the Living Dead: Postcolonial Approaches to a Posthuman World" and "A Very Important Note about Zombie Networks."
+\item Day 2: Drezner, "Subalternity and the Living Dead: Postcolonial Approaches to a Posthuman World."
 
-\item Day 3: Presentations for TD2. 
+\item Day 3: Drezner, "A Very Important Note about Zombie Networks."
 
 \end{itemize}
 
@@ -480,7 +480,7 @@ Grade the AI due Fri.
 
 \textbf{\textit{Due}}
 
-TD2 due Fri.
+TD2 due Mon. next week
 
 \end{flushright}
 

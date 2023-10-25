@@ -135,7 +135,7 @@ Data |> filter(cowinterongoing == 1) |>
     min_polity2 = min(polity21, na.rm = T),
     min_qudsest = min(xm_qudsest1, na.rm = T)
   ) -> sm_data
-apply(sm_data, c(1, 2), function(x) ifelse(is.infinite(x), NA, x)) |>
+apply(sm_data, c(1, 2), function(x) ifelse(is.infinite(x), NA_integer_, x)) |>
   as_tibble() -> sm_data
 ```
 
@@ -178,6 +178,9 @@ Metadata:
 24. "min_qudsest": the democracy score for the weakest democracy among the countries fighting a war (regardless of side) based on UDS.  
 
 ```{r}
+sm_data <- read_csv("https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/ma2_data.csv")
+library(coolorrr)
+set_theme()
 sum_dt <- sm_data |>
   group_by(start_year) |>
   summarize(
@@ -366,14 +369,19 @@ sm_data |>
 
 ```{r}
 sm_data |>
+  mutate(
+    diff_polyarchy = side1_polyarchy - side2_polyarchy,
+    diff_polity2 = side1_polity2 - side2_polity2,
+    diff_qudsest = side1_qudsest - side2_qudsest
+  ) |>
   pivot_longer(
-    c(side1_polyarchy, side1_polity2, side1_qudsest)
+    diff_polyarchy:diff_qudsest
   ) |>
   mutate(
     name = case_when(
-      name == "side1_polyarchy" ~ "(2) V-Dem",
-      name == "side1_polity2" ~ "(1) Polity 2",
-      name == "side1_qudsest" ~ "(3) UDS"
+      name == "diff_polyarchy" ~ "(2) V-Dem",
+      name == "diff_polity2" ~ "(1) Polity 2",
+      name == "diff_qudsest" ~ "(3) UDS"
     )
   ) |>
   ggplot() +
@@ -395,10 +403,16 @@ sm_data |>
     labels = scales::percent
   ) +
   labs(
-    x = "Average Democracy Score for Side 1",
+    x = "Average Democracy Score for Side 1 vs. Side 2",
     y = NULL,
     title = "Figure 5",
     subtitle = "(%) of total loses suffered"
   )
+```
+```{r}
+ggplot(sm_data) +
+  aes(x = side1_polyarchy, y = side1_military_personnel) +
+  geom_point() +
+  scale_y_log10()
 ```
 
