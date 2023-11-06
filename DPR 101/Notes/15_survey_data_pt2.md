@@ -241,7 +241,7 @@ Data |>
   labs(
     x = NULL,
     y = NULL,
-    title = "Demographic breakdown of the sample by race and gender",
+    title = "Demographic breakdown of the sample by race\nand gender",
     caption = "Source: What the Hell Happened? (Data for Progress)"
   )
 ```
