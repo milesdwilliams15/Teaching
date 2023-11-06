@@ -294,7 +294,7 @@ ggplot(Data) +
   labs(
     x = NULL,
     y = NULL,
-    title = "Breakdown of respondent age by gender and partisanship",
+    title = "Breakdown of respondent age by gender and\npartisanship",
     caption = "Source: What the Hell Happened? (Data for Progress)"
   )
 ```
@@ -323,7 +323,7 @@ Data |>
   labs(
     x = NULL,
     y = NULL,
-    title = "Breakdown of respondent race by partisanship and gender",
+    title = "Breakdown of respondent race by partisanship\nand gender",
     caption = "Source: What the Hell Happened? (Data for Progress)"
   )
 ```
@@ -351,7 +351,7 @@ Data |>
   labs(
     x = NULL,
     y = NULL,
-    title = "Breakdown of respondent race by partisanship and gender",
+    title = "Breakdown of respondent race by partisanship\nand gender",
     caption = "Source: What the Hell Happened? (Data for Progress)",
     fill = NULL
   )
