@@ -272,7 +272,7 @@ sm_data |>
     method.args = list(family = quasipoisson),
     color = "navy"
   ) +
-  facet_wrap(~ name) +
+  facet_wrap(~ name, scales = "free_x") +
   labs(
     x = "Minimum Democracy Score",
     y = NULL,
@@ -398,6 +398,10 @@ sm_data |>
     method.args = list(family = quasibinomial),
     color = "navy"
   ) +
+  # geom_hex(
+  #   bins = 5,
+  #   color = "black"
+  # ) +
   facet_wrap(~ name) +
   scale_y_continuous(
     labels = scales::percent
@@ -407,12 +411,55 @@ sm_data |>
     y = NULL,
     title = "Figure 5",
     subtitle = "(%) of total loses suffered"
+  ) +
+  ggpal(
+    "sequential", "fill"
   )
 ```
 ```{r}
 ggplot(sm_data) +
-  aes(x = side1_polyarchy, y = side1_military_personnel) +
+  aes(x = side1_polyarchy - side2_polyarchy, y = log(side1_military_personnel / side2_military_personnel)) +
   geom_point() +
-  scale_y_log10()
+  geom_smooth(
+    method = "lm"
+  )
+```
+
+```{r}
+sm_data |>
+  mutate(
+    diff_polyarchy = side1_polyarchy - side2_polyarchy,
+    diff_polity2 = side1_polity2 - side2_polity2,
+    diff_qudsest = side1_qudsest - side2_qudsest
+  ) |>
+  pivot_longer(
+    diff_polyarchy:diff_qudsest
+  ) |>
+  ggplot() +
+  aes(x = value, y = (side1_winner - side2_winner + 1)/2) +
+  geom_point() +
+  stat_smooth(
+    method = "glm",
+    method.args = list(family = binomial)
+  ) +
+  facet_wrap(~ name, scales = "free_x")
+```
+
+
+```{r}
+ggplot(sm_data) +
+  aes(x = start_year) +
+  geom_freqpoly(bins = 100)
+```
+
+```{r}
+sm_data |>
+  pivot_longer(
+    side1_winner:side2_winner
+  ) |>
+  ggplot() +
+  aes(x = side1_polyarchy - side2_polyarchy, y = value) +
+  geom_point() +
+  geom_smooth()
 ```
 

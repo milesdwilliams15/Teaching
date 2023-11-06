@@ -30,6 +30,9 @@ Tools we'll use in this session:
 ```{r}
 library(tidyverse)
 library(socsci)
+library(geomtextpath)
+library(coolorrr)
+set_theme()
 ```
 
 ## We use surveys to learn about populations
@@ -42,7 +45,7 @@ However, (1) we have to be careful about whom we survey, and (2) we have to be c
 
 Both of these considerations deal with two different kinds of *bias*, respectively:
 
-- ***sample*** bias
+- ***sampling*** bias
 - ***social desirability*** bias
 
 To understand why the first kind of bias is problematic, we need to think in terms of probability and statistics. To make things more concrete, let's imagine that we have a population of 1,000 individuals and we want to gauge their level of support/opposition to mandatory vaccinations against COVID-19. However, suppose that due to budgetary or logistical barriers, we can only ask 100 people about their attitudes. How can we be sure that the 100 people we survey will give us a good representation of what all 1,000 people in the population think?
@@ -53,16 +56,16 @@ Say out of the 1,000 people in the population, 500 support mandatory vaccination
 
 The below figure shows the results from a simple simulation to show this is the case. I programmed R to give me a population of 1,000 individuals where 500 support mandatory vaccinations and the rest don't. Then, I had it repeatedly draw samples of 100 individuals from the population and tally up the share of individuals in the samples that support mandatory vaccinations. The figure shows the distribution of estimates I got from repeating this procedure 1,000 times. As you can see, the range of support indicated by individual surveys varies substantially. While many provide estimates close to the true population's actual level of support, some fall below 40% and some above 60%. Even so, the greatest density of estimates cluster around the true level of support in the population.
 
-```{r echo=FALSE}
+```{r}
+## create a "population" with 50/50 attitudes on COVID vax:
 p <- rep(0:1, each = 500)
-library(geomtextpath)
-library(coolorrr)
-set_theme()
+
+## sample 100 individuals from the pop. 1,000 x and compute support:
 tibble(
   its = 1:1000,
   phat = map(its, ~ sample(p, 100) |> mean()) |>
     unlist()
-) |>
+) |> ## give the output to ggplot()
   ggplot() +
   aes(
     x = phat
@@ -97,13 +100,13 @@ tibble(
   )
 ```
 
-In sum, surveys of random samples from a population, while still subject to error, are one of the best social science tools we have for making population inferences. However, even with a random sample, we still have to consider the second kind of bias: **social desirability**.
+The main point to remember is that surveys of random samples from a population, while still subject to error, are one of the best social science tools we have for making population inferences. However, even with a random sample, we still have to consider the second kind of bias: **social desirability** bias.
 
 People make errors when they take surveys all the time. Maybe they're in a hurry or misunderstand a question or two, and so they provide an answer that doesn't actually align with what they think. We have a term for this: "noise." But sometimes when someone's answer doesn't align with their actual attitudes it's no accident; the respondent lied. This happens if people try to give you the answer that they think is the "right" answer rather than their honest opinion. There is a lot of research out there on this problem. Everything from the identity of the person giving a survey, to whether it's done online or over the phone can lead people to give different answers to otherwise similar questions.
 
 To avoid this problem, it's important to think carefully about how you ask people questions. This is especially true when asking people about polarizing issues where they may feel a sense of peer pressure to answer in a certain way. This can pose a serious challenge to inference. Say we wanted to measure something like a person's level of racism. You can't just ask in a survey, "how racist would you say you are on a scale from 0 to 10?" People won't answer that question honestly. In cases like this, social scientists have come up with a number of indirect ways to measure racism without asking people directly.
 
-Two approaches are (1) survey experiments and (2) creation of indexes. For 1, social scientists might think of many ways of asking a question and then randomly assign these alternative ways of asking the question to the people surveyed. If they find systematically different kinds of responses depending on the question wording, then this can both serve as evidence of social desirability bias and be leveraged as a means to identifying a more authentic estimate of how individuals really feel in the population.
+Two approaches are (1) survey experiments and (2) creation of indexes. For 1, social scientists might think of two or more ways of asking a question and then randomly assign these alternative ways of asking the question to the people surveyed. If they find systematically different kinds of responses depending on the question wording, then this can both serve as evidence of social desirability bias and be leveraged as a means to identifying a more authentic estimate of how individuals really feel in the population.
 
 Approach 2 involves asking individuals a battery of questions that, individually, are only indirectly related to the attitude you want to measure. But, put together, the questions help you triangulate attitudes (such as racism) that are otherwise impossible to measure with one straightforward question. 
 
@@ -113,6 +116,8 @@ We'll talk more about index construction in bit. But first, let's take a look at
 
 Survey data usually looks like this:
 ```{r}
+library(tidyverse)
+library(socsci)
 cces <- read_csv("https://raw.githubusercontent.com/ryanburge/cces/master/CCES%20for%20Methods/small_cces.csv")
 cces
 ```
