@@ -1,0 +1,472 @@
+---
+title: "MA3"
+author: "Miles D. Williams"
+date: "2023-11-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## packages
+library(tidyverse)
+library(socsci)
+library(coolorrr)
+
+## data viz settings
+set_theme()   
+set_palette()
+
+## data
+url <- "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
+Data <- read_csv(url)
+
+## recodes
+Data <- Data |>
+  mutate(
+    ## education
+    educ_cat = frcode(
+      educ == 1 ~ "No HS",
+      educ == 2 ~ "HS",
+      educ == 3 ~ "Some College",
+      educ == 4 ~ "2-year Degree",
+      educ == 5 ~ "4-year Degree",
+      educ == 6 ~ "Postgrad"
+    ),
+    ## party id
+    pid3_new = frcode(
+      pid3 == 1 ~ "Democrat",
+      !(pid3 %in% 1:2) ~ "Independent/Other",
+      pid3 == 2 ~ "Republican"
+    ),
+    ## gender
+    gender_id = ifelse(
+      gender == 1, "Male", "Female"
+    ),
+    ## age
+    age = 2018 - birthyr
+  )
+```
+
+
+
+```{r}
+Data |>
+  pivot_longer(
+    cols = c(
+      racial_resentment_scaled,
+      hostile_sexism_scaled
+    )
+  ) |>
+  mutate(
+    name = ifelse(
+      str_detect(name, "racial"), 
+      "Racial Animums",
+      "Hostile Sexism"
+    )
+  ) |>
+  ggplot() +
+  aes(x = value, fill = name) +
+  geom_histogram(show.legend = F) +
+  facet_wrap(~ name) +
+  ggpal(aes = "fill")
+```
+
+
+
+```{r}
+ggplot(Data) +
+  aes(
+    x = racial_resentment_scaled,
+    y = hostile_sexism_scaled
+  ) +
+  geom_tile(
+    fill = "white",
+    color = "black"
+  ) +
+  geom_jitter(
+    color = "darkgray",
+    alpha = 0.5,
+    height = 0.02,
+    width = 0.02
+  ) +
+  geom_smooth(
+    method = "gam",
+    color = "navy",
+    fill = "navy"
+  ) +
+  theme(
+    panel.grid.major = element_blank()
+  ) +
+  labs(
+    x = expression("Racial Animus "%->%""),
+    y = expression("Hostile Sexism "%->%"")
+  ) +
+  scale_x_continuous(
+    n.breaks = 10
+  ) +
+  scale_y_continuous(
+    n.breaks = 10
+  )
+```
+
+```{r}
+Data |>
+  pivot_longer(
+    cols = c(
+      racial_resentment_scaled,
+      hostile_sexism_scaled
+    )
+  ) |>
+  mutate(
+    name = ifelse(
+      str_detect(name, "racial"),
+      "Racial Animus",
+      "Hostile Sexism"
+    )
+  ) |>
+  group_by(pid3_new, name) |>
+  mean_ci(value) |>
+  ggplot() +
+  aes(
+    x = mean,
+    xmin = lower,
+    xmax = upper,
+    y = pid3_new
+  ) +
+  geom_pointrange() +
+  facet_wrap(
+    ~ name, ncol = 1
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  ) +
+  labs(
+    x = "Mean with 95% CI",
+    y = NULL
+  )
+ggsave(
+  here::here("DPR 101", "Main Assignments", "example_fig.png")
+)
+```
+
+
+
+```{r}
+Data |>
+  group_by(educ_cat) |>
+  mean_ci(racial_resentment_scaled) |>
+  ggplot() +
+  aes(
+    x = mean,
+    xmin = lower,
+    xmax = upper,
+    y = educ_cat
+  ) +
+  geom_pointrange() +
+  labs(
+    x = "Mean Racial Animus",
+    y = NULL
+  )
+```
+
+```{r}
+Data |>
+  group_by(educ_cat, pid3_new, gender_id) |>
+  mean_ci(racial_resentment_scaled) |>
+  ggplot() +
+  aes(
+    x = pid3_new,
+    y = educ_cat,
+    fill = mean,
+    label = paste0(round(mean, 2), "\n(", n, ")")
+  ) +
+  facet_wrap(
+    ~ gender_id,
+    strip.position = "bottom"
+  ) +
+  geom_tile(color = "gray20") +
+  geom_text(
+    #fontface = "bold",
+    size = 3
+  ) +
+  ggpal(
+    "diverging",
+    "fill",
+    midpoint = mean(Data$racial_resentment_scaled, na.rm = T),
+    limits = 0:1,
+    breaks = c(0.2, 0.8),
+    labels = c("Below\nAverage", "Above\nAverage")
+  ) +
+  scale_x_discrete(
+    position = "top"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 0),
+    plot.caption = element_text(hjust = 0),
+    legend.position = "right",
+    legend.direction = "vertical",
+    panel.grid.major = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Racial\nAnimus ",
+    title = "Gender, Education, Partisanship, and Racial Animus",
+    subtitle = "Cell entries are mean racial animus with number of observations (in parentheses)."
+  )
+```
+
+
+
+```{r}
+Data |>
+  group_by(educ_cat, pid3_new, gender_id) |>
+  mean_ci(hostile_sexism_scaled) |>
+  ggplot() +
+  aes(
+    x = pid3_new,
+    y = educ_cat,
+    fill = mean,
+    label = paste0(round(mean, 2), "\n(", n, ")")
+  ) +
+  facet_wrap(
+    ~ gender_id,
+    strip.position = "bottom"
+  ) +
+  geom_tile(
+    color = "gray20"
+  ) +
+  geom_text(
+    size = 3
+  ) +
+  ggpal(
+    "diverging",
+    "fill",
+    midpoint = mean(Data$hostile_sexism_scaled, na.rm = T),
+    limits = 0:1,
+    breaks = c(0.2, 0.8),
+    labels = c("Below\nAverage", "Above\nAverage")
+  ) +
+  scale_x_discrete(
+    position = "top"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 0),
+    legend.position = "right",
+    legend.direction = "vertical",
+    panel.grid.major = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Hostile\nSexism ",
+    title = "Gender, Education, Partisanship, and Hostile Sexism",
+    subtitle = "Cell entries are mean hostile sexism with number of observations (in parentheses)."
+  )
+```
+
+
+```{r}
+Data |>
+  group_by(educ_cat, pid3_new, gender_id) |>
+  mean_ci(fear_of_demographic_change_scaled) |>
+  ggplot() +
+  aes(
+    x = pid3_new,
+    y = educ_cat,
+    fill = mean,
+    label = paste0(round(mean, 2), "\n(", n, ")")
+  ) +
+  facet_wrap(
+    ~ gender_id,
+    strip.position = "bottom"
+  ) +
+  geom_tile(
+    color = "gray20"
+  ) +
+  geom_text(
+    size = 3
+  ) +
+  ggpal(
+    "diverging",
+    "fill",
+    midpoint = mean(Data$fear_of_demographic_change_scaled, na.rm = T),
+    limits = 0:1,
+    breaks = c(0.2, 0.8),
+    labels = c("Below\nAverage", "Above\nAverage")
+  ) +
+  scale_x_discrete(
+    position = "top"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 0),
+    legend.position = "right",
+    legend.direction = "vertical",
+    panel.grid.major = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Xenophobia",
+    title = "Gender, Education, Partisanship, and Xenophobia",
+    subtitle = "Cell entries are mean xenophobia with number of observations (in parentheses)."
+  )
+```
+
+
+```{r}
+Data |>
+  group_by(educ_cat, pid3_new, gender_id) |>
+  mean_ci(favor_dtrump %in% 1:2) |>
+  ggplot() +
+  aes(
+    x = pid3_new,
+    y = educ_cat,
+    fill = mean,
+    label = paste0(round(mean, 2), "\n(", n, ")")
+  ) +
+  facet_wrap(
+    ~ gender_id,
+    strip.position = "bottom"
+  ) +
+  geom_tile(
+    color = "gray20"
+  ) +
+  geom_text(
+    size = 3
+  ) +
+  ggpal(
+    "diverging",
+    "fill",
+    midpoint = mean(Data$favor_dtrump %in% 1:2, na.rm = T),
+    limits = 0:1,
+    breaks = c(0.2, 0.8),
+    labels = c("Below\nAverage", "Above\nAverage")
+  ) +
+  scale_x_discrete(
+    position = "top"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 0),
+    legend.position = "right",
+    legend.direction = "vertical",
+    panel.grid.major = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = "Trump\nSupport ",
+    title = "Gender, Education, Partisanship, and Support For Trump",
+    subtitle = "Cell entries are mean Trump support with number of observations (in parentheses)."
+  )
+```
+
+
+
+```{r}
+set_palette(
+  qualitative = c(dive[1], "skyblue", dive[3]),
+  from_coolors = F
+)
+ggplot(Data) +
+  aes(
+    x = age,
+    y = racial_resentment_scaled,
+    color = pid3_new
+  ) +
+  # geom_point(
+  #   alpha = 0.5
+  # ) +
+  stat_smooth(
+    method = "gam",
+    method.args = list(family = quasibinomial)
+  ) +
+  facet_wrap(~ gender_id) +
+  ggpal() +
+  labs(
+    x = "Age",
+    y = "Racial Animus",
+    color = NULL,
+    title = "Age, Gender, Partisanship, and Racial Animus",
+    subtitle = "Generalized additive models fit with a quasibinomial logit link."
+  ) 
+```
+
+```{r}
+ggplot(Data) +
+  aes(
+    x = age,
+    y = hostile_sexism_scaled,
+    color = pid3_new
+  ) +
+  # geom_point(
+  #   alpha = 0.5
+  # ) +
+  stat_smooth(
+    method = "gam",
+    method.args = list(family = quasibinomial)
+  ) +
+  facet_wrap(~ gender_id) +
+  ggpal() +
+  labs(
+    x = "Age",
+    y = "Hostile Sexism",
+    color = NULL,
+    title = "Age, Gender, Partisanship, and Hostile Sexism",
+    subtitle = "Generalized additive models fit with a quasibinomial logit link."
+  ) 
+```
+
+
+```{r}
+ggplot(Data) +
+  aes(
+    x = age,
+    y = fear_of_demographic_change_scaled,
+    color = pid3_new
+  ) +
+  # geom_point(
+  #   alpha = 0.5
+  # ) +
+  stat_smooth(
+    method = "gam",
+    method.args = list(family = quasibinomial)
+  ) +
+  facet_wrap(~ gender_id) +
+  ggpal() +
+  labs(
+    x = "Age",
+    y = "Xenophobia",
+    color = NULL,
+    title = "Age, Gender, Partisanship, and Xenophobia",
+    subtitle = "Generalized additive models fit with a quasibinomial logit link."
+  ) 
+```
+
+
+```{r}
+ggplot(Data) +
+  aes(
+    x = age,
+    y = (favor_dtrump %in% 1:2)+0,
+    color = pid3_new
+  ) +
+  # geom_point(
+  #   alpha = 0.5
+  # ) +
+  stat_smooth(
+    method = "gam",
+    method.args = list(family = binomial)
+  ) +
+  facet_wrap(~ gender_id) +
+  ggpal() +
+  labs(
+    x = "Age",
+    y = "Trump Support",
+    color = NULL,
+    title = "Age, Gender, Partisanship, and Support for Trump",
+    subtitle = "Generalized additive models fit with a standard logit link."
+  ) 
+```

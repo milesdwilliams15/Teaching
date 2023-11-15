@@ -245,6 +245,32 @@ ggplot(sum_dt) +
   )
 ```
 
+```{r}
+sm_data |>
+  pivot_longer(
+    cols = min_polyarchy:min_qudsest
+  ) |>
+  ggplot() +
+  aes(
+    x = start_year,
+    y = value,
+    color = name
+  ) +
+  geom_point(
+    alpha = 0.5
+  ) +
+  geom_smooth(
+    method = "gam",
+    se = F
+  ) +
+  facet_wrap(
+    ~ name
+  ) +
+  theme(
+    legend.position = ""
+  )
+```
+
 
 ```{r}
 sm_data |>

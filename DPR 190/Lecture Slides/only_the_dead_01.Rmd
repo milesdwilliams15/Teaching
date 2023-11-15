@@ -1,0 +1,203 @@
+---
+output: 
+  stevetemplates::beamer:
+    keep_tex: TRUE
+    latex_engine: pdflatex # use xelatex here instead! I recommend it, but this is minimal reprex
+    dev: cairo_pdf # I typically comment this out  if latex_engine: pdflatex
+    slide_level: 3 # I prefer this, but I won't force it on you.
+title: Is War Going Away?
+subtitle: DPR 190
+author: Miles D. Williams
+institute: Data for Political Research
+# titlegraphic: "`r paste0(Sys.getenv('HOME'), '/Dropbox/clemson/watermarks/clemson-university-wordmark-orange-purple.png')`"
+# scaletg: .9 # Optional, proportional (0, 1) to paper width. Defaults to .3
+fontsize: 12pt
+make149: TRUE
+# mainfont: "Open Sans" # Try out some font options if xelatex
+# titlefont: "Titillium Web" # Try out some font options if xelatex
+# specify color as six-digit RGB (no pound sign)
+# primarycolor: "990000" 
+# secondarycolor: "000099"
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F,
+  message = F
+)
+library(tidyverse)
+library(stevemisc)
+library(peacesciencer)
+library(coolorrr)
+set_theme()
+set_palette()
+
+## create a dyad-year dataset 
+Data <- create_dyadyears(directed = T) |>
+  ## add conflict dataset
+  left_join(cow_war_inter) |>
+  ## add democracy data
+  add_democracy() |>
+  ## add capabilities
+  add_nmc()
+  
+## make function to combine country names into a list
+clist <- function(x) {
+  x <- countrycode::countrycode(x, "cown", "country.name")
+  paste0(unique(x), collapse = ", ")
+}
+
+## aggregate the data to individual wars
+Data |> filter(cowinterongoing == 1) |>
+  group_by(warnum) |>
+  summarize(
+    start_year = min(year),
+    duration = max(year) - min(year) + 1,
+    side1 = clist(ccode1[sidea1==1]),
+    side2 = clist(ccode1[sidea1==2]),
+    side1_initiator = max(
+      initiator1[sidea1==1], na.rm = T
+    ),
+    side2_initiator = max(
+      initiator1[sidea1==2], na.rm = T
+    ),
+    side1_winner = min(
+      outcome1[sidea1==1]==1, na.rm = T
+    ),
+    side2_winner = min(
+      outcome1[sidea1==2]==1, na.rm = T
+    ),
+    side1_deaths = sum(
+      batdeath1[sidea1==1 & batdeath1 > 0], na.rm = T
+    ),
+    side2_deaths = sum(
+      batdeath1[sidea1==2 & batdeath1 > 0], na.rm = T
+    ),
+    side1_military_expenditures = sum(
+      milex1[sidea1==1], na.rm = T
+    ),
+    side2_military_expenditures = sum(
+      milex1[sidea1==2], na.rm = T
+    ),
+    side1_military_personnel = sum(
+      milper1[sidea1==1], na.rm = T
+    ),
+    side2_military_personnel = sum(
+      milper1[sidea1==2], na.rm = T
+    )
+  ) -> sm_data
+Data |>
+  group_by(year) |>
+  summarize(
+    n_countries = length(unique(ccode1))
+  ) -> n_countries
+
+cow_nmc |>
+  group_by(year) |>
+  summarize(
+    world_pop = sum(tpop * 1000, na.rm = T)
+  ) -> world_pop
+```
+
+
+### Number of wars over time
+
+```{r}
+ggplot(sm_data) +
+  aes(x = start_year) +
+  geom_area(
+    stat = "bin",
+    binwidth = 1,
+    fill = "steelblue"
+  ) +
+  labs(
+    x = "Year",
+    y = NULL,
+    title = "New wars started per year, 1816-2007"
+  )
+```
+
+### Number of wars over time
+
+```{r}
+sm_data |>
+  count(start_year) |>
+  right_join(n_countries, by = c("start_year" = "year")) |>
+  mutate(rate = replace_na(n / n_countries, 0)) |>
+  ggplot() +
+  aes(x = start_year, y = rate) +
+  geom_area(
+    fill = "steelblue",
+    binwidth = 1
+  ) +
+  labs(
+    x = "Year",
+    y = "(Count per No. of Countries)",
+    title = "Rate that wars started per year, 1816-2007"
+  )
+```
+
+
+### Durration of wars over time
+
+```{r}
+ggplot(sm_data) +
+  aes(x = start_year, y = duration) +
+  geom_point(
+    color = "gray20",
+    alpha = 0.5
+  ) +
+  geom_smooth(
+    method = "gam",
+    color = "red"
+  ) +
+  labs(
+    x = "Year",
+    y = "War durration (years)"
+  )
+```
+
+
+
+### Deaths from wars over time
+
+```{r}
+ggplot(sm_data) +
+  aes(x = start_year, y = side1_deaths + side2_deaths) +
+  geom_point(alpha = 0.5, color = "gray") +
+  geom_smooth(
+    method = "gam",
+    #se = F,
+    color = "red"
+  ) +
+  scale_y_log10(
+    labels = scales::comma
+  ) +
+  labs(
+    x = "Year",
+    y = "Number of fatalities"
+  )
+```
+
+### Deaths from wars over time
+
+```{r}
+sm_data |>
+  left_join(world_pop, by = c("start_year" = "year")) |>
+  ggplot() +
+  aes(x = start_year, y = (side1_deaths + side2_deaths)/world_pop) +
+  geom_point(alpha = 0.5, color = "gray") +
+  geom_smooth(
+    method = "gam",
+    #se = F,
+    color = "red"
+  ) +
+  scale_y_log10(
+    labels = scales::percent
+  ) +
+  labs(
+    x = "Year",
+    y = "Global fatality rate"
+  )
+```
