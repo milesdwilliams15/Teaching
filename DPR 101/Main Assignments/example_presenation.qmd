@@ -1,0 +1,767 @@
+---
+title: "Student Evaluations of President Biden"
+subtitle: "The Denison Experience versus Partisanship"
+author: Miles D. Williams 
+format: 
+  revealjs:
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    footer: Denison University | Data for Political Research
+    reference-location: document
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F,
+  message = F,
+  fig.height = 5,
+  fig.width = 4,
+  out.width = "100%",
+  dpi = 500
+)
+
+## packages
+library(tidyverse)
+library(coolorrr)
+library(socsci)
+library(googlesheets4)
+library(showtext)
+
+## custom data viz
+set_theme()   # you can get rid of this if you don't like it
+set_palette(
+  qualitative = c("steelblue", "gray20", "red3", "purple4", "forestgreen"),
+  from_coolors = F
+)
+# font_add_google("EB Garamond")
+# showtext_auto()
+
+## survey data
+gs4_deauth()
+o23 <- range_read(
+  "https://docs.google.com/spreadsheets/d/19Et52eKP1Yte9tainpfB7f_9sCB8UAVM36DbR2ySyaI/edit#gid=1526346509"
+)
+
+## link to the code book:
+# https://drive.google.com/file/d/13HQ7HgKD4JS6CMYGUIUwgUykGqXttSV9/view?usp=sharing
+
+## Some  Gifted Recodes 
+o23 |>
+  
+    # make all column names lowercase
+  rename_with(tolower, everything()) |>
+    
+    # start the recodes
+  mutate(
+    
+    # race
+    white = replace_na(q57_1, 0),
+    hispanic = replace_na(q57_2, 0),
+    black = replace_na(q57_3, 0),
+    asian = replace_na(q57_4, 0),
+    other = replace_na(q57_5, 0),
+    race = case_when(
+      white==1 & (black!=1 & hispanic!=1 & asian!=1 & other!=1) ~ "White",
+      black==1 ~ "Black",
+      asian==1 & (black!=1 & hispanic!=1) ~ "Asian",
+      hispanic==1 ~ "Hispanic",
+      other==1 & (black!=1 & hispanic!=1 & asian!=1)~ "Other"
+    ),
+    
+    # gender
+    gender = frcode(
+      q53 == 1 ~ "Men",
+      q53 == 2 ~ "Women"
+    ),
+    femtran = frcode(
+      q54_1 == 1 ~ "Men",
+      q54_2 == 1 ~ "Women",
+      q54_3 == 1 | q54_1 == 1 ~ "Trans/N-B"
+    ),
+    
+    # in what division is your major(s)
+    across(
+      starts_with("q27"),
+      ~ replace_na(.x, 0)
+    ),
+    social_sciences = q27_1,
+    sciences = q27_2,
+    humanities = q27_3,
+    arts = q27_4,
+    interdisciplinary = q27_5,
+    undecided = q27_6,
+    
+    # class
+    class = frcode(
+      q63 == 4 ~ "Freshman",
+      q63 == 3 ~ "Sophomore",
+      q63 == 2 ~ "Junior",
+      q63 == 1 ~ "Senior"
+    ),
+    
+    # group participation
+    greek = replace_na(q44_6, 0),
+    varsity = replace_na(q44_1, 0),
+    across(
+      starts_with("q44_"),
+      ~ replace_na(.x, 0)
+    )
+  ) |>
+  rowwise() |>
+  mutate(
+    num_groups = 
+      sum(c_across(starts_with("q44_")), na.rm  = T)
+  ) |>
+  ungroup() |>
+  mutate(
+    
+    # partisanship
+    pid7 = frcode(
+      q3 == 1 ~ "Strong Democrat",
+      q3 == 2 ~ "Democrat",
+      q3 == 3 ~ "Lean Democrat",
+      q3 == 4 ~ "Independent",
+      q3 == 5 ~ "Lean Republican",
+      q3 == 6 ~ "Republican",
+      q3 == 7 ~ "Strong Republican"
+    ),
+    pid3 = frcode(
+      q3 %in% 1:3 ~ "Democrat",
+      q3 == 4 ~ "Independent",
+      q3 %in% 5:7 ~ "Republican"
+    ),
+    
+    # polarization
+    polarized = abs(q11_6 - q11_8),
+    
+    # interest in politics
+    pol_interest = frcode(
+      q2 == 5 ~ "Not at all",
+      q2 == 4 ~ "Slightly",
+      q2 == 3 ~ "Moderately",
+      q2 == 2 ~ "Very",
+      q2 == 1 ~ "Extremely"
+    )
+  ) |>
+  
+    # importance of foreign policy issues
+  mutate(
+    across(q8_1:q8_12, ~ replace_na(.x, 0))
+  ) |>
+  rename(
+    cyber_security = q8_1,
+    ethnic_conflict = q8_2,
+    climate_change = q8_3,
+    human_rights = q8_4,
+    migration = q8_5,
+    terrorism = q8_6,
+    trade = q8_7,
+    regional_disintegration = q8_8,
+    russian_aggression = q8_9,
+    rising_china = q8_10,
+    domestic_political_instability = q8_11,
+    weapons_of_mass_destruction = q8_12,
+    other_fp_concerns = q8_13
+  ) |>
+  mutate(
+    # likelihood of war...
+    war_us_china = q9_1,    # US vs China
+    war_us_russia = q9_2,   # US vs Russia
+    war_china_taiwan = q9_3,# China invades Taiwan
+    
+    # biden's foreign policy performance
+    biden_fp = frcode(
+      q10_1 == 5 ~ "Very\npoorly",
+      q10_1 == 4 ~ "Poorly",
+      q10_1 == 3 ~ "Neither",
+      q10_1 == 2 ~ "Well",
+      q10_1 == 1 ~ "Very\nwell"
+    ),
+    
+    # for reference, biden's domestic policy performance
+    biden_dp = frcode(
+      q10_2 == 5 ~ "Very\npoorly",
+      q10_2 == 4 ~ "Poorly",
+      q10_2 == 3 ~ "Neither",
+      q10_2 == 2 ~ "Well",
+      q10_2 == 1 ~ "Very\nwell"
+    ),
+    
+    # here's his performance on student loans
+    biden_sl = frcode(
+      q10_3 == 5 ~ "Very\npoorly",
+      q10_3 == 4 ~ "Poorly",
+      q10_3 == 3 ~ "Neither",
+      q10_3 == 2 ~ "Well",
+      q10_3 == 1 ~ "Very\nwell"
+    )
+  ) -> o23
+
+```
+
+## How do students feel about Biden?
+
+::: columns
+::: {.column width="50%"}
+```{r}
+o23 |>
+  pivot_longer(
+    biden_fp:biden_sl
+  ) |>
+  mutate(
+    name = frcode(
+      name == "biden_fp" ~ "Foreign Policy",
+      name == "biden_dp" ~ "Domestic Economic Policy",
+      name == "biden_sl" ~ "Student Loans"
+    )
+  ) -> long_o23
+long_o23 |>
+  group_by(name) |>
+  ct(value, show_na = F) |>
+  ggplot() +
+  aes(x = value, y = pct) +
+  facet_wrap(
+    ~ name,
+    ncol = 1
+  ) +
+  geom_col(
+    fill = "steelblue"
+  ) +
+  geom_text(
+    aes(label = scales::percent(pct),
+        y = pct + 0.05)
+  ) +
+  labs(
+    x = NULL,
+    y = "Share of Responses",
+    title = "Figure 1",
+    subtitle = "How well is Biden doing in...?"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent,
+    limits = c(0, 0.5)
+  ) +
+  theme(
+    panel.grid.major.x = element_blank()
+  )
+```
+:::
+
+::: {.column width="50%"}
+-   Most students feel neutral or negatively about Biden's foreign and domestic economic policies.
+
+-   They feel better about his performance with student loans.
+:::
+:::
+
+## How do students feel about Biden?
+
+::: columns
+::: {.column width="50%"}
+```{r}
+library(ggcorrplot)
+cormat <- cor(
+  o23 |>
+    select(biden_fp:biden_sl) |>
+    mutate(
+      across(everything(), as.numeric)
+    ),
+  use = "pairwise.complete.obs"
+)
+ggcorrplot(cormat,
+           lab = T,
+           colors = c("#6D9EC1", "white", "#E46726")) +
+  scale_x_discrete(
+    labels = c("Foreign\nPolicy",
+               "Economic\nPolicy",
+               "Student\nLoans")
+  ) +
+  scale_y_discrete(
+    labels = c("Foreign\nPolicy",
+               "Economic\nPolicy",
+               "Student\nLoans")
+  ) +
+  labs(
+    title = "Figure 2",
+    subtitle = "Correlation in attitudes about Biden",
+    x = NULL,
+    y = NULL
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    axis.title = element_text(hjust = 0.9), 
+    plot.title.position = "plot", 
+    panel.background = element_rect(fill = "white"), 
+    plot.background = element_rect(fill = "white"), 
+    legend.key = element_rect(fill = "white"),
+    legend.position = ""
+  )
+```
+:::
+
+::: {.column width="50%"}
+Students that think more positively about Biden's performance in one area are more likely to think positively about his performance in another area.
+:::
+:::
+
+## What explains variation in attitudes?
+
+Do student experiences at Denison influence their attitudes?
+
+. . .
+
+Or is partisanship more powerful?
+
+## Why it matters
+
+-   Students come to Denison with their own set of perspectives and beliefs.
+
+-   Is there any room for these perspectives and beliefs to evolve?
+
+-   Denison is supposed to be a place where students are exposed to new ideas and view points.
+
+-   If this is true, shouldn't the length of time students are at Denison or their area of study move the needle on an ideologically charged question (like how well is the current U.S. President doing?).
+
+## Explanatory variables of interest {.smaller}
+
+The student experience:
+
+-   *Class* (Freshman, Sophomore, Junior, Senior).
+
+-   *Area of major* (Social Sciences, Sciences, Humanities, Arts, Interdisciplinary).
+
+Partisanship:
+
+-   *Self-identified partisanship* (from "Strong Democrat" to "Strong Republican").
+
+-   *Interest in politics* (from "Not at all" to "Extremely" interested).
+
+-   *Polarization* (absolute difference in support for campus Republicans vs. Democrats).
+
+## Breaking it down by class
+
+::: columns
+::: {.column width="50%"}
+```{r}
+## look at q63 (year of graduation)
+long_o23 |>
+  group_by(name, class) |>
+  mean_ci(as.numeric(value)) |>
+  drop_na() |>
+  ggplot() +
+  aes(y = class, x = mean, xmin = lower, xmax = upper) +
+  facet_wrap(
+    ~ name,
+    ncol = 1
+  ) +
+  geom_pointrange() +
+  scale_x_continuous(
+    breaks = 1:5,
+    limits = c(1, 5),
+    labels = sort(unique(o23$biden_fp))
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 3",
+    subtitle = "How well is Biden doing by class?"
+  ) +
+  geom_vline(
+    xintercept = 3,
+    linetype = 2
+  )
+```
+:::
+
+::: {.column width="50%"}
+-   No classes think Biden has performed terribly well.
+
+-   Sophomores are generally more positive than other classes.
+
+-   There's no evidence that student attitudes systematically change with their year in school.
+:::
+:::
+
+## Breaking it down by area of study {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+long_o23 |>
+  pivot_longer(
+    social_sciences:undecided,
+    names_to = "major_key",
+    values_to = "major_value"
+  ) |>
+  group_by(name, major_value, major_key) |>
+  mean_ci(as.numeric(value)) |>
+  drop_na() |>
+  filter(major_value == 1,
+         major_key != "undecided") |>
+  mutate(
+    major_key = str_replace_all(major_key, "_", " ") |>
+      str_to_title()
+  ) |>
+  ggplot() +
+  aes(x = mean, xmin = lower, xmax = upper, y = major_key) +
+  facet_wrap(
+    ~ name,
+    ncol = 1
+  ) +
+  geom_pointrange() +
+  scale_x_continuous(
+    breaks = 1:5,
+    limits = c(1, 5),
+    labels = sort(unique(o23$biden_fp))
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 4",
+    subtitle = "How well is Biden doing by division?"
+  ) +
+  geom_vline(
+    xintercept = 3,
+    linetype = 2
+  )
+```
+:::
+
+::: {.column width="50%"}
+-   There are also very few differences by academic divisions.
+
+-   Interdisciplinary majors are more supportive than others in terms of Biden's foreign and domestic economic policies.
+
+-   Everyone, except majors in the social sciences, thinks Biden has been doing better on student loans (with art students the most supportive).
+:::
+:::
+
+## Breaking it down by partisanship {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+long_o23 |>
+  group_by(name, pid7) |>
+  mean_ci(as.numeric(value)) |>
+  drop_na() |>
+  ggplot() +
+  aes(
+    x = as.numeric(pid7),
+    y = mean,
+    ymin = lower,
+    ymax = upper,
+    color = name
+  ) +
+  geom_line() +
+  geom_pointrange(
+    size = 0.2,
+    position = position_dodge(0.2)
+  ) +
+  scale_x_continuous(
+    breaks = 1:7,
+    labels = sort(unique(o23$pid7)) |>
+    str_wrap(10)
+  ) +
+  scale_y_continuous(
+    breaks = c(1, 3, 5),
+    limits = c(1, 5),
+    labels = sort(unique(o23$biden_fp))[c(1, 3, 5)]
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 5",
+    subtitle = "How well is Biden doing by partisanship?",
+    color = NULL
+  ) +
+  geom_hline(
+    yintercept = 3,
+    linetype = 2
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = -45,
+      hjust = 0
+    )
+  ) +
+  guides(
+    color = guide_legend(nrow = 2)
+  ) +
+  ggpal()
+```
+:::
+
+::: {.column width="50%"}
+-   We see the biggest differences due to partisanship.
+
+-   Foreign policy: Democrats are at best neutral while Republicans are explicitly negative.
+
+-   Domestic economic policy: Democrats are mildly positive while Republicans are strongly negative.
+
+-   Student loans: Democrats are clearly positive while Republicans lean negative (but not with a high degree of precision).
+:::
+:::
+
+## Partisanship and polarization
+
+::: columns
+::: {.column width="50%"}
+```{r}
+library(geomtextpath)
+long_o23 |>
+  drop_na(pid3) |>
+  ggplot() +
+  aes(x = polarized,
+      y = as.numeric(value),
+      color = pid3) +
+  facet_wrap(
+    ~ name,
+    ncol = 1
+  ) +
+  stat_smooth(
+    method = "gam",
+    level = 0.83
+  ) +
+  geom_text(
+    data = tibble(
+      polarized = 0,
+      value = c(4, 4.5, 5),
+      pid3 = sort(unique(o23$pid3))[3:1],
+      name = "Domestic Economic Policy"
+    ),
+    aes(
+      label = pid3
+    ),
+    hjust = 0,
+    size = 3
+  ) +
+  scale_x_continuous(
+    breaks = c(0, 50, 100),
+    labels = c(
+      "0",
+      expression(""%->%" More Polarized "%->%""),
+      "100"
+    )
+  ) +
+  scale_y_continuous(
+    breaks = c(1, 3, 5),
+    limits = c(1, 5),
+    labels = sort(unique(o23$biden_dp))[c(1, 3, 5)]
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 6",
+    subtitle = "How well is Biden doing by polarization and party?",
+    color = NULL
+  ) +
+  geom_hline(
+    yintercept = 3,
+    linetype = 2
+  ) +
+  ggpal() +
+  theme(
+    legend.position = "",
+    panel.grid.major.x = element_blank()
+  )
+```
+:::
+
+::: {.column width="50%"}
+-   Affective polarization also influences student attitudes.
+
+-   This is especially true for partisans.
+
+-   The more polarized students are, the further apart their attitudes become.
+:::
+:::
+
+## Partisanship and interest
+
+::: columns
+::: {.column width="50%"}
+```{r}
+long_o23 |>
+  group_by(name, pol_interest, pid3) |>
+  mean_ci(as.numeric(value)) |>
+  drop_na() |>
+  ggplot() +
+  aes(
+    x = as.numeric(pol_interest),
+    y = mean,
+    ymin = lower,
+    ymax = upper,
+    color = pid3
+  ) +
+  facet_wrap(~ name, ncol = 1) +
+  geom_hline(
+    yintercept = 3,
+    linetype = 2
+  ) +
+  geom_pointrange(
+    position = position_dodge(0.2)
+  ) +
+  geom_line(
+    position = position_dodge(0.2)
+  ) +
+  ggpal() +
+  scale_x_continuous(
+    labels = sort(unique(o23$pol_interest))
+  ) +
+  scale_y_continuous(
+    breaks = c(1, 3, 5),
+    limits = c(1, 5),
+    labels = sort(unique(o23$biden_dp))[c(1, 3, 5)]
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 7",
+    subtitle = "How well is Biden doing by party and interest?",
+    color = NULL
+  )
+```
+:::
+
+::: {.column width="50%"}
+-   Interest in politics matters, too, and it also is moderated by partisanship.
+
+-   The more interested in politics partisans are, the more their attitudes diverge.
+:::
+:::
+
+## Using a sledge hammer to kill a fly {.smaller}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+## open ranger
+library(ranger)
+
+## specify the right-hand side (predictors)
+the_spec <- ~ 
+  # political factors
+  pid7 + polarized + pol_interest +
+  # the rest
+  class + social_sciences + sciences +
+  interdisciplinary + humanities + arts
+
+## fit the models
+rf_fit_1 <- ranger(
+  update(the_spec, biden_dp ~ .),
+  data = o23 |> 
+    mutate(biden_fp = as.numeric(biden_dp)) |>
+    drop_na(
+      pid7, polarized, pol_interest, class, biden_dp
+    ),
+  importance = "permutation"
+)
+rf_fit_2 <- ranger(
+  update(the_spec, biden_fp ~ .),
+  data = o23 |> 
+    mutate(biden_fp = as.numeric(biden_fp)) |>
+    drop_na(
+      pid7, polarized, pol_interest, class, biden_fp
+    ),
+  importance = "permutation"
+)
+rf_fit_3 <- ranger(
+  update(the_spec, biden_sl ~ .),
+  data = o23 |> 
+    mutate(biden_fp = as.numeric(biden_sl)) |>
+    drop_na(
+      pid7, polarized, pol_interest, class, biden_sl
+    ),
+  importance = "permutation"
+)
+
+## variable importance
+subtext <- paste0(
+  "Predictive importance of ",
+  "<i style='color:red3'>political</i>",
+  " and<br>",
+  "<i style='color:steelblue'>Denison experience</i>",
+  " factors on attitudes<br>",
+  " toward Biden's..."
+)
+library(ggtext)
+tibble(
+  varname = names(rf_fit_1$variable.importance),
+  "Domestic Economic Policy" = rf_fit_1$variable.importance,
+  "Foreign Policy" = rf_fit_2$variable.importance,
+  "Student Loans" = rf_fit_3$variable.importance
+) |>
+  mutate(
+    varname = frcode(
+      varname == "social_sciences" ~ "Social Sciences",
+      varname == "sciences" ~ "Sciences",
+      varname == "humanities" ~ "Humanities",
+      varname == "arts" ~ "Arts",
+      varname == "interdisciplinary" ~ "Interdisciplinary",
+      varname == "class" ~ "Class",
+      varname == "pol_interest" ~ "Political Interest",
+      varname == "polarized" ~ "Polarization",
+      varname == "pid7" ~ "Party ID"
+    )
+  ) |>
+  pivot_longer(
+    -1
+  ) |>
+  ggplot() +
+  aes(
+    x = abs(value),
+    y = varname
+  ) +
+  facet_wrap(
+    ~ name, ncol = 1,
+    scales = "free"
+  ) +
+  geom_col(
+    fill = c(
+      rep("red3", len = 3),
+      rep("steelblue", len = 6)
+    ) |> rep(len = 27),
+    color = "black"
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 8",
+    subtitle = subtext
+  ) +
+  theme(
+    axis.text.y = element_text(
+      color = c(
+        rep("steelblue", len = 6),
+        rep("red3", len = 3)
+      ),
+      size = 6
+    ),
+    plot.subtitle = element_markdown()
+  ) 
+```
+:::
+
+::: {.column width="50%"}
+-   Permutation importance metrics from random forest models show the absolute change in the quality of predictions by simulating what would happen if we "broke" the relationship between a predictor and an outcome.[^1]
+
+-   Higher values mean a variable is really important for making predictions.
+
+-   Political factors are much more important that factors related to student's time at Denison.
+:::
+:::
+
+[^1]: Predictive models done with random forest regressions using the `{ranger}` R package.
+
+## In Conclusion
+
+-   *Partisanship dominates over students' Denison experience.*
+
+-   Partisanship is by far the most important factor explaining how students evaluate Biden's policies.
+
+-   Meanwhile, year in school and area of study have a smaller impact.

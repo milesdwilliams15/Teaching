@@ -24,7 +24,10 @@ library(googlesheets4)
 
 ## custom data viz
 set_theme()   # you can get rid of this if you don't like it
-set_palette()
+set_palette(
+  qualitative = c("steelblue", "gray20", "red3", "purple4", "forestgreen"),
+  from_coolors = F
+)
 
 ## survey data
 gs4_deauth()
@@ -50,10 +53,6 @@ o23 |>
     black = replace_na(q57_3, 0),
     asian = replace_na(q57_4, 0),
     other = replace_na(q57_5, 0),
-    across(
-      c(white, hispanic, black, asian, other),
-      ~ replace_na(0)
-    ),
     race = case_when(
       white==1 & (black!=1 & hispanic!=1 & asian!=1 & other!=1) ~ "White",
       black==1 ~ "Black",
@@ -63,7 +62,7 @@ o23 |>
     ),
     
     # gender
-    female = frcode(
+    gender = frcode(
       q53 == 1 ~ "Men",
       q53 == 2 ~ "Women"
     ),
@@ -121,7 +120,7 @@ o23 |>
     migration = q8_5,
     terrorism = q8_6,
     trade = q8_7,
-    regional_disintigration = q8_8,
+    regional_disintegration = q8_8,
     russian_aggression = q8_9,
     rising_china = q8_10,
     domestic_political_instability = q8_11,
