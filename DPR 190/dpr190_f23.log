@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  25 OCT 2023 11:41
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  4 DEC 2023 12:22
 entering extended mode
 **./dpr190_f23.tex
 (dpr190_f23.tex
@@ -828,7 +828,7 @@ Here is how much of TeX's memory you used:
  23399 multiletter control sequences out of 15000+200000
  37972 words of font info for 81 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 55i,11n,54p,1155b,410s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,11n,54p,404b,410s stack positions out of 5000i,500n,10000p,200000b,50000s
 
 Output written on dpr190_f23.pdf (15 pages).
 
@@ -838,4 +838,4 @@ Output written on dpr190_f23.pdf (15 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 
-! 142767 bytes written
+! 141600 bytes written

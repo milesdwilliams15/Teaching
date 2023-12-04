@@ -616,11 +616,11 @@ Grade the AI due Fri.
 
 \begin{itemize}
 
-\item Day 1: In-class presentations for TD3
+\item Day 1: Work day for TD3
 
-\item Day 2: G. John Ikenberry, \href{https://watermark.silverchair.com/iix241.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAArgwggK0BgkqhkiG9w0BBwagggKlMIICoQIBADCCApoGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMmvNmPUQrjGzOH1cEAgEQgIICa46bVbYQMMIAnXOVSxX24aIcW7dPVAXpm5-3dJ7prKdvtqKeJMhggBTfwFrwPeSm112dIEScmPTZfjNsRJcEHxs5ZzYXZvENhxBP1ezkdCLPxujOG9w5I6T5GZzXgHo5k-xwMJRZF6o1dSIYCnvs18ytxHCNes2CFy0Lw0frPeGOSlT5JfJ8u1sUOKtfjT8v00Ji1PdY05DWUlWxmt56AChy3aM8ZiEFX0oNpiydbzYpIF-GFMi1CG3kbhEUO4OzB-jz-TaSKnEJyHjHx3u_GxZCSaywU4msPU-KGeNC7J0DIZW3OIvay9qM9e4pkOs4d5uQd7D06aFNga1l25Qk6K3cDUJgLwCUBpRrC1ErqU0lCNTTwkdycbtXPphZ_yiQnYhdD9haZKq9fOJhF8L6ykKfH2kJqLtFpgb940RTM1iJYF0uYd9fudlIRazxMFBbDOg1Dxlgy3_pNVPHecI7KbUYY3AeZxEKSsuKJjQsf77B_esZ30b-_uF4aIC9sSLEuQ8mPCnVK5Cr9uBXsJP6dsd3_80LRKKubF58EnEE6iwCHZwlGxFggiDCmjx0yTkzz7Br-lJ1l1c-LtFauHEYeIYdBfEGoWAvXt4nzBgA8ZUzy8XNloYvRPdlHh07pf7gO1azWqrD4H_QHlWY1VLIok5Xu4cw1u2l4eAGdHcoGquTqseeYMXfxy2pt3ZCAHVCTww8S4kQZTsCNk4LerHyVG5cczh7bcP46PPa-Gt7r0cjZVBItY0oVv5y0aP4-EtbslKFztVrhVfCof0XNoF6Y-1cjsqjA6ilZX26Vq0C4TML_Eygay-07Cj10tQ}{"The End of Liberal International Order?"}.
+\item Day 2: Paul Poast \href{https://drive.google.com/file/d/1DhvgzRKwRumI_VWNEH34b-SFKwzfdm95/view?usp=sharing}{"Not a World War but a World at War"}
 
-\item Day 3: Braumoeller and Sartori, \href{https://drive.google.com/file/d/1-QQRAw_6j2YBWQ2_RgWz6IRp-GA7hbyf/view?usp=sharing}{"The Promise and Perils of Statistics in International Relations"}
+\item Day 3: TD3 Presentations
 
 \end{itemize}
 
@@ -630,7 +630,7 @@ Grade the AI due Fri.
 
 \textbf{\textit{Due}}
 
-TD3 due Mon.
+TD3 due Fri.
 
 \end{flushright}
 
