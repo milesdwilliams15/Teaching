@@ -93,7 +93,23 @@ finals_week <- seq(ymd(20240430), ymd(20240507), by = 1)
 
 # You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
   # Final date set to Thursday, May 2, 6:30-8:30 p.m.
-
+reflections <- 
+  seq(
+    ymd(20240119),
+    ymd(20240419),
+    by = 7
+  )[-9]
+data_challenges <- 
+  seq(
+    ymd(20240212),
+    ymd(20240415),
+    by = 7
+  )[-5]
+final_project <-
+  c(
+    ymd(20240426),
+    ymd(20240502)
+  )
 
 # What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
 # In this case: Aug. 28 to Dec. 17
@@ -116,6 +132,15 @@ tibble(date = seq(ymd(20240101), ymd(20240531), by=1))  %>%
          # gcs = ifelse(date %in% td_dates, 1, 0), # is it a GC assignment?
          not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
          finals = ifelse(date %in% finals_week, 1, 0), # finals?
+         reflections = ifelse(
+           date %in% reflections, 1, 0
+         ),
+         data_challenges = ifelse(
+           date %in% data_challenges, 1, 0
+         ),
+         final_project = ifelse(
+           date %in% final_project, 1, 0
+         ),
          day = lubridate::mday(date), # get day of month to add later as a label
          # Below: our custom wom() function
          week = wom(date)) -> Cal
@@ -128,8 +153,15 @@ Cal %>%
          ccategory = NA,
          fcategory = ifelse(semester == 1, "Semester", fcategory),
          fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
-         # ccategory = ifelse(mas == 1, "SE Due", ccategory),
-         # ccategory = ifelse(gcs == 1, "TD Due", ccategory),
+         ccategory = ifelse(
+           data_challenges == 1, "DC Due", ccategory
+         ),
+         ccategory = ifelse(
+           reflections == 1, "Reflection Due", ccategory
+         ),
+         ccategory = ifelse(
+           final_project == 1, "Final Proj.", ccategory
+         ),
          fcategory = ifelse(not_here == 1, "Breaks", fcategory),
          fcategory = ifelse(finals == 1, "Finals", fcategory),
          fcategory = ifelse(is.na(fcategory), "NA", fcategory),
@@ -143,10 +175,14 @@ Cal %>%
   theme(panel.grid.major.x = element_blank(),
         legend.position = c(0.85, 0.25)) +
   # geom_tile and facet_wrap will do all the heavy lifting
-  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  geom_tile(alpha=0.8, 
+            aes(fill=fcategory,color=ccategory), 
+            size=1) +
   facet_wrap(~mon, scales="free", ncol=3) +
   # fill in tiles to make it look more "calendary" (sic)
-  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  geom_text(aes(label=day,color=ccategory),
+            family="Open Sans", 
+            show.legend = F) +
   # put your y-axis down, flip it, and reverse it
   scale_y_reverse(breaks=NULL) +
   # manually fill scale colors to something you like...
@@ -158,10 +194,16 @@ Cal %>%
                     #... but also suppress a label for a non-class semester day
                     breaks=c("Class Day","Breaks","Finals")) +
   scale_color_manual(
-    values = c("SE Due" = "firebrick", 
-               "TD Due" = "darkblue", 
+    values = c("DC Due" = "gray20", 
+               "Reflection Due" = "firebrick", 
+               "Final Proj." = "darkblue",
                "NA" = "white"),
-    breaks = c("SE Due", "TD Due")
+    breaks = c("DC Due", "Reflection Due", "Final Proj.")
+  ) +
+  guides(
+    color = guide_legend(
+      override.aes = list(fill = "white")
+    )
   ) +
   labs(fill = "", color = "", x="", y="",
        caption = "Notable dates: MLK (22 Jan.), Spring Break (11-15 Mar.), MPSA (04-05 Apr.), Final Day of Instruction (29 Apr.)"
