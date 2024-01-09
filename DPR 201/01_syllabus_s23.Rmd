@@ -5,15 +5,15 @@ output:
     dev: cairo_pdf
 geometry: margin=1in
 
-title: "DPR 201: Data & Design for Social Impact"
+title: "DPR 201: Design and Data Analysis for Social Impact"
 author: Dr. Miles D. Williams
-date: "Fall 2022"
+date: "Spring 2024"
 
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
 officehours: "MW 3:00-4:30 pm"
 office: "Higley 401C"
-classroom: "Higley 029 (in the basement)"
+classroom: "Fellows 203"
 classhours: "MW 1:30-2:50 pm"
 
 fontfamily: mathpazo
@@ -185,6 +185,145 @@ Cal %>%
 Political data surround us everywhere we look. How do we use this data for maximum social impact? We start by thinking clearly with data and using a good research design. To do these things well, you need to be armed with the appropriate tools and enough conceptual understanding of them to know which to use and how. 
 
 In this class, we'll cover the basics of research design. You'll learn about **correlation** and **causation**, how to know when one implies the other, and how to estimate them in the face of **bias** and **noise** that inevitably find their way into our data.
+
+\newpage
+
+# Class Schedule
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
+
+class_cal + 
+  theme_steve_ms() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top',
+    axis.ticks = element_blank()
+  ) -> p
+ggsave(
+  plot = p,
+  here::here('DPR 201','schedule.png'),
+  height = 6,
+  width = 8
+)
+knitr::include_graphics(
+  here::here("DPR 201", "schedule.png")
+)
+```
+
+```{=tex}
+\singlespacing
+\setlength{\parskip}{0pt}
+```
+
+\hrulefill
+
+\bigskip
+
+*Note:* BDMF = the Ethan Bueno de Mesquita and Anthony Fowler text. All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
+
+# Getting Started
+
+## `r advdate(mon, 1)`: Intro to Research Design
+
+- Day 1: Course Intro
+
+- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running. Reading on Canvas.
+
+# Part I: Correlation
+
+## `r advdate(mon, 2)`
+
+- Day 1: MLK Day observed [so no class!]
+
+- Day 2: BDMF Ch2 "Correlation: What Is It and What Is It Good for?"
+
+## `r advdate(mon, 3)` 
+
+- Day 1: BDMF Ch4 "Correlation Requires Variation"
+
+- Day 2: Discussion \hfill \textit{AC1 due next Mon.}
+
+## `r advdate(mon, 4)` 
+
+- Day 1: BDMF Ch5 "Regression for Describing and Forecasting"
+
+- Day 2: Discussion \hfill \textit{Research Q due Fri. and AC2 due Mon.}
+
+## `r advdate(mon, 5)`  
+
+- Day 1: BDMF Ch6 "Samples, Uncertainty, and Statistical Inference"
+
+- Day 2: Discussion \hfill \textit{AC3 due Mon.}
+
+## `r advdate(mon, 6)` 
+
+- Day 1: BDMF Ch7 "Over-Comparing, Under-Reporting"
+
+- Day 2: Discussion \hfill \textit{AC4 due Mon.}
+
+## `r advdate(mon, 7)` 
+
+- Day 1: BDMF Ch8 "Reversion to the Mean"
+
+- Day 2: Discussion \hfill \textit{AC5 due Mon.}
+
+# Part II: Causation
+
+## `r advdate(mon, 8)` 
+
+- Day 1: BDMF Ch3 "Causation: What Is It and What Is It Good for?"
+
+- Day 2: BDMF Ch9 "Why Correlation Doesn't Imply Causation" 
+
+## `r advdate(mon, 9)`
+
+*Spring Break!*
+
+## `r advdate(mon, 10)` 
+
+- Day 1: BDMF Ch11 "Randomized Experiments"
+
+- Day 2: Discussion \hfill \textit{Intro and Why Care due Fri.}
+
+## `r advdate(mon, 11)` 
+
+- Day 1: BDMF Ch10 "Controlling for Confounders"
+
+- Day 2: Discussion \hfill \textit{AC6 due Mon.}
+
+## `r advdate(mon, 12)` 
+
+- Day 1: BDMF Ch12 "Regression Discontinuity Designs"
+
+- Day 2: Discussion \hfill \textit{AC7 due Mon.}
+
+## `r advdate(mon, 13)` 
+
+- Day 1: BDMF Ch13 "Difference-in-Differences Designs"
+
+- Day 2: Discussion \hfill  \textit{AC8 due Mon.}
+
+# Part III: Finalizing Projects
+
+## `r advdate(mon, 14)` 
+
+- Day 1: Work Day 
+
+- Day 2: Work Day \hfill \textit{Data and Design due Fri.}
+
+## `r advdate(mon, 15)` 
+
+- Day 1: Work Day
+
+- Day 2: Work Day + *Course Eval*
+
+## `r advdate(mon, 16)` 
+
+- Day 1: *Presentations* \hfill \textit{Final research projects due 05.03 by 4:00 pm}
+
+\newpage
 
 # Course Objectives
 
@@ -358,141 +497,3 @@ It should go without saying, but ***plagiarism*** is also a form of cheating and
 I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
 
 When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
-
-
-\newpage
-
-# Class Schedule
-
-\hrulefill
-
-```{r calendar, echo=F, eval=T,  warning=F, out.width="100%"}
-
-class_cal + 
-  theme_steve_ms() +
-  theme(
-    panel.grid = element_blank(),
-    legend.position = 'top',
-    axis.ticks = element_blank()
-  ) -> p
-ggsave(
-  plot = p,
-  here::here('DPR 201','schedule.png'),
-  height = 6,
-  width = 8
-)
-knitr::include_graphics(
-  here::here("DPR 201", "schedule.png")
-)
-```
-
-```{=tex}
-\singlespacing
-\setlength{\parskip}{0pt}
-```
-
-\hrulefill
-
-\bigskip
-
-*Note:* BDMF = the Ethan Bueno de Mesquita and Anthony Fowler text. All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
-
-# Getting Started
-
-## `r advdate(mon, 1)`: Intro to Research Design
-
-- Day 1: Course Intro
-
-- Day 2: Read BDMF Ch1 "Thinking Clearly in a Data-Driven Age" + Getting our tech up and running. Reading on Canvas.
-
-# Part I: Correlation
-
-## `r advdate(mon, 2)`
-
-- Day 1: MLK Day observed [so no class!]
-
-- Day 2: BDMF Ch2 "Correlation: What Is It and What Is It Good for?"
-
-## `r advdate(mon, 3)` 
-
-- Day 1: BDMF Ch4 "Correlation Requires Variation"
-
-- Day 2: Discussion \hfill \textit{AC1 due next Mon.}
-
-## `r advdate(mon, 4)` 
-
-- Day 1: BDMF Ch5 "Regression for Describing and Forecasting"
-
-- Day 2: Discussion \hfill \textit{Research Q due Fri. and AC2 due Mon.}
-
-## `r advdate(mon, 5)`  
-
-- Day 1: BDMF Ch6 "Samples, Uncertainty, and Statistical Inference"
-
-- Day 2: Discussion \hfill \textit{AC3 due Mon.}
-
-## `r advdate(mon, 6)` 
-
-- Day 1: BDMF Ch7 "Over-Comparing, Under-Reporting"
-
-- Day 2: Discussion \hfill \textit{AC4 due Mon.}
-
-## `r advdate(mon, 7)` 
-
-- Day 1: BDMF Ch8 "Reversion to the Mean"
-
-- Day 2: Discussion \hfill \textit{AC5 due Mon.}
-
-# Part II: Causation
-
-## `r advdate(mon, 8)` 
-
-- Day 1: BDMF Ch3 "Causation: What Is It and What Is It Good for?"
-
-- Day 2: BDMF Ch9 "Why Correlation Doesn't Imply Causation" 
-
-## `r advdate(mon, 9)`
-
-*Spring Break!*
-
-## `r advdate(mon, 10)` 
-
-- Day 1: BDMF Ch11 "Randomized Experiments"
-
-- Day 2: Discussion \hfill \textit{Intro and Why Care due Fri.}
-
-## `r advdate(mon, 11)` 
-
-- Day 1: BDMF Ch10 "Controlling for Confounders"
-
-- Day 2: Discussion \hfill \textit{AC6 due Mon.}
-
-## `r advdate(mon, 12)` 
-
-- Day 1: BDMF Ch12 "Regression Discontinuity Designs"
-
-- Day 2: Discussion \hfill \textit{AC7 due Mon.}
-
-## `r advdate(mon, 13)` 
-
-- Day 1: BDMF Ch13 "Difference-in-Differences Designs"
-
-- Day 2: Discussion \hfill  \textit{AC8 due Mon.}
-
-# Part III: Finalizing Projects
-
-## `r advdate(mon, 14)` 
-
-- Day 1: Work Day 
-
-- Day 2: Work Day \hfill \textit{Data and Design due Fri.}
-
-## `r advdate(mon, 15)` 
-
-- Day 1: Work Day
-
-- Day 2: Work Day + *Course Eval*
-
-## `r advdate(mon, 16)` 
-
-- Day 1: *Presentations* \hfill \textit{Final research projects due 05.03 by 4:00 pm}
