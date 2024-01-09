@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  5 JAN 2024 14:56
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  8 JAN 2024 14:49
 entering extended mode
 **./dpr390_spring_2024.tex
 (dpr390_spring_2024.tex
@@ -942,8 +942,8 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1179.
  ) 
 Here is how much of TeX's memory you used:
  21319 strings out of 428410
- 366860 string characters out of 3159547
- 435785 words of memory out of 3000000
+ 366861 string characters out of 3159547
+ 435787 words of memory out of 3000000
  24401 multiletter control sequences out of 15000+200000
  228493 words of font info for 59 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -958,4 +958,4 @@ Output written on dpr390_spring_2024.pdf (13 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.4" not defined.
 
-! 140111 bytes written
+! 140102 bytes written

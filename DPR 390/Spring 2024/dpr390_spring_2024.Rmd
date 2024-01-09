@@ -11,7 +11,7 @@ date: "Spring 2024"
 
 email: "williamsmd@denison.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MW 2:30-4:00 pm"
+officehours: "MW 3:00-4:30 pm"
 office: "Higley 401C"
 classroom: "Knapp Hall 208"
 classhours: "MWF 10:30-11:20 am"
@@ -958,7 +958,7 @@ Attendance is part of your grade (see "Grading Policy"). However, sometimes life
 
 Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. If you use your Google Drive, all your work will be backed up and easy to access.
 
-## Late Assigments
+## Late Assignments
 
 We have a lot of work to do in this class. So turn in your work when it's due. This is meant to help you. I love to procrastinate just as much as anyone else, but if you procrastinate in this course, you will drown. As an incentive for keeping on top of your assignments, each day your assignment is late and unexcused (including weekends and holidays) you will lose 5 percent from your final grade for that assignment. There will be no exceptions made for work that is submitted only minutes after a deadline. If something is due by midnight on a Friday (12:00 AM), the moment the clock strikes 12:01 AM your assignment is a day late and you will automatically lose 5% from your grade.
 
