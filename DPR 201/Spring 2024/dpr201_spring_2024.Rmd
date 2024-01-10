@@ -364,7 +364,7 @@ In addition to learning the intuition behind statistical methods like multiple r
 
 # Analysis Software
 
-Students will use R and RStudio, which are free and open source! We will primarily use the RStudio version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN:
+Students will use R and Posit Workbench (formerly RStudio), which are free and open source. We will use the Posit Workbench (RStudio) version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN:
 
 1.  Go to myDenison.
 2.  Head to MyApps.

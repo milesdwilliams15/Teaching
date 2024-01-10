@@ -1,7 +1,7 @@
 This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  10 JAN 2024 12:56
 entering extended mode
-**./dpr201_spring_2024.tex
-(dpr201_spring_2024.tex
+**./dpr101_spring_2024.tex
+(dpr101_spring_2024.tex
 LaTeX2e <2016/03/31>
 Babel <3.9r> and hyphenation patterns for 75 language(s) loaded.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
@@ -749,39 +749,39 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
 LaTeX Font Info:    Try loading font information for T1+Cochineal-TLF on input 
-line 136.
+line 135.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\cochineal\t1cochineal-tlf.fd"
 File: T1Cochineal-TLF.fd 2016/01/19 (msharpe) Font definitions for T1/Cochineal
 -TLF.
 )
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 136.
-(dpr201_spring_2024.aux)
-\openout1 = `dpr201_spring_2024.aux'.
+(Font)              scaled to size 10.95pt on input line 135.
+(dpr101_spring_2024.aux)
+\openout1 = `dpr101_spring_2024.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 136.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 136.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 135.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 135.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 136.
-LaTeX Font Info:    ... okay on input line 136.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 135.
+LaTeX Font Info:    ... okay on input line 135.
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
@@ -819,9 +819,9 @@ LaTeX Font Info:    ... okay on input line 136.
 \c@mv@boldtabular=\count146
 Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             https://www.ctan.org/pkg/pageslts
-(lastpage)             ! on input line 136.
+(lastpage)             ! on input line 135.
 \AtBeginShipoutBox=\box45
-Package hyperref Info: Link coloring ON on input line 136.
+Package hyperref Info: Link coloring ON on input line 135.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
@@ -829,97 +829,101 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count147
 )
-LaTeX Info: Redefining \ref on input line 136.
-LaTeX Info: Redefining \pageref on input line 136.
-LaTeX Info: Redefining \nameref on input line 136.
-(dpr201_spring_2024.out) (dpr201_spring_2024.out)
+LaTeX Info: Redefining \ref on input line 135.
+LaTeX Info: Redefining \pageref on input line 135.
+LaTeX Info: Redefining \nameref on input line 135.
+(dpr101_spring_2024.out) (dpr101_spring_2024.out)
 \@outlinefile=\write4
-\openout4 = `dpr201_spring_2024.out'.
+\openout4 = `dpr101_spring_2024.out'.
 
 ABD: EveryShipout initializing macros
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 139.
+(Font)              scaled to size 17.28pt on input line 138.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 139.
-LaTeX Font Info:    Try loading font information for U+msa on input line 139.
+(Font)              scaled to size 12.0pt on input line 138.
+LaTeX Font Info:    Try loading font information for U+msa on input line 138.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 139.
+LaTeX Font Info:    Try loading font information for U+msb on input line 138.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 149.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 148.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 161.
+(Font)              scaled to size 14.4pt on input line 160.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 161.
+(Font)              scaled to size 14.4pt on input line 160.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/n' will be
-(Font)              scaled to size 10.95pt on input line 170.
+(Font)              scaled to size 10.95pt on input line 180.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 181.
+(Font)              scaled to size 10.0pt on input line 198.
 [1
 
 ]
 File: figs/calendar.pdf Graphic file (type QTm)
 <use  "figs/calendar.pdf" >
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/it' will be
-(Font)              scaled to size 10.95pt on input line 196.
+(Font)              scaled to size 10.95pt on input line 214.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 205.
+(Font)              scaled to size 12.0pt on input line 224.
 LaTeX Font Info:    Try loading font information for TS1+Cochineal-TLF on input
- line 209.
+ line 228.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\cochineal\ts1cochineal-tlf.fd"
 File: TS1Cochineal-TLF.fd 2016/01/19 (msharpe) Font definitions for TS1/Cochine
 al-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 209.
+(Font)              scaled to size 10.95pt on input line 228.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 235.
-[2] [3] [4]
-Overfull \hbox (19.22586pt too wide) in paragraph at lines 408--413
-\T1/Cochineal-TLF/m/n/10.95 Posit Work-bench (RStu-dio) ver-sion avail-able thr
-ough a web browser in-stalled on a Deni-son server: \T1/cmtt/m/n/10.95 r.deniso
-n.edu\T1/Cochineal-TLF/m/n/10.95 .
+(Font)              scaled to size 9.0pt on input line 250.
+[2] [3] [4] [5] [6]
+Overfull \hbox (12.5408pt too wide) in paragraph at lines 641--653
+[][][]\T1/Cochineal-TLF/m/n/10.95 How to Google R Stuff[][] $\U/msa/m/n/10.95 ^
+^F$ [][]\T1/cmtt/m/n/10.95 {tidyr}[][] $\U/msa/m/n/10.95 ^^F$ [][]\T1/cmtt/m/n/
+10.95 {dplyr}[][] $\U/msa/m/n/10.95 ^^F$ [][]\T1/cmtt/m/n/10.95 {ggplot2}[][] $
+\U/msa/m/n/10.95 ^^F$ [][]\T1/cmtt/m/n/10.95 {rmarkdown}[][] $\U/msa/m/n/10.95 
+^^F$ [][]\T1/Cochineal-TLF/m/n/10.95 R color cheat-sheet[][] $\U/msa/m/n/10.95 
+^^F$ [][]\T1/cmtt/m/n/10.95 {coolorrr}[][] 
  []
 
-[5] [6] [7]
-LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/it' will be
-(Font)              scaled to size 10.95pt on input line 630.
-LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 684.
-LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 684.
+[7] [8]
 File: figs/unnamed-chunk-1.pdf Graphic file (type QTm)
-<use  "figs/unnamed-chunk-1.pdf" > [8] [9] [10] 
+<use  "figs/unnamed-chunk-1.pdf" >
+LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
+(Font)              scaled to size 8.0pt on input line 781.
+LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
+(Font)              scaled to size 6.0pt on input line 781.
+[9]
+LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/it' will be
+(Font)              scaled to size 10.95pt on input line 814.
+[10] 
 AED: lastpage setting LastPage
 [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 873.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 873.
-(dpr201_spring_2024.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 873.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 873.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 945.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 945.
+(dpr101_spring_2024.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 945.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 945.
  ) 
 Here is how much of TeX's memory you used:
- 21489 strings out of 428410
- 367771 string characters out of 3159547
- 431209 words of memory out of 3000000
- 24556 multiletter control sequences out of 15000+200000
- 197656 words of font info for 64 fonts, out of 3000000 for 9000
+ 21495 strings out of 428410
+ 368196 string characters out of 3159547
+ 430281 words of memory out of 3000000
+ 24562 multiletter control sequences out of 15000+200000
+ 229598 words of font info for 66 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
- 55i,11n,54p,835b,409s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,11n,54p,835b,408s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on dpr201_spring_2024.pdf (11 pages).
+Output written on dpr101_spring_2024.pdf (11 pages).
 
-! stdin -> dpr201_spring_2024.pdf
+! stdin -> dpr101_spring_2024.pdf
 ! [1][2][3][4][5][6][7][8][9][10][11]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
-! xdvipdfmx:warning: PDF destination "Hfootnote.3" not defined.
 
-! 138803 bytes written
+! 152293 bytes written
