@@ -379,6 +379,10 @@ In addition to reading some short pieces written by journalists, academics, and 
 
 > Bueno de Mequita, Ethan and Anthony Fowler. 2021. *Thinking Clearly with Data: A Guide to Quantitative Reasoning and Analysis.* Princeton: Princeton University Press.
 
+I've also compiled an "R Companion" for *Thinking Clearly with Data* that you can refer to as we progress through the course. These follow the main text but, most importantly, provide applied examples in the R programming language. 
+
+> [An R Companion to *Thinking Clearly with Data*.](https://milesdwilliams15.quarto.pub/an-r-companion-to-thinking-clearly-with-data/)
+
 # Resources
 
 ## The Instructor (that's me)

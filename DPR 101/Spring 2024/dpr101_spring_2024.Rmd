@@ -404,7 +404,7 @@ In addition to reading some short pieces written by journalists, academics, and 
 
 I've also compiled lecture notes that you can refer to as we progress through the course. These are based on our text, but also contain some additional goodies and nuggets of wisdom. I *highly* recommend checking these out.
 
-> [DPR 101 Lecture Notes.](https://github.com/milesdwilliams15/Teaching/blob/main/DPR%20101/Notes/README.md)
+> [DPR 101 Lecture Notes.](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/)
 
 # Resources
 
