@@ -16,7 +16,7 @@ office: "Higley 401C"
 classroom: "Fellows 203"
 classhours: "MW 1:30-2:50 pm"
 
-fontfamily: mathpazo
+fontfamily: cochineal
 fontsize: 11pt
 header-includes:
    - \linespread{1.05}
@@ -339,6 +339,8 @@ ggsave(
 -   Day 1: Course debrief + evals \hfill \textit{MA2 due 05.01 by 4:00 pm}
 
 \newpage
+
+\singlespacing \setlength{\parskip}{3pt}
 
 # Course Objectives
 
