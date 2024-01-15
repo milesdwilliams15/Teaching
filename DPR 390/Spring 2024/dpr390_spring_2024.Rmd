@@ -767,6 +767,16 @@ Next, we'll do a deep dive into four paths to peace. Like before, you'll engage 
 
 The course will culminate in a final project where you apply the inferences you've made throughout the course to write a report about a particular conflict of interest to you.
 
+# Analysis Software
+
+Students will use R and Posit Workbench (RStudio), which are free and open source. We will use the Posit Workbench version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN follow the instructions at one of the help pages below:
+
+1.  [For Windows Users](https://docs.google.com/document/d/1z1eapXs8Lp0yA7TBXmLfViiz6U67ADvLgpFeWJoSLLA/edit#heading=h.48vu9pu55b3s)
+2.  [For Mac Users](https://docs.google.com/document/d/1FaJN4et9H9eKsJIVinwqC903NbKA5A-IYfvDPlFwwXk/edit#heading=h.48vu9pu55b3s)
+
+Many of the necessary R packages for the course are already installed in the server version. While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and Posit Workbench/RStudio on your laptop. Follow [this guide](https://posit.co/products/open-source/rstudio/).
+
+
 # Required Readings and Recommended References
 
 Our primary text will be:
