@@ -1,0 +1,281 @@
+---
+format: html
+editor: visual
+---
+
+# Seven qualities of data viz
+
+```{r}
+library(tidyverse)
+library(peacesciencer)
+dt <- create_stateyears(subset_years = 2001:2021)
+
+dt <- dt |>
+  add_democracy() |>
+  add_igos() |>
+  add_nmc()
+```
+
+```{r}
+dt <- drop_na(dt) |>
+  filter(year == max(year))
+```
+
+```{r}
+dt <- dt |>
+  mutate(
+    region = countrycode::countrycode(
+      ccode, "cown", "region"
+    )
+  )
+```
+
+## Proximity
+
+Things that are spatially near to each other seem to be related.
+
+```{r}
+tibble(
+  x = runif(100, c(-0.2, 0.2)) + 0:1,
+  y = runif(100, c(-0.2, 0.2)) + 0:1,
+  color = rep(
+    c("group 1", "group 2"),
+    len = 100
+  )
+) |>
+  ggplot() +
+  aes(x = x, y = y) +
+  geom_point() +
+  labs(
+    title = "Proximity"
+  ) +
+  ggthemes::theme_fivethirtyeight()
+```
+
+## Similarity
+
+Things that look alike seem to be related
+
+```{r}
+ggplot(dt) +
+  aes(
+    x = upop / tpop,
+    y = milex * 1000,
+    shape = ifelse(
+      polity2 > 5,
+      "Democracy",
+      "Non-Democracy"
+    )
+  ) +
+  geom_point(
+    size = 4
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) +
+  scale_y_log10(
+    labels = scales::dollar
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    shape = NULL,
+    title = "Similarity"
+  ) +
+  scale_shape_manual(
+    values = c("*", "+")
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    axis.line = element_line(
+      arrow = grid::arrow(
+        type = "closed",
+        length = unit(0.1, "inches")
+      )
+    )
+  ) +
+  annotate(
+    "text",
+    x = 0.75,
+    y = 1e07,
+    label = "Urbanization"
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = 1e12,
+    label = "Military Spending",
+    hjust = 0
+  )
+```
+
+## Connection
+
+Things that are visually tied to each other appear to be related.
+
+```{r}
+library(ggrepel)
+ccode_democracy |>
+  filter(ccode == 155) |>
+  left_join(
+    cow_sdp_gdp
+  ) |>
+  mutate(
+    decade = paste0(floor((year / 10)) * 10, "s")
+  ) |>
+  group_by(
+    decade
+  ) |>
+  summarize(
+    across(
+      c(polity2, wbgdp2011est),
+      mean
+    )
+  ) -> p_dt
+ggplot(p_dt) +
+  aes(
+    x = polity2,
+    y = exp(wbgdp2011est)
+  ) +
+  geom_point(
+    size = 4
+  ) +
+  geom_path() +
+  geom_text_repel(
+    aes(label = decade),
+    min.segment.length = 0,
+    nudge_x = 0.5,
+    nudge_y = 0.5,
+    color = "navy"
+  ) +
+  scale_y_log10(
+    labels = scales::dollar
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    axis.line = element_line(
+      arrow = grid::arrow(
+        type = "closed",
+        length = unit(0.1, "inches")
+      )
+    )
+  ) +
+  labs(
+    caption = "Data for Chile",
+    title = "Connection"
+  ) +
+  annotate(
+    "text",
+    x = 7.5,
+    y = min(exp(p_dt$wbgdp2011est), na.rm = T),
+    label = "Polity 2",
+    fontface = 2
+  ) +
+  annotate(
+    "text",
+    x = -5,
+    y = 1e12,
+    label = "Gross Domestic Product",
+    hjust = 0,
+    fontface = 2
+  )
+```
+
+## Continuity, Closure, Figure & Ground
+
+Partially overlapping objects are filled in in the viewers mind.
+
+```{r}
+ggplot() +
+  aes(x = c(0, 0.2),
+      y = c(1, 1)) +
+  geom_point(
+    size = 80,
+    shape = c(21, 24),
+    fill = c("red", "gray")
+  ) +
+  scale_x_continuous(
+    limits = c(-1, 1),
+    breaks = NULL
+  ) +
+  scale_y_continuous(
+    limits = c(0.9, 1.1),
+    breaks = NULL
+  ) +
+  labs(
+    title = "Continuity, Closure, Figure & Ground"
+  ) +
+  ggthemes::theme_fivethirtyeight()
+```
+
+## Common Fate
+
+```{r}
+p_dt |>
+  mutate(
+    decade = str_remove(decade, "s") |>
+      as.numeric()
+  ) |>
+  ggplot() +
+  aes(
+    x = decade
+  ) +
+  geom_line(
+    aes(y = scale(polity2)),
+    size = 1,
+    color = "red3"
+  ) +
+  geom_line(
+    aes(y = scale(wbgdp2011est)),
+    size = 1,
+    color = "steelblue"
+  ) +
+  scale_x_continuous(
+    breaks = seq(1830, 2000, by = 10),
+    limits = c(1830, 2000)
+  ) +
+  labs(
+    title = "Common Fate"
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    axis.line = element_line(
+      arrow = grid::arrow(
+        length = unit(0.1, "inches"),
+        type = "closed"
+      )
+    ),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  ) +
+  annotate(
+    "text",
+    x = 1840,
+    y = 1.5,
+    label = "Polity 2 & GDP\n(in S.D. units)",
+    fontface = 2
+  ) +
+  annotate(
+    "text",
+    x = 1980,
+    y = -Inf,
+    label = "Decade",
+    fontface = 2,
+    vjust = -1
+  ) +
+  annotate(
+    "text",
+    x = 1890,
+    y = -1,
+    label = "Gross Domestic\nProduct",
+    color = "steelblue",
+    fontface = 3
+  ) +
+  annotate(
+    "text",
+    x = 1890,
+    y = 0.7,
+    label = "Polity 2",
+    color = "red3",
+    fontface = 3
+  )
+```
