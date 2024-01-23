@@ -245,7 +245,7 @@ ggsave(
 
 - Day 2: H Ch2 (2.1 - 2.4) 
 
-- Day 3: H Ch2 (2.5 - 2.7)  \hfill \textit{GC0 due Wed.}
+- Day 3: H Ch2 (2.5 - 2.7)  \hfill \textit{GC0 due Fri.}
 
 ## `r advdate(mon, 3)`: Making a Plot
 
