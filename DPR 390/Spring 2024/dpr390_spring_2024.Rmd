@@ -783,7 +783,11 @@ Our primary text will be:
 
 > Blattman, Christopher. 2022. \textit{Why We Fight: The Roots of War and the Paths to Peace}. New York: Viking.
 
-We'll also work with R and RStudio in this course. There are many free and helpful resources online, but if you're looking for some authoritative references, I highly recommend:
+I've also produced a comprehensive set of lecture notes that you can treat like an additional textbook in this course:
+
+> [Studying Why We Fight with R](https://milesdwilliams15.quarto.pub/studying-why-we-fight-with-r/).
+
+We'll work with R and RStudio in this course. There are many free and helpful resources online, but if you're looking for some authoritative references, I highly recommend:
 
 > Wickham, Hadley, Mine Çetinkaya-Rundel, and Garrett Grolemund. \href{https://r4ds.hadley.nz/}{\textit{R for Data Science (2e)}}.
 
