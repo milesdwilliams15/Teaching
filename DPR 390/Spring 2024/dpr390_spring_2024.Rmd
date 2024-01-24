@@ -325,9 +325,9 @@ Reflection due Fri.
 
 \item Day 1: Intro to `{peacesciencer}`.
 
-\item Day 2: `{peacesciencer}` workshop with group activity.
+\item Day 2: Cross-walking and merging new data.
 
-\item Day 3: `{peacesceincer}` workshop with group activity.
+\item Day 3: Data and false causes of war.
 
 \end{itemize}
 
