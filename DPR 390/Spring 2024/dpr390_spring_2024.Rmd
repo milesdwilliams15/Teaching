@@ -803,7 +803,20 @@ You can also email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu
 
 ## Teaching Assistant
 
-DPR hires teaching assistants each semester to provide you with extra help and tutoring. Since the TA hours will change from semester to semester, details like how to contact the TAs, their location, and their office hours are TBD until the semester starts.
+DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
+
+### Brennan Kelley
+
+- **email**: kelley_b1@denison.edu
+- **hours**: Thursdays 3:00-4:30 pm; Fridays, 2:30-4:30 pm
+- **location**: Tables overlooking Atrium in the library
+
+### Sury Agrawal
+
+- **email**: agrawa_s1@denison.edu
+- **hours**: Mondays 1:30-4:30 pm; Wednesdays 1:30-4:30 pm
+- **location**: Olin 216
+
 
 ## Accessibility
 
