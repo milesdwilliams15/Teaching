@@ -13,21 +13,83 @@ knitr::opts_chunk$set(echo = TRUE,
                       dpi = 500)
 ```
 
-## Prompt for GC2
+## NEW Prompt for GC2
+
+For this graph challenge I want you to use the following dataset (linked to below) which has for over 120 countries the number of "militarized interstate events" each has been a part of between 2001 and 2014. For each country, there are also columns that show the minimum and maximum total estimated fatalities associated with these events for the country involved.
+
+With this data I want you to:
+
+Use the countrycode() function from the {countrycode} package to add a region column to the dataset.
+
+Produce a small multiple scatter plot by region that also includes a linear regression line with n_events on the x-axis and fatalmax on the y-axis.
+
+After you've produced your figure, write a short paragraph (2-5 sentences) summarizing the relationships you see. Is there a consistent relationship across regions or do some regions stand out as being different from the rest?
+
+Your work should be submitted as a rendered html of docx from a Quarto document.
+
+Here's the data: https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv
+
+## NEW Solution for GC2
+
+```{r}
+## open {tidyverse}
+library(tidyverse)
+
+## read in the data
+Data <- read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv"
+)
+
+## add region column to the data with {countrycode}
+library(countrycode)
+Data |>
+  mutate(
+    region = countrycode(
+      country,
+      "country.name",
+      "region"
+    )
+  ) -> Data
+```
+
+```{r}
+
+## produce a small multiple by region showing
+## - n_events on the x-axis
+## - fatalmax on the y-axis
+## make it a scatter plot with a smoother
+ggplot(Data) +
+  aes(
+    x = n_events,
+    y = fatalmax
+  ) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  facet_wrap(~ region, scales = "free")
+```
+
+
+
+## OLD Prompt for GC2
 
 For this graph challenge I want you to use the following dataset (linked to below) which has for over 120 countries the number of "militarized interstate events" each has been a part of between 2001 and 2014. For each country, there are also columns that show the minimum and maximum total estimated fatalities associated with these events for the country involved.
 
 With this data I want you to:
 
 Create a new summary data object which contains a summary of the proportion of events and the proportion of the maximum total estimated fatalities by world region (you'll need to add a region column to the data to do this).
+
 Using this summary data object, find a creative way to plot how the proportion of militarized events per region is correlated with the proportion of total deaths from these militarized events a region is responsible for.
+
 Write a short paragraph (2-5 sentences) summarizing this relationship.
 As usual, your work should be submitted as a knitted .html or word document.
 
-Here's the data: <https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv> to an external site.
+Here's the data: <https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20101/Data/MIE_2000-2014.csv>.
 
 
-## Solution
+## OLD Solution
 
 First, we need to read in and prep the data:
 
