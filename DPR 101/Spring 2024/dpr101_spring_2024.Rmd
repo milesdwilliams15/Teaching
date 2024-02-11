@@ -84,6 +84,8 @@ mon <- ymd(20240115)
 not_here_dates <- c(
   # MLK observed,
   ymd(20240122),
+  # Noah Williams arrived
+  seq(ymd(20240205), ymd(20240209), by = 1),
   # Spring Break
   seq(ymd(20240311), ymd(20240315), by = 1),
   # MPSA ?
@@ -100,11 +102,9 @@ ma_dates <- c(ymd(20240223),
   # Final date set to Saturday, May 4,  2:00-4:00 p.m.
 # graph challenges:
 gc_dates <- c(
-  seq(
-    ymd(20240131),
-    ymd(20240214),
-    by = 7
-  ),
+  ymd(20240131),
+  ymd(20240214),
+  ymd(20240221),
   ymd(20240228),
   ymd(20240306),
   ymd(20240327),
@@ -209,11 +209,11 @@ class_cal +
     legend.position = 'top',
     axis.ticks = element_blank()
   ) 
-ggsave(
-  here::here('DPR 101','schedule.png'),
-  height = 6,
-  width = 8
-)
+# ggsave(
+#   here::here('DPR 101','schedule.png'),
+#   height = 6,
+#   width = 8
+# )
 ```
 
 ```{=tex}
@@ -255,7 +255,11 @@ ggsave(
 
 - Day 3: Discussion 
 
-## `r advdate(mon, 4)`: Show the Right Numbers
+## `r advdate(mon, 4)`: Baby Noah Arrived!
+
+***Class Postponed***
+
+## `r advdate(mon, 5)`: Show the Right Numbers
 
 - Day 1: H Ch4 (4.1 - 4.4)
 
@@ -263,21 +267,13 @@ ggsave(
 
 - Day 3: Discussion
 
-## `r advdate(mon, 5)`: Draw Maps
+## `r advdate(mon, 6)`: Draw Maps
 
 - Day 1: H Ch7 (7.1 - 7.3) 
 
-- Day 2: H Ch7 (7.4 - 7.6) \hfill \textit{GC3 due Wed.}
+- Day 2: H Ch7 (7.4 - 7.6) \hfill \textit{GC3 due Wed. + MA1 due Fri.}
 
-- Day 3: Discussion 
-
-## `r advdate(mon, 6)`: Finalize MA1
-
-- Day 1: Work on MA1 
-
-- Day 2: Work on MA1 
-
-- Day 3: Work on MA1 \hfill \textit{MA1 due Fri.}
+- Day 3: Work on MA1 
 
 # Part II: Time-series Data, Conflict, and Democracy
 
@@ -325,7 +321,7 @@ NO CLASS
 
 - Day 2: Work on MA3 
 
-- Day 3: Work on MA3 \hfill \textit{MA3 due Fri.}
+- Day 3: NO CLASS (MPSA) \hfill \textit{MA3 due Fri.}
 
 # Part IV: Choose-your-own-adventure
 
@@ -335,7 +331,7 @@ NO CLASS
 
 - Day 2: Pitch your research \hfill \textit{GC7 due Wed.}
 
-- Day 3: NO CLASS (MPSA)
+- Day 3: Discussion
 
 
 ## `r advdate(mon, 14)`: The Adventure Continues
@@ -356,7 +352,7 @@ NO CLASS
 
 ## `r advdate(mon, 16)`: You Made It!
 
-- Day 1: Course evals \hfill \textit{MA4 due 05.04 by 4:00 pm}
+- Day 1: Course evals + Course Recap \hfill \textit{MA4 due 05.04 by 4:00 pm}
 
 \newpage
 

@@ -86,6 +86,8 @@ not_here_dates <- c(
   ymd(20240122),
   # Spring Break
   seq(ymd(20240311), ymd(20240315), by = 1),
+  # Noah Williams arrived!
+  seq(ymd(20240205), ymd(20240209), by = 1), 
   # MPSA ?
   seq(ymd(20240404), ymd(20240405), by = 1)
   )
@@ -100,11 +102,11 @@ analysis_challenges <-
       ymd(20240226),
       by = 7
   ),
-    seq(
+  seq(
       ymd(20240325),
       ymd(20240415),
       by = 7
-    ))
+    )) + 7
 main_assignments <-
   c(
     ymd(20240308),
@@ -225,11 +227,11 @@ class_cal +
     panel.grid = element_blank(),
     legend.position = 'top'
   )
-ggsave(
-  here::here('01_schedule.png'),
-  height = 6,
-  width = 8
-)
+# ggsave(
+#   here::here('01_schedule.png'),
+#   height = 6,
+#   width = 8
+# )
 ```
 
 \singlespacing \setlength{\parskip}{0pt}
@@ -262,35 +264,34 @@ ggsave(
 
 -   Day 2: Discussion
 
-## `r advdate(mon, 4)`
+## `r advdate(mon, 4)`: Baby Noah Arrived!
+
+***Class Postponed***
+
+## `r advdate(mon, 5)`
 
 -   Day 1: BDMF Ch5 "Regression for Describing and Forecasting"
 
 -   Day 2: Discussion \hfill \textit{AC1 due Mon.}
 
-## `r advdate(mon, 5)`
+## `r advdate(mon, 6)`
 
 -   Day 1: BDMF Ch6 "Samples, Uncertainty, and Statistical Inference"
 
 -   Day 2: Discussion \hfill \textit{AC2 due Mon.}
 
-## `r advdate(mon, 6)`
+## `r advdate(mon, 7)`
 
 -   Day 1: BDMF Ch7 "Over-Comparing, Under-Reporting"
 
 -   Day 2: Discussion \hfill \textit{AC3 due Mon.}
 
-## `r advdate(mon, 7)`
+## `r advdate(mon, 8)`
 
 -   Day 1: BDMF Ch8 "Reversion to the Mean"
 
--   Day 2: Discussion \hfill \textit{AC4 due Mon.}
+-   Day 2: Discussion \hfill \textit{AC4 due Mon. + MA1 due Fri.}
 
-## `r advdate(mon, 8)`
-
--   Day 1: MA1 Workshop.
-
--   Day 2: MA1 Workshop. \hfill \textit{MA1 due Fri.}
 
 ## `r advdate(mon, 9)`
 

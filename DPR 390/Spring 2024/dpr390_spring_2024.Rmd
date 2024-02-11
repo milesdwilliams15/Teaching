@@ -84,6 +84,8 @@ mon <- ymd(20240115)
 not_here_dates <- c(
   # MLK observed,
   ymd(20240122),
+  # Noah Williams!
+  seq(ymd(20240205), ymd(20240209), by = 1),
   # Spring Break
   seq(ymd(20240311), ymd(20240315), by = 1),
   # MPSA ?
@@ -98,13 +100,17 @@ reflections <-
     ymd(20240119),
     ymd(20240419),
     by = 7
-  )[-9]
+  )[-c(4, 9)]
+  
 data_challenges <- 
   seq(
     ymd(20240212),
     ymd(20240415),
     by = 7
   )[-5]
+data_challenges <- 
+  c(data_challenges[1:3] + 7,
+    data_challenges[-c(1:3)] + 14) 
 final_project <-
   c(
     ymd(20240426),
@@ -237,11 +243,11 @@ class_cal +
     panel.grid = element_blank(),
     legend.position = 'top'
   )
-ggsave(
-  here::here('01_schedule.png'),
-  height = 6,
-  width = 8
-)
+# ggsave(
+#   here::here('01_schedule.png'),
+#   height = 6,
+#   width = 8
+# )
 ```
 
 ```{=tex}
@@ -343,9 +349,14 @@ Reflection due Fri.
 
 \end{multicols}
 ```
+
+# `r advdate(mon, 4)`: Baby Noah Arrived!
+
+***Class Postponed***
+
 # Five Reasons for War
 
-## `r advdate(mon, 4)`: Unchecked Interests
+## `r advdate(mon, 5)`: Unchecked Interests
 
 ```{=tex}
 \begin{multicols}{2}
@@ -374,7 +385,7 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 5)`: Intangible Incentives
+## `r advdate(mon, 6)`: Intangible Incentives
 
 ```{=tex}
 \begin{multicols}{2}
@@ -405,7 +416,8 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 6)`: Uncertainty
+
+## `r advdate(mon, 7)`: Uncertainty
 
 ```{=tex}
 \begin{multicols}{2}
@@ -436,7 +448,8 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 7)`: Commitment Problems
+
+## `r advdate(mon, 8)`: Commitment Problems
 
 ```{=tex}
 \begin{multicols}{2}
@@ -467,7 +480,32 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 8)`: Misperceptions
+
+## `r advdate(mon, 9)`: Spring Break
+
+```{=tex}
+\begin{multicols}{2}
+
+\textbf{\textit{Schedule}}
+
+
+NO CLASS!
+
+
+\columnbreak
+
+\begin{flushright}
+
+\textbf{\textit{Due}}
+
+NOTHING!
+
+\end{flushright}
+
+\end{multicols}
+```
+
+## `r advdate(mon, 10)`: Misperceptions
 
 ```{=tex}
 \begin{multicols}{2}
@@ -498,32 +536,10 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 9)`: Spring Break
 
-```{=tex}
-\begin{multicols}{2}
-
-\textbf{\textit{Schedule}}
-
-
-NO CLASS!
-
-
-\columnbreak
-
-\begin{flushright}
-
-\textbf{\textit{Due}}
-
-NOTHING!
-
-\end{flushright}
-
-\end{multicols}
-```
 # Paths to Peace
 
-## `r advdate(mon, 10)`: Interdependence
+## `r advdate(mon, 11)`: Interdependence
 
 ```{=tex}
 \begin{multicols}{2}
@@ -554,7 +570,8 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 11)`: Checks and Balances
+
+## `r advdate(mon, 12)`: Checks and Balances
 
 ```{=tex}
 \begin{multicols}{2}
@@ -567,7 +584,7 @@ Reflection due Fri.
 
 \item Day 2: Using data to identify checks and balances.
 
-\item Day 3: Data workshop.
+\item Day 3: NO CLASS (MPSA)
 
 \end{itemize}
 
@@ -585,7 +602,8 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 12)`: Rules and Enforcement
+
+## `r advdate(mon, 13)`: Rules and Enforcement
 
 ```{=tex}
 \begin{multicols}{2}
@@ -598,7 +616,7 @@ Reflection due Fri.
 
 \item Day 2: Using data to identify rules and enforcement."
 
-\item Day 3: NO CLASS (MPSA)
+\item Day 3: Data workshop.
 
 \end{itemize}
 
@@ -616,7 +634,7 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 13)`: Interventions
+## `r advdate(mon, 14)`: Interventions
 
 ```{=tex}
 \begin{multicols}{2}
@@ -647,7 +665,7 @@ Reflection due Fri.
 
 \end{multicols}
 ```
-## `r advdate(mon, 14)`: What Can We Do?
+## `r advdate(mon, 15)`: What Can We Do?
 
 ```{=tex}
 \begin{multicols}{2}
@@ -656,40 +674,7 @@ Reflection due Fri.
 
 \begin{itemize}
 
-\item Day 1: Read WWW "Chapter 11: Wayward Paths to Peace."
-
-\item Day 2: Using data to talk about gender, poverty, and other factors.
-
-\item Day 3: Read WWW "Chapter 12: The Peacemeal Engineer."
-
-\end{itemize}
-
-\columnbreak
-
-\begin{flushright}
-
-\textbf{\textit{Due}}
-
-DC9 due Mon.
-
-Reflection due Fri.
-
-\end{flushright}
-
-\end{multicols}
-```
-# Final Projects
-
-## `r advdate(mon, 15)`: Review and Final Projects
-
-```{=tex}
-\begin{multicols}{2}
-
-\textbf{\textit{Schedule}}
-
-\begin{itemize}
-
-\item Day 1: Final project workshop.
+\item Day 1: Read WWW "Chapter 11: Wayward Paths to Peace" + "Chapter 12: The Peacemeal Engineer."
 
 \item Day 2: Final project workshop.
 
@@ -703,12 +688,15 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-NOTHING!
+DC9 due Mon.
 
 \end{flushright}
 
 \end{multicols}
 ```
+
+# Final Projects
+
 ## `r advdate(mon, 16)`: Last Week of Instruction
 
 ```{=tex}
