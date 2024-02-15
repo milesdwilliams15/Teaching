@@ -1,0 +1,34 @@
+---
+title: "MA1: Ohio Issue 1"
+format: pdf
+editor: visual
+---
+
+For our inaugural main assignment (MA1), you'll work in teams to answer the following question: *To what extent did Ohioans' support for "Issue 1" in November of 2023 deviate from their support for Trump in 2020, and what factors explain why?*
+
+Answering this question matters because, post-Roe, many restrictive abortion laws in Red (Republican) states, which were previously unenforceable under the Supreme Court's ruling following Roe v. Wade, went into effect once the decision was overturned in Dobbs v. Jackson in 2022. Many pro-life groups saw this as a landmark victory, but every action has a reaction in politics. In response to this ruling, pro-choice groups and Democratic legislators in over a dozen Red states (including Ohio) pushed for and successfully passed constitutional amendments for their states that enshrined abortion rights, undoing restrictive abortion bans that had been passed by their Republican-dominated legislatures. This outcome surprised many people, because pro-life (anti-abortion) attitudes are held by a majority of Republican, or Republican-leaning, voters. Nonetheless, these ballot initiatives, which were voted on directly by the citizens of these states, rather than by their lawmakers, passed by large margins.
+
+This pattern, which played out time and again from one Red state to the next, underscores how voter attitudes on specific issues can deviate from the positions held by their preferred party. While this seems obvious in hind-sight, what still remains unclear is the extent to which these deviations between voter attitudes toward issues (abortion in particular) and their partisan affiliations are bigger or smaller depending on certain voter characteristics.
+
+In this assignment, your goal is to explore some county-level data for Ohio to explain variation in voting patterns on Issue 1 (a ballot initiative that amended the Ohio constitution to enshrine abortion rights) to figure out why some counties supported the issue far more (or less) than we'd expect based on their support for Trump (the Republican incumbent for US President) in 2020.
+
+## Report Outline
+
+Your group will put together a report summarizing your analysis of county-level data for the state of Ohio. While there is no word limit, a good report will clock in at roughly 750-1,250 words. It should also adhere to the following outline with section headers for each part:
+
+1.  ***Introduction***: Begin your report with a single paragraph where you (1) state the research question and (2) briefly discuss why we should care. (FWIW: I've already given you both in the above prompt).
+2.  ***Data and Design***: Next, you'll introduce the data that you will use for you analysis and briefly summarize what you will do with the data to answer the research question. Since this is your first main assignment, let me help you out with what you'll write:
+
+> The data we'll use for our analysis provides county-level detail about the demographic profile and voting patterns for the state of Ohio. For each county, it reports the share of the popular vote in favor of Trump in 2020 and in favor of the November 2023 Issue 1 ballot initiative. For each election, it also contains information about the total voter turnout in each election and the number of registered voters. In addition to voting data, for each county there is demographic information from the 2017-2021 5-year aggregates version of the American Community Survey (ACS) done by the US Census Bureau. These additional variables include information about the educational, racial, gender, and economic profile of individual counties.
+>
+> With this dataset we'll first summarize and compare the distribution of Issue 1 votes versus Trump votes. We'll then cross-reference a selection of demographic variables with each of these measures to contrast how demographic factors that predict support for Trump differently predict support for Issue 1.
+
+3.  ***Analysis***: This section will contain your data visualizations and your summary of them. Your first and second visualizations should be a map of Ohio with one showing the distribution of the vote in favor of Issue 1 and the other one showing the distribution of the vote in favor of Trump. Your next visualizations should support your effort to compare how a selection of demographic factors differently predict support for Trump versus Issue 1. There are several variables to choose from. You have to pick **at least three**. Be creative and think about how your variable and visualization choices will impact the story you tell. I expect each visualization to be numbered and to have a title to the effect of "Figure N: Description here". For each figure, you should have a paragraph summarizing what kind of visualization it is and what it shows. **Your text describing the figure should always come before it appears.**
+4.  ***Conclusion***: Talk about the implications of what you found. Did you find an answer to the research question? What should we do about it? Think big, and uses sources where necessary.
+
+Some additional rules:
+
+-   If you cite any sources, use hyperlinks.
+-   Your final submission should be in the form of a rendered Word or PDF document.
+-   Your paper should have a title and include all group member names as authors.
+-   While your code for reading in the data and making your data visualizations will be done in the same Quarto document in which you write your report, all of your code should be hidden in your final rendered report.

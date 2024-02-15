@@ -11,6 +11,25 @@ knitr::opts_chunk$set(echo = TRUE,
                       warning = F)
 ```
 
+## Prompt
+
+In this graph challenge, your objective is to make a heat map for any one of the 50 states (except Alaska) in the US showing county-level detail of the 2016 GOP candidate's (Trump) electoral margin relative to the Democratic candidate's (Clinton). This is not a variable in the data, so you will need to construct it with two other variables, specifically: "per_gop_2016" and "per_dem_2016". The first is the proportion of votes in a county that Trump received. The second is the proportion of votes in a county that Clinton received. Make sure that your map has an informative title and that you update your plot with the "theme_void()" function.
+
+After you produce your figure, discuss in a short paragraph why you think some areas of your chosen state are bluer (Trump's margin was less than Clinton's) and some areas are redder (Trump's margin was greater than Clinton's).
+
+Here's some code to get your started. It will open the packages you need and create a county-level dataset that is merged with the appropriate county boundary coordinates. It then filters the data down to a state. You just need to edit the part that says "State acronym here" to tell R which state you want to look at. Once you have the data, it's up to you to add a new column of Trump's vote margin relative to Clinton's before plotting.
+
+```
+## open packages
+library(tidyverse)
+library(socviz)
+
+## merge county data to county boundary coordinates
+cty_map_data <- left_join(county_map, county_data)
+st_map_data <- cty_map_data |>
+  filter(state == "State acronym here")
+```
+
 ## read in the packages
 
 ```{r}
@@ -23,7 +42,7 @@ library(socviz)
 ```{r}
 cty_map_data <- left_join(county_map, county_data)
 st_map_data <- cty_map_data |>
-  filter(state == "OH")
+  filter(state == "AK")
 ```
 
 ## plot
@@ -33,14 +52,14 @@ show the change in the GOP or Dem vote share between 2016 and 2012:
 ```{r}
 st_map_data |>
   mutate(
-    diff_per_gop = 100 * (per_gop_2016 - per_gop_2012)
+    gop_margin = 100 * (per_gop_2016 - per_dem_2016)
   ) |>
   ggplot() +
   aes(
     x = long,
     y = lat,
     group = group,
-    fill = diff_per_gop
+    fill = gop_margin
   ) +
   geom_polygon(
     color = "black",
@@ -51,7 +70,7 @@ st_map_data |>
   coord_fixed() +
   labs(
     fill = "% point change",
-    title = "Which OH counties became redder in 2016?"
+    title = "Trumps 2016 vote margin in 2016"
   )
 ```
 

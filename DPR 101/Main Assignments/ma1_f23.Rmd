@@ -44,7 +44,10 @@ ohio_dt <- get_acs(
     white_population = "B02008_001",
     black_population = "B02009_001",
     male_population = "B01001_002",
-    college_degree = "B15003_022",
+    bach_degree = "B15003_022",
+    mast_degree = "B15003_023",
+    prof_degree = "B15003_024",
+    doct_degree = "B15003_025",
     noncitizen = "B05001_006"
   ),
   state = "OH",
@@ -52,7 +55,7 @@ ohio_dt <- get_acs(
 )
 ## clean
 ohio_dt |>
-  select(-moe) |>
+  select(-moe, -GEOID) |>
   pivot_wider(
     names_from = variable,
     values_from = estimate
@@ -63,17 +66,34 @@ ohio_dt |>
 ## turnout data
 
 ```{r}
-## bring in the outcome data for issue 1
-issue1_dt <- read_csv(
+## bring in the outcome data for Aug. issue 1
+aug_issue1_dt <- read_csv(
   here::here(
     "DPR 101", "Data",
     "ohio_issue1_outcomes_CLEANED.csv"
   )
 )
-issue1_dt |>
-  select(
-    -official_voter_turnout
-  ) -> issue1_dt
+aug_issue1_dt |>
+  transmute(
+    county_name,
+    region_name,
+    media_market,
+    prop_aug_issue1_yes = yes / ballots_counted,
+    total_aug_turnout = ballots_counted,
+    total_reg_voters = registered_voters
+  ) -> aug_issue1_dt
+
+## bring in the outcome data for Nov. issue 1
+library(googlesheets4)
+gs4_deauth()
+nov_issue1_dt <- range_speedread("https://docs.google.com/spreadsheets/d/1B12Hr9LqqC_j-oTr_iaS_D7qeKvA8YgoXf7JGdWIwIA/edit?usp=sharing")
+nov_issue1_dt |>
+  transmute(
+    county_name = County,
+    prop_nov_issue1_yes = Issue1Yes/100,
+    prop_nov_issue2_yes = Issue2Yes/100,
+    total_nov_votes = `Total votes.x`
+  ) -> nov_issue1_dt
 
 ## bring in the outcome data for 2020
 vote2020_dt <- read_csv(
@@ -90,11 +110,12 @@ names(vote2020_dt) |>
   tolower() -> names(vote2020_dt)
 #summary(vote2020_dt)
 vote2020_dt |>
-  rename(
-    registered_voters_2020 = registered_voters,
-    ballots_counted_2020 = ballots_counted
-  ) |>
-  select(-official_voter_turnout) -> vote2020_dt
+  transmute(
+    county_name,
+    total_2020_reg_voters = registered_voters,
+    total_2020_votes = ballots_counted,
+    prop_trump_votes = trump_ticket / ballots_counted
+  ) -> vote2020_dt
 ```
 
 ## merge
@@ -103,13 +124,14 @@ vote2020_dt |>
 ohio_dt |>
   mutate(
     county_name = str_remove_all(
-      NAME,
+      county_name,
       " County, Ohio"
     )
   ) -> ohio_dt
 dt <- reduce(
-  list(issue1_dt, vote2020_dt, ohio_dt),
-  left_join
+  list(aug_issue1_dt, nov_issue1_dt, vote2020_dt, ohio_dt),
+  left_join,
+  by = "county_name"
 )
 dt |>
   select(-NAME) -> dt
