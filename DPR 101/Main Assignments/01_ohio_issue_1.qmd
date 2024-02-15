@@ -32,3 +32,68 @@ Some additional rules:
 -   Your final submission should be in the form of a rendered Word or PDF document.
 -   Your paper should have a title and include all group member names as authors.
 -   While your code for reading in the data and making your data visualizations will be done in the same Quarto document in which you write your report, all of your code should be hidden in your final rendered report.
+
+## The Data
+
+The dataset that you'll use for this assignment is saved as a .csv file on my GitHub. You can can read in the data by using the following code:
+
+```{r}
+#| message: false
+#| warning: false
+
+
+## open the {tidyverse}
+library(tidyverse)
+
+## read in the data
+url <- "http://tinyurl.com/ma1dataset"
+Data <- read_csv(url)
+```
+
+Here's a quick summary of the variables in the data:
+
+-   county_name: Ohio county names.
+
+-   region_name: Ohio region names.
+
+-   media_market: Ohio media market names.
+
+-   prop_aug_issue1_yes: The proportion of voters in a county that voted yes on the August 2023 Issue 1 initiative (this issue, if it had passed, you have increased the threshold necessary to amend the Ohio constitution in the November election from 50% plus 1 to 60%).
+
+-   total_aug_turnout: The total number of people in a county that cast a ballot in August of 2023.
+
+-   total_reg_voters: Total registered votes in a county as of 2023.
+
+-   prop_nov_issue1_yes: The proportion of voters in a county that voted yes on the November 2023 Issue 1 initiative.
+
+-   prop_nov_issue2_yes: The proportion of voters in a county that voted yes on the November 2023 Issue 2 initiative (this initiative legalized the use of recreational marijuana in Ohio).
+
+-   total_nov_votes: The total number of people in a county that cast a ballot in November 2023.
+
+-   total_2020_reg_voters: The total number of registered voters in the 2020 presidential election.
+
+-   total_nov_votes: The total number of ballots cast in the 2020 presidential election.
+
+-   prop_trump_votes: The proportion of votes cast in favor of Donald Trump in 2020.
+
+-   population: The total population size of a county.
+
+-   median_age: The median age of county residents.
+
+-   median_income: The median income of county residents.
+
+-   male_population: A count of the number of individuals in a county identifying as male.
+
+-   white_population: A count of the number of individuals in a county identifying as white.
+
+-   black_population: A count of the number of individuals in a county identifying as black.
+
+-   noncitizen: A count of the number of non-US citizens living in a county.
+
+-   bach_degree: A count of the number of individuals with a bachelor's degree.
+
+-   mast_degree: A count of the number of individuals with a master's degree.
+
+-   prof_degree: A count of the number of individuals with a professional degree (JD, MD, etc.)
+
+-   doct_degree: A count of the number of individuals with Ph.D.
