@@ -1,0 +1,15 @@
+---
+title: "Data Challenge 1: Measuring Checks on Leader Interests"
+format: pdf
+editor: visual
+---
+
+We've been discussing in class the role of unchecked leader interests as a reason for war. The idea is that if a leader's costs and benefits from going to war don't align with the broader group's, this can increase the likelihood of war. This is especially the case if a leader would on net benefit from going to war, even though his or or country would suffer.
+
+We further demonstrated in class that this argument has some support when looking at the data. We used `{peacesciencer}` to create a leader-year dataset that we populated with variables for leader willingness to use force (to capture leader interests in going to war) and democracy (to capture checks on leader interests). However, we also found that our choice of democracy measure influenced the results. The `{peacesciencer}` package gives us access to three different measures of democracy: Polity 2, V-Dem, and UDS. While higher Polity 2 and UDS scores suppressed the likelihood that a leader would initiate a militarized dispute with another country even if they had a high level of willingness to use force, this didn't hold up with the V-Dem measure.
+
+These three measures barely scratch the surface in terms of democracy measures. To further explore the role that democracy plays in constraining leaders and preventing war, for this data challenge you'll incorporate several other measures of democracy that you can access using the `{democracyData}` R package. After following the instructions for installing the package and reading about what you can do with it (link: <https://github.com/xmarquez/democracyData>), use the dataset cross-walking and merging techniques we discussed a couple of weeks ago to merge in three measures of democracy beyond those accessible via `{peacesciencer}`. You'll then replicate the analysis we did in class with these new measures.
+
+For each measure, summarize how it quantifies the kind of regime a country has and what you think the pros and cons will be for capture checks on leader interests as well as for faithfully measuring democracy. Then, replicate the analysis we did in class using each measure and in a paragraph for each, summarize the results and explain what you see.
+
+You'll submit your work as a rendered Quarto document (you're free to render to either an html, word, or pdf document).
