@@ -1,0 +1,39 @@
+---
+title: "Analysis Challenge 3"
+subtitle: "Due Monday, Feb. 26th"
+format: pdf
+editor: visual
+fontsize: "12pt"
+---
+
+For this analysis challenge, your objective is to build on the previous analysis challenge which centered on forecasting the 2024 US Presidential election. In that assignment, your goal was to construct a model using a dataset on US presidential election outcomes from 1948 to 2020 and generating predictions for 2024. In this assignment, you'll update your previous analysis in three ways:
+
+1.  Instead of using incumbent vote share as the factor you'll try to predict, you'll use the incumbent vote margin adjusted to just account for the margin between the Republican and Democratic candidate.
+2.  You'll use bootstrapping to calculate a standard error and confidence intervals for your 2024 forecast.
+3.  You'll use these confidence intervals to determine whether Biden's margin is statistically better relative to the Republican challenger's.
+
+These updates will require you to update and combine a bunch of different sets of example code in the lecture notes. If you need help with (1), I'm happy to offer assistance—but only after you give it a few tries of your own.
+
+Your submission will include your code and a short paragraph at the end that summarizes the output and statistical uncertainty of your forecast. I've provided the link to, and summary of, the data below.
+
+\clearpage
+
+## The data
+
+You can access and read in the data using the following url:
+
+<https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/prez_data.csv>
+
+The each row in the dataset is a particular presidential election year running from 1948 to 2020. For each election, it contains information for the following variables:
+
+-   `year`: The election year
+-   `inc_party`: Tells you whether the incumbent party is the Democrats or Republicans
+-   `inc_running`: A binary indicator for whether the incumbent president is running for office again
+-   `dem`: The Democratic candidate's vote share
+-   `rep`: The Republican candidate's vote share
+-   `inc_approval`: The incumbent party candidate's net approval rating
+-   `third_party`: A binary indicator for whether a third party candidate is running
+-   `inc_vote`: The share of the popular vote won by the incumbent party candidate
+-   `gdp`: Gross domestic product (GDP) in the second quarter of the election year
+-   `gdp_growth`: Change in GDP from the first to the second quarter of the election year
+-   `gdp_pct_growth`: The percent change in GDP from the first to the second quarter of the election year
