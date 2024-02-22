@@ -1,0 +1,20 @@
+---
+title: "Data Challenge 2"
+subtitle: "Due Thursday, Feb. 29"
+format: pdf
+editor: visual
+---
+
+## 
+
+This week we've discussed the role of intangible incentives as a reason for war, and we produced an analysis showing that factors that we think are correlated with intangible incentives (grievances in particular) predict the likelihood of conflict onset. But a focus on grievances ignores its antithesis: greed. In their famous study, [Collier and Hoeffler (2004)](https://www.jstor.org/stable/3488799) pit measures of grievances against measures of greed to assess which factors better explain variation in the onset of civil wars. In this analysis challenge, I want you to do the same.
+
+To capture greed, despite what this category of war motivations suggests, we won't measure factors that denote the size of some war prize. The object of contestation can differ so much across contexts that it would be hard to identify one or even a few material factors that would predict civil war onset systematically. No matter, because the civil war literature doesn't view greed in this way. Rather, the idea with greed is that rebels are assumed to be motivated by greed from the start. All they need is the opportunity to act on that greed—that is, conditions that make insurgency more feasible. For this reason the greed vs. grievance debate is better characterized as opportunity vs. grievance.
+
+Some common measures of opportunity include whether a country is a new state (new states tend to be weak and ill-equipped to fight an insurgency), whether it has a lot of mountainous terrain making guerrilla warfare easier, whether there is a sizable rural population (in large cities, it is theoretically easier for the government to receive anonymous tips on rebels), and the state's military capacity.
+
+Thankfully, each of these factors we can get using the `{peacesciencer}` package. So, for this data challenge, your goal is to build on the dataset we constructed in class to study intangible incentives by adding variables related to mountainous terrain, the share of the population that is rural, and a country's military strength. Specifically, you should use `newlmtest` which you can get using `add_rugged_terrain()`, a measure of the share of the population that is rural which you can construct using `tpop` and `upop` from `add_nmc()`, measures of military expenditures and personnel (`milex` and `milper`) from the same function, and a new state indicator which you can add to the data by following the instructions outlined here: <https://svmiller.com/peacesciencer/articles/parlor-tricks.html>.
+
+Perform a regression analysis using the `logitmfx()` function from the `{mfx}` package with the following settings: `robust = T` and `clustervar1 = "gwcode"`. Look at the output of the model and look at both the size of the marginal effects of each variable in your analysis and whether they are statistically significant. Which set of factors come out on top? Those related to grievance or those related to opportunity?
+
+Submit your code and your answer to this question in a rendered Quarto document to Canvas.
