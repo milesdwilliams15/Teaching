@@ -8,9 +8,10 @@ editor: visual
 
 ```{r}
 #| eval: false
+#| include: false
 
 ## I need to create the dataset for this assignment. 
-## Students will perform a forecast model of the expected
+## Students will perform a regression analysis of the expected
 ## magnitude of different Militarized Interstate Confrontations
 ## using various covariates associated with the countries
 ## involved. 
@@ -22,8 +23,6 @@ editor: visual
 ## open {tidyverse} and {peacesciencer}
 library(tidyverse)
 library(peacesciencer)
-
-
 
 ## make base dataset
 create_dyadyears(
@@ -99,7 +98,7 @@ Data |>
     stdate = min(stdate),
     
     ## outcomes
-    durration = max(days_durration, na.rm = T),
+    duration = max(days_durration, na.rm = T),
     events = max(num_events, na.rm = T),
     involved = length(unique(ccode1)) +
       length(unique(ccode2)),
@@ -179,6 +178,29 @@ Data |>
     year
   ) -> final_Data
 
+## bring in confrontation names
+read_csv(
+  here::here(
+    "DPR 201",
+    "Data",
+    "micnames-1.0.csv"
+  )
+) -> micnames
+
+final_Data |>
+  left_join(
+    micnames,
+    by = c("mic_id" = "micnum")
+  ) -> final_Data
+
+final_Data %>%
+  select(-version) %>%
+  select(
+    mic_id,
+    micname,
+    everything()
+  ) -> final_Data
+
 ## save as .csv file
 write_csv(
   final_Data,
@@ -190,8 +212,97 @@ write_csv(
 )
 ```
 
-For our first main assignment, you'll work in teams to
+For our first main assignment, you'll work in teams to answer the following question: ***What factors explain why some international conflicts are deadlier than others and escalate to the level of all out war?***
+
+This is a question that political scientists have struggled to find a good answer to because of poor data, but the [International Conflict Data Project](https://internationalconflict.ua.edu/data-download/) at the University of Alabama recently made available new and improved conflict datasets that solve many of the errors and inconsistencies of past data sources. One of the coolest features of this new data is a highly granular set of minimum and maximum estimated battle-related fatalities associated with different conflicts. Let's see if we can use this new data along with a suite of conflict-specific variables to explain variation in the size and hostility level of international militarized confrontations.
+
+You'll use a Militarized Interstate Confrontation (MIC) level dataset for your analysis that I've compiled for you. This "confrontation series" dataset documents 1,550 total confrontations between countries from 1816 to 2014 (almost two whole centuries!). For each confrontation, there are a number of variables that you can use to answer the research question proposed above. To measure the size of conflicts, there are four different measures of battle-related fatalities. There is also a measure of conflict duration. And to measure the hostility level of confrontations, there is an indicator for whether a confrontation escalated to the level of an all-out war. Importantly, a war does not have to involve a formal declaration of war; nor does a formal declaration of war guarantee that a conflict truly rises to the level of an all-out war.[^1]
+
+[^1]: Declarations of war are considered political actions; not military actions.
+
+You have your pick of a wide range of factors to try to explain war size, duration, and hostility level, including the average democracy scores among the countries involved in a confrontation, their level of military power, whether any countries on one side of a conflict are strategic rivals with those on the other side, and much more. Taken together, the variables associated with each confrontation should help you triangulate how certain domestic and material constraints on countries (like democracy and military power), in addition to the strength of international ties between sides of a confrontation (like trade or alliances) determine how extreme we can expect different conflicts to become.
+
+With this data, you'll answer the research question posed above and write a report summarizing your analysis. Your report should adhere to the following format:
+
+1.  ***Introduction***: Write an intro section that has at least one paragraph that (1) states the research question and (2) why it matters.
+2.  ***Data and Design***: In this section you should briefly describe the data and methods that you'll use to answer the research question. At minimum, you should pick at least one of the fatality measures in addition to duration and whether a conflict is an all-out war as your outcome variables. You should then pick at least three other factors in the data to explain variation in these outcomes. For your methods, you'll perform a regression analysis using the variables you decide to use. For your regression analysis, summarize briefly how a regression model will help you to answer the research question.
+3.  ***Analysis***: Summarize the results of your analysis. Start by discussing the overall distribution of the outcome variables. For each outcome, create either a histogram or column plot summarizing their frequency distribution. Each of these figures should include an informative title and a figure number, and before each figure appears you should write a paragraph introducing the figure and summarizing what it shows us. You'll then perform your regression analysis and interpret the results. For each regression model you estimate, use the `plot_model()` function from `{sjPlot}` ([read about how to use it here](https://strengejacke.github.io/sjPlot/articles/plot_marginal_effects.html)) to visualize the relationships between explanatory variables and outcomes. With three outcomes and at least three explanatory variables, that should make for at least 9 extra figures (however, you could use the [`{patchwork}`](https://patchwork.data-imaginist.com/) package to combine them into three, one for each regression model). For each factor and outcome, discuss whether the relationship is positive or negative and, based on the size of the confidence intervals, discuss how much statistical uncertainty is associated with the identified relationship.
+4.  ***Conclusion***: Summarize the results from your analysis and state whether you were able to answer the research question. You should further discuss any implications that follow from what you found.
+
+Your report should be either a pdf or word document that you will submit to Canvas. If you cite any studies or articles in your write-up, use in-text hyperlinks to those studies or articles.
+
+The next page summarizes the dataset. Good luck!
 
 \clearpage
 
 ## The Data
+
+You can access the militarized confrontation data series from my GitHub using the following url:
+
+<https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/mic_data.csv>
+
+The dataset is at the level of unique militarized interstate confrontations (MICs), which are defined as a cumulative set of militarized interstate events (MIEs) including threats, displays, use of force (up to and including full on war) by one country against another. The full dataset consists of 1,550 confrontations documented from 1816 to 2014.
+
+For each confrontation, the dataset documents the following details:
+
+-   `mic_id`: MIC identifier. This value is unique to each MIC in the dataset.
+
+-   `micname`: For some MICs, there is a name associated with the confrontation. When a name isn't available, the value is NA.
+
+-   `year`: The year the a MIC started.
+
+-   `stdate`: The precise date that the MIC started.
+
+-   `duration`: Duration of the confrontation in days.
+
+-   `events`: The number of unique militarized interstate events (MIEs) associated with a confrontation.
+
+-   `involved`: The total number of countries involved in a confrontation by its end.
+
+-   `fatalmin`: An estimate of the minimum number of total battle-related fatalities associated with a confrontation by its end.
+
+-   `fatalmax`: An estimate of the maximum number of total battle-related fatalities associated with a confrontation by its end.
+
+-   `fatalmin_pc`: Values of `fatalmin` per capita, or that is per the total combined population of the countries involved in a confrontation.
+
+-   `fatalmax_pc`: Values of `fatalmax` per capita, or that is the per the total combined population of the countries involved in a confrontation.
+
+-   `full_on_war`: Takes the value of 1 if a confrontation's hostility level is elevated to that of a full on war.
+
+-   `mean_democracy`: The average democracy score among the countries involved in a confrontation based on the [UDS (extension)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2753830) measure of democracy.
+
+-   `min_democracy`: The poorest democracy score among the countries involved in a confrontation based on the UDS (extension) measure of democracy.
+
+-   `mean_mil_power`: The average Composite Index of National Capability (CINC) score among the countries involved in a confrontation. CINC values capture (1) the share of total military expenditures a country is responsible for in the world, (2) the share of military personnel in the world, (3) the share of all iron and steel production, (4) the share of the world's primary energy consumption, and (5) the share of the world's population and urban population. Values are between 0 and 1 where 1 means a country has all of 1-5 and 0 means it has none. CINC scores are used to capture the relative latent military power of a country relative to others in the international system.
+
+-   `min_mil_power`: The weakest CINC score among the countries involved in a confrontation.
+
+-   `maxdiff_mil_power`: The difference between the most powerful and weakest military powers based on CINC scores among the countries involved in a confrontation.
+
+-   `mean_pop`: The average population size among the countries involved in a confrontation.
+
+-   `total_pop`: The total combined population of the countries involved in a confrontation.
+
+-   `rivals_rate`: The share of countries on one side of a confrontation that are strategic rivals with countries on the other side of a confrontation.
+
+-   `major_powers_involved`: A count of the number of major world powers involved in a confrontation.
+
+-   `total_trade`: An estimate of total bilateral trade between the countries on one side of a confrontation with those on the other side of the confrontation. Note that some values are zero, which usually means that there was no documented trade between countries.
+
+-   `total_trade_pc`: The value of `total_trade` per the combined populations of the countries on both sides of a confrontation.
+
+-   `mean_dist`: The average distance in kilometers between the capitals of the countries on one side of a confrontation with the capitals of the countries on the other side.
+
+-   `min_dist`: The shortest distance in kilometers between the capitals of countries on one side of a confrontation with the capitals of those on the other side.
+
+-   `total_alliances`: The sum of defensive alliances between countries on one side of a confrontation with the countries on the other side.
+
+-   `mean_alliances`: The average number of defensive alliances between countries on one side of a confrontation with the countries on the other side.
+
+-   `min_alliances`: Takes the value of 0 if there are no defensive alliances between sides of a confronation; 1 otherwise.
+
+-   `total_igos`: The total number of international governmental organizations (IGOs) that countries on one side of a confrontation are jointly members of with countries on the other side of a confrontation.
+
+-   `mean_igos`: The average number of IGOs that countries on one side of a confrontation are jointly members of with countries on the other side of a confrontation.
+
+-   `min_igos`: The minimum number of IGOs that countries on one side of a confrontation are jointly members of with countries on the other side of a confrontation.
