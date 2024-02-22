@@ -1,0 +1,186 @@
+---
+title: "Main Assignment 1"
+format: pdf
+editor: visual
+---
+
+## 
+
+```{r}
+#| eval: false
+
+## I need to create the dataset for this assignment. 
+## Students will perform a forecast model of the expected
+## magnitude of different Militarized Interstate Confrontations
+## using various covariates associated with the countries
+## involved. 
+##
+## I therefore need to creat a confrontation level dataset
+## for analysis. I'll use the MIE dataset to build a base.
+## Then I'll incorporate additional covariates
+
+## open {tidyverse} and {peacesciencer}
+library(tidyverse)
+library(peacesciencer)
+
+
+
+## make base dataset
+create_dyadyears(
+  subset_years = 1816:2014,
+  directed = F
+) -> Data
+
+## bring in MIE data
+read_csv(
+  here::here(
+    "DPR 201", 
+    "Data",
+    "mie-1.0.csv"
+  )
+) -> mie_data
+
+
+## aggreagate to MICs
+mie_data |>
+  mutate(
+    stday = ifelse(stday == -9, 1, stday),
+    endday = ifelse(endday == -9, 1, endday),
+    stdate = paste0(
+      styear, "-",
+      str_pad(stmon, width = 2, pad = "0"), "-",
+      str_pad(stday, width = 2, pad = "0")
+    ) |> as.Date(),
+    enddate = paste0(
+      endyear, "-",
+      str_pad(endmon, width = 2, pad = "0"), "-",
+      str_pad(endday, width = 2, pad = "0")
+    ) |> as.Date()
+  ) |>
+  group_by(micnum, ccode1, ccode2) |>
+  summarize(
+    year = min(styear),
+    stdate = min(stdate),
+    num_events = max(eventnum),
+    days_durration = max(enddate) - stdate + 1,
+    across(
+      fatalmin1:fatalmax2,
+      sum
+    ),
+    full_on_war = ifelse(
+      max(hostlev) == 5, 1, 0
+    )
+  ) -> mic_data
+
+## merge with base data then
+## filter out obs. with no confrontations
+Data |>
+  left_join(
+    mic_data
+  ) |>
+  drop_na() |>
+  ## merge in additional data for covariates
+  add_democracy() |>
+  add_sdp_gdp() |>
+  add_nmc() |>
+  add_strategic_rivalries() |>
+  add_cow_majors() |>
+  add_cow_trade() |>
+  add_minimum_distance() |>
+  add_fpsim() |>
+  add_igos() -> Data
+
+## condense to the confrontation level
+Data |>
+  group_by(micnum) |>
+  summarize(
+    ## timing
+    year = min(year),
+    stdate = min(stdate),
+    
+    ## outcomes
+    durration = max(days_durration, na.rm = T),
+    events = max(num_events, na.rm = T),
+    involved = length(unique(ccode1)) +
+      length(unique(ccode2)),
+    fatalmin = sum(fatalmin1 + fatalmin2),
+    fatalmax = sum(fatalmax1 + fatalmax2),
+    fatalmin_pc = fatalmin / 
+      sum(1000 * (tpop1 + tpop2), na.rm = T),
+    fatalmax_pc = fatalmax /
+      sum(1000 * (tpop1 + tpop2), na.rm = T),
+    full_on_war = max(full_on_war, na.rm = T),
+    
+    ## covariates
+    ## - mean and min. democracy
+    mean_democracy = (mean(xm_qudsest1, na.rm = T) +
+      mean(xm_qudsest2, na.rm = T)) / 2,
+    min_democracy = min(
+      min(xm_qudsest1, na.rm = T),
+      min(xm_qudsest2, na.rm = T)
+    ),
+    
+    ## - mean and min. GDP/capita
+    mean_gdp_pc = (mean(exp(wbgdppc2011est1), na.rm = T) +
+                     mean(exp(wbgdppc2011est2), na.rm = T)) / 2,
+    min_gdp_pc = min(
+      min(exp(wbgdppc2011est1), na.rm = T),
+      min(exp(wbgdppc2011est2), na.rm = T)
+    ),
+    
+    ## - mean and min. military spending/capita
+    mean_milex_pc = (mean(milex1/tpop1, na.rm = T) +
+                       mean(milex2/tpop2, na.rm = T)) / 2,
+    min_milex_pc = min(
+      min(milex1/tpop1, na.rm = T),
+      min(milex2/tpop2, na.rm = T)
+    ),
+    
+    ## - mean and total population
+    mean_pop = (mean(tpop1, na.rm = T) + 
+                  mean(tpop2, na.rm = T)) / 2,
+    total_pop = sum(tpop1 + tpop2, na.rm = T),
+    
+    ## - ravalries rate
+    rivals_rate = mean(ongoingrivalry, na.rm = T),
+    
+    ## - major powers involved
+    major_powers_involved = sum(cowmaj1 + cowmaj2, na.rm = T),
+    
+    ## - trade between sides
+    total_trade = 1000000 * sum(flow1 + flow2, na.rm = T),
+    total_trade_pc = total_trade / total_pop,
+    
+    ## - proximity of sides
+    mean_dist = mean(mindist, na.rm = T),
+    min_dist = min(mindist, na.rm = T),
+    
+    ## - foreign policy similarity
+    mean_fpsim = mean(kappaba, na.rm = T),
+    min_fpsim = min(kappaba, na.rm = T),
+    
+    ## - joint IGO membership
+    total_igos = sum(dyadigos, na.rm = T),
+    mean_igos = mean(dyadigos, na.rm = T),
+    min_igos = min(dyadigos, na.rm = T)
+  ) |>
+  ungroup() |>
+  rename(
+    mic_id = micnum
+  ) |>
+  arrange(
+    year
+  ) -> final_Data
+
+## save as .csv file
+write_csv(
+  final_Data,
+  here::here(
+    "DPR 201",
+    "Data",
+    "mic_data.csv"
+  )
+)
+```
+
+For our first main assignment, you'll work in teams to
