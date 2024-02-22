@@ -86,8 +86,8 @@ Data |>
   add_strategic_rivalries() |>
   add_cow_majors() |>
   add_cow_trade() |>
-  add_minimum_distance() |>
-  add_fpsim() |>
+  add_capital_distance() |>
+  add_atop_alliance() |>
   add_igos() -> Data
 
 ## condense to the confrontation level
@@ -115,31 +115,37 @@ Data |>
     ## - mean and min. democracy
     mean_democracy = (mean(xm_qudsest1, na.rm = T) +
       mean(xm_qudsest2, na.rm = T)) / 2,
+    mean_democracy = ifelse(
+      is.na(mean_democracy),
+      min(
+        mean(xm_qudsest1, na.rm = T),
+        mean(xm_qudsest2, na.rm = T),
+        na.rm = T
+      ),
+      mean_democracy
+    ),
     min_democracy = min(
       min(xm_qudsest1, na.rm = T),
-      min(xm_qudsest2, na.rm = T)
+      min(xm_qudsest2, na.rm = T),
+      na.rm = T
     ),
     
-    ## - mean and min. GDP/capita
-    mean_gdp_pc = (mean(exp(wbgdppc2011est1), na.rm = T) +
-                     mean(exp(wbgdppc2011est2), na.rm = T)) / 2,
-    min_gdp_pc = min(
-      min(exp(wbgdppc2011est1), na.rm = T),
-      min(exp(wbgdppc2011est2), na.rm = T)
+    ## - mean, min, and max diff cinc scores
+    mean_mil_power = (mean(cinc1, na.rm = T) +
+                       mean(cinc2, na.rm = T)) / 2,
+    min_mil_power = min(
+      min(cinc1, na.rm = T),
+      min(cinc2/tpop2, na.rm = T)
     ),
-    
-    ## - mean and min. military spending/capita
-    mean_milex_pc = (mean(milex1/tpop1, na.rm = T) +
-                       mean(milex2/tpop2, na.rm = T)) / 2,
-    min_milex_pc = min(
-      min(milex1/tpop1, na.rm = T),
-      min(milex2/tpop2, na.rm = T)
-    ),
+    maxdiff_mil_power = max(
+      max(cinc1, na.rm = T),
+      max(cinc2, na.rm = T)
+    ) - min_mil_power,
     
     ## - mean and total population
-    mean_pop = (mean(tpop1, na.rm = T) + 
-                  mean(tpop2, na.rm = T)) / 2,
-    total_pop = sum(tpop1 + tpop2, na.rm = T),
+    mean_pop = (mean(1000 * tpop1, na.rm = T) + 
+                  mean(1000 * tpop2, na.rm = T)) / 2,
+    total_pop = 1000 * sum(tpop1 + tpop2, na.rm = T),
     
     ## - ravalries rate
     rivals_rate = mean(ongoingrivalry, na.rm = T),
@@ -151,13 +157,14 @@ Data |>
     total_trade = 1000000 * sum(flow1 + flow2, na.rm = T),
     total_trade_pc = total_trade / total_pop,
     
-    ## - proximity of sides
-    mean_dist = mean(mindist, na.rm = T),
-    min_dist = min(mindist, na.rm = T),
+    ## - proximity of sides capitals
+    mean_dist = mean(capdist, na.rm = T),
+    min_dist = min(capdist, na.rm = T),
     
-    ## - foreign policy similarity
-    mean_fpsim = mean(kappaba, na.rm = T),
-    min_fpsim = min(kappaba, na.rm = T),
+    ## - alliances
+    total_alliances = sum(atop_defense, na.rm = T),
+    mean_alliances = mean(atop_defense, na.rm = T),
+    min_alliances = min(atop_defense, na.rm = T),
     
     ## - joint IGO membership
     total_igos = sum(dyadigos, na.rm = T),
@@ -184,3 +191,7 @@ write_csv(
 ```
 
 For our first main assignment, you'll work in teams to
+
+\clearpage
+
+## The Data
