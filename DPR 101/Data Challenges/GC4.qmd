@@ -1,0 +1,89 @@
+---
+title: "GC4"
+format: html
+editor: visual
+---
+
+## GC4 Prompt
+
+Use the following code to create a country-year dataset which is populated with data on the quality of democracy in different countries from 1816 to 2019.
+
+```{r}
+#| eval: false
+library(tidyverse)
+library(peacesciencer)
+
+create_stateyears(
+  subset_years = 1816:2019
+) |>
+  add_democracy() -> Data
+```
+
+With this data object you'll produce a small multiple plot showing the trend in the quality of democracy for the United States of America and the United Kingdom and with two different measures of the quality of democracy in the dataset (polity2 and v2x_polyarchy).
+
+To do this, you need to make the following changes to the data:
+
+1.  You need to make sure that polity2 and v2x_polyarchy are on a common scale. While polity2 is on a scale from -10 to 10, v2x_polyarchy is on a scale from 0 to 1. To fix this, use the mutate() function to put the polity2 index on a 0 to 1 scale (hint: you need to add 10 then divide by 20).
+2.  You need to use filter() to filter the data down to just the two countries I've told you to look at (hint: since you have more than one value of a category you want to filter on, you need to use the %in% operator rather than == and provide a vector of country names to filter on rather than only one).
+3.  You need to use pivot_longer() to pivot the data to a longer format based on polity2 and v2x_polyarchy so that you can easily map the color aesthetic to the names of the democracy measures in your data viz.
+
+After you produce your data viz, talk about some of the differences you see in the quality of democracy for your countries over time. Do the countries have different or similar trends? Do polity2 and v2x_polyarchy paint a consistent picture or do they diverge?
+
+When you're done, render to a word or html document and submit to Canvas.
+
+## Solution
+
+```{r}
+## packages
+library(tidyverse)
+library(peacesciencer)
+
+## data
+create_stateyears(
+  subset_years = 1816:2019
+) |>
+  add_democracy() -> Data
+
+## step 1: put polity2 on 0-1 scale
+Data |>
+  mutate(
+    polity2 = (polity2 + 10) / 20
+  ) -> Data
+
+## step 2: filter to US and UK
+Data |>
+  filter(
+    statenme %in% c("United States of America",
+                    "United Kingdom")
+  ) -> filtr_Data
+
+## step 3: pivot longer by polity2 and v2x_polyarchy
+filtr_Data |>
+  pivot_longer(
+    c(polity2, v2x_polyarchy)
+  ) -> long_Data
+
+## visualize
+library(coolorrr)
+set_palette()
+ggplot(long_Data) +
+  aes(
+    x = year, 
+    y = value,
+    color = name
+  ) +
+  geom_line(
+    size = 0.75
+  ) +
+  facet_wrap(~ statenme) +
+  ggpal(
+    labels = c("Polity", "V-Dem")
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Quality of Democracy in the US and the UK",
+    subtitle = "Trends with two different measures",
+    color = NULL
+  )
+```
