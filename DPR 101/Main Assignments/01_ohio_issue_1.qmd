@@ -48,6 +48,12 @@ library(tidyverse)
 ## read in the data
 url <- "http://tinyurl.com/ma1dataset"
 Data <- read_csv(url)
+
+## make sure the 'id' column is a character string
+Data |>
+  mutate(
+    id = as.character(id)
+  ) -> Data
 ```
 
 Here's a quick summary of the variables in the data:
