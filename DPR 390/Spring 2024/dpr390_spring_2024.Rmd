@@ -440,7 +440,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC2 due Mon.
+DC2 due Thu.
 
 Reflection due Fri.
 
@@ -528,7 +528,7 @@ NOTHING!
 
 \textbf{\textit{Due}}
 
-DC4 due Mon.
+DC4 due Thu.
 
 Reflection due Fri.
 
@@ -562,7 +562,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC5 due Mon.
+DC5 due Thu.
 
 Reflection due Fri.
 
@@ -594,7 +594,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC6 due Mon.
+DC6 due Thu.
 
 Reflection due Fri.
 
@@ -626,7 +626,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC7 due Mon.
+DC7 due Thu.
 
 Reflection due Fri.
 
@@ -657,7 +657,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC8 due Mon.
+DC8 due Thu.
 
 Reflection due Fri.
 
@@ -674,11 +674,11 @@ Reflection due Fri.
 
 \begin{itemize}
 
-\item Day 1: Read WWW "Chapter 11: Wayward Paths to Peace" + "Chapter 12: The Peacemeal Engineer."
+\item Day 1: Final project workshop. Optional: Read WWW "Chapter 11: Wayward Paths to Peace" + "Chapter 12: The Peacemeal Engineer."
 
 \item Day 2: Final project workshop.
 
-\item Day 3: Presentations.
+\item Day 3: Final project presentations.
 
 \end{itemize}
 
@@ -688,7 +688,7 @@ Reflection due Fri.
 
 \textbf{\textit{Due}}
 
-DC9 due Mon.
+DC9 due Thu.
 
 \end{flushright}
 
@@ -842,9 +842,9 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 > You should show up to class and participate! Missing multiple days of class can leave gaps in your learning that make doing assignments down the road more difficult. As an incentive to show up (both physically and mentally) to class, 10 percent of your grade will come from attendance and participation. Your first unexcused absence will be a freebie. After that, you'll lose 1/2 of your attendance and participation grade per each of two subsequent unexcused absences. That means after 3 unexcused absences you'll lose your entire grade for attendance and participation. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too.*]
 
-*9 (Team) Data Challenges* **45% Total**
+*9 Data Challenges* **45% Total**
 
-> Througout the semester, we will have 9 data challenges (DCs). These will be team based (team size TBD) and will deal specifically with one of the five reasons for war or four paths to peace that we discuss in the second and third parts of the course. These will be do the following Monday after they are introduced.
+> Througout the semester, we will have 9 data challenges (DCs). These will deal specifically with one of the five reasons for war or four paths to peace that we discuss in the second and third parts of the course. These will be do the following Thursday after they are introduced. Unlike other assignments, these will be graded on a mastery basis. That means you have the opportunity to redo and resubmit a DC if you aren't satisfied with your grade, and you can continue to do so until you get an A.
 
 *Weekly Reflections* **13% Total**
 
