@@ -44,7 +44,7 @@ read_csv(
 mie_data |>
   mutate(
     stday = ifelse(stday == -9, 1, stday),
-    endday = ifelse(endday == -9, 1, endday),
+    endday = ifelse(endday == -9, stday, endday),
     stdate = paste0(
       styear, "-",
       str_pad(stmon, width = 2, pad = "0"), "-",
@@ -60,8 +60,9 @@ mie_data |>
   summarize(
     year = min(styear),
     stdate = min(stdate),
+    enddate = max(enddate),
     num_events = max(eventnum),
-    days_durration = max(enddate) - stdate + 1,
+    days_durration = enddate - stdate + 1,
     across(
       fatalmin1:fatalmax2,
       sum
@@ -96,6 +97,7 @@ Data |>
     ## timing
     year = min(year),
     stdate = min(stdate),
+    enddate = max(enddate),
     
     ## outcomes
     duration = max(days_durration, na.rm = T),
@@ -251,7 +253,9 @@ For each confrontation, the dataset documents the following details:
 
 -   `year`: The year the a MIC started.
 
--   `stdate`: The precise date that the MIC started.
+-   `stdate`: The precise date that the MIC started. In some cases, while the start year and month were known, the start day was not. In such cases the start day is set to the first day of the month.
+
+-   `enddate`: The date the MIC ended. In some cases, while the end year and month were know, the end day was not. In such cases the end day is set to the first day of the conflict.
 
 -   `duration`: Duration of the confrontation in days.
 
