@@ -1,0 +1,95 @@
+---
+title: "Data Challenge 3"
+subtitle: "Due Thursday, May 7"
+format: pdf
+editor: visual
+---
+
+For this data challenge, I want you to investigate the role of rivalries in fueling retaliation. We've been discussing uncertainty as a reason for war. Not only does uncertainty create incentives for engaging in costly signaling and frequent low-level skirmishes so sides can gain information about the ability and resolve their opponent, it also creates pressure to show resolve in the face of an attack if one side has many rivals who will be looking on. The last thing an actor wants to do is appear weak, so to keep up appearances if an actor is attacked, this creates incentives to reciprocate.
+
+To test this claim:
+
+1.  Create a dyad-year dataset using `create_dyadyears()`. Then, populate this data with conflict variables using `add_gml_mids()` and rivalry variables using `add_strategic_rivalries()`.
+2.  The data will have a column called `ongoingrivarly`, which takes the value 1 when the countries in a dyad year have any kind of ongoing rivalry. Use this variable to create a new column called `total_rivals` that equals the number of total dyads for which side 1 has an ongoing rivalry. Also, once you have this count, tell R that you want it to treat the count as a factor using `as.factor()`. (Hint: you'll use `mutate()` to do all this, but before you do, you'll need to use `group_by()` to group the data by `year` and by `ccode1`.)
+3.  Filter the data down to cases where side 2 of the dyad initiated a dispute and side 1 did not (tip: you'll want to filter the data such that `init1 == 0 & init2 == 1`).
+4.  Estimate a logit model where `recip` is the outcome and the variables `ongoingrivalry` and `total_rivals` are your explanatory variables. Use `logitmfx()` from `{mfx}` to estimate your model and use robust standard errors and cluster by `ccode1`.
+5.  Discuss the model results. Do the model estimates align with expectations? Is there anything interesting about the likelihood of reciprocation based on the number of total rivals a country has?
+6.  Think about the instructions I gave you for filtering the data. What do you think the rationale is for only looking at dyads where side one didn't initiate and side 2 did?
+
+Once you do all the above, knit your work to either an html or word document and submit to Canvas.
+
+```{r}
+#| include: false
+#| eval: false
+
+## open packages
+library(tidyverse)
+library(peacesciencer)
+
+## create directed dyad-year dataset
+create_dyadyears() |>
+  ## populate with variables
+  add_gml_mids() |>
+  drop_na() |>
+  add_spells() |>
+  add_strategic_rivalries() -> Data ## save
+
+## add measure of the total number of rivals a country has
+Data |>
+  group_by(year, ccode1) |>
+  mutate(
+    total_rivals = sum(ongoingrivalry) |> 
+      as.factor()
+  ) -> Data
+
+## filter just to dyad-years where a MID was initiated by side 2
+Data |>
+  filter(
+    init2 == 1 & init1 == 0
+  ) -> Data
+
+## regression model
+library(mfx)
+logitmfx(
+  recip ~ ongoingrivalry + total_rivals,
+  data = Data,
+  robust = T,
+  clustervar1 = "ccode1"
+) -> model
+
+## visualize
+model |>
+  broom::tidy() |>
+  mutate(
+    lo = estimate - 1.96 * std.error,
+    hi = estimate + 1.96 * std.error
+  ) |>
+  ggplot() +
+  aes(x = estimate, xmin = lo, xmax = hi, y = term) +
+  geom_pointrange(
+    color = "steelblue"
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) +
+  scale_y_discrete(
+    labels = c(
+      "Rival with Initator",
+      "Has no Rivals",
+      "Has 2 Rivals",
+      "Has 3 Rivals",
+      "Has 4 Rivals",
+      "Has 5 Rivals",
+      "Has 6 Rivals"
+    )
+  ) +
+  labs(
+    x = "Change in % Likelihood",
+    y = NULL,
+    title = "How do rivalries influence the likelihood of\nMID reciprocation?"
+  )
+```
