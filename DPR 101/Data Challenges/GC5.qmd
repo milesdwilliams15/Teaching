@@ -1,0 +1,41 @@
+---
+title: "GC5"
+format: html
+editor: visual
+---
+
+For this graph challenge you'll use a dataset constructed using `{peacesciencer}` to make four data visualizations of your choosing. The only requirement is that in each of the four figures you make, you should demonstrate the use of one of the four color palettes we discussed in class:
+
+-   Qualitative: useful for mapping color or fill to an unordered categorical variable (e.g., a country, region, or category of variable).
+
+-   Sequential: useful for mapping color or fill to an ordered or continuous variable with values that go from low to high (e.g., population size, quality of democracy, fatalities in war, etc.).
+
+-   Diverging: useful for mapping color or fill to an ordered or continuous variable with low and high values that surround a reference point or midpoint (e.g., a difference between two values, like the margin of votes a candidate got in an election or whether a value is above or below average).
+
+-   Binary: useful for mapping color or fill to a categorical variable that only takes two values (e.g., gender or democracy vs. non-democracy).
+
+Use the tools in the `{coolorrr}` package to set up custom schemes for each kind of palette. Then produce four data visualizations, one for each kind of palette.
+
+Here's the code to create the data you'll use. You are free to filter, change, or collapse the data however you wish to produce your data visualizations.
+
+```{r}
+## open packages you'll need
+library(tidyverse)
+library(peacesciencer)
+library(coolorrr)
+
+## set palettes
+set_palette(
+  # set your palettes in here
+)
+# use ?set_palette if you want to know how it works
+
+## create the data
+create_stateyears() |>
+  add_gml_mids() |>
+  add_strategic_rivalries() |>
+  add_cow_majors() |>
+  add_igos() |>
+  add_democracy() |>
+  add_sdp_gdp() -> Data
+```

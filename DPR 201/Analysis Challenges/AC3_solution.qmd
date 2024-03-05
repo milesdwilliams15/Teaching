@@ -1,0 +1,126 @@
+---
+title: "AC3 Solution"
+format: pdf
+editor: visual
+---
+
+## Get data
+
+First I need to get the data:
+
+```{r}
+## open {tidyverse}
+library(tidyverse)
+
+## read in data
+read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/prez_data.csv"
+) -> Data
+```
+
+With this data I need to do three things:
+
+1.  Create a new outcome variable that is the incumbent's vote margin adjusted to only be the margin between the Democratic and Republican candidates.
+2.  Make an election forecast and use bootstrapping to get a standard error and confidence intervals for my prediction.
+3.  Determine whether Biden is projected to do statistically better than his Republican challenger in 2024.
+
+### Make new outcome
+
+To make a measure of the incumbent's vote margin adjusted to only be fore the Republican and Democratic margin, I need to take the incumbent vote and divide it by the sum of the Democratic and Republican vote and subtract 0.5.
+
+```{r}
+## read data into mutate()
+Data |>
+  mutate(
+    ## add new column to the data called inc_margin
+    inc_margin = inc_vote / (dem + rep) - 0.5
+  ) -> Data ## save
+```
+
+### Estimate forecast model and bootstrap
+
+Next I need to construct my forecast model.
+
+```{r}
+## fit the model with the data
+lm(
+  inc_margin ~ third_party + inc_running + inc_approval +
+    gdp_pct_growth,
+  data = Data
+) -> forecast_model
+
+## check out its summary
+summary(forecast_model)
+```
+
+With this model, I'll make a new forecast for 2024:
+
+```{r}
+tibble(
+  third_party = 0,
+  inc_running = 1,
+  inc_approval = 0.41 - 0.54,
+  gdp_pct_growth = 0.03
+) -> forecast_data
+
+forecast_data |>
+  mutate(
+    inc_margin_fit = predict(forecast_model, forecast_data)
+  ) -> forecast_data
+```
+
+Now do bootstrapping.
+
+```{r}
+tibble(
+  its = 1:1000,
+  boot_fit = map(
+    its,
+    ~ {
+      ## bootstrap the data
+      Data |>
+        sample_n(
+          size = nrow(Data),
+          replace = T
+        ) -> boot_Data
+      
+      ## fit the model to the bootstrapped data
+      lm(
+        inc_margin ~ third_party + inc_running + inc_approval +
+          gdp_pct_growth,
+        data = boot_Data
+      ) -> boot_model
+      
+      ## get a bootstrapped prediction
+      predict(
+        boot_model,
+        forecast_data
+      ) -> boot_fit
+      
+      ## return
+      boot_fit
+    }
+  )
+) |>
+  unnest(
+    boot_fit
+  ) -> boot_fits
+```
+
+Now add std. error and CIs. It looks like Biden's chances are not statistically better than his opponents.
+
+```{r}
+forecast_data |>
+  mutate(
+    std_error = sd(boot_fits$boot_fit),
+    conf_lo = inc_margin_fit - 1.96 * std_error,
+    conf_hi = inc_margin_fit + 1.96 * std_error
+  ) -> forecast_data
+
+## report
+forecast_data |>
+  select(inc_margin_fit:conf_hi) |>
+  kableExtra::kbl(
+    digits = 3
+  )
+```
