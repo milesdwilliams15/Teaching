@@ -1,0 +1,119 @@
+---
+title: "Data Challenge 4"
+format: pdf
+editor: visual
+---
+
+The lecture notes on commitment problems as a reason for war ([link](https://milesdwilliams15.quarto.pub/studying-why-we-fight-with-r/07_commitment_problems.html)) present a data analysis that tests a simple hypothesis that follows if commitment problems are partially to blame for international conflicts. In this data challenge, I want you to extend this analysis.
+
+The lecture notes test the proposition that future shifts in the balance of power increase the likelihood of militarized interstate dispute (MID) initiation. However, the question of which side initiated the dispute was overlooked. In the classic commitment problem, the identity of the actor that initiates a conflict matters. We should expect the side ***losing*** power to have an incentive to fight a preventive war. Therefore, it should not only be the case that a shift in power increases the likelihood of conflict, it should be the case that the side losing power has the greater likelihood of initiating the conflict.
+
+To test this additional claim, construct a dataset similar to the one in the lecture notes, but this time make it a directed dyad dataset. Furthermore, construct a measure of a shift to the balance of power just like in the notes. However, you should also add a binary measure to the dataset that takes the value 1 if side 1 is the one that loses power; 0 otherwise. You should also construct a measure of whether side 1 initiated a conflict (hint: you can use the product of `gmlmidonset` and `init` to measure the outcome of interest).
+
+With this dataset, estimate a logit model similar to the one in the notes, but include an interaction term between the change in power and the indicator for whether side 1 is the one losing power. You can then use `plot_model()` from `{sjPlot}` to show how the effect of a shift in the balance of power on the likelihood that side 1 initiates a conflict with side 2 is different depending on whether side 1 is the one losing or gaining power.
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-height: 4
+#| fig-width: 6
+
+## 1. Open R packages
+## I need the {tidyverse} and {peacesciencer}
+library(tidyverse)
+library(peacesciencer)
+library(coolorrr)
+set_theme()
+set_palette(
+  binary = c("red3", "steelblue")
+)
+
+## 2. Data
+## I need a directed dyad-year dataset populated
+## with:
+## - MID data
+## - peace spells
+## - CINC scores
+## It should be filtered down to politically
+## relevant dyads
+
+create_dyadyears(
+  subset_years = 1816:2010
+) |>
+  add_gml_mids() |>
+  add_spells() |>
+  add_nmc() |>
+  filter_prd() -> Data
+
+## 3. Measuring shifts in power
+
+## create function to measure change in the BoP
+power_shift <- function(x, y, xlead, ylead) {
+  val <- (x * ylead) / (xlead * y)
+  val <- ifelse(val > 1, 1 / val, val)
+  1 - val
+}
+
+## apply the function to the data
+Data |>
+  group_by(ccode1, ccode2) |>
+  mutate(
+    across(
+      c(cinc1, cinc2),
+      ~ lead(.x, order_by = year),
+      .names = "{.col}_lead"
+    )
+  ) |>
+  ungroup() |>
+  mutate(
+    cinc_change = power_shift(
+      cinc1, cinc2, cinc1_lead, cinc2_lead
+    ),
+    cinc1_power_loss = ifelse(
+      (cinc1_lead / cinc2_lead) < (cinc1 / cinc2),
+      1, 0
+    )
+  ) -> Data
+
+Data |>
+  mutate(
+    dyad = paste0(ccode1, ccode2),
+    init1_onset = init1 * gmlmidonset
+  ) -> Data
+
+## check distribution
+ggplot(Data) +
+  aes(x = cinc_change) +
+  geom_density()
+
+## 4. estimate model
+library(mfx)
+logitmfx(
+   init1_onset ~ cinc_change * cinc1_power_loss +
+    gmlmidspell + I(gmlmidspell^2) + 
+    I(gmlmidspell^3),
+  data = Data,
+  robust = T,
+  clustervar1 = "dyad"
+) -> model_fit
+
+## 5. show results
+library(sjPlot)
+plot_model(
+  model_fit$fit,
+  type = "int",
+  terms = c("cinc_change", "cinc1_power_loss"),
+  vcov.fun = vcovCL(model_fit$fit, cluster = Data$dyad)
+) +
+  labs(
+    x = "Shift in Balance of Power",
+    y = NULL,
+    title = "Likelihood that side 1 initiates a MID",
+    color = "Side 1:",
+    caption = "Estimates from a logit model that adjusts for a cubic peace spells trend."
+  ) +
+  ggpal(
+    type = "binary",
+    labels = c("gains power", "loses power")
+  )
+```

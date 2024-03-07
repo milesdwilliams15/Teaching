@@ -31,12 +31,11 @@ create_dyadyears() |>
   ## populate with variables
   add_gml_mids() |>
   drop_na() |>
-  add_spells() |>
   add_strategic_rivalries() -> Data ## save
 
 ## add measure of the total number of rivals a country has
 Data |>
-  group_by(year, ccode1) |>
+  group_by(ccode1, year) |>
   mutate(
     total_rivals = sum(ongoingrivalry) |> 
       as.factor()
@@ -45,7 +44,7 @@ Data |>
 ## filter just to dyad-years where a MID was initiated by side 2
 Data |>
   filter(
-    init2 == 1 & init1 == 0
+    init2 == 1 & init1 == 0 & gmlmidonset
   ) -> Data
 
 ## regression model
