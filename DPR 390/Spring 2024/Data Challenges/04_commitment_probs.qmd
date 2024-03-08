@@ -8,9 +8,21 @@ The lecture notes on commitment problems as a reason for war ([link](https://mil
 
 The lecture notes test the proposition that future shifts in the balance of power increase the likelihood of militarized interstate dispute (MID) initiation. However, the question of which side initiated the dispute was overlooked. In the classic commitment problem, the identity of the actor that initiates a conflict matters. We should expect the side ***losing*** power to have an incentive to fight a preventive war. Therefore, it should not only be the case that a shift in power increases the likelihood of conflict, it should be the case that the side losing power has the greater likelihood of initiating the conflict.
 
-To test this additional claim, construct a dataset similar to the one in the lecture notes, but this time make it a directed dyad dataset. Furthermore, construct a measure of a shift to the balance of power just like in the notes. However, you should also add a binary measure to the dataset that takes the value 1 if side 1 is the one that loses power; 0 otherwise. You should also construct a measure of whether side 1 initiated a conflict (hint: you can use the product of `gmlmidonset` and `init` to measure the outcome of interest).
+To test this additional claim, construct a dataset similar to the one in the lecture notes, but this time make it a directed dyad dataset. Furthermore, construct a slightly different version of the power shift variable. The one in the notes just quantifies how large a power shift is in relative terms, but it doesn't specify which side is gaining or losing power. You can use the below modified version of the `power_shift()` function in the notes to create a directed version of the variable. It will return positive values when side 1 gains power and negative values when a side 1 loses power (note: you'll need to make sure that the options `x` and `xlead` are the CINC scores for side 1).
 
-With this dataset, estimate a logit model similar to the one in the notes, but include an interaction term between the change in power and the indicator for whether side 1 is the one losing power. You can then use `plot_model()` from `{sjPlot}` to show how the effect of a shift in the balance of power on the likelihood that side 1 initiates a conflict with side 2 is different depending on whether side 1 is the one losing or gaining power.
+```{r}
+## create function to measure change in the BoP
+power_shift <- function(x, y, xlead, ylead) {
+  val <- log((xlead / ylead) / (x / y))
+  val # return
+}
+```
+
+You also need to construct a measure of whether side 1 initiated a conflict. This will be your outcome variable in your analysis (hint: you can use the product of `gmlmidonset` and `init1` to measure the outcome of interest).
+
+With this dataset, estimate a logit model similar to the one in the notes. To visualize the results you can either produce a coefficient plot or tou can then use `plot_model()` from `{sjPlot}`.
+
+Once you've done the analysis, interpret the results. Do you find evidence consistent with what we expect with commitment problems?
 
 ```{r}
 #| include: false
@@ -49,9 +61,8 @@ create_dyadyears(
 
 ## create function to measure change in the BoP
 power_shift <- function(x, y, xlead, ylead) {
-  val <- (x * ylead) / (xlead * y)
-  val <- ifelse(val > 1, 1 / val, val)
-  1 - val
+  val <- log((xlead / ylead) / (x / y))
+  val # return
 }
 
 ## apply the function to the data
@@ -68,10 +79,6 @@ Data |>
   mutate(
     cinc_change = power_shift(
       cinc1, cinc2, cinc1_lead, cinc2_lead
-    ),
-    cinc1_power_loss = ifelse(
-      (cinc1_lead / cinc2_lead) < (cinc1 / cinc2),
-      1, 0
     )
   ) -> Data
 
@@ -89,7 +96,7 @@ ggplot(Data) +
 ## 4. estimate model
 library(mfx)
 logitmfx(
-   init1_onset ~ cinc_change * cinc1_power_loss +
+   init1_onset ~ cinc_change +
     gmlmidspell + I(gmlmidspell^2) + 
     I(gmlmidspell^3),
   data = Data,
@@ -101,19 +108,28 @@ logitmfx(
 library(sjPlot)
 plot_model(
   model_fit$fit,
-  type = "int",
-  terms = c("cinc_change", "cinc1_power_loss"),
+  type = "pred",
+  terms = "cinc_change",
   vcov.fun = vcovCL(model_fit$fit, cluster = Data$dyad)
 ) +
   labs(
-    x = "Shift in Balance of Power",
+    x = NULL,
     y = NULL,
     title = "Likelihood that side 1 initiates a MID",
-    color = "Side 1:",
     caption = "Estimates from a logit model that adjusts for a cubic peace spells trend."
   ) +
-  ggpal(
-    type = "binary",
-    labels = c("gains power", "loses power")
+  annotate(
+    "text",
+    x = c(-2, 2),
+    y = c(0.2, 0.2),
+    label = c(
+      expression(""%<-%"Side 1 loses power"),
+      expression("Side 1 gains power"%->%"")
+    ),
+    parse = T
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
   )
 ```
