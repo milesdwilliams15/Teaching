@@ -1,0 +1,88 @@
+---
+title: "Main Assignment 2"
+format: pdf
+editor: visual
+---
+
+## 
+
+***Do democracies fair better in war?*** In this main assignment, you'll work independently to answer this question using a conflict series dataset where each observation is a war that occurred between 1816 and 2014. For each war, the data documents things like how long the conflict lasted in days, how many total countries were involved by the time it came to end, and how deadly it was for each side involved. The dataset also contains information about the average democracy scores for each side of the confrontation based on three different measures of democratic quality (Polity, V-Dem, and a UDS extension).
+
+You'll use this dataset to answer the research question proposed above. As you do, here's the outline you should use. Each section should include a section header.
+
+1.  **Introduction**: State the research question and why it matters.
+2.  **Data and Design**: Describe the data and variables you will use to answer the research question, and tell me what relationships you expect to see and why. As you discuss the variables, I want you to compare and contrast the different measures of democracy and talk about possible strengths and weaknesses of each. If you're going to look at how all three link up with war outcomes, you are free to do so. You can also just pick one to use in the analysis (if you do, justify why you want to use this one instead of the others).
+3.  **Analysis**: This section will contain your data visualizations and your discussion of them. I expect each visualization to be numbered and to have a title to the effect of "Figure X: Description here". For each figure, you should have a paragraph summarizing what kind of visualization it is and what it shows. Your text describing the figure should always come before it appears. For the first part of your analysis, summarize trends in war severity over time. For the second part of your analysis, produce data visualizations that summarize how differences in the quality of democracy between sides of a war correlate with how how deadly the war was for each side. To do this, you can use the fatality ratio and democracy ratio measures, which summarize the ratio of one side's democracy score/fatalities to the other side's.
+4.  **Conclusion**: Talk about the implications of what you found. How do democracies do in war? What should we do about it? Think big, and use sources where necessary.
+
+Some additional rules:
+
+-   If you cite any sources, use hyperlinks.
+
+-   Your final submission will be in the form of a rendered Word Document.
+
+-   Your paper should have a title and include your name.
+
+The link to access the data and metadata are included in the next section.
+
+## Data
+
+The data for this assignment gives you access to a conflict series dataset where each observation is a unique war that occurred between 1816 and 2014, and each column is some characteristic about the war or the sides involved in fighting it. The data has 102 rows and 23 columns. It was created by collapsing the Militarized Interstate Events dataset that was recently created and released by a group of researchers affiliated with the [International Conflict Data Project](https://internationalconflict.ua.edu/data-download/) at the University of Alabama. War-level details are based on aggregates of Militarized Interstate Confrontations (MICs), which are collections of connected militarized events that can range from threats to use military force, use of military force, to all-out war. Once I collapsed the data to the level of unique confrontations, I then filtered it to only include instances where the hostility level rose to that of an all-out war.
+
+To this dataset I merged information about the average quality of democracy scores for each side of the war based on three different measures of democracy (Polity, V-Dem, and UDS). Before generating these averages, I converted the measures to a common 1 to 10 scale. You can read more about each of these measures by going to their respective sites:
+
+-   [Polity](https://www.systemicpeace.org/polityproject.html) (The dataset uses the Polity IV version)
+
+-   [V-Dem](https://www.v-dem.net/) (The dataset uses the "electoral" version of the V-Dem measure)
+
+-   [Extended UDS](https://xmarquez.github.io/democracyData/reference/extended_uds.html)
+
+Below is a link to the dataset and information about each column in the data:
+
+<https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/Datasets/Data/mic_data_only_wars.csv>
+
+-   `mic_id`: A unique numerical code identifier for a given confrontation.
+
+-   `micname`: The historical name of the conflict.
+
+-   `year`: The year the conflict started.
+
+-   `stdate`: The date the conflict started.
+
+-   `enddate`: The date the conflict ended.
+
+-   `days_duration`: The duration of the conflict in days.
+
+-   `militarized_events`: A count of the total number of militarized events associated with the conflict.
+
+-   `total_involved`: A count of the total number of countries involved in the conflict.
+
+-   `fatalmin1`: A minimum estimate of the total battle-related fatalities for side 1 of the conflict.
+
+-   `fatalmin2`: A minimum estimate of the total battle-related fatalities for side 2 of the conflict.
+
+-   `fatalmax1`: A maximum estimate of the total battle-related fatalities for side 1 of the conflict.
+
+-   `fatalmax2`: A maximum estimate of the total battle-related fatalities for side 2 of the conflict.
+
+-   `fatalmin_ratio`: The ratio of `fatalmin1` to `fatalmin2`. Values \>1 mean that side 1 suffered more fatalities than side 2 while values \<1 mean that side 1 suffered fewer fatalities than side 2.
+
+-   `fatalmax_ratio`: The ratio of `fatalmax1` to `fatalmax2`. Values \>1 mean that side 1 suffered more fatalities than side 2 while values \<1 mean that side 1 suffered fewer fatalities than side 2.
+
+-   `mean_polity21`: The average of side 1 Polity scores based on a rescaled 1-10 version of the measure.
+
+-   `mean_polity22`: The average of side 2 Polity scores based on a rescaled 1-10 version of the measure.
+
+-   `mean_v2x_polyarchy1`: The average of side 1 V-Dem scores based on a rescaled 1-10 version of the measure.
+
+-   `mean_v2x_polyarchy2`: The average of side 2 V-Dem scores based on a rescaled 1-10 version of the measure.
+
+-   `mean_xm_qudsest1`: The average of side 1 Extended UDS scores based on a rescaled 1-10 version of the measure.
+
+-   `mean_xm_qudsest2`: The average of side 2 Extended UDS scores based on a rescaled 1-10 version of the measure.
+
+-   `polity2_ratio`: The ratio of side 1's average Polity score to side 2's. Values \>1 mean that side 1's average quality of democracy is higher than side 2 while values \<1 mean that side 1's average quality of democracy is less than side 2's.
+
+-   `v2x_polyarchy_ratio`: The ratio of side 1's average V-Dem score to side 2's. Values \>1 mean that side 1's average quality of democracy is higher than side 2 while values \<1 mean that side 1's average quality of democracy is less than side 2's.
+
+-   `xm_qudsest_ratio`: The ratio of side 1's average Extended UDS score to side 2's. Values \>1 mean that side 1's average quality of democracy is higher than side 2 while values \<1 mean that side 1's average quality of democracy is less than side 2's.
