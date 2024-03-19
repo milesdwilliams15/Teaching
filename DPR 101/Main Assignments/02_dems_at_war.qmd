@@ -6,7 +6,7 @@ editor: visual
 
 ## 
 
-***Do democracies fair better in war?*** In this main assignment, you'll work independently to answer this question using a conflict series dataset where each observation is a war that occurred between 1816 and 2014. For each war, the data documents things like how long the conflict lasted in days, how many total countries were involved by the time it came to end, and how deadly it was for each side involved. The dataset also contains information about the average democracy scores for each side of the confrontation based on three different measures of democratic quality (Polity, V-Dem, and a UDS extension).
+***Do democracies fare better in war?*** In this main assignment, you'll work independently to answer this question using a conflict series dataset where each observation is a war that occurred between 1816 and 2014. For each war, the data documents things like how long the conflict lasted in days, how many total countries were involved by the time it came to end, and how deadly it was for each side involved. The dataset also contains information about the average democracy scores for each side of the confrontation based on three different measures of democratic quality (Polity, V-Dem, and a UDS extension). The designation of "side 1" and "side 2" is arbitrary. Each war has two sides involved and certain columns provide information about one or the other side.
 
 You'll use this dataset to answer the research question proposed above. As you do, here's the outline you should use. Each section should include a section header.
 
