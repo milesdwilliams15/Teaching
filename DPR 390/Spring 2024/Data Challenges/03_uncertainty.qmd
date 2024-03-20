@@ -37,14 +37,17 @@ create_dyadyears() |>
 Data |>
   group_by(ccode1, year) |>
   mutate(
-    total_rivals = sum(ongoingrivalry) |> 
-      as.factor()
+    total_rivals = sum(ongoingrivalry) 
+  ) |>
+  ungroup() |>
+  mutate(
+    total_rivals = as.factor(total_rivals)
   ) -> Data
 
 ## filter just to dyad-years where a MID was initiated by side 2
 Data |>
   filter(
-    init2 == 1 & init1 == 0 & gmlmidonset
+    init2 == 1, init1 == 0 
   ) -> Data
 
 ## regression model
@@ -78,7 +81,7 @@ model |>
   scale_y_discrete(
     labels = c(
       "Rival with Initator",
-      "Has no Rivals",
+      "Has 1 Rival",
       "Has 2 Rivals",
       "Has 3 Rivals",
       "Has 4 Rivals",

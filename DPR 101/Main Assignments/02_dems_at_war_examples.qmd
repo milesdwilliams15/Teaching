@@ -1,0 +1,181 @@
+---
+title: "Examples for MA2"
+format: pdf
+editor: visual
+---
+
+Here are some example data visualizations to consider for MA2. While the underlying data is the same was what I've given you for this assignment, the values shown in the visualizations have been scrambled. I don't want to give away any of the actual trends you'll find in the data. Okay, here we go...
+
+## Trends in War Severity
+
+```{r}
+#| include: false
+
+knitr::opts_chunk$set(
+  message = F,
+  warning = F,
+  echo = F
+)
+
+## open packages
+library(tidyverse)
+library(coolorrr)
+set_theme()
+set_palette(
+  binary = c("steelblue", "red3")
+)
+
+## read in data
+read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/Datasets/Data/mic_data_only_wars.csv"
+) -> Data
+```
+
+Let's look at war severity over time. First, how many wars take place from 1816 to 2014?
+
+```{r}
+Data |>
+  group_by(year) |>
+  count() |>
+  ungroup() |>
+  mutate(
+    n = sample(n)
+  ) |>
+  ggplot() +
+  aes(x = year, y = n) +
+  geom_col(
+    color = "black",
+    fill = "gray"
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 1",
+    subtitle = "Frequency of war initiation over time"
+  ) +
+  scale_x_continuous(
+    n.breaks = 20
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+What about the deadliness of wars over time?
+
+```{r}
+Data |>
+  mutate(
+    fatalmin = fatalmin1 + fatalmin2,
+    fatalmax = fatalmax1 + fatalmax2,
+    neworder = sample(1:n()),
+    fatalmin = fatalmin[neworder],
+    fatalmax = fatalmax[neworder]
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    ymin = fatalmin,
+    ymax = fatalmax
+  ) +
+  geom_ribbon(
+    alpha = 0.5,
+    color = "red3"
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 2",
+    subtitle = "Lower and upper bounds of battle-related deaths (log-10 scale)"
+  ) +
+  scale_y_log10(
+    labels = scales::comma
+  ) +
+  scale_x_continuous(
+    n.breaks = 20
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+Number of countries involved?
+
+```{r}
+Data |>
+ggplot() +
+  aes(x = stdate, y = sample(total_involved)) +
+  geom_col(
+    color = "black",
+    fill = "gray"
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 3",
+    subtitle = "Number of countries involved in fighting a war"
+  ) +
+  scale_x_date(
+    date_breaks = "10 years"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    )
+  )
+```
+
+## Democracy and Fatalities
+
+Finally let's look at the relationship between democracy ratios and fatality ratios between sides of a war.
+
+```{r}
+Data |>
+  pivot_longer(
+    cols = c(polity2_ratio, v2x_polyarchy_ratio, xm_qudsest_ratio),
+    names_to = "dem_measure",
+    values_to = "dem_value"
+  ) |>
+  pivot_longer(
+    cols = c(fatalmin_ratio, fatalmax_ratio),
+    names_to = "fat_measure",
+    values_to = "fat_value"
+  ) |>
+  mutate(
+    dem_measure = case_when(
+      dem_measure == "polity2_ratio" ~ "Polity",
+      dem_measure == "v2x_polyarchy_ratio" ~ "V-Dem",
+      TRUE ~ "Extended UDS"
+    ),
+    fat_measure = ifelse(
+      fat_measure == "fatalmin_ratio",
+      "Min. Fatalities",
+      "Max. Fatalities"
+    )
+  ) |>
+  ggplot() +
+  aes(x = sample(dem_value), y = sample(fat_value)) +
+  geom_point(
+    color = "gray"
+  ) +
+  geom_smooth(
+    method = "gam",
+    color = "steelblue"
+  ) +
+  facet_grid(fat_measure ~ dem_measure) +
+  scale_x_log10() +
+  scale_y_log10() + 
+  labs(
+    x = "Democracy Ratio",
+    y = "Fatality Ratio",
+    title = "Figure 4",
+    subtitle = "Do democracies suffer fewer fatalities in war?"
+  )
+```
