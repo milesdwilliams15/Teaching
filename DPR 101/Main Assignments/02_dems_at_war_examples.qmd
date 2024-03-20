@@ -4,7 +4,7 @@ format: pdf
 editor: visual
 ---
 
-Here are some example data visualizations to consider for MA2. While the underlying data is the same was what I've given you for this assignment, the values shown in the visualizations have been scrambled. I don't want to give away any of the actual trends you'll find in the data. Okay, here we go...
+Here are some example data visualizations to consider for MA2. While the underlying data is the same as what I've given you for this assignment, the values shown in the visualizations have been scrambled. I don't want to give away any of the actual trends you'll find in the data. Okay, here we go...
 
 ## Trends in War Severity
 
@@ -14,7 +14,9 @@ Here are some example data visualizations to consider for MA2. While the underly
 knitr::opts_chunk$set(
   message = F,
   warning = F,
-  echo = F
+  echo = F,
+  fig.height = 6 * .7,
+  fig.width = 9 * .7
 )
 
 ## open packages
@@ -31,7 +33,7 @@ read_csv(
 ) -> Data
 ```
 
-Let's look at war severity over time. First, how many wars take place from 1816 to 2014?
+Let's look at war severity over time. First, how many wars take place from 1816 to 2014? Figure 1 is an example of a column plot that has years on the x-axis and a count of the number of wars started per year on the y-axis.
 
 ```{r}
 Data |>
@@ -64,7 +66,7 @@ Data |>
   )
 ```
 
-What about the deadliness of wars over time?
+What about the deadliness of wars over time? Figure 2 shows the upper and lower bounds of total fatalities over time. A little hint: to create this I needed to add both side's lower and upper bound fatalities together to get an overall minimum and maximum fatality level for each war.
 
 ```{r}
 Data |>
@@ -105,7 +107,7 @@ Data |>
   )
 ```
 
-Number of countries involved?
+How about the number of countries involved in wars over time? Figure 3 shows specific war start dates on the x-axis and a count of the number of involved countries on the y-axis.
 
 ```{r}
 Data |>
@@ -134,7 +136,7 @@ ggplot() +
 
 ## Democracy and Fatalities
 
-Finally let's look at the relationship between democracy ratios and fatality ratios between sides of a war.
+Finally let's look at the relationship between democracy ratios and fatality ratios between sides of a war. Figure 4 is a small multiple scatter plot that shows variation in the ratio of one side's average democracy score relative to the other side's on the x-axis while it shows the ratio of one side's total battle-related fatalities to the other side's on the y-axis. The plot breaks the data down by the measure of democracy used to calculate the democracy ratios and whether the fatality ratios are based on the minimum or maximum fatality estimates. The each of the small multiple scatter plots is rounded off with a smoothed nonlinear regression line to summarize the overall relationship between average democracy ratio and the total fatality ratio. The scales for both the x- and y-axis have also been transformed to the log-10 scale.
 
 ```{r}
 Data |>
@@ -177,5 +179,5 @@ Data |>
     y = "Fatality Ratio",
     title = "Figure 4",
     subtitle = "Do democracies suffer fewer fatalities in war?"
-  )
+  ) 
 ```
