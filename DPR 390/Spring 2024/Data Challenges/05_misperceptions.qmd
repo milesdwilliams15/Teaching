@@ -1,0 +1,14 @@
+---
+title: "Data Challenge 5"
+subtitle: "Due Thursday, March 28"
+format: pdf
+editor: visual
+---
+
+## 
+
+Misperceptions arise from different kinds of cognitive biases that hijack our thinking. Factors like overconfidence, mistakenly projecting our thoughts and motives onto others, and attributing the worst of intentions to our foes all can be reasons that peaceful negotiations break down. In [the lecture notes](https://milesdwilliams15.quarto.pub/studying-why-we-fight-with-r/08_misperception.html), I talked about one way of using data to test for the role of misperceptions in leading to war. It turns out that leaders with military experience are more likely to lead their country to war than leaders without prior military service. This might be because these leaders are overconfident about their chances of victory. However, an interesting twist is that leaders with prior military service who also have combat experience are slightly less likely to start fights than leaders with prior military service but no combat experience. It seems that actual knowledge of war tempers the confidence of leaders.
+
+In this data challenge I want you to explore whether other leader characteristics might make them more or less prone to starting a war with other countries. The dataset created in the lecture notes contains a bunch of variables about leaders, including their education, their physical and mental health, their gender, their age, and their years of experience. Pick three different leader characteristics in the data (other than the ones we used in the lecture notes) and see whether and how they change the likelihood that a leader starts a militarized dispute with another country. For each factor that you select, theorize about what kind of misperception or bias you think it is capturing.
+
+As usual, submit your work as a rendered document to Canvas when you're done.
