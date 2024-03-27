@@ -1,117 +1,115 @@
 ---
 title: "Analysis Challenge 5"
-subtitle: "Due Wednesday, March 20"
+subtitle: "Due Wednesday, April 3"
 format: pdf
 editor: visual
 ---
 
-## Background
+## 
 
-Failure to understand ***regression to the mean*** can lead to all kinds of erroneous inferences with data. Election fraud is one of the more pernicious kinds of bad inferences that we can conceive of because, as we've witnessed, the belief that the 2020 US Presidential election was stolen from the Republican incubment, Donald J. Trump, culminated in political violence on January, 6 2021.
+For this analysis challenge, I want you to complete a series of sub-challenges. For each, you'll be confronted with a particular scenario and some **pre-treatment** data and you will have to decide, given the scenario and data, the best kind of **randomized controlled trial** (RCT) to implement to assess the effectiveness of a proposed policy change. In each scenario, the basic setup will be as follows:
 
-[Eggers, Garro, and Grimmer (2021)](https://www.pnas.org/doi/10.1073/pnas.2103619118) conduct a series of rigorous statistical tests using data from the 2020 election to demonstrate that, if fraud did occur in 2020, the evidence for it is slim at best. One claim in particular that they tested comes from a YouTube video by Shiva Ayyaduri with over 1 million views that claims to find statistical evidence that voting machines in Michigan switched people's votes from Trump to Biden. The analysis compared the difference in Trump's straight ticket to split ticket ballot share per precinct to Trump's straight ticket ballot share. Ayyaduri claimed that, in the absence of fraud, there is no good reason to expect Trump's performance among straight ticket voters to differ systematically compared to his performance among split ticket voters *in the same precinct*. The way he tests this is to take the difference in vote shares and regress it on straight ticket vote shares:
+1.  There is a desired policy outcome with the probability of success represented as $S_i$ and a proposed intervention to be implemented at random, represented as $D_i$.
+2.  The goal is to assess how the success rate differs based on the intervention. If we could observe all potential outcomes, our target estimand would be: $\bar\delta = \bar S_1 - \bar S_0$. That is, the difference in mean success with the policy versus without.
 
-$$
-\text{Split}_i - \text{Straight}_i = \beta_0 + \beta_1 \text{Straight}_i + \epsilon_i
-$$
+Certain factors about the data or the logistics of implementing the intervention will differ by scenario in ways that may bear on your decision about how best to randomize the intervention. In class, we discussed four basic kinds of randomization: (1) simple, (2) complete, (3) block, and (4) cluster.
 
-Ayyaduri claims that in the absence of fraud, we should expect $\beta_1 = 0$. Essentially, he proposes that we should fail to reject the null hypothesis.
+For each scenario your task will be to do three things.
 
-However, this isn't what Ayyaduri finds. Instead, the estimate for $\beta_1$ is negative and statistically significant, meaning he can reject the null hypothesis. For Ayyaduri, this constitutes evidence of illegal vote switching.
+1.  ***Specify what kind of randomization is the most appropriate to use and why.***
+2.  ***Write the code to implement that kind of randomization using*** `{randomizer}`.
+3.  ***Write the code to estimate the treatment effect based on your recommended randomization strategy.***
 
-To the average viewer, this evidence might seem convincing, *but not to you!* As a budding data analyst, you understand the concept of *regression to the mean*. From the study by Eggers and colleagues we know that a important statistical fact about cases where we observe regression to the mean is that if you do a regression just like the one Ayyaduri performs, you should expect to get an estimate less than zero. Why? Because of regression to the mean, outlier events in one period of time or for one kind of ballot are more likely to be closer to the average in the next time period or for another kind of ballot. A by-product of this phenomenon is that if you take past values and use them to predict future values (or if you use outcomes with one ballot to predict outcomes for another kind of ballot), the slope of the regression line will be less than 1. By extension, that also means that in a regression model like Ayyaduri's, the regression slope will be less than 0.
+When you're done, render to a word or html document and submit to Canvas.
 
-Here's a simple simulation to demonstrate. The below code generates some data that demonstrates regression to the mean. It then estimates a regression model similar to the one used by Ayyaduri. Sure enough, we get a negative statistically significant regression slope.
+Here are the packages you'll need:
 
 ```{r}
-#| message: false
-#| warning: false
-
-## packages
+#| eval: false
+## packages you need for each scenario
 library(tidyverse)
 library(estimatr)
-options(digits = 2)
+library(randomizr)
+```
 
-## fake data
+### Scenario 1
+
+The local city government of Columbianapolis is considering redesigning their bike paths throughout the city to cut down on the number of serious and fatal accidents involving cars and cyclists. The city manager's office only has the budget to implement this change in a few neighborhoods in town, but if the redesign is successful the city council may approve more money to expand the redesign to the whole city. To help the city make the best evidence-based decision on whether to expand this redesign, how would you recommend they decide which neighborhoods to start with and then to assess the effect?
+
+Here's the code to generate the data for this scenario:
+
+```{r}
+#| eval: false
+
+## scenario 1 data
 tibble(
-  u = rnorm(1000),
-  x = u + rnorm(1000),
-  y = u + rnorm(1000)
-) -> sim_data
-
-## check for regression to the mean
-lm_robust(
-  y - x ~ x,
-  data = sim_data,
-  se_type = "stata"
-)
-```
-
-## The Challenge
-
-You can use this approach to see whether there is evidence of regression to the mean in a range of data. For this analysis challenge, I want you to use the `county_data` we used in class to see if there is evidence of regression to the mean for Hillary Clinton's vote shares in 2016 compared to Obama's vote shares in 2012. Here's some code to help you get started:
-
-```{r}
-#| eval: false
-
-## open {tidyverse}
-library(tidyverse)
-library(estimatr)
-
-## get county-level voting data
-socviz::county_data |>
-  drop_na() -> Data
-
-```
-
-To demonstrate regression to the mean:
-
-1.  Produce a scatter plot with a regression slope.
-2.  Perform a regression analysis similar to example in the previous section.
-3.  Based on the model output and the data visualization, answer whether you have evidence of regression to the mean.
-
-Submit your work as a rendered Quarto document and submit to Canvas.
-
-```{r}
-#| eval: false
-#| include: false
-
-## open {tidyverse}
-library(tidyverse)
-library(estimatr)
-
-## get county-level voting data
-socviz::county_data |>
-  drop_na() -> Data
-
-## use test from: https://www.pnas.org/doi/10.1073/pnas.2103619118
-## to confirm whether we observe regression to the mean
-## for Clinton vs Obama in 2016 vs 2012
-lm_robust(
-  per_dem_2016 - per_dem_2012 ~ per_dem_2012,
-  data = Data,
-  se_type = "stata"
-) |>
-  summary()
-
-ggplot(Data) +
-  aes(x = per_dem_2012, 
-      y = per_dem_2016 - per_dem_2012) +
-  geom_point(
-    alpha = 0.5,
-    color = "gray"
-  ) +
-  geom_smooth(
-    method = "lm",
-    color = "steelblue"
-  ) +
-  geom_hline(
-    yintercept = 0,
-    linetype = 2,
-    color = "red1"
-  ) +
-  labs(
-    x = "Obama Margin",
-    y = "Clinton vs Obama Margin"
+  treatment = NA,
+  success = rbinom(1000, size = 1, prob = 0.2),
+  street_number = 1:1000,
+  neighborhood = sample(
+    LETTERS[1:5], 
+    size = 1000, 
+    replace = T
   )
+) -> data_1
+
+## your code here to assign treatment
+
+
+## your code here to estimate the ATE
+
+
+```
+
+### Scenario 2
+
+A foreign aid agency wants to know whether offering micro-loans of \$1,000 dollars to small business owners in a developing country will help spur the growth of their business. They have only a limited budget for this program, and can only offer these loans to 900 individuals living and working in the developing country's capital city, which is a diverse metropolitan hub for the country with wide disparities in income depending on the neighborhood. What kind of randomized trial would be best to implement in this scenario?
+
+Here's the code to simulate the data:
+
+```{r}
+#| eval: false
+
+## scenario 2 data
+tibble(
+  treatment = NA,
+  success = rbinom(10000, size = 1, prob = 0.2),
+  owner_id = 1:10000,
+  neighborhood = sample(
+    LETTERS[1:10], 
+    size = 10000, 
+    replace = T
+  )
+) -> data_2
+
+## your code here to assign treatment
+
+
+## your code here to estimate the ATE
+
+
+```
+
+### Scenario 3
+
+You've decided to recruit some students on campus to participate in a study on cooperation using a game called the Prisoners' Dilemma (read more about it here: [Investopedia](https://www.investopedia.com/terms/p/prisoners-dilemma.asp#:~:text=The%20prisoner's%20dilemma%20presents%20a,parties%20choose%20to%20co%2Doperate.)). You want to figure out if playing the game for points without a material incentive versus with a material incentive changes students' willingness to cooperate with each other in the game. For your study, you'll randomize students into pairs and then have some of them play the game with the material incentive and some without. How will you determine which pairs get this incentive and which will not?
+
+Here's the code to simulate the data:
+
+```{r}
+#| eval: false
+
+## scenario 2 data
+tibble(
+  treatment = NA,
+  success = rbinom(20, size = 1, prob = 0.2),
+  pair_id = 1:20
+) -> data_3
+
+## your code here to assign treatment
+
+
+## your code here to estimate the ATE
+
+
 ```

@@ -1,0 +1,89 @@
+---
+title: "GC6"
+format: html
+editor: visual
+---
+
+## The Prompt
+
+Read in this data from the [What the Hell Happened?.](https://wthh.dataforprogress.org/get-the-data "Link") survey by Data for Progress: [http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv.](http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv)
+
+Use [the codebook for the survey.](https://www.filesforprogress.org/datasets/wthh/WTHH_Core_and_DFP_modules.pdf) to find ***three*** demographic or political factors (like partisan lean, education, income, gender, race, etc.) to explain variation in "hostile sexism." This is an index constructed from survey responses to a series of questions meant to help triangulate sexist attitudes. You're free to make whatever visualization choices you'd like, but be sensible. You should have one data viz per factor that explains variation in hostile sexism.
+
+When you're done, render your work to a word or html doc and submit to canvas.
+
+## My Answer
+
+```{r}
+library(tidyverse)
+library(socsci)
+library(coolorrr)
+set_theme()
+set_palette()
+```
+
+```{r}
+url <- "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
+Data <- read_csv(url)
+```
+
+```{r}
+Data |>
+  mutate(
+    pid7_new = frcode(
+      pid7 == 1 ~ "Strong Dem",
+      pid7 == 2 ~ "Dem",
+      pid7 == 3 ~ "Lean Dem",
+      pid7 == 4 ~ "Independent",
+      pid7 == 5 ~ "Lean Rep",
+      pid7 == 6 ~ "Rep",
+      pid7 == 7 ~ "Strong Rep"
+    )
+  ) -> Data
+```
+
+```{r}
+Data |>
+  group_by(pid7_new) |>
+  mean_ci(hostile_sexism_scaled) |>
+  drop_na() |>
+  ggplot() +
+  aes(x = pid7_new, y = mean, ymin = lower, ymax = upper) +
+  geom_col(
+    aes(fill = pid7_new),
+    color = "black",
+    show.legend = F
+  ) +
+  geom_errorbar(
+    width = 0.25
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Republican leaning individuals display\nhigher levels of hostile sexism"
+  ) +
+  ggpal(
+    "diverging",
+    "fill",
+    ordinal = T,
+    levels = 7
+  ) +
+  annotate(
+    "text",
+    x = 0.75,
+    y = 0.45,
+    label = "Average Hostile\nSexism Score",
+    angle = 90
+  ) +
+  geom_point(
+    aes(x = 0.75, y = 0.65),
+    shape = 17,
+    size = 3
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 45, 
+      hjust = 1
+    )
+  )
+```
