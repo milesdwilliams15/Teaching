@@ -1,0 +1,54 @@
+---
+title: "Main Assignment 3"
+subtitle: "Due Tuesday, April 9"
+format: pdf
+editor: visual
+---
+
+## 
+
+Political parties like policy, but they also love power. Therefore, parties often have some flexibility about what issues they prioritize in their quest for controlling institutions. You and your tream have been hired to consult for one of the political parties  –  you choose Democrats or Republicans  –  to identify the fault lines within their party on two dimensions. **First, on what issues are they united and on which are they divided? And how are they united or divided in their feelings toward minority or underserved groups in the US?**
+
+For MA3, we’ll be using survey data from the “[What The Hell Happened?](https://wthh.dataforprogress.org/)” project in 2018 collected by Data for Progress (DFP), a think tank and polling firm. DFP clearly are left-leaning, but their survey methods are reliable and many of the questions are taken from academic research. Key details about the survey and methodology are available on later in this document.
+
+Your write up will include a short overview of the party: How do you measure partisan membership in the data, how big is the party as a share of the sample, and what is its demographic profile based on race, education, and age? Then you’ll address the two major questions in **bold italics** above using (at least) 10 public policy issues for the question on unity, and attitudes toward three groups for the question on views on underrepresented groups in the US (e.g, women \[hostile sexism\], racial minorities \[racial resentment\], and immigrants \[fear of demographic change\]).  
+
+**Tip: Many of the functions in the [{socsci}](https://ryanburge.github.io/socsci/index.html) package will be your best friend in this assignment.**
+
+Some basic rules:
+
+1.  Your paper should follow the same basic outline: (1) Introduction, (2) Data and Design, (3) Analysis, and (4) Conclusion.
+
+2.  Label your figures so the first one is “Figure 1: Description ”, then Figure 2, etc.
+
+3.  Put the text describing the figure BEFORE the figure, not after.
+
+4.  Your introduction should have a question with an actual question mark and it should be clear that you're talking to officials in one of the two major political parties in the US (either Democrats or Republicans). 
+
+5.  Include a paragraph describing the data and how you are using it in the “Data and Design” section.
+
+6.  There is no need to do outside research, but you are welcome to – just cite in text (author last name, year) what you use and include a reference list.
+
+7.  Make sure to include a conclusion that does more than summarize the paper. Think big. What groups should your chosen party try to appease and what issues should they emphasize?
+
+The data and the codebook for the project are available below:
+
+[Codebook Link](https://drive.google.com/file/d/1a1aPBqsRCqlToDgPbM3OWIg9zG-0Nlef/view?usp=sharing)
+
+[Data Link](https://docs.google.com/spreadsheets/d/1kfSK3B0iXUulVKEVB5LT_d6upUMSZ7uqCwvWSURqCdk/edit?usp=sharing)
+
+You can download the data by writing the following code:
+
+```{r}
+#| eval: false
+
+library(tidyverse)
+read_csv(
+  "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
+) -> Data
+
+```
+
+Here’s a summary of the survey from the DFP website:
+
+> This survey is based on 3,215 interviews of registered voters conducted by YouGov. The sample was weighted according to age, sex, race, education, urban/rural status, partisanship, marital status, and Census region to be nationally representative of 2018 voters according to[ Catalist](http://catalist.us/), and to a post-election correction consisting of the national two-party vote share. Respondents were selected from YouGov and other opt-in panels to be representative of registered voters. The weights range from 0.28 to 4.6, with a mean of 1 and a standard deviation of 0.53. The survey dataset includes measures of political participation such as activism, group consciousness, and vote choice. It also includes measures of interest including items from a hostile sexism battery, racial resentment, fear of demographic change, fear of cultural change, and a variety of policy positions. It includes a rich demographic battery of items like age, race, ethnicity, sex, party identification, income, education, and US state. Please see the attached codebook for a full description and coding of the variables in this survey, as well as the toplines for breakdowns of some of the key variables.
