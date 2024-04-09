@@ -319,9 +319,9 @@ class_cal +
 
 ## `r advdate(mon, 13)`
 
--   Day 1: BDMF Ch12 "Regression Discontinuity Designs"
+-   Day 1: No Class (Eclipse)
 
--   Day 2: Discussion \hfill \textit{AC7 due Mon.}
+-   Day 2: BDMF Ch12 "Regression Discontinuity Designs" \hfill \textit{AC7 due Mon.}
 
 ## `r advdate(mon, 14)`
 

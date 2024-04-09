@@ -612,11 +612,11 @@ Reflection due Fri.
 
 \begin{itemize}
 
-\item Day 1: Read WWW "Chapter 9: Rules and Enforcement."
+\item Day 1: No Class (Eclipse)
 
-\item Day 2: Using data to identify rules and enforcement."
+\item Day 2: Read WWW "Chapter 9: Rules and Enforcement." 
 
-\item Day 3: Data workshop.
+\item Day 3: Using data to identify rules and enforcement + Data workshop.
 
 \end{itemize}
 

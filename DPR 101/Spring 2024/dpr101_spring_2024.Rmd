@@ -327,18 +327,18 @@ NO CLASS
 
 ## `r advdate(mon, 13)`: Your Adventure Starts!
 
-- Day 1: Start Choose-your-own-adventure 
+- Day 1: NO CLASS (Eclipse!) 
 
-- Day 2: Pitch your research \hfill \textit{GC7 due Wed.}
+- Day 2: Start Choose-your-own-adventure \hfill \textit{GC7 due Fri.}
 
-- Day 3: Discussion
+- Day 3: Pitch your research
 
 
 ## `r advdate(mon, 14)`: The Adventure Continues
 
 - Day 1: Work on MA4 
 
-- Day 2: Work on MA4 \hfill \textit{GC8 due Wed.}
+- Day 2: Work on MA4 \hfill \textit{GC8 due Fri.}
 
 - Day 3: Work on MA4
 
