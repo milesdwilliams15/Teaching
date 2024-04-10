@@ -1,0 +1,42 @@
+---
+title: "Analysis Challenge 7"
+format: pdf
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The political scientist Andrew Bertoli argues in a [2017 peer reviewed article](https://academic.oup.com/isq/article/61/4/835/4657195#107206490) that nationalism (identifying with a nation-state and seeing all others as different or *other*) drives international aggression. That is, the greater the nationalist attitudes in a country, the more likely that country is to pick fights with, or engage in aggressive behavior toward, other countries.
+
+This is an empirical question, but not one easily answered. We can't just go around and randomly assign different countries to different levels of nationalism. Not only would it be unethical, it wouldn't be possible. But Bertoli came up with a clever research design to make causal inferences. How you ask? By using an RDD based on how close a country's soccer team got to qualifying for the World Cup as a *running variable* and entrance to the World Cup as the *treatment*.
+
+Bertoli's clever idea was that qualifying for the World Cup is a point of national pride for citizens of a given country and that making it to the World Cup would lead to a spike in nationalism. That spike would theoretically be as-if-random near the point of the discontinuity surrounding the scoring process by which teams qualify for the World Cup.
+
+I've made the data from Bertoli's study available. The code to read it into R is below. The dataset is fairly self-explanatory, but just to get you started, some key columns in the data are:
+
+-   The outcome: `change_agg`, which is the change in the rate of conflict initiation in the two years post qualification relative to the two years pre qualification.
+-   The treatment: `treatment`, which is 1 if the country's soccer team qualified for the World Cup.
+-   The running variable: `cutpoint_margin`, which is the point margin relative to the threshold necessary to qualify for the World Cup.
+
+Here's the code you need to read in the data and get ready for the analysis. You can get the data from this linked url: [Data url](https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/world_cup.csv)
+
+```{r}
+#| eval: false
+## packages you'll need
+library(tidyverse)
+library(estimatr)
+
+## the data
+url <- "url goes here"
+data <- read_csv(url)
+```
+
+For this analysis challenge, I want you to perform the following tasks and answer the posed questions along the way. You'll do these in a .qmd file. When you're done, render to word or htlm and submit to Canvas.
+
+1.  First, answer the question: does this research design seem plausible to you? Why or why not?
+
+2.  Next, visualize the regression discontinuity.
+
+3.  Finally, estimate the LATE and report the results in a coefficient plot. Interpret the results. What is the effect of nationalism on aggression and is it statistically significant?

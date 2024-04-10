@@ -10,11 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The political scientist Andrew Bertoli argues in a [2017 peer reviewed article](https://academic.oup.com/isq/article/61/4/835/4657195#107206490) that nationalism (identifying with a nation-state and seeing all others as different or *other*) drives international aggression. That is, the greater the nationalist attitudes in a country, the more likely that country is to pick fights with, or engage in aggressive behavior toward, other countries.
 
-This is an empirical question, but not one easily answered. We can't just go around and randomly assign different countries to different levels of nationalism. Not only would it be unethical, it wouldn't be possible. But Bertoli came up with a clever research design to make causal inferences. How you ask? By using a RD design based on how close a country's soccer team got to qualifying for the World Cup as a *running variable* and entrance to the World Cup as the *treatment*. 
+This is an empirical question, but not one easily answered. We can't just go around and randomly assign different countries to different levels of nationalism. Not only would it be unethical, it wouldn't be possible. But Bertoli came up with a clever research design to make causal inferences. How you ask? By using an RDD based on how close a country's soccer team got to qualifying for the World Cup as a *running variable* and entrance to the World Cup as the *treatment*. 
 
 Bertoli's clever idea was that qualifying for the World Cup is a point of national pride for citizens of a given country and that making it to the World Cup would lead to a spike in nationalism. That spike would theoretically be as-if-random near the point of the discontinuity surrounding the scoring process by which teams qualify for the World Cup.
 
-I've made the data from Bertoli's study available. The code to read it into R is below. The dataset is fairly self-explanatory, but just to get you started, some key colums in the data are:
+I've made the data from Bertoli's study available. The code to read it into R is below. The dataset is fairly self-explanatory, but just to get you started, some key columns in the data are:
 
 - The outcome: `change_agg`, which is the change in the rate of conflict initiation in the two years post qualification relative to the two years pre qualification.
 - The treatment: `treatment`, which is 1 if the country's soccer team qualified for the World Cup.
