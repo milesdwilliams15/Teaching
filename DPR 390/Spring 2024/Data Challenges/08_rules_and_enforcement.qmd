@@ -1,0 +1,185 @@
+---
+title: "Data Challenge 8: Rules and Enforcement"
+format: pdf
+editor: visual
+---
+
+## 
+
+In the [lecture notes](https://milesdwilliams15.quarto.pub/studying-why-we-fight-with-r/11_rules_and_enforcement.html) on **rules and enforcement**, we saw that the more countries are subordinated under U.S. security hierarchy, the less likely they are to initiate militarized disputes with other states in the international system. Subordination under U.S. economic hierarchy is also a negative predictor of conflict initiation, but the relationship was more modest and inconsistent relative to security hierarchy.
+
+We could extend the analysis in the lecture in many different ways. One interesting extension is to examine the role of U.S. authority in promoting peace between countries that fall under its authority. If the ability to make and enforce rules is a reliable pathway to peace, its effects should be most pronounced among countries that jointly fall under U.S. hierarchy.
+
+To test this claim, use an undirected dyad dataset to model the probability that a conflict erupts between a pair of countries given the minimum U.S. security hierarchy and minimum U.S. economic hierarchy score between the two. Estimate a logit model of MID onset (`midonset`) controlling for:
+
+-   `min_otherallies` - the minimum count of other allies a country has other than with the U.S.
+
+-   `min_income` - the worst GDP per capita between a pair of countries
+
+-   `minratio` - the weakest link military capabilities ratio
+
+-   `ldist` - the natural log of the distance in kilometers between two countries capitals.
+
+-   A cubic peace spells trend.
+
+The code on the next page will get you the data you need to perform this analysis. When you're done, submit your work to canvas as a rendered document.
+
+\clearpage
+
+```{r}
+#| eval: false
+
+## packages
+library(tidyverse)
+library(peacesciencer)
+library(sandwich)
+library(lmtest)
+library(sjPlot)
+library(patchwork)
+library(coolorrr)
+set_theme()
+set_palette()
+
+
+## create data in steps
+## 1. country-year data of conflict initiation
+##    and peace spells
+create_dyadyears(
+  subset_years = 1950:2000,
+  directed = F
+) |>
+  add_gml_mids() |>
+  add_spells() |>
+  add_capital_distance() -> Data
+
+## 2. Lake (2007) data for int'l hierarchy
+haven::read_dta(
+  here::here(
+    "DPR 390",
+    "Quarto Notes",
+    "studying-conflict-with-r",
+    "Data", 
+    "ISreplicationdataset.dta"
+    )
+) -> lake_dt
+
+## 4. prep lake_dt to merge with dyad-year data
+lake_dt |>
+  transmute(
+    ccode1 = ccode, 
+    year,
+    us_SH19951 = us_SH1995,
+    us_EH19951 = us_EH1995,
+    otherallies1 = otherallies,
+    rgdpc_k1 = rgdpc_k,
+    cap1 = cap
+  ) -> lake_dt1
+lake_dt |>
+  transmute(
+    ccode2 = ccode, 
+    year,
+    us_SH19952 = us_SH1995,
+    us_EH19952 = us_EH1995,
+    otherallies2 = otherallies,
+    rgdpc_k2 = rgdpc_k,
+    cap2 = cap
+  ) -> lake_dt2
+  
+
+## 4. merge the datasets
+Data |>
+  left_join(
+    lake_dt1
+  ) |>
+  left_join(
+    lake_dt2
+  )-> Data
+
+## 5. recode some variables for analysis
+Data |>
+  mutate(
+    min_SH = pmin(us_SH19951, us_SH19952),
+    min_EH = pmin(us_EH19951, us_EH19952),
+    min_otherallies = pmin(otherallies1, otherallies2),
+    min_income = pmin(rgdpc_k1, rgdpc_k2),
+    capratio1 = cap1 / (cap1 + cap2),
+    minratio = pmin(capratio1, 1 - capratio1),
+    ldist = log(capdist)
+  ) -> Data
+```
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-width: 8
+#| fig-height: 4
+
+glm(
+  gmlmidonset ~
+    min_SH +
+    min_EH +
+    min_otherallies +
+    min_income +
+    minratio +
+    ldist +
+    poly(gmlmidspell, 3),
+  data = Data,
+  family = binomial
+) -> model_fit
+
+coeftest(
+  model_fit,
+  vcov. = vcovCL(
+    model_fit,
+    cluster = Data |>
+      mutate(dyad = paste(ccode1, ccode2)) |>
+      pull(dyad),
+    type = "HC0"
+  )
+)
+
+plot_model(
+  model_fit,
+  type = "eff",
+  terms = "min_SH",
+  vcov.fun = vcovCL(
+    model_fit,
+    cluster = Data |>
+      mutate(dyad = paste(ccode1, ccode2)) |>
+      pull(dyad),
+    type = "HC0"
+  )
+) +
+  labs(
+    x = "Weakest Link Security Hierarchy Index",
+    y = NULL,
+    title = NULL
+  ) -> p1
+plot_model(
+  model_fit,
+  type = "eff",
+  terms = "min_EH",
+  vcov.fun = vcovCL(
+    model_fit,
+    cluster = Data |>
+      mutate(dyad = paste(ccode1, ccode2)) |>
+      pull(dyad),
+    type = "HC0"
+  )
+) +
+  labs(
+    x = "Weakest Link Economic Hierarchy Index",
+    y = NULL,
+    title = NULL
+  ) -> p2
+p1 + p2 +
+  plot_annotation(
+    title = "Predicted probabilities of dyadic MID onset",
+    subtitle = "Joint subordination under U.S. economic hierarchy is\na stronger predictor of dyadic-level peace"
+  )
+
+## so joint subordination under U.S. economic hierarchy is a 
+## more consistent predictor of dyadic peace. joint subordination
+## under U.S. security hierarchy is generally promotes peace, but 
+## the impact is modest and inconsistent.
+```
