@@ -42,7 +42,7 @@ set_palette()
 
 
 ## create data in steps
-## 1. country-year data of conflict initiation
+## 1. dyad-year data of conflict initiation
 ##    and peace spells
 create_dyadyears(
   subset_years = 1950:2000,
@@ -63,7 +63,7 @@ haven::read_dta(
     )
 ) -> lake_dt
 
-## 4. prep lake_dt to merge with dyad-year data
+## 3. prep lake_dt to merge with dyad-year data
 lake_dt |>
   transmute(
     ccode1 = ccode, 
@@ -98,12 +98,19 @@ Data |>
 ## 5. recode some variables for analysis
 Data |>
   mutate(
+    ## min. security and economic hierarchy score
+    ## between sides
     min_SH = pmin(us_SH19951, us_SH19952),
     min_EH = pmin(us_EH19951, us_EH19952),
+    ## minimum number of allies other than the US
     min_otherallies = pmin(otherallies1, otherallies2),
+    ## minimum gdp per capita between sides
     min_income = pmin(rgdpc_k1, rgdpc_k2),
+    ## capabilities ratio in favor of side 1
     capratio1 = cap1 / (cap1 + cap2),
+    ## minimum capabilities ratio between sides
     minratio = pmin(capratio1, 1 - capratio1),
+    ## log of distance between sides' capitals
     ldist = log(capdist)
   ) -> Data
 ```
