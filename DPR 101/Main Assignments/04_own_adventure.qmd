@@ -32,7 +32,7 @@ This project will have a few key checkpoints along the way to help you make prog
 
 This project gives you even more free rein than past ones to choose your own research question and create whatever data viz you want to tell a story with data. With that free rein comes more responsibility on your part, and that added responsibility in turn means this project will take you more time. 
 
-I’ve included helpful code to get you started with the data here:
+I’ve included helpful code to get you started with the data here. Go to this link to get the url for the data: <https://tinyurl.com/du-march24-survey>
 
 ```{r}
 #| eval: false
@@ -41,7 +41,7 @@ library(tidyverse)
 library(googlesheets4)
 gs4_deauth()
 range_speedread(
-  "https://tinyurl.com/du-march24-survey"
+  "put url here"
 ) -> Data
 
 ```
