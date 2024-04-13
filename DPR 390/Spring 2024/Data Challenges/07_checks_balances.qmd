@@ -41,9 +41,16 @@ set_palette(
 )
 
 ## build dayd-year data
-create_leaderdyadyears(
-  system = "cow"
-) |>
+lk <- ## get leader-dyad data from {peacesciencer} site
+  "http://svmiller.com/R/peacesciencer/cow_dir_leader_dyad_years.rds"
+readRDS(
+  url(lk)
+  ) -> Data
+
+## give the data the expected attributes
+attr(Data, "ps_data_type") <- "leader_dyad_year"
+attr(Data, "ps_system") <- "cow"
+Data |>
   filter(year %in% 1945:1999) |>
   add_gml_mids() |>
   add_spells() |>

@@ -49,3 +49,412 @@ range_speedread(
 And this is the link to the codebook: [March 2024 DU Survey Codebook](https://drive.google.com/file/d/1FJcKLQnArhBy-4KPxz0awCEhLeOcdzqC/view?usp=sharing)
 
 You're using ***survey data*** in this assignment, which means all the same rules apply that we discussed in the previous unit. Use the codebook to map how question responses correspond to numerical codes in the raw data, and make sure you appropriately re-code the data prior to data visualization.
+
+```{r}
+#| include: false
+#| eval: false
+
+## -----------------------
+##  doing my own analysis
+## -----------------------
+
+## codebook url:
+## https://drive.google.com/file/d/1FJcKLQnArhBy-4KPxz0awCEhLeOcdzqC/view
+
+## packages
+library(tidyverse)
+library(socsci)
+library(googlesheets4)
+library(coolorrr)
+set_theme()
+set_palette(
+  binary = c("navy", "indianred")
+)
+
+## helper to quickly save figures
+save_plot <- function(filename, ht, wd) {
+  ggsave(
+  here::here(
+    "DPR 101",
+    "Main Assignments",
+    filename
+  ),
+  height = ht,
+  width = wd,
+  dpi = 500
+)
+}
+
+## data
+url <- "https://docs.google.com/spreadsheets/d/1qq5VkNDzFonfEiRxf03NHvktzMsQNOWCzkXdkvkw9E8/edit"
+gs4_deauth()
+range_speedread(
+  url
+) -> dt
+
+## recodes
+## (I want to look at Q5 answers -> sitting out the election)
+dt |>
+  mutate(
+    across(
+      starts_with("Q5_"),
+      ~ frcode(
+        .x == 5 ~ "Strongly\nDisagree",
+        .x == 4 ~ "Disagree",
+        .x == 3 ~ "Neutral",
+        .x == 2 ~ "Agree",
+        .x == 1 ~ "Strongly\nAgree"
+      )
+    )
+  ) |>
+  rowwise() |>
+  mutate(
+    epi = mean(as.numeric(c_across(
+      starts_with("Q5_")
+    )), na.rm = T) - 3
+  ) |>
+  ungroup() |>
+  mutate(
+    sitout = ifelse(
+      Q6 == 7,
+      yes = 1, 
+      no = 0
+    ),
+    voting_for = frcode(
+      Q6 == 1 ~ "Joe Biden",
+      Q6 == 2 ~ "Donald Trump",
+      Q6 == 3 ~ "Robert Kennedy",
+      Q6 == 4 ~ "Libertarian",
+      Q6 == 5 ~ "Green",
+      Q6 == 6 ~ "Other",
+      Q6 == 7 ~ "Sitting this one out"
+    )
+  ) -> dt
+```
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-height: 4
+#| fig-width: 6
+
+dt |>
+  ct(voting_for, show_na = F) |>
+  mutate(
+    labels = ifelse(
+      str_detect(voting_for, "Sitting|Kennedy"),
+      paste(round(100 * pct), "%"),
+      " "
+    )
+  ) |>
+  ggplot() +
+  aes(
+    x = pct,
+    xmin = 0,
+    xmax = pct,
+    y = voting_for,
+    color = !str_detect(voting_for, "Sitting|Kennedy")
+  ) +
+  geom_pointrange() +
+  geom_text(
+    aes(label = labels),
+    hjust = -0.5
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 1",
+    subtitle = paste0(
+      "About as many students say they'll sit this election out\n",
+      "as say they'll vote for Robert Kennedy"
+    )
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) +
+  ggpal("binary") +
+  theme(
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_text(
+      size = 12,
+      face = c(
+        rep("plain", len = 2),
+        "bold.italic",
+        rep("plain", len = 3),
+        "bold.italic"
+      ),
+      color = c(
+        rep("indianred", len = 2),
+        "navy",
+        rep("indianred",len = 3),
+        "navy"
+      )
+    ),
+    legend.position = ""
+  )
+save_plot(
+  "example_fig1.png",
+  ht = 4,
+  wd = 6
+)
+```
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-width: 7
+#| fig-height: 6
+
+dt |>
+  pivot_longer(
+    starts_with("Q5_")
+  ) |>
+  group_by(name) |>
+  ct(value, show_na = F) |>
+  mutate(
+    name = frcode(
+      name == "Q5_1" ~ "Unhappy with leading nominees",
+      name == "Q5_2" ~ "2024 election will result in democratic backsliding",
+      name == "Q5_3" ~ "Violence and turmoil likely this election",
+      name == "Q5_4" ~ "Election may lead US to lose world power status",
+      name == "Q5_5" ~ "Trump should be disqualified because of Jan. 6th",
+      name == "Q5_6" ~ "Biden doesn't deserve my vote because of his handling of Israel-Hamas War",
+      name == "Q5_7" ~ "I have to vote for Biden to keep Trump out of the White House"
+    )
+  ) |>
+  mutate(
+    labels = paste0(
+      round(100 * pct),
+      "%"
+    ),
+    labels = ifelse(
+      pct < 0.05,
+      " ", labels
+    )
+  ) |>
+  ggplot() +
+  aes(
+    x = pct,
+    y = name,
+    fill = value
+  ) +
+  geom_col(
+    color = "black"
+  ) +
+  geom_text(
+    aes(label = labels),
+    hjust = 1.5,
+    position = position_stack(vjust = 1)
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) +
+  scale_y_discrete(
+    breaks = NULL
+  ) +
+  facet_wrap(
+    ~ name, 
+    ncol = 1,
+    scales = "free_y"
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL,
+    title = "Figure 2",
+    subtitle = 
+      "Agreement with the following statements is generally high"
+  ) +
+  ggpal(
+    type = "diverging",
+    aes = "fill",
+    ordinal = T,
+    levels = 5,
+    guide = guide_legend(reverse = T)
+  ) +
+  theme(
+    strip.background = element_blank(),
+    strip.text = element_text(
+      hjust = 0,
+      vjust = 0,
+      face = "bold.italic",
+      size = 12
+    ),
+    panel.grid = element_blank()
+  )
+save_plot(
+  "example_fig2.png",
+  ht = 7,
+  wd = 8
+)
+```
+
+```{r}
+#| eval: false
+#| include: false
+library(geomtextpath)
+mean_epi <- mean(dt$epi, na.rm = T)
+ggplot(dt) +
+  aes(x = epi) +
+  geom_histogram(
+    color = "black",
+    fill = "gray"
+  ) +
+  labs(
+    x = "Score on the Election Pessimism Index (EPI)",
+    y = "Frequency",
+    title = "Figure 3",
+    subtitle = "Students are generally pessimistic going into the election"
+  ) +
+  geom_textvline(
+    xintercept = mean_epi,
+    label = paste0(
+      "Mean EPI = ",
+      round(mean_epi, 2)
+    ),
+    hjust = 0.8,
+    angle = 90,
+    color = "navy",
+    linewidth = 1,
+    fontface = "bold"
+  )
+save_plot(
+  "example_fig3.png",
+  ht = 4,
+  wd = 6
+)
+```
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-width: 6
+#| fig-height: 4
+library(ggtext)
+ggplot(dt) +
+  aes(
+    x = epi,
+    y = sitout
+  ) +
+  stat_smooth(
+    method = "gam",
+    method.args = list(
+      family = binomial
+    ),
+    color = "navy"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "Figure 4",
+    subtitle = paste0(
+      "<p>The predicted probability of sitting out the election",
+      " goes <b><i style = 'color:navy'>down</b></i></p>",
+      "<p>as pessimism about the election ",
+      "goes <b><i style = 'color:indianred'>up</i></b></p>"
+    )
+  ) +
+  geom_textvline(
+    xintercept = -1.7,
+    label = "Probability of Sitting Out",
+    text_only = T,
+    vjust = -0.8,
+    hjust = 0.8
+  ) +
+  geom_texthline(
+    yintercept = 0,
+    label = "Election Pessimism Score",
+    text_only = T,
+    hjust = 0.8
+  ) +
+  theme(
+    plot.subtitle = element_markdown(),
+    axis.line.x = element_line(
+      arrow = grid::arrow(
+        type = "closed"
+      )
+    ),
+    axis.line.y = element_line(
+      arrow = grid::arrow(
+        type = "closed",
+        ends = "first"
+      )
+    )
+  )
+save_plot(
+  "example_fig4.png",
+  ht = 4,
+  wd = 6
+)
+```
+
+```{r}
+#| include: false
+#| eval: false
+#| fig-height: 8
+#| fig-width: 10
+dt |>
+  pivot_longer(
+    starts_with("Q5_")
+  ) |>
+  mutate(
+    value = as.numeric(value) - 3
+  ) |>
+  group_by(name, value) |>
+  mutate(
+    name = frcode(
+      name == "Q5_1" ~ "Unhappy with leading nominees",
+      name == "Q5_2" ~ "2024 election will result in democratic backsliding",
+      name == "Q5_3" ~ "Violence and turmoil likely this election",
+      name == "Q5_4" ~ "Election may lead US to lose world power status",
+      name == "Q5_5" ~ "Trump should be disqualified because of Jan. 6th",
+      name == "Q5_6" ~ "Biden doesn't deserve my vote because of his\nhandling of Israel-Hamas War",
+      name == "Q5_7" ~ "I have to vote for Biden to keep Trump\nout of the White House"
+    )
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = sitout
+  ) +
+  stat_smooth(
+    method = "glm",
+    formula = y ~ poly(x, 2),
+    method.args = list(
+      family = binomial
+    ),
+    color = "navy"
+  ) +
+  facet_wrap(
+    ~ name,
+    ncol = 2
+  ) +
+  labs(
+    x = expression("Agreement "%->%""),
+    y = "% Sitting Out",
+    title = "Figure 5",
+    subtitle = "Effect of pessimism broken down by statement"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  theme(
+    strip.text = element_text(
+      hjust = 0,
+      face = "bold.italic",
+      size = 10
+    ),
+    strip.background = element_blank(),
+    axis.title.x = element_text(
+      hjust = 0.4
+    )
+  )
+save_plot(
+  "example_fig5.png",
+  ht = 8,
+  wd = 8
+)
+```
