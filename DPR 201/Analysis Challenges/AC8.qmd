@@ -1,49 +1,44 @@
 ---
-title: "Analysis Challenge 8"
+title: "Analysis Challenge 8: Difference-in-differences"
 format: pdf
 editor: visual
 ---
 
 ## 
 
+For this final analysis challenge, you task is to implement a difference-in-differences (D-in-D) design using replication data from the 1992 study by Card and Krueger on minimum wages and employment. Where to get the data and a summary of what's in it is on the next page.
+
+In addition to doing a difference-in-differences design, I want you to consider a couple of other analysis approaches as well. Specifically, I want you to try doing a selection on observables (SOO) and regression discontinuity design (RDD). To perform the SOO design, there are a number of observed characteristics about observations in the data that you can use. To perform the RDD, since there is only a pre- and post-treatment period, all you need to do is estimate the treatment effect only for restaurants that get the treatment (that is those in NJ). No running variable will be necessary.
+
+After you've produced the results for each of these research designs (the D-in-D, SOO, and RDD), produce either a regression table or data visualization that lets you compare the results. Talk about the different estimates you get. Do these research designs yield similar or conflicting results? Which set of results do you trust the most?
+
+When you're done, render your work and submit it to Canvas.
+
+\clearpage
+
+## The data
+
+Go to this link for the data: [card_krueger_92.csv](https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/card_krueger_92.csv)
+
 ```{r}
+#| eval: false
+
 library(tidyverse)
+library(estimatr)
+read_csv(
+  "link goes here"
+) -> Data
+
+```
+
+```{r}
+#| eval: false
+#| include: false
+library(tidyverse)
+library(socsci)
 read_csv(
   "https://docs.google.com/uc?id=10h_5og14wbNHU-lapQaS1W6SBdzI7W6Z&export=download"
   ) -> ck_data
-```
-
--   `y_ft_employment_before`: Full time equivalent employment before treatment \[**Outcome**\]
-
--   `y_ft_employment_after`: Full time equivalent employment after treatment \[**Outcome**\]
-
--   `d_nj`: **1 if New Jersey; 0 if Pennsylvania (**treatment variable**)** \[Treatment\]
-
--   `x_co_owned`: If owned by company = 1
-
--   `x_southern_nj`: If in southern NJ = 1
-
--   `x_central_nj`: If if in central NJ = 1
-
--   `x_northeast_philadelphia`: If in Pennsylvania, northeast suburbs of Philadelphia = 1
-
--   `x_easton_philadelphia`: If in Pennsylvania, Easton = 1
-
--   `x_st_wage_before`: Starting wage (\$/hr) before treatment
-
--   `x_st_wage_after`: Starting wage (\$/hr) after treatment
-
--   `x_burgerking`: If Burgerking = 1
-
--   `x_kfc`: If KFC = 1
-
--   `x_roys`: If Roys = 1
-
--   `x_wendys`: If Wendys = 1
-
--   `x_closed_permanently`: Closed permanently after treatment
-
-```{r}
 tibble(
   ft_employment = c(ck_data$y_ft_employment_before,
                     ck_data$y_ft_employment_after),
@@ -114,7 +109,17 @@ dt |>
     )
   ) |>
   ungroup() -> dt
+write_csv(
+  dt,
+  here::here(
+    "DPR 201",
+    "Data",
+    "card_krueger_92.csv"
+  )
+) 
 ```
+
+This dataset is replication data from the classic 1992 study by Card and Krueger on minimum wages and employment. It has 820 rows corresponding to particular fast food restaurants at two different periods in time (February and March of 1992 and November and December of 1992). Each column in the data corresponds to a different factor associated with a particular restaurant. Below is a summary of each of the variables in the data. You can use this data to implement a difference-in-differences research design. The relevant outcome, treatment, and unit and time indicators are noted.
 
 -   `ft_employment`: Full time equivalent employment before and after treatment \[**Outcome**\]
 
@@ -139,6 +144,8 @@ dt |>
 -   `region`: The name of the unique region in NJ or PA where the restaurant is located. If not know, takes the value "Undefined" combined with the state name
 
 ```{r}
+#| include: false
+#| eval: false
 ## a diff-in-diff estimate
 library(estimatr)
 lm_robust(
@@ -212,6 +219,8 @@ list(
 ```
 
 ```{r}
+#| include: false
+#| eval: false
 library(coolorrr)
 set_theme()
 set_palette(
