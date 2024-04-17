@@ -1,0 +1,274 @@
+---
+title: "Analysis Challenge 8"
+format: pdf
+editor: visual
+---
+
+## 
+
+```{r}
+library(tidyverse)
+read_csv(
+  "https://docs.google.com/uc?id=10h_5og14wbNHU-lapQaS1W6SBdzI7W6Z&export=download"
+  ) -> ck_data
+```
+
+-   `y_ft_employment_before`: Full time equivalent employment before treatment \[**Outcome**\]
+
+-   `y_ft_employment_after`: Full time equivalent employment after treatment \[**Outcome**\]
+
+-   `d_nj`: **1 if New Jersey; 0 if Pennsylvania (**treatment variable**)** \[Treatment\]
+
+-   `x_co_owned`: If owned by company = 1
+
+-   `x_southern_nj`: If in southern NJ = 1
+
+-   `x_central_nj`: If if in central NJ = 1
+
+-   `x_northeast_philadelphia`: If in Pennsylvania, northeast suburbs of Philadelphia = 1
+
+-   `x_easton_philadelphia`: If in Pennsylvania, Easton = 1
+
+-   `x_st_wage_before`: Starting wage (\$/hr) before treatment
+
+-   `x_st_wage_after`: Starting wage (\$/hr) after treatment
+
+-   `x_burgerking`: If Burgerking = 1
+
+-   `x_kfc`: If KFC = 1
+
+-   `x_roys`: If Roys = 1
+
+-   `x_wendys`: If Wendys = 1
+
+-   `x_closed_permanently`: Closed permanently after treatment
+
+```{r}
+tibble(
+  ft_employment = c(ck_data$y_ft_employment_before,
+                    ck_data$y_ft_employment_after),
+  min_wage_change = c(
+    rep(0, len = nrow(ck_data)),
+    ck_data$d_nj
+  ),
+  state = c(
+    ifelse(ck_data$d_nj == 1, "NJ", "PA"),
+    ifelse(ck_data$d_nj == 1, "NJ", "PA")
+  ),
+  period = rep(
+    c("wave 1", "wave 2"),
+    each = nrow(ck_data)
+  ),
+  unit = rep(1:410, len = 820),
+  wave1_st_wage = c(
+    ck_data$x_st_wage_before,
+    ck_data$x_st_wage_before
+  ),
+  current_st_wage = c(
+    ck_data$x_st_wage_before,
+    ck_data$x_st_wage_after
+  ),
+  co_owned = c(
+    ck_data$x_co_owned,
+    ck_data$x_co_owned
+  ),
+  franchise_name = frcode(
+    ck_data$x_burgerking == 1 ~ "Burger King",
+    ck_data$x_kfc == 1 ~ "KFC",
+    ck_data$x_roys == 1 ~ "Roy's",
+    ck_data$x_wendys == 1 ~ "Wendy's"
+  ) |> rep(len = 2 * nrow(ck_data)),
+  still_open = c(
+    rep(1, len = nrow(ck_data)),
+    1 - ck_data$x_closed_permanently
+  ),
+  region = case_when(
+    ck_data$x_central_nj == 1 ~ "Central NJ",
+    ck_data$x_southern_nj == 1 ~ "Southern NJ",
+    ck_data$x_easton_philadelphia == 1 ~ "Easton Philly",
+    ck_data$x_northeast_philadelphia == 1 ~ "Northeast Philly"
+  ) |>
+    rep(len = 2 * nrow(ck_data))
+) |>
+  mutate(
+    region = case_when(
+      is.na(region) & state == "PA" ~ "Undefined PA",
+      is.na(region) & state == "NJ" ~ "Undefined NJ",
+      TRUE ~ region
+    )
+  ) -> dt
+
+## impute missing wage data
+dt |>
+  group_by(period, franchise_name, region) |>
+  mutate(
+    wave1_st_wage = ifelse(
+      is.na(wave1_st_wage),
+      mean(wave1_st_wage, na.rm = T),
+      wave1_st_wage
+    ),
+    current_st_wage = ifelse(
+      is.na(current_st_wage),
+      mean(current_st_wage, na.rm = T),
+      current_st_wage
+    )
+  ) |>
+  ungroup() -> dt
+```
+
+-   `ft_employment`: Full time equivalent employment before and after treatment \[**Outcome**\]
+
+-   `min_wage_change`: Indicator for NJ after the minimum wage increase went into effect \[**Treatment**\]
+
+-   `period`: Indicator for whether the time period is "wave 1" (Feb. 15 - March 4 1992, before the policy change) or "wave 2" (Nov. 5 - Dec. 31 1992) \[**Time Indicator**\]
+
+-   `unit`: Indicator for a unique fast fast food restaurant \[**Unit Indicator**\]
+
+-   `state`: Whether the state is NJ or PA
+
+-   `wave1_st_wage`: The starting wage per establishment (\$/hr) before treatment
+
+-   `current_st_wage`: The starting wage before and after treatment
+
+-   `co_owned`: If the establishment is company owned = 1
+
+-   `franchise_name`: Name of the establishment
+
+-   `still_open`: If the establishment is opened as of the wave = 1 (note that this = 1 for all observations in wave 1)
+
+-   `region`: The name of the unique region in NJ or PA where the restaurant is located. If not know, takes the value "Undefined" combined with the state name
+
+```{r}
+## a diff-in-diff estimate
+library(estimatr)
+lm_robust(
+  ft_employment ~ min_wage_change,
+  fixed_effects = ~ period + unit,
+  data = dt,
+  se_type = "stata"
+) -> dd_fit
+
+## a reg. discontinuity estimate
+lm_robust(
+  ft_employment ~ min_wage_change,
+  data = dt |> filter(state == "NJ"),
+  se_type = "stata"
+) -> rd_fit
+
+## a soo estimate
+lm_robust(
+  ft_employment ~ min_wage_change +
+    wave1_st_wage +
+    co_owned + franchise_name + region,
+  data = dt,
+  se_type = "stata"
+) -> soo_fit
+
+## a naive estmate
+lm_robust(
+  ft_employment ~ min_wage_change,
+  data = dt,
+  se_type = "stata"
+) -> na_fit
+
+## visualize
+list(
+  dd_fit,
+  rd_fit,
+  soo_fit,
+  na_fit
+) |>
+  map_dfr(tidy) |>
+  filter(term == "min_wage_change") |>
+  mutate(
+    design = c("D-in-D", "RDD", "SOO", "Naive")
+  ) |>
+  ggplot() +
+  aes(
+    x = reorder(design, -estimate),
+    y = estimate,
+    ymin = conf.low,
+    ymax = conf.high
+  ) +
+  geom_pointrange() +
+  geom_text(
+    aes(
+      label = round(estimate, 2)
+    ),
+    hjust = -0.2
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = 2
+  ) +
+  labs(
+    x = NULL,
+    y = "Estimate with 95% CI",
+    title = paste0(
+      "The estimated effect of a minimum wage\n",
+      "increase on FTE varies by research design"
+    )
+  ) 
+```
+
+```{r}
+library(coolorrr)
+set_theme()
+set_palette(
+  binary = c("steelblue", "orange2")
+)
+library(ggtext)
+dt |>
+  group_by(
+    period, 
+    state
+  ) |>
+  mean_ci(ft_employment) |>
+  mutate(
+    period = (period == "wave 2") + 0
+  ) |>
+  ggplot() +
+  aes(
+    x = period,
+    y = mean,
+    ymin = lower,
+    ymax = upper,
+    color = state
+  ) +
+  geom_col(
+    aes(fill = state),
+    alpha = 0.4,
+    show.legend = F,
+    position = position_dodge2(0.2),
+    width = 0.2
+  ) +
+  # geom_line(
+  #   position = position_dodge2(0.2),
+  #   linewidth = 1
+  # ) +
+  geom_pointrange(
+    position = position_dodge2(0.2),
+    linewidth = 1
+  ) +
+  ggpal("binary") +
+  ggpal("binary", "fill") +
+  scale_x_continuous(
+    breaks = 0:1,
+    labels = c("Feb/March 1992", "Nov/Dec 1992")
+  ) +
+  labs(
+    x = NULL,
+    y = "Full Time Employees",
+    title = paste0(
+      "<p>FTE remained unchanged in <span style = 'color:steelblue'><b><i>NJ</b></i></span> after an increase to</p>",
+      "<p>the minimum wage, while it decreased in <span style = 'color:orange2'><b><i>PA</i></b></span> where</p>",
+      "<p>no change to the mimum wage was implemented.</p>"
+    ),
+    color = NULL
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    legend.position = "right",
+    legend.direction = "vertical"
+  )
+```
