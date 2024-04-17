@@ -1,0 +1,42 @@
+---
+title: "Final Project for DPR 390"
+subtitle: "Due by Thursday, May 2, 8:30 pm"
+format: pdf
+editor: visual
+---
+
+## 
+
+This semester you've been exposed to a useful theoretical framework for thinking about reasons for war and pathways to peace—the **bargaining model of war**—in addition to applied data analysis using this framework as guide for testing specific claims. This final project is your opportunity to show off what you've learned.
+
+For this project, you'll have **two tracks** to choose from and have the option to either work **individually in or pairs**. If you work in pairs, you'll receive a joint final grade. Your submission will comprise 32% of your final grade. The due date will be at the conclusion of our slotted final exam time: **Thursday, May 2, at 8:30 pm.**
+
+## Track 1: A Final Paper
+
+Bring the insights you've cleaned from this semester to bear on a specific case study of your choosing. Pick a current or recent conflict in the world (something within the last 10 years) and use the framework for understanding why we fight proposed in our text to explain why the sides involved in this conflict failed to find a peaceful compromise that they preferred to fighting. Your conflict can either be a civil war (one side is a government and the other is a non-state actor) or an international war (both sides involved are countries). For whatever case you select, in addition to basing your explanation for why war broke out on the arguments made in our text, use 3 data visualizations to talk about how the factors you think are present in your particular case are evident more systematically across other cases over time. For your data analysis, you're free to draw from examples that we've done in class or analyses that you've done in one of your data challenges.
+
+Your final submission should be no longer than 1,000 words and it should adhere to the following format:
+
+1.  Introduction: Begin with your research question (e.g., why did Russia invade Ukraine?) and provide motivation for why we should care. If you use articles or op eds to motivate your question, use in-text hyperlinks to those sources.
+2.  Background: Briefly provide some background details on your chosen case. Basically, tell a ***short*** history of the events that led up to the conflict. The goal is to provide some context for your chosen case. Again, use in-text hyperlinks for any sources you rely on.
+3.  Why they chose to fight: Among the reasons for war that Blattman talks about in his book, which do you argue are at play in your chosen case. To help keep things brief, you can **pick no more than three reasons for war**. Others could be operating in your case as well, so pick the top three that you think are at work.
+4.  Connecting to bigger trends: For whatever reasons for war you argue are operating in your case study, draw on the data examples that we did in class to come up with up to 3 data visualizations that show how these reasons for war are a part of a larger trend. For each of your data visualizations, have a paragraph that motivates why this data analysis speaks to the reason for war you're talking about and walk the reader through how to navigate your visualization and the pattern it reveals.
+5.  Pathways to peace: Wrap up by discussing whether there are pathways to peace that might help bring this conflict to an end. If so, what are they? This discussion needn't be lengthy. Just summarize some pathways to peace that you think might be viable and why.
+
+Your paper should be submitted as either a word or pdf document. It should include a title and your name(s).
+
+## Track 2: Make Shiny Dashboard
+
+[Shiny apps](https://shiny.posit.co/?_gl=1czi7cc_gaMzMxMzA3MjUzLjE3MDE0NDQ1NDE._ga_2C0WZ1JHG0*MTcxMzM4MzQ0MS4xMS4wLjE3MTMzODM0NDEuMC4wLjA.) are a great way to make insights from data accessible for broader audiences. While there's a bit of a learning curve involved in creating a Shiny app, there are lots of free resources available to help you get started. A good go-to is the Shiny tutorial for R: [Shiny for R](https://shiny.posit.co/r/getstarted/shiny-basics/lesson1/index.html). You can also check out the Shiny Gallery ([go to it here](https://shiny.posit.co/r/gallery/)), which is full of examples that you can borrow from and modify.
+
+For this final project, your task will be to make a Shiny app that lets users explore different factors that are correlated with why countries fight. It should do the following things:
+
+1.  Use `{peacesciencer}` under the hood to construct a country-year dataset that runs from 1945 to 2014. Within this range of years, users can have the option to control the range of years that appear in the data.
+2.  It should give users the option to look at whether a country starts a militarized interstate dispute (MID) with another country in a given year or whether a civil war breaks out in that country.
+3.  It should give users the option to look at a range of different variables that might be correlated with why wars break out.
+4.  For the chosen conflict outcome, it should have a tab that shows the frequency of conflict onset per the years selected by the user.
+5.  In another tab it should visualize for users how their chosen explanatory factors predict the likelihood of conflict.
+6.  Under the hood, these visualizations should be based on statistical models (a logit model) that includes the kind of conflict variable of interest to users as the outcome and their chosen explanatory variables as predictors. It should also include a cubic peace spells trend.
+7.  Other features: (a) an informative title for the app and a note that includes your name(s); (b) a tab that summarizes what users of the app can do with it, that briefly explains the reasons for war outlined by Blattman, and that includes a call to action to encourage users to see if they can find evidence for these reasons for war in the data; (c) a tab that provides "metadata" about the variables users can choose from to use in their analysis.
+
+You should create a free [Shiny apps account](https://shiny.posit.co/r/articles/share/shinyapps/) and then deploy the app using your account. You'll then submit a link to your app on Canvas as your final submission.
