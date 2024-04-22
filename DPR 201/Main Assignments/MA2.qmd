@@ -24,7 +24,7 @@ library(qss)
 data(package = "qss")
 ```
 
-To download and look at the help file for at a specific dataset from `{qss}` you can write something like the following which downloads and opens the help file for the `resume` dataset:
+To download and look at the help file for a specific dataset from `{qss}` you can write something like the following, which downloads and opens the help file for the `resume` dataset:
 
 ```{r}
 #| eval: false
@@ -32,14 +32,14 @@ data("resume")
 ?resume
 ```
 
-Unfortunately, longer descriptions of the data are not available in the help files. You would need a copy of the *QSS* textbook in order to see the full summary of each dataset. However, since I have a copy, once you identify a dataset (or a few) that you want to consider using, I can help you get more details.
+Unfortunately, longer descriptions of the data are not available in the help files. You would need a copy of the *QSS* textbook in order to see the full summary of each dataset. However, at the bottom of the help file, the study(ies) associated with a dataset are listed. You can look them up online to get more details. Also, since I have a copy of the *QSS* textbook, once you identify a dataset (or a few) that you want to consider using, I can help you get more details, too.
 
 ## Instructions for Your Write-up
 
-Once you've finalized your choice of dataset, you can begin the rest of the work of completing the main assignment. Your final paper should adhere to the following outline:
+Once you've finalized your choice of dataset, you can work on completing the main assignment. Your final paper should adhere to the following outline:
 
 1.  **Introduction (research question & why care):** Start by stating your research question as a question (e.g., What is the effect of social pressure on turning out to vote?). Then explain why this research question is important.
-2.  **Data and Design (what you did)**: Explain how you will answer your research question. Summarize the data you'll use, why it helps you answer your research question, and what variables in it you will use. (Don't just list these as bullet points with the raw variable names from data. Talk about them in a way that would be easily digestible for a non-technical audience.) Also, describe what kind of research design you will use to analyze the data to answer your research question. Does the data come from an experiment? Is it observational? Some datasets might be consistent with multiple analysis choices. Pick one and justify your decision. You must choose one of the four research designs we discussed for causal inference: a randomized controlled trial, selection on observables, regression discontinuity, or difference-in-differences.
+2.  **Data and Design (what you did)**: Explain how you will answer your research question. Summarize the data you've chosen and the study it comes from, why it helps you answer your research question, and what variables in it you will use. (Don't just list these as bullet points with the raw variable names from data. Talk about them in a way that would be easily digestible for a non-technical audience.) Also, describe what kind of research design you will use to analyze the data to answer your research question. Does the data come from an experiment? Is it observational? Some datasets might be consistent with multiple analysis choices. Pick one and justify your decision. ***You must choose one of the four research designs we discussed for causal inference***: a randomized controlled trial, selection on observables, regression discontinuity, or difference-in-differences.
 3.  **Analysis (what you found)**: Summarize the results of your analysis and talk about the answer that you've come up with for your research question. This section should contain exactly [*three data visualizations*]{.underline} (no more and no less). The first should show the distribution of the outcome variable in your data. Depending on the type of variable it is, this may be a histogram or a density plot, or perhaps a bar chart. If the variable is distributed geographically, you might even consider showing its distribution with a map ([here are some lecture notes I created for DPR 101 students on drawing maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html)). The second figure should show the distribution of the causal variable of interest (all the same details with the first data viz apply to this one as well). The third figure should show the results from your analysis. This can be in the form of a coefficient plot or a plot summarizing predictions. Whatever it is, it should clearly show the estimate of the causal effect of interest. A clear motivation and description of what's going on in each data visualization should appear in a paragraph before the data visualization. Each figure should be numbered 1, 2, and 3, respectively and have a clear description in the title. There should be no sub-figures (e.g., don't have figures labeled number 0, or 1a and 1b, etc.).
 4.  **Conclusion (implications)**: Talk about the implications of your findings. Don't just reiterate. Think big.
 
