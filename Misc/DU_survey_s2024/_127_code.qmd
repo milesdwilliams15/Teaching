@@ -1,0 +1,424 @@
+---
+title: "Code for 127 blog post (April 2024)"
+format: html
+editor: visual
+---
+
+## Open packages and download data
+
+```{r}
+## packages
+library(tidyverse)
+library(googlesheets4)
+library(socsci)
+library(ggtext)
+library(ggrepel)
+library(geomtextpath)
+library(coolorrr)
+set_theme() 
+set_palette(
+  binary = c("gray", "steelblue")
+)
+
+## data viz helper to save images
+save_plot <- function(name, ht = 4, wt = 6.5) {
+  ggsave(
+    here::here(
+      "Misc",
+      "DU_survey_s2024",
+      "figs",
+      name
+    ),
+    height = ht,
+    width = wt,
+    dpi = 500
+  )
+}
+
+## data 
+## url to spreadsheet:
+url <- "https://docs.google.com/spreadsheets/d/1qq5VkNDzFonfEiRxf03NHvktzMsQNOWCzkXdkvkw9E8/edit"
+## url to codebook:
+##
+## https://drive.google.com/file/d/1FJcKLQnArhBy-4KPxz0awCEhLeOcdzqC/view?usp=sharing
+##
+## read the data into R
+gs4_deauth()
+range_speedread(
+  url
+) -> dt
+```
+
+## Recode variables for analysis
+
+```{r}
+## make a dataset that's paired down just
+## to the variables I need for analysis
+
+dt |>
+  transmute(
+    ## the outcome variable (Q5_4)
+    ## "The US may lose its world
+    ## power status as a result of
+    ## this election."
+    ##
+    ## 5 category version
+    lwps_cat5 = frcode(
+      Q5_4 == 5 ~ "Strongly Disagree",
+      Q5_4 == 4 ~ "Disagree",
+      Q5_4 == 3 ~ "Neutral",
+      Q5_4 == 2 ~ "Agree",
+      Q5_4 == 1 ~ "Strongly Agree",
+      TRUE ~ "No Response"
+    ),
+    ## 3 category version
+    lwps_cat3 = frcode(
+      Q5_4 %in% 4:5 ~ "Disagree",
+      Q5_4 == 3 ~ "Neutral",
+      Q5_4 %in% 1:2 ~ "Agree",
+      TRUE ~ "No Response"
+    ),
+    ## numerical version
+    lwps_num = (5 - Q5_4) - 2,
+    ## neutral indicator
+    lwps_neut = ifelse(
+      Q5_4 %in% 2:4, 1, 0
+    ),
+    ##
+    ## pick 3 explanatory variables:
+    ## 
+    ## 1. party ID
+    ##
+    party_cat5 = frcode(
+      Q3 %in% 1:2 ~ "Democrat",
+      Q3 == 3 ~ "Lean Democrat",
+      Q3 == 4 ~ "Independent",
+      Q3 == 5 ~ "Lean Republican",
+      Q3 %in% 6:7 ~ "Republican"
+    ),
+    ##
+    ## 2. voting preferences
+    ##
+    vote24 = frcode(
+      Q6 == 1 ~ "Joe Biden",
+      Q6 == 2 ~ "Donald Trump",
+      Q6 == 3 ~ "Robert Kennedy",
+      Q6 == 4 ~ "Libertarian",
+      Q6 == 5 ~ "Green",
+      Q6 == 6 ~ "Other",
+      Q6 == 7 ~ "Not voting",
+      TRUE ~ "No answer"
+    ),
+    ##
+    ## 3. agree with other issues about 2024 election
+    ##
+    across(Q5_2:Q5_3, ~ ( 5 - .x) - 2)
+  ) -> adt ## final analysis dataset
+```
+
+## Analysis
+
+### Figure 1
+
+```{r}
+#| fig-width: 6.5
+#| fig-height: 4
+adt |>
+  ct(lwps_cat5) |>
+  ggplot() +
+  aes(x = lwps_cat5, y = pct, fill = pct) +
+  geom_col(
+    color = "black",
+    show.legend = F
+  ) +
+  ggpal(
+    "sequential",
+    ordinal = F,
+    levels = 6
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = paste0(
+      "<p><span style = 'color:gray40'>Most students are </span>",
+      "<span style = 'color:steelblue'><i>neutral</i></span>",
+      "<span style = 'color:gray40'> about the 2024 election's</p>",
+      "<p><span style = 'color:gray40'>impact on America's world power status</span></p>"
+    ),
+    subtitle = paste0(
+      '<p><b>% agreement with the statement:</p>',
+      '<p><i>"The US may lose its world power status as a result of',
+      ' this election."</p>'
+    )
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(
+      size = 10
+    ),
+   text = element_text(color = "gray40")
+  )
+save_plot("fig1.png")
+```
+
+### Figure 2
+
+```{r}
+#| fig-width: 6.5
+#| fig-height: 4
+adt |>
+  group_by(party_cat5) |>
+  mean_ci(lwps_num) |>
+  drop_na() |>
+  ggplot() +
+  aes(x = as.numeric(party_cat5), y = mean) +
+  geom_pointrange(
+    aes(ymin = lower, ymax = upper)
+  ) +
+  # geom_line(
+  #   size = 1
+  # ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = 2
+  ) +
+  geom_text_repel(
+    data = . %>% 
+      filter(party_cat5 == "Democrat"),
+    aes(label = "Mean Response"),
+    min.segment.length = unit(0, 'lines'),
+    nudge_y = .6
+  ) +
+  geom_text_repel(
+    data = . %>%
+      filter(party_cat5 == "Democrat"),
+    aes(label = "95% CI", y = lower + 0.025, x = 1 - 0.01),
+    min.segment.length = unit(0, 'lines'),
+    nudge_x = .6
+  ) +
+  scale_x_continuous(
+    labels = sort(unique(adt$party_cat5))[1:5]
+  ) +
+  scale_y_continuous(
+    limits = c(-2, 2),
+    breaks = c(-2, -1, 0, 1, 2),
+    labels = sort(unique(adt$lwps_cat5))[1:5]
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = paste0(
+      "<p><i style = 'color:red3'>Republicans</i>",
+      "<span style = 'color:gray40'> are the least concerned",
+      " about</p><p style = 'color:gray40'>America's world power status</p>"
+    ),
+    subtitle = paste0(
+      '<p><b>Average agreement with the statement:</p>',
+      '<p><i>"The US may lose its world power status as a result of',
+      ' this election."</p>'
+    )
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(size = 10),
+    axis.text.x = element_text(
+      color = c(
+        "gray40",
+        "gray40",
+        "gray40",
+        "red3",
+        "red3"
+      ),
+      face = c(
+        "plain",
+        "plain",
+        "plain",
+        "bold",
+        "bold"
+      )
+    ),
+    text = element_text(color = "gray40")
+  )
+save_plot("fig2.png")
+```
+
+### Figure 3
+
+```{r}
+#| fig-width: 6.5
+#| fig-height: 4
+adt |>
+  mutate(
+    vote24 = case_when(
+      vote24 == "Libertarian" ~ "Will vote for\na Libertarian",
+      vote24 == "Green" ~ "...the Green Party",
+      vote24 == "Not voting" ~ "...no one",
+      vote24 == "Other" ~ "...someone else",
+      TRUE ~ paste0("...", vote24)
+    )
+  ) |>
+  group_by(vote24) |>
+  mean_ci(lwps_num) |>
+  ggplot() +
+  aes(
+    x = reorder(vote24, - mean), 
+    y = mean
+  ) +
+  geom_pointrange(
+    aes(ymin = lower, ymax = upper)
+  ) +
+  # geom_line(
+  #   size = 1
+  # ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = 2
+  ) +
+  geom_text_repel(
+    data = . %>% 
+      filter(vote24 == "Libertarian"),
+    aes(label = "Mean Response"),
+    min.segment.length = unit(0, 'lines'),
+    nudge_y = .6,
+    nudge_x = 1
+  ) +
+  geom_text_repel(
+    data = . %>%
+      filter(vote24 == "Libertarian"),
+    aes(label = "95% CI", y = lower + 0.025, x = 1 - 0.01),
+    min.segment.length = unit(0, 'lines'),
+    nudge_x = .6
+  ) +
+  scale_y_continuous(
+    limits = c(-2, 2),
+    breaks = c(-2, -1, 0, 1, 2),
+    labels = sort(unique(adt$lwps_cat5))[1:5]
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = paste0(
+      "<p><i style = 'color:red3'>Trump voters</i>",
+      "<span style = 'color:gray40'> are the least concerned",
+      " about</p><p style = 'color:gray40'>America's world power status</p>"
+    ),
+    subtitle = paste0(
+      '<p><b>Average agreement with the statement:</p>',
+      '<p><i>"The US may lose its world power status as a result of',
+      ' this election."</p>'
+    )
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(size = 10),
+    axis.text.x = element_text(
+      angle = 30,
+      color = c(
+        rep("gray40", len = 6),
+        "red3"
+      ),
+      face = c(
+        rep("plain", len = 6),
+        "bold"
+      )
+    ),
+    axis.title.x = element_text(
+      hjust = 0.1
+    ),
+    text = element_text(color = "gray40")
+  )
+save_plot("fig3.png")
+```
+
+### Figure 4
+
+```{r}
+#| fig-width: 6.5
+#| fig-height: 4
+adt |>
+  pivot_longer(
+    Q5_2:Q5_3
+  ) |>
+  mutate(
+    name = ifelse(
+      name == "Q5_2",
+      "...decline of democracy in the US",
+      "...violence and turmoil"
+    ),
+    lwps_noise = lwps_num + runif(n(), -.2, .2),
+    value_noise = value + runif(n(), -.2, .2)
+  ) |>
+  ggplot() +
+  aes(lwps_noise, value_noise) +
+  geom_point(
+    height = .2,
+    width = .2,
+    color = "gray",
+    alpha = 0.5
+  ) +
+  geom_vline(
+    xintercept = 0, 
+    linetype = 2,
+    color = "gray40"
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = 2,
+    color = "gray40"
+  ) +
+  geom_smooth(
+    aes(x = lwps_num, value),
+    method = "lm",
+    formula = y ~ poly(x, 2),
+    color = "black"
+  ) +
+  geom_text_repel(
+    data = . %>%
+      filter(value == -2) %>%
+      slice_head(n = 1),
+    aes(label = "A jittered\nsurvey response"),
+    min.segment.length = unit(0, 'lines'),
+    nudge_x = 1,
+    nudge_y = .5,
+    size = 2
+  ) +
+  facet_wrap(~ name) +
+  scale_x_continuous(
+    breaks = c(-1, 1),
+    labels = c("Disagree", "Agree")
+  ) +
+  scale_y_continuous(
+    labels = sort(unique(adt$lwps_cat5))[1:5]
+  ) +
+  labs(
+    x = "<i>The US will lose its world power status</i>",
+    y = NULL,
+    title = paste0(
+      "<p style = 'color:gray40'>",
+      "Attitudes about the stakes in the 2024 election are</p>",
+      "<p><i style = 'color:steelblue'>positively</i>",
+      "<span style = 'color:gray40'> correlated</span></p>"
+    ),
+    subtitle = paste0(
+      "<p><b>Agreement with the idea that the 2024 election will lead to...</b></p>"
+    )
+  ) +
+  theme(
+    plot.title = element_markdown(),
+    plot.subtitle = element_markdown(size = 10),
+    axis.title.x = element_markdown(size = 10, hjust = .5),
+    text = element_text(color = "gray40"),
+    panel.grid.major.x = element_blank(),
+    axis.line.x = element_line(
+      arrow = grid::arrow(
+        type = "closed",
+        ends = "both",
+        length = unit(0.3, "cm")
+      )
+    )
+  )
+save_plot("fig4.png")
+```

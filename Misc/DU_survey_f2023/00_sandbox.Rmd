@@ -1,0 +1,401 @@
+---
+title: "Playing with DU fall 2023 survey data"
+author: "Miles D. Williams"
+date: "2023-10-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = F,
+                      warning = F)
+library(tidyverse)
+library(socsci)
+library(coolorrr)
+set_theme() 
+set_palette(
+  # qualitative = "https://coolors.co/palette/588b8b-ffffff-ffd5c2-f28f3b-c8553d-2d3047-93b7be",
+  binary = "https://coolors.co/palette/0a2463-fb3640"
+)
+
+## the survey data:
+library(googlesheets4)
+gs4_deauth()
+o23 <- range_read(
+  "https://docs.google.com/spreadsheets/d/19Et52eKP1Yte9tainpfB7f_9sCB8UAVM36DbR2ySyaI/edit#gid=1526346509"
+)
+
+## recodes from Paul
+
+o23 <- o23 %>% rename_all(tolower)
+
+#Some Recodes####
+#Race
+o23 <- o23 %>% mutate(white=car::recode(q57_1, "NA=0"),
+                      hispanic=car::recode(q57_2, "NA=0"),
+                      black=car::recode(q57_3, "NA=0"),
+                      asian=car::recode(q57_4, "NA=0"),
+                      other=car::recode(q57_5, "NA=0"))
+
+
+o23 <- o23 %>% mutate(race=case_when(white==1 & (black!=1 & hispanic!=1 & asian!=1 & other!=1) ~ 1,
+                                     black==1 ~ 2,
+                                     asian==1 & (black!=1 & hispanic!=1) ~ 4,
+                                     hispanic==1 ~ 3,
+                                     other==1 & (black!=1 & hispanic!=1 & asian!=1)~ 5))
+o23 <- o23 %>% mutate(race=frcode(race=="1" ~ "White",
+                                  race=="2" ~ "Black",
+                                  race=="3" ~ "Hispanic",
+                                  race=="4" ~ "Asian",
+                                  race=="5" ~ "Other"))
+
+o23 <- o23 %>% mutate(female=frcode(q53==1 ~ "Men",
+                                    q53==2 ~ "Women"))
+o23 <- o23 %>% mutate(femtran=frcode(q54_1==1 ~ "Men",
+                                     q54_2==1 ~ "Women",
+                                     q54_3==1 | q54_4==1 ~ "Trans/N-B"))
+
+o23 <- o23 %>% mutate(greek=car::recode(q44_6, "NA=0"))
+o23 <- o23 %>% mutate(varsity=car::recode(q44_1, "NA=0"))
+
+o23 <- o23 %>% mutate_at(., vars(starts_with('q44_')), funs(replace_na(., 0)))
+o23 <- o23 %>% mutate(groups=rowSums(dplyr::select(., starts_with("q44_")), na.rm = TRUE))
+
+
+o23 <- o23 %>% mutate(pid7=car::recode(q3, "8=4"))
+o23 <- o23 %>% mutate(pidst=car::recode(pid7, "1=4; 2=3;3=2;4=1;5=2;6=3;7=4"))
+o23 <- o23 %>% mutate(pidstf=frcode(pidst==1 ~ "Independents",
+                                    pidst==2 ~ "Leaning Partisan",
+                                    pidst==3 ~ "Weak Partisans",
+                                    pidst==4 ~ "Strong Partisans"))
+o23 <- o23 %>% mutate(pid3=car::recode(pid7, "1:3=1; 4=2;5:7=3"),
+                      pid3f=frcode(pid3==1 ~ "Democrat",
+                                   pid3==2 ~ "Independent",
+                                   pid3==3 ~ "Republican"))
+o23 <- o23 %>% mutate(pid7f=frcode(pid7==1 ~ "Strong\nDemocrat", 
+                                   pid7==2 ~ "Democrat", 
+                                   pid7==3 ~ "Leaning\nDemocrat",
+                                   pid7==4 ~ "Independent", 
+                                   pid7==5 ~ "Leaning\nRepublican", 
+                                   pid7==6 ~ "Republican",
+                                   pid7==7 ~ "Strong\nRepublican"))
+#Partisan polarization
+o23 <- o23 %>% mutate(polar=abs(q11_6-q11_8))  
+o23 <- o23 %>% mutate(polint=6-q2)
+
+o23 <- o23 %>% mutate(classyr=frcode(q63==4 ~ "Freshman",
+                                     q63==3 ~ "Sophomore",
+                                     q63==2 ~ "Junior",
+                                     q63==1 ~ "Senior"))
+
+o23 <- o23 %>% mutate(hetero=car::recode(q55, "1=1; 2:6=0"))
+
+
+#Intense discussion experiment
+o23 <- o23 %>% gather(key="disctype", value="discamt", q15, q18, na.rm=T)
+o23 <- o23 %>% gather(key="disctype", value="discmore", q16, q19, na.rm=T)
+o23 <- o23 %>% gather(key="disctype", value="lac_disc", q17_1, q20_1, na.rm=T)
+o23 <- o23 %>% gather(key="disctype", value="lac_lead", q17_2, q20_2, na.rm=T)
+o23 <- o23 %>% gather(key="disctype", value="lac_div", q17_3, q20_3, na.rm=T)
+o23 <- o23 %>% gather(key="disctype", value="lac_zone", q17_4, q20_4, na.rm=T)
+
+o23 <- o23 %>% mutate(disctype=frcode(disctype=="q17_4" ~ "Non-political",
+                                      disctype=="q20_4" ~ "Political."))
+
+
+## Adding mine about foreign policy Qs:
+
+# pick 3 FP issues that are most important (Q8)
+o23 <- o23 |>
+  mutate(
+    across(q8_1:q8_12, ~ replace_na(.x, 0))
+  ) |>
+  rename(
+    cyber_security = q8_1,
+    ethnic_conflict = q8_2,
+    climate_change = q8_3,
+    human_rights = q8_4,
+    migration = q8_5,
+    terrorism = q8_6,
+    trade = q8_7,
+    regional_disintegration = q8_8,
+    russian_aggression = q8_9,
+    rising_china = q8_10,
+    domestic_political_instability = q8_11,
+    weapons_of_mass_destruction = q8_12,
+    other_fp_concerns = q8_13
+  ) 
+
+# how like are the following conflicts?
+o23 <- o23 |>
+  mutate(
+    war_us_china = q9_1,   # US vs China
+    war_us_russia = q9_2,  # US vs Russia
+    war_china_taiwan = q9_3# China invades Taiwan
+  )
+
+# Biden's FP performance
+o23 <- o23 |>
+  mutate(
+    biden_fp = frcode(
+      q10_1 == 5 ~ "Very poorly",
+      q10_1 == 4 ~ "Poorly",
+      q10_1 == 3 ~ "Neither",
+      q10_1 == 2 ~ "Well",
+      q10_1 == 1 ~ "Very well"
+    )
+  )
+```
+
+
+
+Okay let's do some analysis.
+
+What FP issues do DU students think are important?
+
+```{r}
+fp_experts <- tibble(
+  name = str_replace_all(
+    names(
+      o23 |> select(cyber_security:weapons_of_mass_destruction)
+    ), 
+    "_",
+    " "
+  ) |> str_to_title(),
+  fpvalue = c(
+    19.03, 2.14, 67.83, 6.03,
+    11.93, 2.28, 7.91, 3.89, 46.78,
+    63, 52.14, 9.79
+  ) / 100
+)
+o23 |>
+  summarize(
+    across(cyber_security:weapons_of_mass_destruction, ~ mean(.x, na.rm = T))
+  ) |>
+  pivot_longer(
+    everything()
+  ) |>
+  mutate(
+    name = str_replace_all(name, "_", " ") |>
+      str_to_title()
+  ) |>
+  left_join(fp_experts) -> plt_dt
+ggplot(plt_dt) +
+  aes(
+    x = value,
+    y = reorder(name, value)
+  ) +
+  geom_pointrange(
+    aes(xmin = fpvalue, xmax = value),
+    show.legend = F,
+    color = "steelblue"
+  ) +
+  geom_point(
+    aes(x = fpvalue),
+    color = "darkred",
+    size = 2,
+    shape = 15
+  ) +
+  labs(
+    x = "Share of Students",
+    y = NULL,
+    title = "What foreign policy issues are Denison\nstudents concerned about?",
+    subtitle = "Student concerns vs. IR faculty concerns from TRIP Survey"
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) +
+  ggpal(
+    type = "sequential"
+  ) +
+  theme(
+    panel.grid.major.y = element_blank()
+  ) +
+  geom_text(
+    data = plt_dt |>
+      filter(name == "Human Rights"),
+    aes(label = "Students"),
+    color = "steelblue",
+    vjust = -0.75
+  ) +
+  geom_text(
+    data = plt_dt |>
+      filter(name == "Human Rights"),
+    aes(label = "IR Faculty", x = fpvalue),
+    color = "darkred",
+    vjust = -0.75
+  )
+```
+
+Denison students and IR faculty evaluate the importance of certain issues at nearly similar rates, such as climate change, trade, and cybersecurity. But there are chasmic divides on issues such as human rights, a rising China, and a revanchist Russia. IR faculty are deeply concerned about China and Russia while the average Denison student is not. Conversely, the average Denison student is highly concerned about human rights in US foreign policy, but the average IR faculty thinks human rights is of lesser concern.
+
+How do students evaluate the likelihood of different conflicts in the next 10 years?
+
+I'll make a rain cloud plot:
+
+```{r}
+raincloud <- function(df, x, y, 
+                      fill = NULL, 
+                      alpha = 1,
+                      flip = FALSE) {
+  x <- enquo(x)
+  y <- enquo(y)
+  fill <- enquo(fill)
+  
+  ggplot(df) +
+    aes(x = !! x, y = !! y, fill = !! fill) +
+  ## add half-violin from {ggdist} package
+  ggdist::stat_halfeye(
+    ## customize thickness
+    aes(thickness = stat(pdf*n)),
+    ## custom bandwidth
+    adjust = .5, 
+    ## adjust height
+    width = .6, 
+    ## move geom to the right
+    justification = -.2, 
+    ## set alpha
+    alpha = alpha,
+    ## remove slab interval
+    .width = 0, 
+    point_colour = NA
+  ) + 
+  geom_boxplot(
+    width = .12, 
+    ## remove outliers
+    outlier.color = NA ## `outlier.shape = NA` works as well
+  ) +
+  ## add dot plots from {ggdist} package
+  ggdist::stat_dots(
+    ## orientation to the left
+    side = "left", 
+    ## move geom to the left
+    justification = 1.1, 
+    ## adjust grouping (binning) of observations 
+    binwidth = .25,
+    linewidth = 0
+  ) -> plot ## save new plot object
+  
+  ## option to flip the coordinates
+  if(flip) { ## if flip = TRUE
+    plot + 
+      coord_flip()
+  } else {   ## if flip = FALSE
+    plot
+  }
+}
+```
+
+
+```{r}
+library(ggridges)
+o23 |>
+  pivot_longer(
+    starts_with("war")
+  ) |>
+  mutate(
+    name = frcode(
+      name == "war_us_china" ~ "War between \nUS vs. China",
+      name == "war_us_russia" ~ "War between\nUS vs. Russia",
+      name == "war_china_taiwan" ~ "China invades\nTaiwan"
+    )
+  ) |>
+  raincloud(
+    x = name,
+    y = value,
+    flip = T,
+    fill = name
+  ) +
+  ggpal(aes = "fill") +
+  labs(
+    y = "% Likelihood",
+    x = NULL,
+    title = "How likely do Denison students think the\nfollowing conflicts are in the next 10 years?"
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+Do Denison students think Biden is doing well in foreign policy?
+
+```{r}
+fp_experts <- tibble(
+  biden_fp = c("Very well", "Well", "Neither", "Poorly", "Very poorly"),
+  pct = c(23.74, 49.93, 15.83, 6.14, 4.37) / 100
+)
+library(ggtext)
+sbtext <- paste0(
+  "Denison ", "<span style = 'color:steelblue'>***students***</span>",
+  " compared to ", "<span style = 'color:darkred'>***IR faculty***</span>",
+  " responses from the TRIP Survey"
+)
+o23 |>
+  ct(biden_fp, show_na = F) |>
+  ggplot() +
+  aes(
+    x = biden_fp,
+    y = pct
+  ) +
+  geom_col(
+    width = 0.5,
+    fill = "steelblue"
+  ) +
+  geom_pointrange(
+    data = fp_experts,
+    aes(ymin = 0, ymax = pct),
+    shape = 15,
+    size = 3,
+    color = "darkred"
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Share of Students",
+    title = "How do Denison students think Biden has\nperformed in foreign policy the last 3 years?",
+    subtitle = sbtext
+  ) +
+  theme(
+    panel.grid.major.x = element_blank(),
+    plot.subtitle = element_markdown()
+  )
+```
+
+Who thinks Biden has done better or worse?
+
+```{r}
+o23 |>
+  group_by(pid3f) |>
+  ct(biden_fp, show_na = F) |>
+  drop_na() |>
+  mutate(
+    value = as.numeric(biden_fp)
+  ) |>
+  ggplot() +
+  aes(
+    x = value,
+    y = pct,
+    color = pid3f
+  ) +
+  geom_point(size = 3) +
+  geom_line(size = 1) +
+  scale_x_continuous(
+    labels = unique(o23$biden_fp) |> na.omit() |> sort()
+  ) +
+  ggpal() +
+  theme(
+    panel.grid.major.x = element_blank()
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = "Share of Students",
+    title = "How do student evaluations of Biden\nbreak down by partisanship?",
+    color = NULL
+  )
+```
+
