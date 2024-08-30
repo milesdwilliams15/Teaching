@@ -12,7 +12,7 @@ date: "Spring 2024"
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
 officehours: "MW 11:30am-1:20pm"
-office: "Ebaugh 108"
+office: "Ebaugh 109"
 classroom: "Knapp Hall 105"
 classhours: "MWF (Sec. 1 9:30-10:20am, Sec. 2 10:30-11:20am)"
 
@@ -239,7 +239,7 @@ class_cal +
 
 # Part I: Tales of Election Fraud
 
-## `r advdate(mon, 2)`: Getting Started
+## `r advdate(mon, 3)`: Getting Started
 
 -   Monday: Read [Introduction](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/intro.html) and [R Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/01_prerequesites1.html) in lecture notes
 
@@ -247,7 +247,7 @@ class_cal +
 
 -   Friday: Discussion reading \hfill \textit{GC1 due Fri.}
 
-## `r advdate(mon, 3)`: Making a Plot
+## `r advdate(mon, 4)`: Making a Plot
 
 -   Monday: Read [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html) in lecture notes
 
@@ -255,21 +255,13 @@ class_cal +
 
 -   Friday: Discussion reading \hfill \textit{GC2 due Fri.}
 
-## `r advdate(mon, 4)`: Show the Right Numbers
+## `r advdate(mon, 5)`: Show the Right Numbers
 
 -   Monday: Read [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html) in lecture notes
 
--   Wednesday: Keep reading [Showing the Right Numbers...](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html)
+-   Wednesday: Read [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) in the lecture notes
 
--   Friday: Discussion reading \hfill \textit{GC3 due Fri.}
-
-## `r advdate(mon, 5)`: Drawing Maps
-
--   Monday: Read [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) in the lecture notes
-
--   Wednesday: Keep reading [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html)
-
--   Friday: Introduce MA1
+-   Friday: Introduce MA1 \hfill \textit{GC3 due Fri.}
 
 ## `r advdate(mon, 6)`: Work on MA1
 
@@ -331,6 +323,7 @@ class_cal +
 
 -   Friday: Discussion reading and introduce MA3 \hfill \textit{GC8 due Fri.}
 
+
 ## `r advdate(mon, 13)`: Work on MA3
 
 -   Monday: Work on MA3
@@ -342,6 +335,7 @@ class_cal +
 ## `r advdate(mon, 14)`: Thanksgiving Break
 
 *No class*
+
 
 # Part IV: Choose-your-own-adventure
 
