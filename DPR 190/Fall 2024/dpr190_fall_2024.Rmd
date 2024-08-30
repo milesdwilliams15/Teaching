@@ -659,7 +659,7 @@ Grade the AI due Fri.
 
 \textbf{\textit{Due}}
 
-MA3 due at finals date (to be specified soon).
+MA3 due 12.15 by 8:30pm.
 
 \end{flushright}
 
