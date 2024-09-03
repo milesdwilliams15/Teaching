@@ -1,0 +1,150 @@
+---
+title: "What Makes a Data Visualization Good?"
+subtitle: "DPR 101"
+format: 
+  revealjs:
+    theme: serif
+    incremental: true
+    fig-align: center
+    fig-dpi: 500
+---
+
+## How do we know if a data visualization is good?
+
+-   We could consider factors like objectivity...
+
+-   ...transparency
+
+-   ...clarity
+
+-   ...efficiency
+
+-   Let's look a some examples and see what we think
+
+## Life Expectancy
+
+![](images/clipboard-3048956172.png)
+
+## Monstrous Costs
+
+![](images/clipboard-2218054036.png)
+
+## Is democracy essential?
+
+![](images/clipboard-46844671.png)
+
+## Depends on how you show the data
+
+![](images/clipboard-1412683154.png)
+
+## Our perception is bad
+
+![](images/clipboard-4082623328.png)
+
+## Our perception is bad
+
+![](images/clipboard-2509575451.png)
+
+## Our perception is bad
+
+![](images/clipboard-1207619704.png)
+
+## Pie is for eating, and that's all
+
+![](images/clipboard-1433871200.png)
+
+## Do this instead
+
+![](images/clipboard-1798577999.png)
+
+## So what's wrong with pie?
+
+It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-visualisation-and-exploration/no_pie-charts))
+
+-   You need to add the percentage to every slice.
+
+-   You need to directly label every slice.
+
+-   You have run out of colours for the slices.
+
+-   You will have to explode the chart to solve your first three problems.
+
+## Putting it bluntly
+
+*"Cosmetic decoration, which frequently distorts the data, will never salvage an underlying lack of content"* - Edward Tufte
+
+## Still room for debate
+
+::: columns
+::: {.column width="50%"}
+![](images/clipboard-932591159.png){width="7in"}
+:::
+
+::: {.column width="50%"}
+![](images/clipboard-194260996.png){width="7in"}
+:::
+:::
+
+## What makes a good data viz
+
+-   It lets your audience make a quick visual judgment
+
+-   Design elements are used strategically (and sparingly)
+
+-   It is transparent and easy to replicate
+
+-   It uses labels effectively when geometry won't do the trick
+
+## A good data viz
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 5
+#| fig-width: 7
+
+library(tidyverse)
+library(gghighlight)
+library(coolorrr)
+library(qss)
+set_theme()
+set_palette()
+
+data("florida")
+
+florida$county[
+  florida$county == "PalmBeach"
+] <- "Palm Beach"
+
+ggplot(florida) +
+  aes(
+    x = Perot96, 
+    y = Buchanan00
+  ) +
+  geom_point(
+    aes(color = county)
+  ) +
+  geom_smooth(
+    method = "lm"
+  ) + 
+  gghighlight(
+    county == "Palm Beach"
+  ) +
+  scale_x_continuous(
+    labels = scales::comma
+  ) +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+  labs(
+    x = "Votes for Perot",
+    y = "Votes for Buchanan",
+    title = "Florida third party candidate results in 1996 and 2000",
+    subtitle = paste0(
+      "Palm Beach had unusually high support for\n",
+      "Pat Buchanan in 2000 given its level of support\n",
+      "for Ross Perot in 1996.\n"
+    )
+  ) 
+```
