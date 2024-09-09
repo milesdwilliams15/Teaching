@@ -412,13 +412,13 @@ You can also email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu
 
 ## Teaching Assistants
 
-DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
+DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TA are included below. Our TA is a great resource if you're having trouble with your code or are stuck on a problem.
 
-### Name Here
+### Anna Laura Xavier Batista
 
--   **email**: tbd\@denison.edu
--   **hours**: Day and time TBD
--   **location**: TBD
+-   **email**: xavier_a1\@denison.edu
+-   **hours**: Thursdays, 8-10pm
+-   **location**: Knapp Hall 208
 
 ## Accessibility
 
