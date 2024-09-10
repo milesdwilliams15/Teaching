@@ -245,7 +245,7 @@ class_cal +
 
 -   Wednesday: Read [Accessing Data and Making Your First Plot](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/02_prerequisites2.html) in lecture notes
 
--   Friday: Discussion reading \hfill \textit{GC1 due Fri.}
+-   Friday: Read and discuss ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118) \hfill \textit{GC1 due Fri.}
 
 ## `r advdate(mon, 4)`: Making a Plot
 
