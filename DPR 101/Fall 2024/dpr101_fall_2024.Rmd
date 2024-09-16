@@ -253,7 +253,7 @@ class_cal +
 
 -   Wednesday: Keep reading [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html)
 
--   Friday: Discussion reading \hfill \textit{GC2 due Fri.}
+-   Friday: Read and discuss ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714) \hfill \textit{GC2 due Fri.}
 
 ## `r advdate(mon, 5)`: Show the Right Numbers
 
