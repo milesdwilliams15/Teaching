@@ -377,7 +377,7 @@ Grade the AI due Fri.
 
 \textbf{\textit{Due}}
 
-MA1 due Fri.
+Grade the AI due Fri.
 
 \end{flushright}
 
@@ -394,11 +394,11 @@ MA1 due Fri.
 
 \begin{itemize}
 
-\item Monday: Summary of collective action problems. Review Haass (p. 155-250). Start In-class work on TD1
+\item Monday: Summary of collective action problems. Review Haass (p. 155-250). Start In-class work on MA1
 
-\item Wednesday: In-class group work on TD1
+\item Wednesday: In-class group work on MA1
 
-\item Friday: TD1 Presentations.
+\item Friday: MA1 Presentations.
 
 \end{itemize}
 
@@ -406,6 +406,7 @@ MA1 due Fri.
 
 \begin{flushright}
 
+MA1 due Fri.
 
 \end{flushright}
 

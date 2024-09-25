@@ -261,11 +261,11 @@ class_cal +
 
 -   Wednesday: Read [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) in the lecture notes
 
--   Friday: Introduce MA1 \hfill \textit{GC3 due Fri.}
+-   Friday: Read [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link") \hfill \textit{GC3 due Fri.}
 
 ## `r advdate(mon, 6)`: Work on MA1
 
--   Monday: Work on MA1
+-   Monday: Introduce MA1
 
 -   Wednesday: Work on MA1
 
@@ -323,7 +323,6 @@ class_cal +
 
 -   Friday: Discussion reading and introduce MA3 \hfill \textit{GC8 due Fri.}
 
-
 ## `r advdate(mon, 13)`: Work on MA3
 
 -   Monday: Work on MA3
@@ -335,7 +334,6 @@ class_cal +
 ## `r advdate(mon, 14)`: Thanksgiving Break
 
 *No class*
-
 
 # Part IV: Choose-your-own-adventure
 

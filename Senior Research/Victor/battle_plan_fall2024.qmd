@@ -1,0 +1,43 @@
+---
+title: "Predicting Civil War"
+subtitle: "A Provisional Battle Plan for Senior Research"
+format: pdf
+---
+
+## Introduction
+
+This document is a syllabus, only in the loosest sense possible. A better label is "provisional battle plan." This semester, you're on a journey toward producing some original research---specifically, to come up with a novel approach to civil war forecasting. 
+
+My job is to guide and empower you on your way to achieving this goal. My job is not to tell you what to do or how to do it. I will offer advice and make suggestions, but I want this to be *your* project.
+
+With that said, in the next few pages I have tried to provide some structure for this semester by setting a few goals and a timeline for when those goals should be achieved. I have provided some resources, too. Nothing included in the next few pages is written in stone. I'm sure we'll revise the course timeline many times. But as much as this is your journey, I'm going to keep you accountable for making regular progress toward reaching your goals.
+
+Alright, enough said.
+
+\newpage
+
+## Resources
+
+Since your research is focused on forecasting civil wars, it makes sense to itemize some helpful and authoritative resources on this topic. First up is the [Peace Research Institute at Oslo (PRIO)](https://www.prio.org/), which has created and regularly updates the [UCDP/PRIO Armed Conflict Dataset](https://www.prio.org/data/4) produced in partnership with the Uppsala Conflict Data Project. This is one of the most authoritative conflict datasets in the world, and one that has been used in a large number of academic, peer reviewed studies on civil war.
+
+Second, thinking about data, [Steve Miller](https://svmiller.com/), a political scientist at Stockholm University, created an R package called [`{peacesciencer}`](https://svmiller.com/peacesciencer/) that provides comprehensive access to the UCDP/PRIO dataset. It also offers access to over 30 additional datasets that are commonly used in conflict studies. While you don't have to use this R package, I think it provides a great place to get started in your research. Data collection and cleaning is one of the hardest parts of data analysis. Using `{peacesciencer}` can remove some of the drudgery of data wrangling from your project.
+
+Finally, I wanted to provide links to two summaries of efforts on the part of PRIO to forecast civil wars. It will make a lot of sense for you to try to engage with these as you develop your own approach to modeling and predicting civil war. Here are the links:
+
+* [Can We Predict Civil War?](https://blogs.prio.org/2021/02/can-we-predict-civil-war/)
+* [The Results of a Prediction Compeition Suggest the Fog of War Can Be Partially Lifted](https://blogs.prio.org/2022/12/the-results-of-a-prediction-competition-suggest-the-fog-of-war-can-be-partially-lifted/)
+
+\newpage
+
+## A Timeline
+
+I think we should try and divide the course into two parts. The first will be dedicated to giving you a background in the literature on civil war forecasts. This is a relatively new but growing area of research, and it will be important to get a sense for what the state of the field currently is and what its development has looked like. What are the pitfalls and promises of forecasting civil wars, for example?
+
+The second part of the course will be dedicated to getting your hands dirty with data and, ideally, by trying to replicate the forecasting work done by others. If you're going to make your mark by proposing a new approach to civil war forecasting, it's important to make sure that you understand what has been done in the past.
+
+The exactly timeline for these steps will be subject to change, but I think the following set of dates are a good target:
+
+* **Part I: Background** --- Complete by Nov. 1
+* **Part II: Troubleshooting** --- Complete by Dec. 13
+
+For Part I, we'll work out a set of weekly readings which we'll discuss on a weekly basis. For Part II, we'll work out a set of recent studies to replicate, work on data access, and hopefully get you started using your own forecasting approach.
