@@ -337,7 +337,7 @@ Grade the AI due Fri.
 
 \item Wednesday: Peterson Institute, \href{https://www.piie.com/microsites/globalization/what-is-globalization}{"What is Globalization?"} and Our World in Data, \href{https://ourworldindata.org/trade-and-globalization#trade-from-a-historical-perspective}{"Trade from a Historical Perspective."}
 
-\item Friday: Henry Farrell and Abraham Newman, \href{https://www.foreignaffairs.com/articles/united-states/2019-12-10/chained-globalization}{"Chained to Globalzation"} and \href{https://www.foreignaffairs.com/articles/2020-03-16/will-coronavirus-end-globalization-we-know-it}{"Will the Coronavirus End Globalization as we Know It?"}
+\item Friday: Henry Farrell and Abraham Newman, \href{https://drive.google.com/file/d/1FDbqb78l4ReyCPFR-VFNUw-Yv8IJDOJl/view?usp=sharing}{"Chained to Globalzation"} and \href{https://drive.google.com/file/d/1KfRneauB01CW7qaksrjejXal1J5s3Co3/view?usp=sharing}{"Will the Coronavirus End Globalization as we Know It?"}
 
 \end{itemize}
 
