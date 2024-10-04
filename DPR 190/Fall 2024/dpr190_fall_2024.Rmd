@@ -398,7 +398,7 @@ Grade the AI due Fri.
 
 \item Wednesday: In-class group work on MA1
 
-\item Friday: MA1 Presentations.
+\item Friday: 1-on-1 meetings.
 
 \end{itemize}
 
