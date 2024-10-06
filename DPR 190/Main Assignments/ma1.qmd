@@ -1,0 +1,30 @@
+---
+title: "Main Assignment 1 (MA1)"
+format: pdf
+---
+
+## Instructions
+
+As the first unit of our course comes to a close, it's time to introduce your first main assignment (MA). This MA will be a ***group*** assignment, and I will assign groups randomly via Canvas. MA1 is worth 20% of your final grade. For more on my grading policy, check out the "Grading Policy" section of the course syllabus.
+
+For MA1, your group will pretend to work for a new international non-governmental organization (NGO) that seeks to promote awareness of global issues, engage in advocacy, and propose policy solutions (if you don't know what an NGO is, [here's a list](https://www.humanrightscareers.com/issues/biggest-ngos-in-the-world/) of the top 15 in the world). Because it is new, the founders of this NGO have yet to decide on their area of focus and whether they should have a global footprint or specialize in a particular region of the world. They know they want to specialize in *three* issues, and they are open to either a global or regional focus. They have hired you to offer guidance on what issues they should prioritize, and for these issues whether or not it makes sense to focus on certain regions. 
+
+You're going to help by using data to show the leaders of this NGO what issue areas seem to be becoming more relevant, either within certain regions or across the globe. Based on what you find, you'll write a short report (no more than 1,000 words) showing trends in a selection of global issues in a way that demonstrates clearly to the leaders of this NGO which three issues they should prioritize and whether these issues are especially important for certain countries or regions, or are global in scope. 
+
+To help you research trends in global issues, I created an interactive online dashboard called [Trends in Global Issues](https://milesdwilliams15.shinyapps.io/trends-in-global-politics/). It lets you explore a country-year dataset with coverage from 1992 to 2022 of a variety of metrics on issues ranging from terrorism and nuclear proliferation, to economic development and life expectancy. By setting different options you can show detail by different regions of the world and highlight specific countries. Use what you find with this dashboard to provide data-driven recommendations to the NGO about what issues they should prioritize.
+
+Here's what your report for the NGO should look like:
+
+- **Introduction**: In one paragraph, begin by stating the goal of your report and describe how you will use data to achieve this goal. 
+- **Analysis**: Using at least 3 graphs that you produced with the dashboard, summarize your findings on the trends and scope of issues you believe the NGO should prioritize. You are welcome to include as many graphs beyond 3 that you feel are necessary to build your case. For each graph, you should include a paragraph that summarizes what it is showing *before* the graph appears. This paragraph should indicate which issue is being shown, what its trend looks like, and (if you choose to highlight certain cases or look at certain regions) whether it reveals differences across countries and/or regions. You should begin each paragraph with a sentence that justifies why you chose to show a given graph. A bad first sentence would be something like: "In the below graph we show trends in terrorism broken down by world region." A good first sentence would be something like: "First, based on our analysis we we believe you should focus on counter-terrorism efforts in South Asia."
+- **Conclusions**: In two final paragraphs briefly summarize your recommendations and offer a normative case for why focusing on your chosen issues matters. Think big and feel free to rely on our Haass reading, other readings we've done in the class, or other sources you find online as you make your case.
+
+As you put your report together here are some additional rules to keep in mind:
+
+- Make sure you submit your work as a .docx or .pdf file on Canvas.
+- Include a title, along with your names, at the top of the document.
+- Each of the three sections outlined above should begin with section headers.
+- Write clearly and plainly. It's tempting to write with Baroque ornamentation. That is, it's tempting to write using fancy words. Fancy words will not impress, but only annoy the leaders of this NGO. Avoid passive tense as much as possible, too.
+- Whatever sources you cite, use some kind of citation style, and use it consistently, like APA, MLA, or hyperlinked text. As long as you credit others for their ideas, I don't care how you do it.
+
+Your MA1 submission is due Friday Oct. 11 by midnight.
