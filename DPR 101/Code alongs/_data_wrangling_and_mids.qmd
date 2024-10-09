@@ -1,0 +1,261 @@
+---
+title: "Data Wrangling"
+format: html
+---
+
+## Setup
+
+```{r}
+# install.packages("peacesciencer")
+# install.packages("devtools")
+# devtools::install_github("ryanburge/socsci")
+library(tidyverse)
+library(peacesciencer)
+library(socsci)
+```
+
+## Make a dataset with `{peacesciencer}`
+
+How it works:
+
+1. Create a base dataset using a `create_*()` function.
+2. Populate the dataset with variables using `add_*()` functions.
+
+```{r}
+create_stateyears() |>
+  add_gml_mids() |>
+  add_democracy() -> dt
+```
+
+## Start cleaning
+
+First, let's make sure we drop any years from the data that don't have valid conflict observations. The MID dataset only runs up to 2010.
+
+```{r}
+dt |>
+  filter(
+    year <= 2010
+  ) -> dt
+```
+
+Second, let's use the `polity2` column, which provides a measure of quality of democracy on a -10 to 10 scale, to create a categorical measure of regime type based on the Polity Project's recommendations. That is, we'll code countries with a score < -5 as autocracies, those with a score between -5 and 5 as anocracies, and those with a score > 5 as democracies. The `frcode()` function will let us do this.
+
+```{r}
+dt |>
+  mutate(
+    regime = frcode( 
+      polity2 < -5 ~ "Autocracy",
+        # if polity2 < 5, then return "Autocracy"
+      polity2 %in% c(-5:5) | is.na(polity2) ~ "Anocracy",
+        # if polity2 is bt -5 to 5, then return "Anocracy"
+      polity2 > 5 ~ "Democracy"
+        # if polity2 > 5, then return "Democracy"
+    )
+  ) -> dt
+```
+
+
+## Poke around
+
+```{r}
+dt |>
+  select(statenme, year, regime, polity2) |>
+  sample_n(10)
+```
+
+
+```{r}
+dt |>
+  filter(
+    regime == "Democracy"
+  ) |>
+  count(statenme) |>
+  arrange(-n)
+```
+
+```{r}
+dt |>
+  filter(regime == "Democracy") |>
+  group_by(statenme) |>
+  summarize(
+    mid_init = sum(gmlmidonset_init)
+  ) |>
+  arrange(-mid_init)
+```
+
+
+## Make some data viz
+
+First, let's just summarize the number of MIDs initiated over time.
+
+```{r}
+dt |>
+  group_by(year) |>
+  summarize(
+    n_mids = sum(gmlmidonset_init)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = n_mids
+  ) +
+  geom_line() +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MIDs initiated over time",
+    subtitle = "MIDs have become more frequent"
+  )
+```
+
+
+What about the MID rate?
+
+```{r}
+dt |>
+  group_by(year) |>
+  summarize(
+    n_mids = mean(gmlmidonset_init)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = n_mids
+  ) +
+  geom_line() +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MIDs initiated over time",
+    subtitle = "MIDs have not really become more or less likely"
+  )
+```
+
+
+
+Let's show the overall rate of starting MIDs by regime type.
+
+```{r}
+dt |>
+  group_by(regime) |>
+  summarize(
+    mid_init_rate = mean(gmlmidonset_init)
+  ) |>
+  ggplot() +
+  aes(
+    x = regime,
+    y = mid_init_rate
+  ) +
+  geom_col() +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MID initiation rate among countries by regime",
+    subtitle = "Anocracies are the least prone to starting fights"
+  )
+```
+
+Let's show the rate over time by regime.
+
+First, by count.
+
+```{r}
+dt |>
+  group_by(year, regime) |>
+  summarize(
+    mid_init_rate = sum(gmlmidonset_init)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = mid_init_rate,
+    color = regime
+  ) +
+  geom_point(
+    alpha = 0.4
+  ) + 
+  geom_smooth(
+    method = "gam", 
+    se = F
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MID initiation rate over time by regime",
+    subtitle = "Democracies weren't always more peaceful",
+    color = NULL
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+```
+
+
+Next, by rate.
+
+```{r}
+dt |>
+  group_by(year, regime) |>
+  summarize(
+    mid_init_rate = mean(gmlmidonset_init)
+  ) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = mid_init_rate,
+    color = regime
+  ) +
+  geom_point(
+    alpha = 0.4
+  ) + 
+  geom_smooth(
+    method = "gam", 
+    se = F
+  ) +
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MID initiation rate over time by regime",
+    subtitle = "Democracies weren't always more peaceful",
+    color = NULL
+  ) +
+  theme(
+    legend.position = "bottom"
+  )
+```
+
+Use `pivot_longer()` to show the count and rate in a small multiple:
+
+```{r}
+dt |>
+  group_by(year) |>
+  summarize(
+    "MID Frequency" = sum(gmlmidonset_init),
+    "MID Rate" = mean(gmlmidonset_init)
+  ) |>
+  pivot_longer(starts_with("MID")) |>
+  ggplot() +
+  aes(
+    x = year,
+    y = value
+  ) +
+  geom_point(color = "gray") + 
+  geom_smooth(
+    method = "gam", 
+    se = F
+  ) +
+  facet_wrap(~ name, scales = "free_y") +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "MID initiation count and rate over time",
+    subtitle = "Conflict is becoming more frequent but not more likely"
+  ) 
+```
+
