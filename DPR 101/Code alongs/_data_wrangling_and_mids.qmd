@@ -115,12 +115,12 @@ What about the MID rate?
 dt |>
   group_by(year) |>
   summarize(
-    n_mids = mean(gmlmidonset_init)
+    mean_mids = mean(gmlmidonset_init)
   ) |>
   ggplot() +
   aes(
     x = year,
-    y = n_mids
+    y = mean_mids
   ) +
   geom_line() +
   labs(
@@ -184,7 +184,7 @@ dt |>
   labs(
     x = NULL,
     y = NULL,
-    title = "MID initiation rate over time by regime",
+    title = "MID initiation count over time by regime",
     subtitle = "Democracies weren't always more peaceful",
     color = NULL
   ) +
