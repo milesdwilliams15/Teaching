@@ -309,11 +309,11 @@ class_cal +
 
 ## `r advdate(mon, 11)`: Dealing with Survey Data
 
--   Day 1: Read [Tools for Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html) in lecture notes
+-   Day 1: Read [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html) in lecture notes
 
--   Day 2: Keep reading [Tools...](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html)
+-   Day 2: Keep reading [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html)
 
--   Day 3: Discussion reading \hfill \textit{GC7 due Fri.}
+-   Day 3: Read "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" \hfill \textit{GC7 due Fri.}
 
 ## `r advdate(mon, 12)`: Upping the Complexity
 
