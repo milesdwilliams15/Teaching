@@ -317,11 +317,11 @@ class_cal +
 
 ## `r advdate(mon, 12)`: Upping the Complexity
 
--   Monday: Read [Dealing with Multiple Response Questions](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.5_multiple_choice_survey_questions.html) in lecture notes
+-   Monday: Read [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes
 
--   Wednesday: Read [Showing Multifaceted Relationships](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html) in lecture notes
+-   Wednesday: Read [Making Indexes...](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes. Introduce MA3.
 
--   Friday: Discussion reading and introduce MA3 \hfill \textit{GC8 due Fri.}
+-   Friday: NO CLASS \hfill \textit{GC8 due Fri.}
 
 ## `r advdate(mon, 13)`: Work on MA3
 
@@ -329,7 +329,7 @@ class_cal +
 
 -   Wednesday: Work on MA3
 
--   Friday: 1-on-1 check-ins \hfill \textit{MA3 due Fri.}
+-   Friday: Work on MA3 \hfill \textit{MA3 due Fri.}
 
 ## `r advdate(mon, 14)`: Thanksgiving Break
 
