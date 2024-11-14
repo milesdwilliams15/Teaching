@@ -1,0 +1,153 @@
+---
+title: "Making indexes"
+format: html
+---
+
+
+## Setup
+
+```{r packages + data}
+library(tidyverse)
+theme_set(ggthemes::theme_fivethirtyeight())
+
+wthh <- read_csv(
+  "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
+)
+```
+
+
+## Look at racial animus
+
+```{r histogram of raw score}
+ggplot(wthh) +
+  aes(x = racial_resentment_raw) +
+  geom_histogram()
+```
+
+
+```{r histogram of scaled score}
+ggplot(wthh) +
+  aes(x = racial_resentment_scaled) +
+  geom_histogram()
+```
+
+
+## Make racial animus from scratch
+
+```{r index from scratch}
+wthh |>
+  mutate(
+    ## first convert 6 (no opinion) to 2 (neither agree nor dis)
+    ## and subtract 1 to put on a 0:4 scale
+    across(
+      c(
+        GENERATIONS,
+        FAVORS,
+        INSTITUTION,
+        SYSTEM,
+        EMPATHY
+      ),
+      ~ ifelse(.x == 6, 3, .x) - 1,
+      .names = "{.col}_rec" # update as new columns
+    ),
+    SYSTEM_rec = 4 - SYSTEM_rec,
+    FAVORS_rec = 4 - FAVORS_rec,
+    ## make the index
+    racial_animus = 
+      SYSTEM_rec + FAVORS_rec +
+      GENERATIONS_rec + INSTITUTION_rec + EMPATHY_rec
+  ) -> wthh
+
+wthh |>
+  select(
+    GENERATIONS,
+        FAVORS,
+        INSTITUTION,
+        SYSTEM,
+        EMPATHY,
+    ends_with("_rec"),
+    racial_animus_mean
+  ) |> view()
+```
+
+```{r correlation bt new and old versions}
+ggplot(wthh) +
+  aes(x = racial_resentment_raw, y = racial_animus) +
+  geom_point() +
+  geom_abline(
+    slope = 1,
+    intercept = 0
+  )
+```
+
+```{r histogram of each}
+wthh |>
+  pivot_longer(
+    c(racial_resentment_raw, racial_animus)
+  ) |>
+  ggplot() +
+  aes(x = value) +
+  geom_histogram() +
+  facet_wrap(~ name, scales = "free")
+```
+
+## Averaging to make an index
+
+```{r}
+wthh |>
+  count(is.na(racial_animus))
+```
+
+
+
+```{r averaged index}
+wthh |>
+  rowwise() |>
+  mutate(
+    racial_animus_mean = mean(
+      c_across(
+        ends_with("_rec")
+      ),
+      na.rm = T
+    )
+  ) |>
+  ungroup() -> wthh
+
+wthh |>
+  count(is.na(racial_animus_mean))
+```
+
+## Can we trust the index
+
+Look at intersection of race and income on individual Qs
+
+```{r recodes for race and income}
+library(socsci)
+wthh |>
+  mutate(
+    race_cat = frcode(
+      race == 1 ~ "White",
+      race == 2 ~ "Black",
+      race == 3 ~ "Latino",
+      TRUE ~ "Other"
+    ),
+    
+    income = frcode(
+      faminc_new < 10 ~ "< 100k",
+      faminc_new >= 10 ~ ">= 100k"
+    )
+  ) -> wthh
+```
+
+
+```{r data viz}
+wthh |>
+  group_by(race_cat, income) |>
+  mean_ci(racial_animus_mean) |>
+  ggplot() +
+  aes(x = mean, xmin = lower, xmax = upper, y = race_cat) +
+  geom_pointrange(
+    aes(color = income)
+  ) 
+```
+

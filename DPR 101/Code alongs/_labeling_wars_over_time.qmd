@@ -1,0 +1,90 @@
+---
+title: "Labeling wars over time"
+format: html
+---
+
+This is meant to be an in-class challenge. First, I just show students the data visualization and give them the code to read in the data. I give them 15-20 minutes to get as far as they can without my help.
+
+After that, I then allow them to ask me questions.
+
+Finally, with 10 minutes left in class I walk through my code.
+
+## Setup
+
+```{r}
+library(tidyverse)
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/refs/heads/main/DPR%20101/Data/Inter-StateWarData_v4.0.csv"
+wars <- read_csv(url)
+```
+
+## Show top 5 deadliest wars over time
+
+```{r}
+#| fig-height: 3
+#| fig-width: 6
+wars |>
+  group_by(WarName) |>
+  summarize(
+    year = min(StartYear1),
+    deaths = sum(BatDeath)
+  ) |>
+  ggplot() +
+  aes(x = year, y = deaths) +
+  geom_pointrange(
+    aes(ymin = 0, ymax = deaths),
+    color = "gray",
+    size = .2
+  ) +
+  geom_point(
+    data = . %>% 
+      slice_max(deaths, n = 5),
+    color = "red",
+    size = 2
+  ) +
+  ggrepel::geom_text_repel(
+    data = . %>% 
+      slice_max(deaths, n = 5),
+    aes(
+      label = paste0(
+        WarName, "\n", scales::comma(deaths)
+      )
+    ),
+    color = "black",
+    bg.color = "white",
+    size = 3,
+    min.segment.length = unit(0, "in"),
+    box.padding = 1
+  ) +
+  scale_y_continuous(
+    labels = ~ paste0(.x / 1e06, " mil.")
+  ) +
+  scale_x_continuous(
+    n.breaks = 20
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    title = "The top 5 deadliest wars since 1816",
+    subtitle = "Total battle deaths in millions by start year"
+  ) +
+  ggthemes::theme_fivethirtyeight() +
+  theme(
+    legend.position = "",
+    axis.text.x = element_text(
+      angle = 45,
+      hjust = 1
+    ),
+    panel.grid.major.x = element_blank()
+  ) 
+ggsave(
+  here::here(
+    "DPR 101",
+    "Code alongs",
+    "top_5_wars.png"
+  ),
+  height = 3,
+  width = 6,
+  dpi = 500
+)
+```
+

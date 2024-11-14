@@ -1,0 +1,157 @@
+---
+title: "Advanced settings and complex layers"
+format: html
+---
+
+## Advanced settings
+
+```{r setup}
+#| include: false
+
+## 1. Set things up the way I like:
+knitr::opts_chunk$set(echo = F,   
+                        # I don't want to see my code chunks
+                      message = F,
+                        # I don't want messages appearing
+                      warning = F,
+                        # I don't wart warnings appearing
+                      dpi = 500,  
+                        # When I knit, I want my figures crisp
+                      out.width = "75%")
+                        # I want my figures to be a reasonable size
+
+## 2. Here are the packages I need in my session:
+library(tidyverse)    # I want to use tools in the tidyverse
+library(coolorrr)     # I want to update my colors
+library(socsci)       # For some additional summarizing functions
+library(geomtextpath) # For plotting text on lines
+library(peacesciencer)# For my data
+
+# 3. Set my color palette and ggplot theme:
+set_palette(
+  qualitative = c("navy", "gold", "gray", "red", "steelblue"),
+  sequential = c("white", "navy"),
+  diverging = c("steelblue", "white", "red3"),
+  binary = c("steelblue", "red3")
+)
+set_theme()
+
+## 4. Get the data I need for analysis:
+create_stateyears(subset_years = 1945:2020, system = "gw") |>
+  add_ucdp_acd(type = "intrastate") |>
+  add_sdp_gdp() |>
+  add_democracy() -> Data
+```
+
+## Show conflict rate over time
+
+
+```{r}
+p <- Data |>
+  group_by(year) |>
+  summarize(
+    mean = mean(ucdpongoing)
+  ) |>
+  ggplot() +
+  aes(x = year, y = mean) +
+  geom_point(color = "gray") +
+  geom_textsmooth(label = "Conflict Rate", color = "navy")
+```
+
+
+
+## Update the theme
+
+```{r}
+p + theme_classic()
+```
+
+
+
+## Update the theme with `{ggthemes}`
+
+```{r}
+p + ggthemes::theme_stata()
+```
+
+
+
+## Layer complexity
+
+```{r}
+Data |>
+  filter(year == 1990) -> data_90
+```
+
+```{r}
+p <- ggplot(data_90) +
+  aes(
+    x = exp(wbgdppc2011est), 
+    y = v2x_polyarchy
+  ) +
+  geom_point(
+    alpha = 0.6,
+    color = "gray"
+  ) +
+  scale_x_log10(labels = scales::dollar) +
+  labs(
+    x = "GDP per capita",
+    y = "Quality of Democracy",
+    title = "Economic Health, Democracy, and Civil War",
+    subtitle = "Data for 1990",
+    caption = "Source: {peacesciencer}"
+  )
+p # print
+```
+
+
+```{r}
+p2 <- p +
+  geom_point(
+    data = . %>%
+      filter(ucdpongoing == 1),
+    color = "red",
+    size = 2
+  )
+p2
+```
+
+
+```{r}
+library(ggrepel)
+p3 <- p2 + 
+  geom_text_repel(
+    data = . %>%
+      filter(ucdpongoing == 1),
+    aes(label = statename),
+    size = 3,
+    nudge_y = .1,
+    min.segment.length = unit(0, "inches")
+  )
+p3
+```
+
+
+```{r}
+## open the package
+library(ggtext)
+
+## create a title object to keep things tidy
+## and use paste0() to separate the normal text
+## from the HTML part of the text
+new_title <- paste0(
+  "Economic Health, Democracy, and ",
+  "<span style = 'color:red'>***Civil War***</span>"
+)
+
+## update the plot with the new title and then
+## tell ggplot how to read the HTML code
+p3 + 
+  labs(
+    title = new_title
+  ) +
+  theme(
+    plot.title = element_markdown()
+  )
+```
+

@@ -1,0 +1,186 @@
+---
+title: "Working with survey data"
+format: html
+---
+
+
+## Setup
+
+```{r packages}
+library(tidyverse)
+library(socsci)
+theme_set(theme_bw())
+```
+
+```{r data}
+wthh <- read_csv(
+  "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
+)
+```
+
+
+## Explore
+
+```{r look at data}
+wthh
+```
+
+link to codebook: https://www.filesforprogress.org/datasets/wthh/WTHH_Core_and_DFP_modules.pdf
+
+## Recodes
+
+Use `case_when()` to make recodes:
+
+race What racial or ethnic group best describes you?
+<1> White
+<2> Black or African-American
+<3> Hispanic or Latino
+<4> Asian or Asian-American
+<5> Native American
+<8> Middle Eastern
+<6> Mixed Race
+<7> Other
+
+```{r case_when}
+wthh |>
+  mutate(
+    race_cat = case_when(
+      race == 1 ~ "White",
+      race == 2 ~ "Black",
+      race == 3 ~ "Latino",
+      race == 4 ~ "Asian",
+      TRUE ~ "Other"
+    )
+  ) -> wthh
+```
+
+Use `frcode()` to make recodes:
+
+```{r frcode}
+wthh |>
+  mutate(
+    race_frcat = frcode(
+      race == 1 ~ "White",
+      race == 2 ~ "Black",
+      race == 3 ~ "Latino",
+      race == 4 ~ "Asian",
+      TRUE ~ "Other"
+    )
+  ) -> wthh
+```
+
+
+```{r ct with race}
+wthh |>
+  ct(race_frcat)
+```
+
+
+Use `frcode()` with `pid7`:
+
+```{r party lean}
+wthh |>
+  mutate(
+    pid7_cat = frcode(
+      pid7 == 1 ~ "Strong Dem",
+      pid7 == 2 ~ "Dem",
+      pid7 == 3 ~ "Lean Dem",
+      pid7 == 4 ~ "Ind",
+      pid7 == 5 ~ "Lean Rep",
+      pid7 == 6 ~ "Rep",
+      pid7 == 7 ~ "Strong Rep",
+      TRUE ~ "Other"
+    )
+  ) -> wthh
+```
+
+Use `ct()` to summarize distribution of party lean:
+
+```{r ct party lean}
+wthh |>
+  ct(pid7_cat)
+```
+
+Use `ifelse()` for binary categories:
+
+```{r recode gender}
+wthh |>
+  mutate(
+    gender_cat = ifelse(gender == 1, "Male", "Female"),
+    gender_frcat = frcode(
+      gender == 1 ~ "Male",
+      TRUE ~ "Female"
+    )
+  ) -> wthh
+
+wthh |>
+  select(gender, gender_cat)
+```
+
+Use mathematical operations to recode age:
+
+```{r recode age}
+wthh |>
+  mutate(
+    age = 2018 - birthyr
+  ) -> wthh
+```
+
+
+Making age a category:
+
+```{r age category}
+wthh <- wthh |>
+  mutate(
+    agecat = frcode(
+      age < 25 ~ "18-24",
+      between(age, 25, 29) ~ "25-29",
+      between(age, 30, 39) ~ "30s",
+      between(age, 40, 49) ~ "40s",
+      between(age, 50, 59) ~ "50s",
+      between(age, 60, 69) ~ "60s",
+      age > 69 ~ "70+"
+    )
+  ) 
+```
+
+## Data viz
+
+Make a bar plot of party lean:
+
+```{r party lean viz}
+wthh |>
+  filter(pid7_cat != "Other") |>
+  ct(pid7_cat) |>
+  ggplot() +
+  aes(x = pid7_cat, y = pct) +
+  geom_col()
+```
+
+Make a bar plot of party lean weighted:
+
+```{r weighted party lean viz}
+wthh |>
+  filter(pid7_cat != "Other") |>
+  ct(pid7_cat, wt = weight_DFP) |>
+  ggplot() +
+  aes(x = pid7_cat, y = pct) +
+  geom_col()
+```
+
+Make a bar plot that breaks party lean down by age category:
+
+```{r party lean by age category}
+wthh |>
+  group_by(pid7_cat) |>
+  mean_ci(age, wt = weight_DFP) |>
+  ggplot() +
+  aes(
+    x = pid7_cat,
+    y = mean,
+    ymin = lower,
+    ymax = upper
+  ) +
+  geom_pointrange()
+```
+
