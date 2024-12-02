@@ -620,7 +620,7 @@ Grade the AI due Fri.
 
 \item Wednesday: Braumoeller, "History and International Order" (p. 178-211).
 
-\item Friday: Braumoeller, "Conclusion and Implications" (p. 215-224).
+\item Friday: Braumoeller, "Conclusion and Implications" (p. 215-224) + course evals.
 
 \end{itemize}
 
@@ -646,11 +646,11 @@ Grade the AI due Fri.
 
 \begin{itemize}
 
-\item Monday: Paul Poast \href{https://drive.google.com/file/d/1DhvgzRKwRumI_VWNEH34b-SFKwzfdm95/view?usp=sharing}{"Not a World War but a World at War"}
+\item Monday: Work on MA3
 
-\item Wednesday: MA3 Presentations
+\item Wednesday: Work on MA3
 
-\item Friday: MA3 Presentations
+\item Friday: Final lecture + work on MA3
 
 \end{itemize}
 
