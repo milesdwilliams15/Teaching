@@ -213,10 +213,9 @@ class_cal +
 # )
 ```
 
-```{=tex}
 \singlespacing
 \setlength{\parskip}{0pt}
-```
+
 \hrulefill
 
 \bigskip
@@ -357,10 +356,9 @@ class_cal +
 
 \newpage
 
-```{=tex}
 \singlespacing
 \setlength{\parskip}{5pt}
-```
+
 # Course Objectives
 
 In this course, you'll develop a number of skills.

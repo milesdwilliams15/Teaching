@@ -1,0 +1,567 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 201: Design and Data Analysis for Social Impact"
+author: Dr. Miles D. Williams
+date: "Spring 2025"
+
+email: "williamsmd@dension.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MW 11:30-1:20 pm"
+office: "Ebaugh 109"
+classroom: "Higley 325"
+classhours: "MW 1:30-2:50 pm"
+
+fontfamily: cochineal
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath}
+   - \usepackage{amssymb}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      warning=F,
+                      message=F,
+                      echo=F)
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+# library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+# bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. 
+
+## First Monday of semester
+
+mon <- ymd(20250120)
+
+## dates of no class
+not_here_dates <- c(
+  # MLK,
+  ymd(20250120),
+  # Spring break
+  seq(ymd(20250317), ymd(20250321), by = 1),
+  # MPSA
+  seq(ymd(20250403), ymd(20250404), by = 1)
+)
+finals_week <- 
+  seq(ymd(20250507), ymd(20250513), by = 1)
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# writing (MA) assignments:
+ma_dates <- c(ymd(20250226), 
+              ymd(20250326)) 
+  # Final date set to ...
+# analysis challenges:
+ac_dates <- c(
+  ymd(20250205),
+  ymd(20250212),
+  ymd(20250219),
+  ymd(20250305),
+  ymd(20250312),
+  ymd(20250402),
+  ymd(20250409),
+  ymd(20250416),
+  ymd(20250423),
+  ymd(20250430)
+)
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+semester_dates <- 
+  seq(ymd(20250120), ymd(20250505), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20250101), ymd(20250531), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
+         acs = ifelse(date %in% ac_dates, 1, 0), # is it a GC assignment?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(mas == 1, "MA Due", ccategory),
+         ccategory = ifelse(acs == 1, "AC Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("MA Due" = "firebrick", 
+               "AC Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("MA Due", "AC Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: MLK (01.20), Spring Break (03.17-03.21), MPSA (04.03-04.04), Final Day of Instruction (05.05)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+Political data surround us everywhere we look. How do we use this data for maximum social impact? We start by thinking clearly with data and using a good research design. To do these things well, you need to be armed with the appropriate tools and enough conceptual understanding of them to know how to use them.
+
+In this class, we'll cover the basics of research design for social impact. By taking a problem-centric approach, we'll work through how to use data, data modeling, and statistics to describe patterns in the world and establish basic facts, make predictions of things to come to come, and conclude whether policy interventions really lead to a desired outcome. 
+
+As long as you apply yourself, by the time you finish this course you will have made progress in your ability to do statistical programming, think clearly with data, and reason quantitatively, all with the goal of applying these skills to problems in the world of politics and policy.
+
+\newpage
+
+# Class Schedule
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+class_cal + 
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top'
+  )
+# ggsave(
+#   here::here('01_schedule.png'),
+#   height = 6,
+#   width = 8
+# )
+```
+
+\singlespacing \setlength{\parskip}{0pt}
+
+\hrulefill
+
+\bigskip
+
+*Note:* BDMF = the Ethan Bueno de Mesquita and Anthony Fowler text. All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
+
+## `r advdate(mon, 1)`
+
+-   Monday: *No Class (MLK)*
+
+-   Wednesday: Syllabus + Software
+
+# Part I: Description - U.S. Aid and Human Rights
+
+## `r advdate(mon, 2)`
+
+-   Monday: Looking at Data
+
+-   Wednesday: Discussion 
+
+## `r advdate(mon, 3)`
+
+-   Monday: Modeling Data with Linear Regression
+
+-   Wednesday: Discussion \hfill \textit{AC1 due}
+
+## `r advdate(mon, 4)`: 
+
+-   Monday: Quantifying the Role of Chance
+
+-   Wednesday: Discussion \hfill \textit{AC2 due}
+
+## `r advdate(mon, 5)`: Start MA1
+
+-   Monday: Recap + Introduce MA1
+
+-   Wednesday: Work on MA1 \hfill \textit{AC3 due}
+
+# Part II: Prediction - U.S. Presidential Elections
+
+## `r advdate(mon, 6)`
+
+-   Monday: From Relationships to Predictions
+
+-   Wednesday: Discussion \hfill \textit{MA1 due}
+
+## `r advdate(mon, 7)`
+
+-   Monday: Picking the Best Forecast
+
+-   Wednesday: Discussion \hfill \textit{AC4 due}
+
+## `r advdate(mon, 8)`: Start MA2
+
+-   Monday: Recap + Introduce MA2
+
+-   Wednesday: Work on MA2 \hfill \textit{AC5 due}
+
+## `r advdate(mon, 9)`
+
+*Spring Break!*
+
+# Part III: Causation - Scientific Evaluation of Policy
+
+## `r advdate(mon, 10)`
+
+-   Monday: From Relationships to Causation
+
+-   Wednesday: Discussion \hfill \textit{MA2 due}
+
+## `r advdate(mon, 11)`
+
+-   Monday: Randomized Trials
+
+-   Wednesday: Discussion \hfill \textit{AC6 due}
+
+## `r advdate(mon, 12)`
+
+-   Monday: Selection on Observables
+
+-   Wednesday: Discussion \hfill \textit{AC7 due}
+
+## `r advdate(mon, 13)`
+
+-   Monday: Regression Discontinuity
+
+-   Wednesday: Discussion \hfill \textit{AC8 due}
+
+## `r advdate(mon, 14)`
+
+-   Monday: Difference-in-Differences
+
+-   Wednesday: Discussion \hfill \textit{AC9 due}
+
+## `r advdate(mon, 15)`
+
+-   Monday: Recap + Introduce MA3
+
+-   Wednesday: Work on MA3 \hfill \textit{AC10 due}
+
+## `r advdate(mon, 16)`
+
+-   Monday: Course debrief + evals
+
+-   Wednesday: Finals Begin
+
+*MA3 Due by TBD*
+
+\newpage
+
+\singlespacing \setlength{\parskip}{3pt}
+
+# Course Objectives
+
+In this course, you'll develop a number of skills.
+
+#### Quantitative
+
+You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively analyzed to describe and draw inferences for maximum impact.
+
+#### Communication
+
+It is not enough to have a well-designed analysis. To have any social impact with your research you need to be able to effectively communicate your research to others. In this course, you will have opportunities to relay your research and findings through written, verbal, and visual media.
+
+#### Critical Thinking
+
+Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data, develop a research design, and draw conclusions.
+
+#### Statistical Programming
+
+In addition to learning the intuition behind statistical methods like multiple regression, causal inference, and forecasting, you will gain experience applying these methods using the R programming language and RStudio IDE.
+
+# Analysis Software
+
+Students will use R and RStudio, which are free and open source. You can access these on the cloud through the Posit Workbench available through a web browser installed on a Denison server at `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN:
+
+1.  Go to myDenison.
+2.  Head to MyApps.
+3.  Select Remote Access.
+4.  Follow the instructions to download and use the VPN.
+
+Most necessary R packages for the course are already installed in the server version. 
+
+While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and RStudio on your laptop. Follow [this guide](https://www.rstudio.com/products/rstudio/download/).
+
+# Required and Recommended Readings
+
+In addition to reading some short pieces written by journalists, academics, and others available online, the primary course text will consist of online lecture notes that I have compiled into an open source online book, which you can access here:
+
+[Data and Research Design for Social Impact]()
+
+When I've taught this course in the past, I have also primarily used the following textbook. We will still read sections of it in class (which is why it's a required reading for the course), but we won't read the whole thing and we'll skip around it a bunch.
+
+> Bueno de Mequita, Ethan and Anthony Fowler. 2021. *Thinking Clearly with Data: A Guide to Quantitative Reasoning and Analysis.* Princeton: Princeton University Press.
+
+# Resources
+
+## The Instructor (that's me)
+
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday or Wednesday between 3:00-4:30 pm. No appointment necessary. If those hours don't work for you, we can work out a different time to meet.
+
+You can also email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday. By the end of January, I should have a new small human in my home to look after, too, so you may experience a 24 turnaround on emails sometimes.
+
+## Teaching Assistants
+
+DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
+
+### Name Here
+
+- **email**: name@denison.edu
+- **hours**: TBD
+- **location**: TBD
+
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through their Accommodate MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials. The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer ([thayerk\@denison.edu](mailto:thayerk@denison.edu){.email}). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center's page (<https://my.denison.edu/campus-resources/writing-center>) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at [englishhelp\@denison.edu](mailto:englishhelp@denison.edu){.email}.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+## R Resources & Cheat Sheets
+
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [`{estimatr}`](https://declaredesign.org/r/estimatr/) $\Diamond$ [`{seerrr}`](https://github.com/milesdwilliams15/seerrr) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc.
+
+| **Grading Scale** |        |         |
+|-------------------|:-------|:--------|
+| A+: 98%+          | A: 92% | A-: 90% |
+| B+: 88%           | B: 82% | B-: 80% |
+| C+: 78%           | C: 72% | C-: 70% |
+| D+: 68%           | D: 62% | D-: 60% |
+| F: below 60       |        |         |
+
+*Attendance and Participation* **10%**
+
+> You should show up to class and participate! Because of the technical nature of some of our material, missing multiple days of class can leave holes in your skillset that make doing assignments down the road more difficult. We'll also have some class days dedicated to in-depth discussion of an academic article or other reading material. If you don't show up, you can't participate in the discussion or provide me with evidence that you even did the reading. As an incentive to show up (both physically and mentally) to class, 10% of your grade will come from attendance and participation. Because life happens, I'll offer you 4 freebie, unexcused absences -- no questions asked or permission needed. Beyond that there are no absences allowed. The 5th unexcused absence and beyond will eliminate all your attendance and participation credit. Also, if you just come to class, but don't engage, you'll lose 1/2 of your attendance and participation grade as well. [**Note**: *Participation does not only look like talking in class. If you don't feel comfortable or confident (but I hope you do!) speaking up, we'll do some work in groups as well. If you participate in your group, that counts as participation, too!*]
+
+*Main Assignments* **15% Each**
+
+> You'll have three main assignments (MAs) to complete in this course. These will be anywhere from 700 to 1,200 words and include data analysis relevant to the kind of research design we're discussing in a given unit. The prompts for these assignments will be made available during the course. These involve wrangling some political data, analyzing it, and presenting your results through figures and a written summary. The first of these assignments will be done in groups, the second will be done individually, and the final MA of the course will be up to your discression. For group assignments, grades will be given on a group rather than an individual basis.
+
+*9 Analysis Challenges* **5% Each**
+
+> Analysis challenges (ACs) are intended to be a fun and challenging way to practice some data reasoning and data analysis skills. You'll be given data and a prompt asking you to perform some analysis with the data. You'll get the instructions for these a week in advance of when they are due. 10 ACs will be assigned during the semester, but only the best 9 out of 10 will count toward your final grade. If your're feeling confident in your skills, that means you can skip any one of the analysis challenges and it won't affect your grade. Alternatively, if you really botched one, you have a chance to redeem yourself by doing well on the remaining challenges.
+
+$$
+\begin{aligned}
+10\%  & \text{ (Attendance and Participation)} \\
+45\%  & \text{ (Main Assignments)} \\
+\underline{+ 45\%} &  \text{ (Analysis Challenges)} \\
+100\% & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+The following figure provides a summary of my grading strategy and philosophy. For each assignment you submit, I'll evaluate it on a discrete scale from 0 to 5. 5 = "Perfection!" and 0 = "Missing" (e.g., you didn't turn anything in). Your points then get mapped to a percentage point grade for a given assignment according to what I call a "Grace Curve." This means the linkages between my evaluation of your work on the 0-5 scale and your actual grade are not one-to-one. 5 out of 5 = 100% (an "A+"), but 4 out of 5 = 93% (still an "A") and 3 out of 5 = 85% (a "B"), and so on. If you do some simple math, you know that 4 out 5 should actually be 80% and 3 out of 5 should be 60% if I didn't apply the Grace Curve. My grading strategy gives me a simple scale to evaluate your work, but it also ensures that you get some benefit of the doubt. Did you completely bomb an assignment? My instinct is to give you a 1 out of 5, which gives you only 20% for your final grade on said assignment. That seems too harsh. My scale adjusts for my disappointment in the quality of your work and gives you 60% (a "D-") instead. That's still a poor grade, but not one that would be impossible to recover from.
+
+\bigskip
+
+```{r echo=FALSE}
+the_max <- 5
+x <- seq(0, the_max, len = 1000)
+x0 <- 0:the_max
+a <- 0.32
+f <- function(x) ((x)^a / max((x)^a))
+ggplot() +
+  aes(x, f(x)) +
+  geom_line(
+    color = "royalblue"
+  ) +
+  geom_line(
+    aes(x, x / max(x)),
+    lty = 2
+  ) +
+  geom_ribbon(
+    aes(x, ymin = x / max(x), ymax = f(x)),
+    fill = "royalblue",
+    alpha = 0.2
+  ) +
+  geom_segment(
+    aes(
+      x = x0,
+      xend = x0,
+      y = 0,
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  geom_segment(
+    aes(
+      x = 0,
+      xend = x0,
+      y = f(x0),
+      yend = f(x0)
+    ),
+    color = "gray"
+  ) +
+  annotate(
+    "text",
+    x = 1.5,
+    y = 0.45,
+    label = "GRACE",
+    color = "black",
+    face = "bold"
+  ) +
+  geom_point(
+    aes(x0, f(x0)),
+    color = "indianred3"
+  ) +
+  scale_x_continuous(
+    breaks = 0:5,
+    labels = paste0(
+      0:5,
+      c("\nMissing",
+        "\nBombed",
+        "\nYou Can Do\nBetter",
+        "\nGood but\nRough",
+        "\nNearly Perfect",
+        "\nPerfection!")
+    )
+  ) +
+  scale_y_continuous(
+    breaks = f(x0),
+    labels = scales::percent(round(f(x0), 2))
+  ) +
+  theme_minimal() +
+  labs(
+    x = "Points",
+    y = "% Grade per Points",
+    title = "What Points mean on the Grading Scale"
+  ) +
+  theme(
+    panel.grid.minor = element_blank()
+  )
+  
+```
+
+## E-mail Policy
+
+I promise a response time of no more than 24 hours to your emails, but be advised that my response time may be longer if you email me anytime between Friday evening and the weekend.
+
+## Make-Up Assignment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. Otherwise, you have this syllabus which alerts you when assignments are due. Plan ahead!
+
+## Second Chances Policy
+
+There are no second chances.
+
+## Attendance Policy
+
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences -- no questions asked or permission required. Beyond these 4 there are no more absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit. That sounds harsh, but I think 4 free absences provides ample cushion for whatever life throws your way. Since we only meet twice per week, I've essentially given you up to two weeks off if you need it. But I also want to ensure that you come to class, which is why there's such a harsh penalty for missing more than 4 days. Students who take this class but miss a lot of days generally don't do well because they miss important details.
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive and the RStudio server, all your work will be backed up and easy to access from any computer on campus.
+
+## Late Assignments
+
+Turn in your work on time. We have a lot of ground to cover in this class. So turn in your work when it's due. This is meant to help you, and me. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. And if you procrastinate this forces me to procrastinate in getting a grade back to you. I want to give you timely feedback on your work, which I can't do if you don't turn your work in on time.
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class***.
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## Academic Dishonest and Generative AI
+
+Remember the previous section where I said you shouldn't cheat? That also applies to GenAI (Generative Artificial Intelligence) tools like ChatGPT. ***But***, there's some nuance to my attitude about GenAI and academic dishonesty. GenAI is a powerful tool, and it's a tool that you need to learn to use well because, let's face it, a lot of other people are using it, too. I want to be very clear that ***I am okay if you use GenAI tools to help you with your work.*** I've started using ChatGPT to help me with some aspects of my own research and programming. It would be unfair for me to hold you all to a different standard than I hold myself.
+
+So, here's my policy on using GenAI: You can use it, but I want you to be honest about it, and I DO NOT want you to use it uncritically or unthinkingly. What does this look like? **Do not** copy and paste responses or output from tools like ChatGPT and pass them off as your own. **Do** use ChatGPT if you get stuck and need help (just make sure you tell me about it, and that you add your own thoughts, writing, and ideas into the mix as well).
+
+Ultimately, I hope this policy strikes a realistic balance between honesty and exploration of the potential uses of GenAI and ensuring your own "sweat equity" (effort) goes into your course work as well. I want you to be honest if and when you use GenAI because I'm genuinely curious about its applications. I'm still learning how to use it, too, and I hope that we all can learn how to use it better *together.* Further, I want you to use it critically and thoughtfully because it doesn't work perfectly. While it's powerful (and shockingly so), it is not all-powerful. You need to put in plenty of your own work as well.
+
+You'll probably see a wide variety of attitudes toward GenAI from different faculty on campus. Some attitudes will differ from mine. As instructors, we're still trying to figure out the best policy. Have patience with us!
