@@ -1,0 +1,167 @@
+---
+title: "Make U.S. Aid Dataset for 201"
+format: html
+---
+
+## Setup
+
+```{r}
+library(tidyverse)
+library(peacesciencer)
+library(socsci)
+load("~/Denison University/Teaching/teaching-r-proj/Teaching/DPR 201/Data/vdem.RData")
+```
+
+
+## Data
+
+```{r}
+## first, all possible country pairings with the U.S.
+create_dyadyears(
+  subset_years = 1946:2023
+) |>
+  filter(
+    ccode1 == 2
+  ) -> dt
+
+## second, who was U.S. president for these years?
+create_leaderyears(
+  standardize = "cow"
+) |>
+  filter(
+    ccode == 2
+  ) -> us_lead
+us_lead |>
+  group_by(leader) |>
+  filter(year != max(year)) |>
+  select(ccode, year, leader) |>
+  bind_rows(
+    tibble(
+      ccode = 2,
+      year = 2015:2023,
+      leader = c(
+        rep("Obama", len = 2),
+        rep("Trump", len = 4),
+        rep("Biden", len = 3)
+      )
+    ) 
+  ) -> us_lead
+left_join(
+  dt, us_lead, by = c("ccode1" = "ccode", "year")
+) -> dt
+
+
+## third, add U.S. aid obligations
+read_csv(
+  here::here(
+    "DPR 201",
+    "Data",
+    "us_foreign_aid_country.csv"
+  )
+) -> aid
+janitor::clean_names(
+  aid
+) -> aid
+aid |>
+  filter(
+    transaction_type_name == "Obligations"
+  ) |>
+  mutate(
+    year = as.numeric(fiscal_year),
+    aid = constant_amount,
+    ccode2 = countrycode::countrycode(
+      country_name, "country.name", "cown"
+    )
+  ) |>
+  select(
+    ccode2, year, aid
+  ) -> aid
+
+left_join(
+  dt, aid, by = c("ccode2", "year")
+) -> dt
+
+dt |>
+  mutate(
+    aid = replace_na(aid, 0)
+  ) -> dt
+
+## measures of human rights and quality of governance
+hr <- vdem |>
+  mutate(
+    ccode2 = countrycode::countrycode(
+      country_name, "country.name", "cown"
+    ),
+    physint = v2x_clphy
+  ) |>
+  select(ccode2, year, physint)
+
+left_join(
+  dt, hr, by = c("ccode2", "year")
+) -> dt
+
+## bring in other variables:
+dt |> 
+  add_cow_trade() |> # trade
+  rename(
+    imports = flow1,
+    exports = flow2
+  ) |>
+  select(-contains("flow")) |>
+  add_atop_alliance() |> # alliances
+  rename(
+    defensive_alliance = atop_defense
+  ) |>
+  select(-contains("atop")) |>
+  add_democracy() |>
+  mutate(
+    democracy = frcode(
+      polity22 %in% -c(10:6) ~ "Autocracy",
+      polity22 %in% -5:5 ~ "Anocracy",
+      polity22 %in% 6:10 ~ "Democracy"
+    )
+  ) |>
+  select(
+    - contains("polity"),
+    - contains("v2x"),
+    - contains("uds")
+  ) |>
+  add_sdp_gdp() |> # economic data
+  mutate(
+    gdp = exp(wbgdp2011est2),
+    pop = exp(wbpopest2)
+  ) |>
+  select(
+    - contains("est")
+  ) |>
+  add_minimum_distance() |> # distance from U.S.
+  add_fpsim( # foreign policy similarity
+    keep = c("kappavv")
+  ) |>
+  rename(
+    fpsim = kappavv
+  ) -> dt
+
+## bring in country names
+dt |>
+  select(-ccode1) |>
+  rename(country = ccode2) |>
+  mutate(
+    country = countrycode::countrycode(
+      country, "cown", "country.name"
+    )
+  ) -> dt
+```
+
+
+```{r}
+write_csv(
+  dt,
+  here::here(
+    "DPR 201",
+    "Data",
+    "usaidhr.csv"
+  )
+)
+```
+
