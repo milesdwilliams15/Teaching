@@ -206,19 +206,19 @@ class_cal +
 
 \bigskip
 
-*Note:* BDMF = the Ethan Bueno de Mesquita and Anthony Fowler text. All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
+*Note:* All due dates are by midnight, unless otherwise specified. Course readings for Wednesday discussions will be posted to Canvas.
 
 ## `r advdate(mon, 1)`
 
 -   Monday: *No Class (MLK)*
 
--   Wednesday: Syllabus + Software
+-   Wednesday: Syllabus + Software ([R Basics](https://milesdwilliams15.quarto.pub/data-and-research-design/01_prereqs.html))
 
 # Part I: Description - U.S. Aid and Human Rights
 
 ## `r advdate(mon, 2)`
 
--   Monday: Looking at Data
+-   Monday: [Looking at Data](https://milesdwilliams15.quarto.pub/data-and-research-design/02_look_at_data.html)
 
 -   Wednesday: Discussion 
 
@@ -351,7 +351,7 @@ While using the **Denison server version is highly recommended**, you are also w
 
 In addition to reading some short pieces written by journalists, academics, and others available online, the primary course text will consist of online lecture notes that I have compiled into an open source online book, which you can access here:
 
-[Data and Research Design for Social Impact]()
+[Data and Research Design for Social Impact](https://milesdwilliams15.quarto.pub/data-and-research-design/)
 
 When I've taught this course in the past, I have also primarily used the following textbook. We will still read sections of it in class (which is why it's a required reading for the course), but we won't read the whole thing and we'll skip around it a bunch.
 
