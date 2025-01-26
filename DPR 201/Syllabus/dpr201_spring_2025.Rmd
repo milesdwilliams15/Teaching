@@ -220,7 +220,7 @@ class_cal +
 
 -   Monday: [Looking at Data](https://milesdwilliams15.quarto.pub/data-and-research-design/02_look_at_data.html)
 
--   Wednesday: Discussion 
+-   Wednesday: Read ["What is US foreign assistance?"](https://www.brookings.edu/articles/what-is-us-foreign-assistance/) and check out [this event summary](https://www.mccaininstitute.org/resources/events/should-u-s-foreign-assistance-be-tied-to-human-rights/) of a recent debate about US aid and human rights. 
 
 ## `r advdate(mon, 3)`
 
