@@ -1,0 +1,37 @@
+---
+title: "DPR 101 Class Notes"
+format: html
+---
+
+Here's a Quarto file for you to take class notes. It includes headers that correspond to different subjects we'll cover. This is a great place to try out example code in the lecture notes and to follow along with code-alongs in class.
+
+## R Basics
+
+
+## Accessing Data and Making Your First Plot
+
+
+## `ggplot()` Basics
+
+
+## Showing the Right Numbers
+
+
+## Data Wrangling
+
+
+## Adding Labels and Text
+
+
+## Introducing `{coolorrr}` for Color Palettes
+
+
+## `ggplot()1` Themes
+
+
+## Working with Survey Data
+
+
+## Making Indexes
+
+
