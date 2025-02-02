@@ -224,9 +224,9 @@ class_cal +
 
 ## `r advdate(mon, 3)`
 
--   Monday: Modeling Data with Linear Regression
+-   Monday: [Modeling Data](https://milesdwilliams15.quarto.pub/data-and-research-design/03_model_data.html)
 
--   Wednesday: Discussion \hfill \textit{AC1 due}
+-   Wednesday: Read Chapter 4 of *Thinking Clearly with Data*, "Correlation Requires Variation" \hfill \textit{AC1 due}
 
 ## `r advdate(mon, 4)`: 
 
