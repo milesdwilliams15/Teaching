@@ -232,7 +232,7 @@ class_cal +
 
 -   Monday: [Quantifying the Role of Chance](https://milesdwilliams15.quarto.pub/data-and-research-design/04_quantifying_chance.html)
 
--   Wednesday: ["Voters Get What They Want (When They Pay Attention)"](https://web.p.ebscohost.com/ehost/pdfviewer/pdfviewer?vid=1&sid=815d6fa5-75ee-4015-9e69-2103fcba0496%40redis) \hfill \textit{AC2 due}
+-   Wednesday: ["Voters Get What They Want (When They Pay Attention)"](https://drive.google.com/file/d/1vqgpEbTGGKTYGE__iW8r2jmnqWDkpWSO/view?usp=sharing) \hfill \textit{AC2 due}
 
 ## `r advdate(mon, 5)`: Start MA1
 
