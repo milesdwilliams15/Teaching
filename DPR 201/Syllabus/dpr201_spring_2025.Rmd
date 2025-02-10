@@ -228,11 +228,11 @@ class_cal +
 
 -   Wednesday: Read Chapter 4 of *Thinking Clearly with Data*, "Correlation Requires Variation" \hfill \textit{AC1 due}
 
-## `r advdate(mon, 4)`: 
+## `r advdate(mon, 4)` 
 
--   Monday: Quantifying the Role of Chance
+-   Monday: [Quantifying the Role of Chance](https://milesdwilliams15.quarto.pub/data-and-research-design/04_quantifying_chance.html)
 
--   Wednesday: Discussion \hfill \textit{AC2 due}
+-   Wednesday: ["Voters Get What They Want (When They Pay Attention)"](https://web.p.ebscohost.com/ehost/pdfviewer/pdfviewer?vid=1&sid=815d6fa5-75ee-4015-9e69-2103fcba0496%40redis) \hfill \textit{AC2 due}
 
 ## `r advdate(mon, 5)`: Start MA1
 
