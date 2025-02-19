@@ -1,0 +1,29 @@
+---
+title: "Analysis Challenge 1"
+author: "Your Name Here"
+date: "`r Sys.Date()`"
+format: 
+  docx:
+    number-sections: true
+    number-depth: 3
+    fig-dpi: 500
+    fig-align: center
+    fig-height: 4
+    fig-width: 6
+execute: 
+  echo: true
+  warning: false
+  message: false
+---
+
+**Instructions**: For your first analysis challenge, I want you to read in the US aid and human rights dataset we discussed in class. Then I want you to create a data visualization of the average amount of aid obligations to countries broken down by the democracy measure in the dataset. Make sure you include an informative title and labels and use a sensible plot type. In a paragraph after the data visualization, write a brief summary of the relationship it shows between democracy and the amount of aid countries receive from the US. When you're done, hit render and submit the .docx file that's produced to Canvas.
+
+```{r}
+## code to read in the data can go here:
+
+
+## the data visualization can go here:
+
+
+```
+

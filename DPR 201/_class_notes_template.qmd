@@ -1,0 +1,35 @@
+---
+title: "DPR 201 Class Notes"
+format: html
+---
+
+Here's a Quarto file for you to take class notes. It includes headers that correspond to different subjects we'll cover. This is a great place to try out example code in the lecture notes and to follow along with code-alongs in class.
+
+## Looking at Data
+
+
+## Modeling Data with Linear Regression
+
+
+## Quantifying the Role of Chance
+
+
+## From Relationships to Predictions
+
+
+## Picking the Best Forecast
+
+
+## From Relationships to Causation
+
+
+## Randomized Trials
+
+
+## Selection on Observables
+
+
+## Regression Discontinuity
+
+
+## Difference-in-Differences

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  26 JAN 2025 14:55
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  10 FEB 2025 14:59
 entering extended mode
 **./dpr201_spring_2025.tex
 (dpr201_spring_2025.tex
@@ -879,34 +879,34 @@ al-TLF.
 LaTeX Font Info:    Font shape `TS1/Cochineal-TLF/m/n' will be
 (Font)              scaled to size 10.95pt on input line 201.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 233.
+(Font)              scaled to size 9.0pt on input line 236.
 [2] [3] [4]
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/n' will be
-(Font)              scaled to size 10.95pt on input line 365.
+(Font)              scaled to size 10.95pt on input line 373.
 [5] [6] [7]
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 660.
+(Font)              scaled to size 8.0pt on input line 668.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 660.
+(Font)              scaled to size 6.0pt on input line 668.
 [8]
 File: dpr201_spring_2025_files/figure-latex/unnamed-chunk-1-1.pdf Graphic file 
 (type QTm)
 <use  "dpr201_spring_2025_files/figure-latex/unnamed-chunk-1-1.pdf" >
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/it' will be
-(Font)              scaled to size 10.95pt on input line 700.
+(Font)              scaled to size 10.95pt on input line 708.
 [9] [10] 
 AED: lastpage setting LastPage
 [11]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 816.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 816.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 824.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 824.
 (dpr201_spring_2025.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 816.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 816.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 824.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 824.
  ) 
 Here is how much of TeX's memory you used:
  21498 strings out of 428410
  368130 string characters out of 3159547
- 430601 words of memory out of 3000000
+ 430599 words of memory out of 3000000
  24564 multiletter control sequences out of 15000+200000
  197656 words of font info for 64 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -918,4 +918,4 @@ Output written on dpr201_spring_2025.pdf (11 pages).
 ! [1][2][3][4][5][6][7][8][9][10][11]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 138730 bytes written
+! 139036 bytes written

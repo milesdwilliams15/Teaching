@@ -1,0 +1,100 @@
+---
+title: "DPR 201 Class Notes"
+format: html
+---
+
+Here's a Quarto file for you to take class notes. It includes headers that correspond to different subjects we'll cover. This is a great place to try out example code in the lecture notes and to follow along with code-alongs in class.
+
+## Looking at Data
+
+```{r}
+library(tidyverse)
+
+usaidhr <- read_csv(
+  "https://tinyurl.com/usaidhr"
+)
+```
+
+
+```{r}
+glimpse(usaidhr)
+```
+
+
+### scatter plots
+
+```{r}
+ggplot(usaidhr) +
+  aes(x = physint, y = aid) +
+  # geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F
+  ) +
+  labs(
+    title = "Here's a title",
+    subtitle = "A subtitle",
+    x = "Physical Integrity",
+    y = "U.S. Aid",
+    caption = "Data for 1945-2023"
+  )
+```
+
+```{r}
+usaidhr |>
+  filter(
+    aid == max(aid)
+  )
+```
+
+### Line plot
+
+```{r}
+ggplot(usaidhr) +
+  aes(x = year, aid) +
+  geom_smooth()
+```
+
+```{r}
+ggplot(usaidhr) +
+  aes(x = year, y = aid) +
+  stat_summary(
+    geom = "line",
+    fun = sum
+  )
+```
+
+### column plot
+
+```{r}
+ggplot(usaidhr) +
+  aes(x = aid, y = reorder(leader, -year)) +
+  geom_col()
+```
+
+
+## Modeling Data with Linear Regression
+
+
+## Quantifying the Role of Chance
+
+
+## From Relationships to Predictions
+
+
+## Picking the Best Forecast
+
+
+## From Relationships to Causation
+
+
+## Randomized Trials
+
+
+## Selection on Observables
+
+
+## Regression Discontinuity
+
+
+## Difference-in-Differences
