@@ -1,0 +1,133 @@
+---
+title: "Make a dataset for forecasting the 2024 presidential election"
+format: html
+---
+
+## Setup
+
+```{r}
+library(tidyverse)
+library(socsci)
+```
+
+## Data
+
+I'm pulling data from this github repo: 
+
+- https://github.com/markjrieke/2024-potus/tree/main/data
+
+```{r}
+## abramowitz data ----
+abr <- read_csv(
+  "https://raw.githubusercontent.com/markjrieke/2024-potus/refs/heads/main/data/static/abramowitz.csv"
+)
+
+## recode outcome ----
+abr |>
+  mutate(
+    inc_vote_share = ifelse(
+      inc_rep == 1,
+      rep, dem
+    ),
+    inc_vote_margin = inc_vote_share / (rep + dem) - .5
+  ) -> abr
+
+## rvest to get inflation and gdp growth data ----
+library(rvest)
+url <- "https://www.investopedia.com/inflation-rate-by-year-7253832"
+invest <- read_html(url)
+invest |>
+  html_element("tbody") |>
+  html_table() -> invest
+invest_clean <- invest[-1, c(1, 2, 4)]
+names(invest_clean) <- c("year", "inflation_pct_change",
+                         "gdp_pct_change")
+
+invest_clean |>
+  filter(year >= 1948) |>
+  mutate(
+    year = as.numeric(year),
+    inflation_pct_change = inflation_pct_change |>
+      str_remove_all("\\%") |>
+      as.numeric(),
+    gdp_pct_change = gdp_pct_change |>
+      str_to_lower() |>
+      str_remove_all("[a-z]") |>
+      str_remove_all("\\(") |>
+      str_remove_all("\\)") |>
+      str_remove_all("\\%") |>
+      as.numeric()
+  ) -> invest_clean
+
+## merge with original data ----
+abr <- left_join(abr, invest_clean, by = "year")
+
+## get electoral collage totals ----
+elec <- read_html(
+  "https://en.wikipedia.org/wiki/List_of_United_States_presidential_elections_by_Electoral_College_margin"
+)
+elec |>
+  html_element(".wikitable") |>
+  html_table() -> elec
+elec_clean <- elec[-c(1:2), ] |>
+  janitor::clean_names()
+elec_clean |>
+  transmute(
+    year = as.numeric(year),
+    winner,
+    winner_elec = number_of_electors_voting_2,
+    loser_elec = number_of_electors_voting_3
+  ) -> elec_clean
+
+## merge again ----
+abr <- left_join(abr, elec_clean, by = "year")
+
+## finalize ----
+# ensure that the inc_elec equals the incumbent electoral
+# college votes
+abr |>
+  mutate(
+    inc_elec = ifelse(
+      inc_vote_margin > 0,
+      winner_elec, loser_elec
+    )
+  ) -> abr
+## fix these years
+abr$inc_elec[abr$year == 2000] <-
+  abr$loser_elec[abr$year == 2000]
+abr$inc_elec[abr$year == 2016] <-
+  abr$loser_elec[abr$year == 2016]
+
+abr |>
+  transmute(
+    year,
+    inc_party,
+    inc_running,
+    inc_net_approval = fte_net_inc_approval,
+    third_party_present,
+    total_votes,
+    inflation_pct_change,
+    gdp_pct_change,
+    inc_vote_share,
+    inc_vote_margin,
+    inc_elec_total = as.numeric(inc_elec),
+    inc_elec_margin = inc_elec_total - ceiling(
+      0.5 * (as.numeric(winner_elec) +
+               as.numeric(loser_elec))
+    )
+  ) -> abr
+```
+
+## Save
+
+```{r}
+write_csv(
+  abr,
+  here::here(
+    "DPR 201",
+    "Data",
+    "pres_forecast.csv"
+  )
+)
+```
+
