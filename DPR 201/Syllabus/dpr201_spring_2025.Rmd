@@ -244,9 +244,9 @@ class_cal +
 
 ## `r advdate(mon, 6)`
 
--   Monday: From Relationships to Predictions
+-   Monday: [Make Predictions](https://milesdwilliams15.quarto.pub/data-and-research-design/05_making_predictions.html)
 
--   Wednesday: Discussion \hfill \textit{MA1 due}
+-   Wednesday: ["The Political Economy Model: Presidential Forecast 2024"](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/political-economy-model-presidential-forecast-for-2024/8725394B48785D52F71151F5AB7D71CE) \hfill \textit{MA1 due}
 
 ## `r advdate(mon, 7)`
 
@@ -369,11 +369,11 @@ You can also email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu
 
 DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
 
-### Name Here
+### Kaiden McCready
 
-- **email**: name@denison.edu
-- **hours**: TBD
-- **location**: TBD
+- **email**: mccrea_k1@denison.edu
+- **hours**: MF 5-7pm
+- **location**: Olin 215
 
 
 ## Accessibility
