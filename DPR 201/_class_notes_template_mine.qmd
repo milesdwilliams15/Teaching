@@ -81,8 +81,251 @@ ggplot(usaidhr) +
 
 ## From Relationships to Predictions
 
+```{r}
+library(tidyverse)
+dt <- read_csv(
+  "https://tinyurl.com/pres-forecast"
+)
+```
+
+
+### Make a predictive model
+
+```{r}
+fit <- lm(
+  inc_vote_margin ~ inc_net_approval +
+    inc_running,
+  data = dt
+)
+summary(fit)
+```
+
+```{r}
+newdt <- tibble(
+  inc_net_approval = 3,
+  inc_running = c(1, 0)
+)
+predict(fit, newdata = newdt)
+newdt |>
+  mutate(
+    prediction = predict(fit, newdt)
+  ) -> newdt
+```
+
+
+
+### Generate a forecast with uncertianty
+
+```{r}
+library(simqi)
+
+predict(
+  fit,
+  newdata = newdt,
+  se.fit = T
+)
+```
+
+
+```{r}
+fit |>
+  sim_qi(
+    newdata = newdt,
+    return_newdata = T,
+    nsim = 10000
+  ) |>
+  group_by(inc_net_approval, inc_running) |>
+  summarize(
+    mean = mean(y),
+    lower = quantile(y, 0.025),
+    upper = quantile(y, 0.975)
+  )
+```
+
+```{r}
+newdt <- expand_grid(
+  inc_net_approval = unique(dt$inc_net_approval),
+  inc_running = 0:1
+)
+fit |>
+  sim_qi(
+    newdata = newdt,
+    return_newdata = T,
+    vcov = sandwich::vcovHC(fit, type = "HC1")
+  ) |>
+  group_by(inc_net_approval, inc_running) |>
+  summarize(
+    mean = mean(y),
+    lower = quantile(y, 0.025),
+    upper = quantile(y, 0.975)
+  ) -> pred_dt
+```
+
+```{r}
+ggplot(pred_dt) +
+  aes(inc_net_approval, mean) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = lower, ymax = upper),
+    alpha = 0.3
+  ) +
+  facet_wrap(~ inc_running)
+```
+
+
 
 ## Picking the Best Forecast
+
+
+Install if you need it:
+
+install.packages("modelr")
+
+
+```{r}
+## packages we need
+library(tidyverse)
+library(modelr)
+library(simqi)
+
+## read in the data
+presdt <- read_csv(
+  "https://tinyurl.com/pres-forecast"
+)
+```
+
+
+List of model specifications to try:
+
+```{r}
+forms <- list(
+  inc_vote_margin ~ gdp_pct_change + inc_net_approval,
+  inc_vote_margin ~ inflation_pct_change + inc_net_approval,
+  inc_vote_margin ~ third_party_present,
+  inc_vote_margin ~ inc_running,
+  inc_vote_margin ~ gdp_pct_change + inflation_pct_change
+)
+```
+
+
+Generate LOO cross-validation sets with the data:
+
+```{r}
+cvdt <- crossv_loo(presdt)
+```
+
+Bring in each model specification to try:
+
+```{r}
+cvdt <- expand_grid(
+  forms = forms,
+  cvdt
+)
+```
+
+
+Use `map2()` to fit models to each training set:
+
+```{r}
+cvdt <- cvdt |>
+  mutate(
+    fits = map2(
+      .x = forms,
+      .y = train,
+      .f = ~ lm(.x, data = .y)
+    )
+  )
+```
+
+Use `map2()` and `rmse()` to get the RMSE of each model fit based on the left-out observation:
+
+```{r}
+cvdt <- cvdt |>
+  mutate(
+    rmse = map2(
+      .x = fits,
+      .y = test,
+      .f = ~ rmse(model = .x, data = .y)
+    )
+  )
+
+cvdt <- cvdt |>
+  unnest(rmse)
+```
+
+Add a model label column and visualize:
+
+```{r}
+cvdt <- cvdt |>
+  mutate(
+    model = rep(
+      c(
+        "PEM",
+        "PEM-inf",
+        "3rd Party",
+        "Incumbent",
+        "Economy"
+      ),
+      each = 19
+    )
+  )
+```
+
+```{r}
+ggplot(cvdt) +
+  aes(model, rmse) +
+  geom_boxplot() +
+  labs(
+    title = "RMSE for different presidential election models",
+    x = NULL,
+    y = "RMSE"
+  )
+```
+
+
+```{r}
+ggplot(cvdt) +
+  aes(.id, rmse, color = model) +
+  geom_point() +
+  geom_smooth(
+    method = "lm",
+    se = F,
+    formula = y ~ 1
+  )
+```
+
+Generate predictions for the economy model:
+
+```{r}
+## estimate the economy model:
+fit <- lm(
+  inc_vote_margin ~ gdp_pct_change +
+    inflation_pct_change,
+  data = presdt
+)
+
+## generate predictions
+preds <- sim_qi(
+  mod = fit,
+  newdata = tibble(
+    gdp_pct_change = 2.8,
+    inflation_pct_change = 2.9
+  )
+)
+
+## visualize
+ggplot(preds) +
+  aes(y) +
+  geom_histogram() +
+  geom_vline(
+    xintercept = mean(preds$y),
+    color = "red"
+  ) +
+  geom_vline(
+    xintercept = 0
+  )
+```
+
 
 
 ## From Relationships to Causation

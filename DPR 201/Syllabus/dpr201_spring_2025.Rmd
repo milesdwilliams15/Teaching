@@ -250,9 +250,9 @@ class_cal +
 
 ## `r advdate(mon, 7)`
 
--   Monday: Picking the Best Forecast
+-   Monday: [Model Validation and Selection](https://milesdwilliams15.quarto.pub/data-and-research-design/06_model_selection.html)
 
--   Wednesday: Discussion \hfill \textit{AC4 due}
+-   Wednesday: Listen to ["Colloquy Podcast: How Reliable Are Election Forecasts?"](https://gsas.harvard.edu/news/colloquy-podcast-how-reliable-are-election-forecasts) \hfill \textit{AC4 due}
 
 ## `r advdate(mon, 8)`: Start MA2
 
