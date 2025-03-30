@@ -268,15 +268,15 @@ class_cal +
 
 ## `r advdate(mon, 10)`
 
--   Monday: From Relationships to Causation
+-   Monday: [Causation](https://milesdwilliams15.quarto.pub/data-and-research-design/07_causation.html)
 
--   Wednesday: Discussion \hfill \textit{MA2 due}
+-   Wednesday: Listen to podcast about [*In COVID's Wake*](https://www.nytimes.com/2025/03/20/podcasts/the-daily/were-the-covid-lockdowns-worth-it.html?showTranscript=1) \hfill \textit{MA2 due}
 
 ## `r advdate(mon, 11)`
 
 -   Monday: Randomized Trials
 
--   Wednesday: Discussion \hfill \textit{AC6 due}
+-   Wednesday: *No Class (MPSA)* \hfill \textit{AC6 due}
 
 ## `r advdate(mon, 12)`
 

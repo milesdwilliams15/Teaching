@@ -303,39 +303,39 @@ class_cal +
 
 -   Monday: Read [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html) in lecture notes
 
--   Wednesday: Keep reading [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html)
+-   Wednesday: *No Class (MPSA)* 
 
--   Friday: *No Class (MPSA)* \hfill \textit{GC7 due Fri.}
+-   Friday: *No Class (MPSA)* 
 
 ## `r advdate(mon, 12)`: Upping the Complexity
 
--   Monday: Read [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes
+-   Monday: Read [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes. \hfill \textit{GC7 due Mon.}
 
--   Wednesday: Read [Making Indexes...](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes. Introduce MA3.
+-   Wednesday: Read [Making Indexes...](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html) in lecture notes. 
 
 -   Friday: Read "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" \hfill \textit{GC8 due Fri.}
 
 ## `r advdate(mon, 13)`: Work on MA3
 
--   Monday: Work on MA3
+-   Monday: Introduce MA3
 
 -   Wednesday: Work on MA3
 
--   Friday: Work on MA3 \hfill \textit{MA3 due Fri.}
+-   Friday: Work on MA3 
 
 # Part IV: Choose-your-own-adventure
 
 ## `r advdate(mon, 14)`: Final Adventure Starts!
 
--   Monday: Introduce MA4
+-   Monday: Introduce MA4 \hfill \textit{MA4 due Fri.}
 
 -   Wednesday: Pitch your ideas
 
--   Friday: Friday discussion \hfill \textit{GC9 due Fri.}
+-   Friday: Friday discussion 
 
 ## `r advdate(mon, 15)`: MA4 Presentations
 
--   Monday: Work on MA4
+-   Monday: Work on MA4 \hfill \textit{GC9 due Mon.}
 
 -   Wednesday: Presentations
 
