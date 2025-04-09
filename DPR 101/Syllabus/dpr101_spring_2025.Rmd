@@ -317,7 +317,7 @@ class_cal +
 
 ## `r advdate(mon, 13)`: Work on MA3
 
--   Monday: Introduce MA3
+-   Monday: Introduce MA3 \hfill \textit{GC8 due Mon.}
 
 -   Wednesday: Work on MA3
 
@@ -327,7 +327,7 @@ class_cal +
 
 ## `r advdate(mon, 14)`: Final Adventure Starts!
 
--   Monday: Introduce MA4 \hfill \textit{MA4 due Fri.}
+-   Monday: Introduce MA4 \hfill \textit{MA3 due Mon.}
 
 -   Wednesday: Pitch your ideas
 
