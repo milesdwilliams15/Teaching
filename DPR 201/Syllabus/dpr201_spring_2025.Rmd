@@ -274,21 +274,22 @@ class_cal +
 
 ## `r advdate(mon, 11)`
 
--   Monday: Randomized Trials
+-   Monday: [Randomized Trials](https://milesdwilliams15.quarto.pub/data-and-research-design/08_randomized_trials.html)
 
 -   Wednesday: *No Class (MPSA)* \hfill \textit{AC6 due}
 
 ## `r advdate(mon, 12)`
 
--   Monday: Selection on Observables
+-   Monday: [Selection on Observables](https://milesdwilliams15.quarto.pub/data-and-research-design/09_soo.html)
 
--   Wednesday: Discussion \hfill \textit{AC7 due}
+-   Wednesday: Read ["Ethnicity, Insurgency, and Civil War"](https://www.cambridge.org/core/journals/american-political-science-review/article/ethnicity-insurgency-and-civil-war/B1D5D0E7C782483C5D7E102A61AD6605) \hfill \textit{AC7 due}
 
 ## `r advdate(mon, 13)`
 
--   Monday: Regression Discontinuity
+-   Monday: [Regression Discontinuity](https://milesdwilliams15.quarto.pub/data-and-research-design/10_rd.html#introduction-to-regression-discontinuity-designs)
 
--   Wednesday: Discussion \hfill \textit{AC8 due}
+-   Wednesday: Read ["How reducing documentation burdens impacts equity
+in access to small business COVID-19 relief funding"](https://drive.google.com/file/d/1A24MUGoWjakQHhaUcE6E3z1PSPdf1337/view?usp=sharing) \hfill \textit{AC8 due}
 
 ## `r advdate(mon, 14)`
 
