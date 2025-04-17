@@ -293,9 +293,9 @@ in access to small business COVID-19 relief funding"](https://drive.google.com/f
 
 ## `r advdate(mon, 14)`
 
--   Monday: Difference-in-Differences
+-   Monday: [Difference-in-Differences](https://milesdwilliams15.quarto.pub/data-and-research-design/11_dind.html)
 
--   Wednesday: Discussion \hfill \textit{AC9 due}
+-   Wednesday: Read ["Effects of the Minimum Wage on Employment Dynamics"](https://www.jstor.org/stable/pdf/24736030.pdf?casa_token=37pa6MOcHvoAAAAA:Fx3XvoPyf2yPBfqJSW_H6s1gwAtBdvxom6CY-AyHLjhL53ySoz55aG6j5FAZ9O2TY5LHP_qjH5aUp0AWrWCHt1DSBWy2oafyhoDPivg02UJLvLrOEf8) \hfill \textit{AC9 due}
 
 ## `r advdate(mon, 15)`
 
