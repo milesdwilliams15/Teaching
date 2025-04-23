@@ -327,11 +327,11 @@ class_cal +
 
 ## `r advdate(mon, 14)`: Final Adventure Starts!
 
--   Monday: Introduce MA4 \hfill \textit{MA3 due Mon.}
+-   Monday: Introduce MA4 + `{plotly}` \hfill \textit{MA3 due Mon.}
 
--   Wednesday: Pitch your ideas
+-   Wednesday: GenAI and R
 
--   Friday: Friday discussion 
+-   Friday: Project pitches + read ["Accidental Scientists"](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/accidental-scientists-how-undergraduate-research-in-political-science-can-help-to-patch-the-leaky-pipeline-in-stem-education/5DEBD5A129812FDB3639366BBF91FF00)
 
 ## `r advdate(mon, 15)`: MA4 Presentations
 
