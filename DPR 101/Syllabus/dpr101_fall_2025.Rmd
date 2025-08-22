@@ -1,0 +1,524 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 101 (01/02): Data Visualization for Political Research"
+author: Dr. Miles D. Williams
+date: "Fall 2025"
+
+email: "williamsmd@dension.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MW 1:30-3:00pm"
+office: "Ebaugh 109"
+classroom: "Knapp 105"
+classhours: "MWF (Sec. 1 9:30-10:20am, Sec. 2 10:30-11:20am)"
+
+fontfamily: cochineal
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath,graphicx,amssymb}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=F,
+                      warning=F,
+                      message=F,
+                      echo=F)
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+library(lubridate)
+
+## First Monday of semester
+
+mon <- ymd(20250825)
+
+## dates of no class
+not_here_dates <- c(
+  # Fall break,
+  c(ymd(20251016), ymd(20251017)),
+  # Thanksgiving
+  seq(ymd(20251124), ymd(20251128), by = 1)
+)
+finals_week <- 
+  seq(ymd(20251214), ymd(20251218), by = 1)
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# writing (MA) assignments:
+ma_dates <- c(ymd(20251010), 
+              ymd(20251107),
+              ymd(20251214),
+              ymd(20251215)) 
+  # Final date set to ...
+# graph challenges:
+gc_dates <- c(
+  ymd(20250912),
+  ymd(20250919),
+  ymd(20250926),
+  ymd(20251003),
+  ymd(20251017),
+  ymd(20251024),
+  ymd(20251031),
+  ymd(20251114),
+  ymd(20251121),
+  ymd(20250425)
+)
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+semester_dates <- 
+  seq(ymd(20250828), ymd(20251212), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20250801), ymd(20251231), by = 1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
+         gcs = ifelse(date %in% gc_dates, 1, 0), # is it a GC assignment?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(mas == 1, "MA Due", ccategory),
+         ccategory = ifelse(gcs == 1, "GC Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("MA Due" = "firebrick", 
+               "GC Due" = "darkblue", 
+               "NA" = "white"),
+    breaks = c("MA Due", "GC Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: Fall Break (10.16-10.17), Thanksgiving (11.24-11.28), Final Day of Instruction (12.12)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+Is election fraud really a threat to democracy? Is war prevalent and getting more likely? What attitudes do people really have about issues like abortion and gun control? How will your fellow students vote in the next election and why? These are weighty questions, and depending on whom you ask, different people (or your preferred LLM) will provide you with different answers.
+
+One of the primary culprits of divergent views in politics is the alternate bases of fact on which people draw conclusions. We all have different life experiences, and there is no shortage of anecdotes and stories that we can muster to support our beliefs. While there is no simple way to reconcile differences in values, it often helps to document the nature of our political and social world with transparency and consistency. This offers an solid fact-based foundation where anecdote and speculation would normally reign.
+
+One of the most impactful ways of communicating documented facts about our political and social world is through data visualization. Data are being generated around us all the time. When people vote, data are generated. When members of parliament open their mouths, we have data. Court cases, polling, protests, passing legislation, raising money, wars -- we have data. But data doesn't speak for itself. If you want to make an argument with data, you need to know effective ways to show people the trends or patterns that you want them to see.
+
+Data visualization is the primary way in which we communicate trends and relationships to audiences, both public and private. Therefore, a course on data visualization is primarily a course on communication, where the data visualization tells a story that can be clearly understood with methods that can be used by anyone to tell the same story.
+
+This course will help you understand political data and what to do with it. That means we will confront all sorts of data and gain techniques to wrangle it (understand, alter, or give it structure) and then explore a wide variety of visualization techniques available to us. By the end of the course, you will "speak" data and have a sizable data visualization toolkit. In addition, you will be able to articulate theories of visualization to explain why you chose a certain visualization and attach written communication that is as clear as your data visualization.
+
+\newpage
+
+# Class Schedule
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+
+class_cal + 
+  theme_steve_ms() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top',
+    axis.ticks = element_blank()
+  ) 
+```
+
+\singlespacing
+\setlength{\parskip}{0pt}
+
+\hrulefill
+
+\bigskip
+
+*Note:* Unless otherwise indicated, due dates are by midnight. "GC" = Graph Challenge. "MA" = Main Assignment.
+
+# Getting Started
+
+## `r advdate(mon, 1)`: Welcome!
+
+- Friday: Course Intro
+
+# Part I: Tales of Election Fraud
+
+## `r advdate(mon, 2)`: Getting Started
+
+- Monday: Our approach to AI use in the class
+
+- Wednesday: Kieran Healy, ["Look at Data"](https://socviz.co/lookatdata.html#lookatdata)
+
+- Friday: Read and discuss ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118) 
+
+## `r advdate(mon, 3)`: Intro to Software
+
+-   Monday: [Introduction](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/intro.html) and [R Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/01_prerequesites1.html)
+
+-   Wednesday: [Accessing Data and Making Your First Plot](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/02_prerequisites2.html)
+
+-   Friday: Read and discuss ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714) \hfill \textit{GC1 due Fri.}
+
+## `r advdate(mon, 4)`: The Basics
+
+-   Monday: [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html) 
+
+- Wednesday: [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html) continued
+
+- Friday: Read and discuss ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A) \hfill \textit{GC2 due Fri.}
+
+## `r advdate(mon, 5)`: Show the Right Numbers
+
+-   Monday: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html)
+
+- Wednesday: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html) continued
+
+- Friday: Read and discuss ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/) \hfill \textit{GC3 due Fri.}
+
+
+## `r advdate(mon, 6)`: Drawing Maps
+
+-   Monday: [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) 
+
+- Wednesday: [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) continued
+
+-   Friday: Read [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link") \hfill \textit{GC4 due Fri.}
+
+## `r advdate(mon, 7)`: Work on MA1
+
+-   Monday: Introduce MA1
+
+-   Wednesday: Work on MA1
+
+-   Friday: Work on MA1 \hfill \textit{MA1 due Fri.}
+
+# Part II: Statistical Sightings of Better Angels
+
+## `r advdate(mon, 8)`: Wrangling Data
+
+-   Monday: [Data Wrangling](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/09_modifying_data.html) in lecture notes
+
+-   Wednesday: [Data Wrangling](\hfill%20\textit%7BMA1%20due%20Mon.%7D) continued
+
+- Friday: NO CLASS (Fall Break) \hfill \textit{GC5 due next Mon.}
+
+## `r advdate(mon, 9)`: Refining Plots
+
+-   Monday: [Adding Labels and Text](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/10_layering_complexity.html) in lecture notes
+
+-   Wednesday: [Adding Labels and Text](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/10_layering_complexity.html) continued
+
+-   Friday: Read [War Is Not Over: What the Optimists Get Wrong About Conflict](https://drive.google.com/file/d/1irp5wKqItQuRfRZvjgmc8NHksoFLmFR-/view?usp=sharing) \hfill \textit{GC6 due Fri.}
+
+
+## `r advdate(mon, 10)`: Color Palettes and Themes
+
+-   Monday: [Introducing \`{coolorrr}\` for Color Palettes](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/11_color_palettes.html) in lecture notes
+
+-   Wednesday: [\`ggplot()\` Themes](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/12_refining_your_plots.html) 
+
+-   Friday: Read "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)" \hfill \textit{GC7 due Fri.}
+
+## `r advdate(mon, 11)`: Work on MA2
+
+- Monday: Work on MA2
+
+- Wednesday: Work on MA2
+
+- Friday: 1-on-1s \hfill \textit{MA2 due Fri.}
+
+# Part III: What the Hell Happened?
+
+## `r advdate(mon, 12)`: Survey Data and Measurement
+
+-   Monday: [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html) 
+
+-   Wednesday: [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html)
+
+-   Friday: Read and discuss ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) \hfill \textit{GC8 due Fri.}
+
+## `r advdate(mon, 13)`: Complex Responses and Patchworked Visuals
+
+-   Monday: [Dealing with Multiple Choice Survey Responses](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.5_multiple_choice_survey_questions.html)
+
+-   Wednesday: [Showing More with Less](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html)
+
+-   Friday: Read and discuss "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" \hfill \textit{GC9 due Fri.}
+
+## `r advdate(mon, 14)`: Thanksgiving Break
+
+NO CLASS
+
+## `r advdate(mon, 15)`: Work on MA3
+
+-   Monday: Start MA3
+
+-   Wednesday: MA3 Pitches
+
+-   Friday: Read and discuss ["Accidental Scientists"](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/accidental-scientists-how-undergraduate-research-in-political-science-can-help-to-patch-the-leaky-pipeline-in-stem-education/5DEBD5A129812FDB3639366BBF91FF00)
+
+## `r advdate(mon, 16)`: MA3 Presentations
+
+-   Monday: Presentations
+
+-   Wednesday: Presentations
+
+-   Friday: Presentations (or final work day)
+
+## MA3 Due Dates
+
+- *Section 1 (9:30-10:30am)*: Sunday 12.14 at 4:00pm
+
+- *Section 2 (10:30-11:30am)*: Monday 12.15 at 8:30pm
+
+\newpage
+
+\singlespacing
+\setlength{\parskip}{5pt}
+
+# Course Objectives
+
+In this course, you'll develop a number of skills.
+
+#### Quantitative
+
+You will develop your quantitative skills in the treatment of data. You'll learn how data are gathered, assembled into datasets, and most effectively visualized to describe and draw inferences for maximum impact.
+
+#### Writing
+
+A picture may be worth a thousand words, but it helps if words are included. When you visualize data you will also write up your results. This will enhance your writing skills and reinforce the idea that data visualization is not a mechanical skill; it is a method of inquiry intended for public communication.
+
+#### Critical Thinking
+
+Critical thinking involves "confronting multiple, competing perspectives and adjudicating between them." This is the essence of what is required to organize data, create effective visualizations, and draw conclusions.
+
+#### Statistical Programming
+
+You will use R and RStudio to wrangle and visualize data. By the time you have finished this course you may not be an expert programmer, but you will be well versed in the basics of R and how to use the `{tidyverse}` suite of packages to assemble, organize, and visualize data.
+
+# Analysis Software
+
+Students will use R and RStudio, which are free and open source. You may access an online version available through a web browser installed on a Denison server: `r.denison.edu`. This can be accessed on campus on any computer or through a VPN off campus. To use the VPN follow the instructions at one of the help pages below:
+
+1.  [For Windows Users](https://docs.google.com/document/d/1z1eapXs8Lp0yA7TBXmLfViiz6U67ADvLgpFeWJoSLLA/edit#heading=h.48vu9pu55b3s)
+2.  [For Mac Users](https://docs.google.com/document/d/1FaJN4et9H9eKsJIVinwqC903NbKA5A-IYfvDPlFwwXk/edit#heading=h.48vu9pu55b3s)
+
+Many of the necessary R packages for the course are already installed in the server version. While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and RStudio on your laptop. Follow [this guide](https://posit.co/products/open-source/rstudio/).
+
+# Required Readings
+
+In addition to reading pieces written by journalists, academics, and others available online, our primary "text" will be the DPR 101 lecture notes which I have published open access via Quarto. I've creatively called them [*Data Visualization for Political Research*](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/)*.*
+
+In the past, I've assigned the following text as well:
+
+> Healy, Kieran. 2019. *Data Visualization: A Practical Introduction*. Princeton: Princeton University Press.
+
+Healy's book is an excellent resource, but increasinly is becoming dated (as happens to all software textbooks in time).
+
+# Resources
+
+## The Instructor (that's me)
+
+During my office hours (see the header of this syllabus), my door is always open. No appointment necessary. If those hours don't work for you, we can work out a different time to meet.
+
+You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday. I have a little one at home, and evenings and weekends are family time.
+
+## Teaching Assistants
+
+DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TA are included below. Our TA is a great resource if you're having trouble with your code or are stuck on a problem.
+
+### Kaiden McCready
+
+- **email**: mccrea_k1@denison.edu
+- **hours**: MF 5-7pm
+- **location**: Olin 215
+
+## Artificial Intelligence
+
+Increasingly students are turning to large language models (LLMs) for help. This practice is generally okay with me, *but* these tools are not perfect and may, for example, introduce bugs to your code that you aren't well equipped to dignose and fix. And as you'll see in my AI-use policy (further down in the syllabus) I'm not too keen on you relying on AI, especially if you're new to coding in R. While you may hear different views from other faculty (and I respect differing views), I firmly believe that AI-use is a poor scaffold for learning skills. To the contrary, I think learning skills is a necessary scaffold for using AI. Avoiding turning to AI as much as you can.
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+[We have a writing center](https://my.denison.edu/campus-resources/writing-center)! If you're unsure of the quality of your writing or need an extra set of eyes to help you edit and refine your work, these are the folks to see. They're way better than ChatGPT or whatever other LLM suits your fancy.
+
+## Multilingual Support (L2)
+
+If English isn't your first language, [Denison offers support for multilingual writers.](https://my.denison.edu/campus-resources/writing-center/multilingual-writers) If you want to make sure that your writing is on-point, make use of this resource. Again, it's way better than ChatGPT.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+## R Resources & Cheat Sheets
+
+[How to Google R Stuff](https://www.r-bloggers.com/2021/12/how-to-google-r-stuff/) $\Diamond$ [`{tidyr}`](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf) $\Diamond$ [`{dplyr}`](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf) $\Diamond$ [`{ggplot2}`](https://github.com/rstudio/cheatsheets/blob/main/data-visualization-2.1.pdf) $\Diamond$ [`{rmarkdown}`](https://github.com/rstudio/cheatsheets/blob/main/rmarkdown-2.0.pdf) $\Diamond$ [R color cheatsheet](https://www.nceas.ucsb.edu/sites/default/files/2020-04/colorPaletteCheatsheet.pdf) $\Diamond$ [`{coolorrr}`](https://github.com/milesdwilliams15/coolorrr)
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've learned or done stuff.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc.
+
+| **Grading Scale** |        |         |
+|-------------------|:-------|:--------|
+| A+: 98%+          | A: 92% | A-: 90% |
+| B+: 88%           | B: 82% | B-: 80% |
+| C+: 78%           | C: 72% | C-: 70% |
+| D+: 68%           | D: 62% | D-: 60% |
+| F: below 60       |        |         |
+
+\newpage
+
+*Attendance and Participation* **10%**
+
+> You should show up to class and participate! In terms of showing up, I'm generously offering 4 freebie absences (no questions asked). Life happens and my inbox is always full. So if you need a day because you're sick, you're traveling for sports or a performance, or you just want to go do something fun (I once cancelled class to go see Metallica) just take the time you need. However, once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your 5th absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. One way I'll keep you accountable is by randomly calling on you to answer questions. You don't have to get the answers right, but if it's clear you didn't know the answer due to lack of preparedness for class that will cost you a small amount of participation points (1% of your total class grade). On days when we're working on R code, I might ask you questions based on the lecture notes. On Fridays (our discussion days), I'll ask questions about the assigned reading.
+
+*3 Main Assignments (MAs)* **15% Each**
+
+> You'll have three mini research projects to complete in this course. These will include a report no longer than 1,000 words with multiple data visualizations. The prompts for these assignments will be made available during the course. These assignments will involve wrangling some political data, describing trends with figures, and a written summary (with your figures included in-text) of what you found. One of these assignments will be done in groups, one will be done individually, and for the final MA of the course it will be up to you whether you work in a group or solo. For group assignments, grades will be given on a group rather than an individual basis. The final assignment includes a presentation component, which is graded as completed/not completed, and will factor into your participation and attendance credit rather than your MA credit.
+
+*9 Graph Challenges (GCs)* **5% Each**
+
+> These are intended to help you practice some data wrangling and data viz skills. You'll be given data and asked to make a graph and talk about the results, or you might be given some code that you need to debug and explain what you needed to fix. There will be 9 GCs throughout the semester. 
+
+*AI Audits (AIAs)* 
+
+> I discuss AI audits (AIAs) in greater detail in the final section of this syllabus. I'm offering just a brief summary here. For each assignment in the class, I will randomly select three students for an AIA. When you're selected, I'll ask you to come to my office (either during office hours or a time that works best for you) and complete an in-person assessment. The exact nature of the AIA will vary. For a GC, I might give you partial code that you originally submitted and ask you to complete it, or show you the data visualization that you submitted and ask you to come up with the code that produced it. You'll be graded on a high pass/pass/fail rubric. If your AIA goes well, you'll pass and get to keep whatever grade I would have given your original submission. If it goes beyond well, and the work you produce in person is better than what you originally submitted, you'll get a high pass and receive a letter grade bump to your original grade. If it goes poorly, you'll fail and receive a 50% F on the assignment. I will give notice that you're up for an AIA a week in advance. 
+
+\bigskip
+
+
+$$
+\textbf{Tallying Your Grade:}\\
+\begin{aligned}
+10\%  & \text{ (Attendance and Participation)} \\
+3 \times 15\% = 45\%  & \text{ (Main Assigments)} \\
+\underline{+ \space 9 \times 5\% = 45\%} &  \text{ (Graph Challenges)} \\
+100\% & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I will respond to your emails within 24 hours at the latest between Monday and Friday every week. Don't expect me to respond over the weekend or in the evenings --- those times are family time, so I'll be less consistent about checking my inbox.
+
+## Make-Up Assignment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. Otherwise, you have this syllabus which alerts you when assignments are due. Plan ahead!
+
+## Second Chances Policy
+
+You have exactly one chance to complete your assignments, and only one chance should be necessary. There are days in class specifically carved out to work on your MAs, and my door is always open during office hours. You also have access to DPR TAs and the Writing Center. There are so many resources at your disposal as you complete your work in this class. Take advantage of them, and you won't need a second chance.
+
+## Attendance Policy
+
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences -- no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence. 
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive and the RStudio server, all your work will be backed up and easy to access from any computer on campus.
+
+## Late Assignments
+
+Turn in your work on time. We have a lot of ground to cover in this class. So turn in your work when it's due. This is meant to help you, and me. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. And if you procrastinate this forces me to procrastinate in getting a grade back to you. I want to give you timely feedback on your work, which I can't do if you don't turn your work in on time.
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class*** (this includes using someone else's code and submitting it as your own).
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## AI Policy
+
+We will talk more in class about what I consider acceptable and unacceptable use of generative AI tools in this course. But I want to offer a brief sketch of my philosophy so you have a rough sense of what I expect of you and so that you understand that one of my goals is to better prepare you for a future (present?) where these tools are a regular part of your life and career. AI is here, and I know from student surveys that the vast majority of you are using it in some capacity.
+
+There are two common views on AI in the classroom that are making the rounds, and I strongly *disagree* with both. The first is that AI-use is a skill, and you must start learning to use it well now in order to be effective and competitive in your future career. This view sounds right to most people's ears, which is why I think so many accept it without sparing a moment or two for giving it some critical thought. The second view I disagree with is that AI-use can be a useful scaffold for learning skills (like doing research, producing data visualizations, and writing up the results). This also sounds right, so few seem to question it.
+
+I disagree with these views for two reasons. First, I think that using AI tools well is not really a skill; it's a second order implication of having skills. The people I see using AI effectively in their work today are people who developed expertise and skills before AI tools were readily available. Today, when they offload tasks to AI agents, they aren't asking the AI to do what they can't already do. They're asking it to take some work off their plate so they can focus on other tasks. Importantly, they know how to double-check and refine what their AI agents produce because they already know how to do the tasks they outsourced. Think about it, if you aren't a competent programmer, how can you know for sure if the code you ask an LLM to produce for you works as intended? How will you be able to troubleshoot a bug in LLM written code when you receive a vague and unhelpful error message? When it comes to writing a report or a paper, how will you actually know if LLM-generated text is factually correct or well-written? You need to have some basic knowledge and skills first before you can be a critical and competent user of these tools. Maybe this will change in the future, but I have yet to see strong evidence that that future is here already.
+
+Not only does the ability to use AI tools critically come from having abilities in the first place, [new research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) shows that access to AI tools while you're still learning important skills stunts your development rather than enhances it. This is especially important for working with the R programming language which I primarily use in my research and that we will use in this course. The same is true for learning Python, SQL, or any other language relevant for working with data. Like any language, the only way to learn to speak it fluently is to actually spend some time speaking it. If you don't put in the work yourself, if you offload the cognitive burden to an LLM, you not only will never develop an expert-level mastery of the software, you also will never develop basic competency. In the same way, if you never write stuff on you own (as messy and awkward as your writing appears), you will never actually develop the ability to write well, much less learn the specialized skill of writing with data, or for that matter learn how to compose a convincing and logically sound argument.
+
+By the way, offloading these tasks also means that you won't develop the ability to think clearly or deeply about your research and data analysis, because writing is deep thinking in action. If you offload writing to an LLM, you're offloading thinking. [That same research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) that I mentioned before shows that failing to write stuff on your own, that using an LLM instead, not only harms learning, it actually affects the architecture of your brain in adverse ways. People whose access to LLMs was curtailed showed greater neural connectivity than those given access to LLMs from the start. If you want to develop skills, the less you rely on LLMs, especially early on, the better.
+
+These two points also reinforce each other. You need skills to use AI tools effectively, and you give yourself the best chance of developing relevant skills the less you rely on AI. Therefore, I really want you to learn the skills I plan to teach you in this class. This isn't just for the benefit of your own personal development; I also worry that too much reliance on LLMs is leading to the de-skilling of the future workforce, leading to more and more students making themselves replaceable in their future careers.  Think about it, if your "skill" is that you know how to prompt an AI to perform a task, why does your employer need *you*? Anybody can figure out how to prompt AIs to do *something*, and some of the latest versions will do quite a lot on the basis of a very short or even vague request. If you want to be competitive, you need to demonstrate what *you* can do; not what you can ask an AI agent to do. And, going back to my previous points, if you rely on AI tools too much too soon in your education, you'll have only the brittlest of skills to offer a future employer or graduate admissions committee. And those brittle skills will actually make you a poor user of AI. I don’t care how much folks running these LLM operations want to sell you on new "study modes" and strategies for using AIs to augment or enhance learning. Turning to AI too soon risks leaving you dependent on tools that, as yet, remain fickle and error prone. 
+
+This takes me to the approach I want to follow with AI in this course. First, I want you to actually develop some skills in using R to work with data and produce data visualizations, and in writing up your results, with as little reliance on AI as possible. Then, I want to titrate in AI-use for you to see how (and if) it improves your productivity. In short, I want you to develop skills as a scaffold for using AI (not the other way around). 
+
+To this end, I will incorporate into assignments some stipulations about whether and how I'd like you to bring AI into the fold. We'll start by not using AI at all, but by the end of the class I'll ask you to offload certain tasks to AI and ask you to evaluate its performance and compare its outputs to code or written summaries you produced on your own. 
+
+To offer some extra incentive for you to actually work on developing skills rather than offload assignments to AI (except as I give you permission) I'm test-running a new policy this semester that I call "AI audits" or AIAs (which I already mention in the Grading Policy section). For each GC and MA (except for the final MA) I will conduct **three randomized AIAs**. If you are one of the three selected for a given assignment, I'll ask you to come to my office, during my office hours or some other time that works for you, and have you reproduce part of an assignment in person, or ask you to explain your work or walk me through results in one or more data visualizations you produced. 
+
+Think of these as a periodic in-person assessment to make sure you're making progress in the course. My goal isn’t to catch AI use per se, but it is to evaluate your understanding of concepts and technical skills in a way that roots out over-reliance on AI. Whether you used AI or not (or copied someone else’s work or not), you’ll need to show me in person that they have the skills demonstrated in your submitted work. If you did use AI inappropriately but you studied up and did well in your audit, what’s that to me? You actually put in the work, at some point at least, and hopefully learned something as a result.
+
+The exact nature of the AIA will vary. For a GC, I might give you partial code that you submitted and ask you to complete it, or show you the data visualization that you submitted and ask you to come up with the code that produced it. You'll be graded on a high pass/pass/fail rubric. If your AIA goes well, you'll pass and get to keep whatever grade I would have given your original submission. If it goes beyond well, and the work you produce in person is better than what you originally submitted, you'll get a high pass and receive a letter grade bump to your original grade. If it goes poorly, you'll fail and receive a 50% F on the assignment. I will give notice that you're up for an AIA a week in advance. 
+
+I know the AIA policy makes me seem like a hard-ass. Maybe I am. At the end of the day, though, I'm implementing this policy because I really care whether you learn something in this class. If you're actually doing the work, you'll have no trouble when you're called up for an AIA. Look at it as an opportunity to show off your skills. But if you aren't doing the work, you better study up and prepare when your turn for an AIA comes around.
