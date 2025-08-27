@@ -8,7 +8,7 @@ format: html
 
 ```{r packages + data}
 library(tidyverse)
-theme_set(ggthemes::theme_fivethirtyeight())
+theme_set(ggthemes::theme_clean())
 
 wthh <- read_csv(
   "http://filesforprogress.org/datasets/wthh/DFP_WTHH_release.csv"
@@ -20,14 +20,14 @@ wthh <- read_csv(
 
 ```{r histogram of raw score}
 ggplot(wthh) +
-  aes(x = racial_resentment_raw) +
+  aes(racial_resentment_raw) +
   geom_histogram()
 ```
 
 
 ```{r histogram of scaled score}
 ggplot(wthh) +
-  aes(x = racial_resentment_scaled) +
+  aes(racial_resentment_scaled) +
   geom_histogram()
 ```
 
@@ -66,7 +66,7 @@ wthh |>
         SYSTEM,
         EMPATHY,
     ends_with("_rec"),
-    racial_animus_mean
+    racial_animus
   ) |> view()
 ```
 
@@ -147,7 +147,8 @@ wthh |>
   ggplot() +
   aes(x = mean, xmin = lower, xmax = upper, y = race_cat) +
   geom_pointrange(
-    aes(color = income)
+    aes(color = income),
+    position = position_dodge(-.5)
   ) 
 ```
 

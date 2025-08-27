@@ -8,7 +8,7 @@ format: html
 
 ```{r packages}
 library(tidyverse)
-library(socsci)
+library(socsci) # devtools::install_github("ryanburge/socsci")
 theme_set(theme_bw())
 ```
 
@@ -52,6 +52,8 @@ wthh |>
       TRUE ~ "Other"
     )
   ) -> wthh
+
+wthh |> select(race, race_cat)
 ```
 
 Use `frcode()` to make recodes:
@@ -59,7 +61,7 @@ Use `frcode()` to make recodes:
 ```{r frcode}
 wthh |>
   mutate(
-    race_frcat = frcode(
+    race_catfr = frcode(
       race == 1 ~ "White",
       race == 2 ~ "Black",
       race == 3 ~ "Latino",
@@ -67,13 +69,22 @@ wthh |>
       TRUE ~ "Other"
     )
   ) -> wthh
+wthh |> select(race, race_cat, race_catfr)
 ```
 
 
 ```{r ct with race}
 wthh |>
-  ct(race_frcat)
+  ct(race_catfr)
 ```
+
+
+```{r}
+ggplot(wthh) +
+  aes(race_catfr) +
+  geom_bar()
+```
+
 
 
 Use `frcode()` with `pid7`:
@@ -81,12 +92,12 @@ Use `frcode()` with `pid7`:
 ```{r party lean}
 wthh |>
   mutate(
-    pid7_cat = frcode(
+    pid7_catfr = frcode(
       pid7 == 1 ~ "Strong Dem",
       pid7 == 2 ~ "Dem",
-      pid7 == 3 ~ "Lean Dem",
+      pid7 == 3 ~ "Weak Dem",
       pid7 == 4 ~ "Ind",
-      pid7 == 5 ~ "Lean Rep",
+      pid7 == 5 ~ "Weak Rep",
       pid7 == 6 ~ "Rep",
       pid7 == 7 ~ "Strong Rep",
       TRUE ~ "Other"
@@ -94,54 +105,37 @@ wthh |>
   ) -> wthh
 ```
 
+```{r}
+ggplot(wthh) +
+  aes(pid7_catfr) +
+  geom_bar()
+```
+
+
+
 Use `ct()` to summarize distribution of party lean:
 
 ```{r ct party lean}
-wthh |>
-  ct(pid7_cat)
+
 ```
 
 Use `ifelse()` for binary categories:
 
 ```{r recode gender}
-wthh |>
-  mutate(
-    gender_cat = ifelse(gender == 1, "Male", "Female"),
-    gender_frcat = frcode(
-      gender == 1 ~ "Male",
-      TRUE ~ "Female"
-    )
-  ) -> wthh
 
-wthh |>
-  select(gender, gender_cat)
 ```
 
 Use mathematical operations to recode age:
 
 ```{r recode age}
-wthh |>
-  mutate(
-    age = 2018 - birthyr
-  ) -> wthh
+
 ```
 
 
 Making age a category:
 
 ```{r age category}
-wthh <- wthh |>
-  mutate(
-    agecat = frcode(
-      age < 25 ~ "18-24",
-      between(age, 25, 29) ~ "25-29",
-      between(age, 30, 39) ~ "30s",
-      between(age, 40, 49) ~ "40s",
-      between(age, 50, 59) ~ "50s",
-      between(age, 60, 69) ~ "60s",
-      age > 69 ~ "70+"
-    )
-  ) 
+ 
 ```
 
 ## Data viz
@@ -149,38 +143,18 @@ wthh <- wthh |>
 Make a bar plot of party lean:
 
 ```{r party lean viz}
-wthh |>
-  filter(pid7_cat != "Other") |>
-  ct(pid7_cat) |>
-  ggplot() +
-  aes(x = pid7_cat, y = pct) +
-  geom_col()
+
 ```
 
 Make a bar plot of party lean weighted:
 
 ```{r weighted party lean viz}
-wthh |>
-  filter(pid7_cat != "Other") |>
-  ct(pid7_cat, wt = weight_DFP) |>
-  ggplot() +
-  aes(x = pid7_cat, y = pct) +
-  geom_col()
+
 ```
 
 Make a bar plot that breaks party lean down by age category:
 
 ```{r party lean by age category}
-wthh |>
-  group_by(pid7_cat) |>
-  mean_ci(age, wt = weight_DFP) |>
-  ggplot() +
-  aes(
-    x = pid7_cat,
-    y = mean,
-    ymin = lower,
-    ymax = upper
-  ) +
-  geom_pointrange()
+
 ```
 

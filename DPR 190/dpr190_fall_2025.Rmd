@@ -1,0 +1,509 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 190: War, Wealth, and World Politics"
+author: Dr. Miles D. Williams
+date: "Spring 2025"
+
+email: "williamsmd@denison.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MW 11:30-12:20 and 1:30-3:00pm"
+office: "Ebaugh 109"
+classroom: "Higley 405"
+classhours: "MWF 12:30-1:20 pm"
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath}
+   - \usepackage{multicol}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(cache=F,
+                      warning=F,
+                      message=F)
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+library(lubridate)
+
+
+## First Monday of semester
+
+mon <- ymd(20250825)
+
+## dates of no class
+not_here_dates <- c(
+  # Fall break,
+  c(ymd(20251016), ymd(20251017)),
+  # Thanksgiving
+  seq(ymd(20251124), ymd(20251128), by = 1)
+)
+finals_week <- 
+  seq(ymd(20251214), ymd(20251218), by = 1)
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+# 3 main assignments:
+ma_dates <- c(ymd(20251010), 
+              ymd(20251107),
+              ymd(20251217)) 
+
+gai_dates <- c(ymd(20250905),
+               ymd(20250912),
+               ymd(20250919),
+               ymd(20250926),
+               ymd(20251003),
+               ymd(20251024),
+               ymd(20251031),
+               ymd(20251114),
+               ymd(20251121),
+               ymd(20251205))
+
+# grade the AI will be weekly unless otherwise specified.
+# i won't add these to the calendar
+
+# What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
+# In this case: Aug. 28 to Dec. 17
+semester_dates <- 
+  seq(ymd(20250828), ymd(20251212), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date =  seq(ymd(20250801), ymd(20251231), by = 1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
+         gais = ifelse(date %in% gai_dates, 1, 0), # GAI?
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(mas == 1, "MA Due", ccategory),
+         ccategory = ifelse(gais == 1, "GAI Due", ccategory),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank()) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, aes(fill=fcategory,color=ccategory), size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),family="Open Sans") +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks")) +
+  scale_color_manual(
+    values = c("MA Due" = "darkblue", 
+               "GAI Due" = "red3",
+               "NA" = "white"),
+    breaks = c("MA Due", "GAI Due")
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: Fall Break (10.16-10.17), Thanksgiving (11.24-11.28), Final Day of Instruction (12.12)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+This class is called *War, Wealth, and World Politics*. Really, this is a course about international relations as subject matter and International Relations (IR) as a field of social science. War, wealth, and world politics all fall under this umbrella.  My goal (hope) for this semester isn't to teach you everything you need to know about international relations or IR as a discipline. My objective is more narrow. I want to show you how looking at the world like an IR researcher can help you make sense of international politics and call "BS" on dubious claims about what's going on in the world and the trajectory it's headed in. 
+
+To equip you to do this, I've divided the class into three sections, each oriented around specific questions. In the first part of the course we'll ask: **who are the main actors in international relations, what issues are at stake in their interactions, and why is it so hard for them to cooperate with each other?** In the second part of the course we'll move away from specific issues and ask: **how do IR theories help us simplify the process of making sense of the world, what are their main moving pieces, and how do we verify when or if these theories are useful?** And in the final part of the course we'll home in on a specific but high-profile example of IR scholarship in action about the decline of war, asking: **how did this specific author blend theory and data to help readers make sense of a complex issue in international relations?**
+
+By the end of this course you won't know how the world works --- it's too complex for any one person to comprehend --- but if you work hard and apply yourself, you might just know enough to get your bearings. To use an analogy, I'm not going to give you a map of the world's oceans, but I will give you a compass and sextant. 
+
+\newpage
+
+# Class Schedule
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+class_cal + 
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top'
+  )
+```
+
+\singlespacing
+
+\setlength{\parskip}{0pt}
+
+\bigskip
+
+\hrulefill
+
+*Note:* "MA" = Main Assignment. "GAI" = Grade the AI. Unless otherwise specified, all due dates for assignments are midnight.
+
+\clearpage
+
+# Getting Started
+
+## `r advdate(mon, 1)`: Welcome!
+
+- Friday: Course Intro
+
+# Part I: The State, Actors, and Issues
+
+## `r advdate(mon, 2)`: Setting the Stage
+
+- Monday: AI use in this class (Read the AI Policy in the syllabus)
+
+- Wednesday: Listen to Paul Poast, \href{https://open.spotify.com/episode/5FHM9YyzclsjYLUhtRLk70}{"So, what do IR scholars actually do?"}
+
+- Friday: In Haass, read the intro to "Part IV: Order and Disorder" and the chapters "Sovereignty, Self-Determination, and Balance of Power," "Alliances and Coalitions," and "International Society" (pages 251-279). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 3)`: Globalization, Terrorism, and Nukes
+
+-   Monday: In Haass, read "Globalization" (pages 159-165) 
+
+- Wednesday: In Haass, read "Terrorism and Counterterrorism" (pages 166-172).
+
+- Friday: In Haass, read "Nuclear Proliferation" (pages 173-182). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 4)`: Climate, Migration, and Cyber 
+
+-   Monday: In Haass, read "Climate Change" (pages 183-192).
+
+- Wednesday: In Haass, read "Migration" (pages 193-200).
+
+- Friday: In Haass, read "The Internet, Cyberspace, and Cybersecurity" (pages 201-207). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 5)`: Health, Trade, and Money
+
+-   Monday: In Haass, read "Global Health" (pages 208-214).
+
+- Wednesday: In Haass, read "Trade and Investment" (pages 2015-229).
+
+-   Friday: In Haass, read "Currency and Monetary Policy" (pages 230-239). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 6)`: Development and AI
+
+-   Monday: In Haass, read "Development" (pages 240-250)
+
+-   Wednesday: From the *Council on Foreign Relations* read ["What Is Artificial Intelligence (AI)?"](https://www.cfr.org/backgrounder/what-artificial-intelligence-ai?_gl=1*fio61f*_gcl_au*MTYyMzUyNjMyNC4xNzU2MTQ5MzE5*_ga*NTM2NzcxMDAwLjE3NTYxNDkzMjA.*_ga_24W5E70YKH*czE3NTYxNDkzMTkkbzEkZzEkdDE3NTYxNDkzODEkajU5JGwwJGgw)
+
+-   Friday: Review of Issues 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 7)`: Work on MA1
+
+- Monday: Introduce and work on MA1
+
+- Wednesday: Work on MA1
+
+- Friday: In-office group meetings 
+
+\hfill \textit{MA1 due Fri.}
+
+# Part II: Theories
+
+## `r advdate(mon, 8)`: The Supernatural and Theory
+
+-   Monday: In Drezner, read "Introduction...to the Undead," "The Zombie Literature," "Defining a Zombie," and "Distracting Debates about Flesh-eating Ghouls" (pages 1-29).
+
+-   Wednesday: Talk about the building blocks of an IR theory.
+
+- Friday: NO CLASS (Fall Break). 
+
+\hfill \textit{NO GAI this week}
+
+## `r advdate(mon, 9)`: The Big 3
+
+-   Monday: In Drezner, read "The Realpolitik of the Living Dead" (pages 31-42).
+
+-   Wednesday: In Drezner, read "Regulating the Undead in a Liberal World Order" (pages 43-54).
+
+-   Friday: In Drezner, read "The Social Construction of Zombies" (pages 55-62). 
+
+\hfill \textit{GAI due Fri.}
+
+
+## `r advdate(mon, 10)`: Beyond the State as Actor
+
+-   Monday: In Drezner, read "Domestic Politics: Are All Zombie Politics Local?" (pages 81-92).
+
+-   Wednesday: In Drezner, read "Bureaucratic Politics: The 'Pulling and Hauling' of Zombies" (pages 93-102).
+
+-   Friday: In Drezner, read "We're Only Human: Psychological Responses to the Undead" (pages 103-110). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 11)`: Critical Perspectives
+
+- Monday: In Drezner, read "The Supergendered Politics of the Posthuman World" (pages 63-72).
+
+- Wednesday: In Drezner, read "Subalternity and the Living Dead: Postcolonial Approaches to a Posthuman World" (pages 73-78).
+
+- Friday: Work on MA2. 
+
+\hfill \textit{MA2 due Fri.}
+
+# Part III: IR Theory and Analysis in Action
+
+## `r advdate(mon, 12)`: Intro to *Only the Dead*
+
+-   Monday: In Braumoeller, read "Preface" and "Introduction" (pages xi-17). 
+
+-   Wednesday: In Braumoeller, read "Reasons for Skepticism, Part I: Data" (pages 21-46).
+
+-   Friday: In Braumoeller, read "Reasons for Skepticism, Part II: Explanation" (pages 47-72). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 13)`: Is War Declining?
+
+-   Monday: In Braumoeller, read "Is International Conflict Going out of Style?" (pages 75-99).
+
+-   Wednesday: In Braumoeller, read "Is International Conflict Getting Less Deadly?" (pages 100-130).
+
+-   Friday: In Braumoeller, read "Are the Causes of International Conflict Becoming Less Potent?" (pages 131-139). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 14)`: Thanksgiving Break
+
+NO CLASS
+
+## `r advdate(mon, 15)`: The Role of Order
+
+-   Monday: In Braumoeller, read "International Order" (pages 143-177).
+
+-   Wednesday: In Braumoeller, read "History and International Order" (pages 178-211).
+
+-   Friday: In Braumoeller, read "Conclusion and Implications" (pages 215-224). 
+
+\hfill \textit{GAI due Fri.}
+
+## `r advdate(mon, 16)`: Work on MA3
+
+-   Monday: Introduce and work on MA3
+
+-   Wednesday: Work on MA3
+
+-   Friday: Work on MA3 
+
+\hfill \textit{MA3 due 12.17, 11:00am}
+
+
+\singlespacing
+\setlength{\parskip}{5pt}
+
+\clearpage
+
+# Course Objectives
+
+After taking this course, my hope is that you are able to answer the following questions:
+
+1. *Who are the main actors in international relations, what issues are at stake in their interactions, and why is it so hard for them to cooperate with each other?* 
+2. *How do IR theories help us simplify the process of making sense of the world, what are their main moving pieces, and how do we verify when or if these theories are useful?*
+3. *What does it look like to blend theory and data to make sense of a complex issue in international relations?*
+
+I also have some secondary learning objectives for you:
+
+1. *Learn how to think critically about IR theories and data.*
+2. *Develop the skill of making (and writing) a clear argument on the basis of theory and evidence*.
+3. *Practice using Generative AI tools in a responsible and ethical way to accomplish 1 and 2.*
+
+No doubt, elements of this course will probably fall short in helping you realize these objectives. All I ask is that you apply yourself and commit to learning, and I'll do my best to be your guide and come up with challenges that help you grow. I can ask for nothing more, or less.
+
+# Required Readings
+
+In the order you'll need them:
+
+1.  Haass, Richard. *The World: A Brief Introduction.* Penguin, 2021.
+
+2.  Drezner, Daniel W. *Theories of International Politics and Zombies: Apocalypse Edition.* Princeton University Press, 2022.
+
+3.  Braumoeller, Bear F. *Only the Dead: The Persistence of War in the Modern Age.* Oxford University Press, 2019.
+
+# Resources
+
+## The Instructor (that's me!)
+
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday or Wednesday between 11:30-12:20 or 1:30-3:00. No appointment necessary. Outside of those times I'm available for a virtual meeting by appointment on Tuesdays and Thursdays between 1:30-3:00.
+
+You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond within 24 hours, but if you email me on a weekend be prepared for a longer response time.
+
+## Artificial Intelligence
+
+Increasingly students are turning to large language models (LLMs) for help. This practice is generally okay with me, *but* these tools are not perfect and may, for example, hallucinate or generate misleading responses that you are as yet ill-equipped to catch. And as you'll see in my AI-use policy (further down in the syllabus) I'm not too keen on you relying on AI, especially early on in your studies. While you may hear different views from other faculty (and I respect differing views), I firmly believe that AI-use is a poor scaffold for learning skills. To the contrary, I think learning skills is a necessary scaffold for using AI. Avoiding turning to AI as much as you can. That said, we will have assignments in this course where I explicitly ask you to use AI within certain parameters.
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Staffed by student Writing Consultants, the Writing Center is a free resource available to all Denison students. Writing Consultants from a range of majors work with writers one-on-one in all phases of the writing process, including (but not limited to): deciphering assignments, discussing ideas, developing an argument, integrating research and sources, working with faculty feedback, and/or polishing a draft. In addition, Consultants are happy to help with all types of writing, from lab reports, research papers, and informal writing assignments to cover letters, personal statements, and other application materials. The Center welcomes writers from all backgrounds and levels of college preparation, including multilingual writers. Should a multilingual writer need writing assistance that exceeds the abilities of consultants, the writer can be referred to the Coordinator for Multilingual Learning, Kaly Thayer ([thayerk\@denison.edu](mailto:thayerk@denison.edu){.email}). Writing Center consultations will take place in person in in the Atrium level of the Library; please visit the Writing Center's page (<https://my.denison.edu/campus-resources/writing-center>) on MyDenison for specific information regarding hours of availability and how to schedule an appointment. The Writing Center strongly recommends signing up for appointments in advance.
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the Multilingual Learning Office. Kaly Thayer, the Assistant Director of Multilingual Learning, and Anna Adams, the English Language Support Specialist, as well the student consultants who work with them, are trained and experienced in helping students address the different issues that arise when working in more than one language. If English is not your first or only language, please consider utilizing this resource, which is available to ALL Denison students. Ms. Thayer, Ms. Adams, and the student consultants offer a variety of support for L2 students, including consulting with you about your written language (grammar, syntax, word-choices), strategies to manage your reading assignments, assistance with class conversation and presentations, and help devising ways to develop and effectively use all your skills in English. You can set up an appointment via MyDenison - Campus Resources - Multilingual Learning, or by emailing the Multilingual Learning Office directly at [englishhelp\@denison.edu](mailto:englishhelp@denison.edu){.email}.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant to the University's student record policies. However, students should be aware that University employees are required by University policy to report allegations of discrimination based on sex, gender, gender identity, gender expression, sexual orientation or pregnancy to the Title IX Coordinator or a Deputy Title IX Coordinator. This includes reporting all incidents of sexual misconduct, sexual assault and suspected abuse/neglect of a minor. Further, employees are to report these incidents that occur on campus and/or that involve students at Denison University whenever the employee becomes aware of a possible incident in the course of their employment, including via coursework or advising conversations. There are others on campus to whom you may speak in confidence, including clergy and medical staff and counselors at the Wellness Center. More information on Title IX and the University's Policy prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including support resources, how to report, and prevention and education efforts, can be found at: <https://denison.edu/campus/title-ix> .
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc.
+
+| **Grading Scale** |        |         |
+|-------------------|:-------|:--------|
+| A+: 98%+          | A: 92% | A-: 90% |
+| B+: 88%           | B: 82% | B-: 80% |
+| C+: 78%           | C: 72% | C-: 70% |
+| D+: 68%           | D: 62% | D-: 60% |
+| F: below 60       |        |         |
+
+*Attendance and Participation* **10%**
+
+> You should show up to class and participate! In terms of showing up, I'm generously offering 4 freebie absences (no questions asked). Life happens and my inbox is always full. So if you need a day because you're sick, you're traveling for sports or a performance, or you just want to go do something fun (I once cancelled class to go see Metallica) just take the time you need. However, once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your 5th absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. One way I'll keep you accountable is by randomly calling on you to answer questions in class. You don't have to get the answers right, but if it's clear you didn't know the answer due to lack of preparedness for class that will cost you a small amount of participation points (1% of your total class grade). 
+
+*3 Main Assignments* **20% Each**
+
+> You'll have three main assignments (MAs) to complete in this course. These will come at the end of each of our three units and will consist of a mix of group and individual projects. Prompts for these will be provided in the weeks that lead up to each MA. Each MA will be different but will have the outline of a research paper.
+
+
+*Grade the AI* **30% Total**
+
+> This is a weekly individual assignment worth a combined 30% of your final grade. Generative AI (GenAI) is here, and it's here to stay. That means you need to learn how to use it, and using it well requires critical thinking. Not every response GenAI provides is accurate. If you've used tools like ChatGPT, you know that they can hallucinate, giving you nice sounding but ultimately inaccurate or misleading answers to your questions. That means an ability to check and evaluate the responses from GenAI is a critical skill to develop. In these weekly assignments, you'll get practice using this skill. I'll give you a prompt each week asking a question relavent to the material we cover in class. You'll then give this prompt to ChatGPT. You'll copy the response to a Google or Word doc, and then you give it a letter grade from "A"-"F" and write a short paragraph justifying your evaluation of the response. Your grade for the AI and justification will be graded by me on a pass/fail basis. If you clearly tried, you'll pass.
+
+
+
+$$
+\textbf{Tallying Your Grade:} \\
+\begin{aligned}
+30\% & \text{ (Grade the AI)} \\
+10\%  & \text{ (Attendance and Participation)} \\
+\underline{+ 3 \times 20\% = 60\%}  & \text{ (Main Assignments)} \\
+100\% & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I will respond to your emails within 24 hours at the latest between Monday and Friday every week. Don't expect me to respond over the weekend or in the evenings --- those times are family time, so I'll be less consistent about checking my inbox.
+
+## Make-Up Assignment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having troubles making a due-date and notify me ***in advance***, we can work out a solution. Otherwise, you have this syllabus which alerts you when assignments are due. Plan ahead!
+
+## Second Chances Policy
+
+You have exactly one chance to complete your assignments, and only one chance should be necessary. There are days in class specifically carved out to work on your MAs, and my door is always open during office hours. And there are so many other resources at your disposal as you complete your work in this class. Take advantage of them, and you won't need a second chance.
+
+## Attendance Policy
+
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences -- no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence. 
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive, all your work will be backed up and easy to access from any computer on campus.
+
+## Late Assignments
+
+Turn in your work on time. I want to give you timely feedback, which I can't do if you don't turn your work in. I try to start grading things within a week after due dates. If I don't see a submission from you, or if you haven't communicated with me about an extenuating circumstance requiring an extension, I'll give you a zero.
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class***.
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## AI Policy
+
+We will talk more in class about what I consider acceptable and unacceptable use of generative AI tools in this course. But I want to offer a brief sketch of my philosophy so you have a rough sense of what I expect of you and so that you understand that one of my goals is to better prepare you for a future (present?) where these tools are a regular part of your life and career. AI is here, and I know from student surveys that the vast majority of you are using it in some capacity.
+
+There are two common views on AI in the classroom that are making the rounds, and I strongly *disagree* with both. The first is that AI-use is a skill, and you must start learning to use it well now in order to be effective and competitive in your future career. This view sounds right to most people's ears, which is why I think so many accept it without sparing a moment or two for giving it some critical thought. The second view I disagree with is that AI-use can be a useful scaffold for learning skills (like doing research, summarizing readings, writing papers, etc.). This also sounds right, so few seem to question it.
+
+I disagree with these views for two reasons. First, I think that using AI tools well is not really a skill; it's a second order implication of having skills. The people I see using AI effectively in their work today are people who developed expertise and skills before AI tools were readily available. Today, when they offload tasks to AI agents, they aren't asking the AI to do what they can't already do. They're asking it to take some work off their plate so they can focus on other tasks. Importantly, they know how to double-check and refine what their AI agents produce because they already know how to do the tasks they outsourced. Think about it, if you aren't a competent programmer, how can you know for sure if the code you ask an LLM to produce for you works as intended? When it comes to writing a report or a paper, how will you actually know if LLM-generated text is factually correct or well-written? You need to have some basic knowledge and skills first before you can be a critical and competent user of these tools. Maybe this will change in the future, but I have yet to see strong evidence that that future is here already.
+
+Not only does the ability to use AI tools critically come from having abilities in the first place, [new research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) shows that access to AI tools while you're still learning important skills stunts your development rather than enhances it. The main way I'll evaluate your growth in this class is through your writing. If you jump straight into having AI generate an essay outline for you or have it write an essay for you entirely, you'll miss out on developing the skill of writing and forming sound arguments on the basis of evidence.
+
+Offloading writing also means that you won't develop the ability to think clearly or deeply about IR theories or the evidence supporting or refuting them, because writing is deep thinking in action. If you offload writing to an LLM, you're offloading thinking. [That same research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) that I mentioned before shows that failing to write stuff on your own, that using an LLM instead, not only harms learning, it actually affects the architecture of your brain in adverse ways. People whose access to LLMs was curtailed showed greater neural connectivity than those given access to LLMs from the start. If you want to develop skills, the less you rely on LLMs, especially early on, the better.
+
+Ultimately, these two points reinforce each other. You need skills to use AI tools effectively, and you give yourself the best chance of developing relevant skills the less you rely on AI. This class is an opportunity for you to learn, not to avoid learning, and you (one way or another) are paying thousands of dollars just to take this single class. Don't waste your money (or my time). 
+
+I also worry that too much reliance on LLMs too soon is leading to the de-skilling of the future workforce (*you*), leading to more and more students making themselves replaceable in their future careers. Think about it, if your "skill" is that you know how to prompt an AI to perform a task, why does your employer need *you*? Anybody can figure out how to prompt AIs to do *something*, and some of the latest versions will do quite a lot on the basis of a very short or even vague request. If you want to be competitive, you need to demonstrate what *you* can do; not what you can ask an AI agent to do. And, going back to my previous points, if you rely on AI tools too much too soon in your education, you'll have only the brittlest of skills to offer a future employer or graduate admissions committee. And those brittle skills will actually make you a poor user of AI.  
+
+This takes me to the approach I want to follow with AI in this course. First, I want you to **actually do the readings I assign.** I'm okay with you using AI to help you summarize a reading or identify key points. But if this is all you ever do, you'll miss out on a lot of important details, have no ability to fact-check the summaries produced, and stunt your capacity for deep, focused reading. To keep you honest, as a part of your attendance and participation credit, I'll randomly call on you to ask a question about an assigned reading. You don't have to provide the "correct" answer (and often there won't be a correct answer). I'm looking, instead, for evidence that you've done the reading and have thought (at least a little bit) about it. 
+
+Second, I want to titrate in AI-use for you to see how (and if) it improves your productivity. In short, I want you to develop skills as a scaffold for using AI (not the other way around). To this end, I will incorporate into the MAs some stipulations about whether and how I'd like you to bring AI into the fold. In the first MA we'll start by not using AI at all, but by the final MA I'll ask you to offload certain tasks to AI and ask you to evaluate its performance and make your own improvements. To keep you honest, when I grade your submissions, if I suspect inappropriate use of AI, I reserve the right to implement an "AI audit." I will ask you to come to my office, either during office hours or some other time, and have you to reproduce part of an assignment in-person or answer questions that allow me to check whether your understanding actually reflects the work you submitted. If you actually did the work, you'll have no trouble in the audit. Look at it as an opportunity to show off what you know. But if you didn't do the work, you better study up and prepare.
+
+My hope is that with the right incentives and clear instructions around AI-use, you'll leave this class better equipped to use AI; not more dependent on it.

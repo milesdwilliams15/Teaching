@@ -11,7 +11,7 @@ date: "Fall 2025"
 
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MW 1:30-3:00pm"
+officehours: "MW 11:30-12:20 and 1:30-3:00pm"
 office: "Ebaugh 109"
 classroom: "Knapp 105"
 classhours: "MWF (Sec. 1 9:30-10:20am, Sec. 2 10:30-11:20am)"
@@ -209,7 +209,9 @@ class_cal +
 
 -   Wednesday: [Accessing Data and Making Your First Plot](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/02_prerequisites2.html)
 
--   Friday: Read and discuss ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714) \hfill \textit{GC1 due Fri.}
+-   Friday: Read and discuss ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714) 
+
+\hfill \textit{GC1 due Fri.}
 
 ## `r advdate(mon, 4)`: The Basics
 
@@ -217,7 +219,9 @@ class_cal +
 
 - Wednesday: [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html) continued
 
-- Friday: Read and discuss ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A) \hfill \textit{GC2 due Fri.}
+- Friday: Read and discuss ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A) 
+
+\hfill \textit{GC2 due Fri.}
 
 ## `r advdate(mon, 5)`: Show the Right Numbers
 
@@ -225,7 +229,9 @@ class_cal +
 
 - Wednesday: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html) continued
 
-- Friday: Read and discuss ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/) \hfill \textit{GC3 due Fri.}
+- Friday: Read and discuss ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/) 
+
+\hfill \textit{GC3 due Fri.}
 
 
 ## `r advdate(mon, 6)`: Drawing Maps
@@ -234,7 +240,9 @@ class_cal +
 
 - Wednesday: [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) continued
 
--   Friday: Read [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link") \hfill \textit{GC4 due Fri.}
+-   Friday: Read [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link") 
+
+\hfill \textit{GC4 due Fri.}
 
 ## `r advdate(mon, 7)`: Work on MA1
 
@@ -242,7 +250,9 @@ class_cal +
 
 -   Wednesday: Work on MA1
 
--   Friday: Work on MA1 \hfill \textit{MA1 due Fri.}
+-   Friday: Work on MA1 
+
+\hfill \textit{MA1 due Fri.}
 
 # Part II: Statistical Sightings of Better Angels
 
@@ -252,7 +262,9 @@ class_cal +
 
 -   Wednesday: [Data Wrangling](\hfill%20\textit%7BMA1%20due%20Mon.%7D) continued
 
-- Friday: NO CLASS (Fall Break) \hfill \textit{GC5 due next Mon.}
+- Friday: NO CLASS (Fall Break) 
+
+\hfill \textit{GC5 due next Mon.}
 
 ## `r advdate(mon, 9)`: Refining Plots
 
@@ -260,7 +272,9 @@ class_cal +
 
 -   Wednesday: [Adding Labels and Text](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/10_layering_complexity.html) continued
 
--   Friday: Read [War Is Not Over: What the Optimists Get Wrong About Conflict](https://drive.google.com/file/d/1irp5wKqItQuRfRZvjgmc8NHksoFLmFR-/view?usp=sharing) \hfill \textit{GC6 due Fri.}
+-   Friday: Read [War Is Not Over: What the Optimists Get Wrong About Conflict](https://drive.google.com/file/d/1irp5wKqItQuRfRZvjgmc8NHksoFLmFR-/view?usp=sharing) 
+
+\hfill \textit{GC6 due Fri.}
 
 
 ## `r advdate(mon, 10)`: Color Palettes and Themes
@@ -269,7 +283,9 @@ class_cal +
 
 -   Wednesday: [\`ggplot()\` Themes](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/12_refining_your_plots.html) 
 
--   Friday: Read "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)" \hfill \textit{GC7 due Fri.}
+-   Friday: Read "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)" 
+
+\hfill \textit{GC7 due Fri.}
 
 ## `r advdate(mon, 11)`: Work on MA2
 
@@ -277,9 +293,11 @@ class_cal +
 
 - Wednesday: Work on MA2
 
-- Friday: 1-on-1s \hfill \textit{MA2 due Fri.}
+- Friday: Work on MA2
 
-# Part III: What the Hell Happened?
+\hfill \textit{MA2 due Fri.}
+
+# Part III: I'm Just Asking
 
 ## `r advdate(mon, 12)`: Survey Data and Measurement
 
@@ -287,7 +305,9 @@ class_cal +
 
 -   Wednesday: [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html)
 
--   Friday: Read and discuss ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) \hfill \textit{GC8 due Fri.}
+-   Friday: Read and discuss ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) 
+
+\hfill \textit{GC8 due Fri.}
 
 ## `r advdate(mon, 13)`: Complex Responses and Patchworked Visuals
 
@@ -295,7 +315,9 @@ class_cal +
 
 -   Wednesday: [Showing More with Less](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html)
 
--   Friday: Read and discuss "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" \hfill \textit{GC9 due Fri.}
+-   Friday: Read and discuss "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" 
+
+\hfill \textit{GC9 due Fri.}
 
 ## `r advdate(mon, 14)`: Thanksgiving Break
 
@@ -371,19 +393,19 @@ Healy's book is an excellent resource, but increasinly is becoming dated (as hap
 
 ## The Instructor (that's me)
 
-During my office hours (see the header of this syllabus), my door is always open. No appointment necessary. If those hours don't work for you, we can work out a different time to meet.
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday or Wednesday between 11:30-12:20 or 1:30-3:00. No appointment necessary. Outside of those times I'm available for a virtual meeting by appointment on Tuesdays and Thursdays between 1:30-3:00.
 
-You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday. I have a little one at home, and evenings and weekends are family time.
+You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond within 24 hours, but if you email me on a weekend be prepared for a longer response time.
 
 ## Teaching Assistants
 
 DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TA are included below. Our TA is a great resource if you're having trouble with your code or are stuck on a problem.
 
-### Kaiden McCready
+### [Name(s) here]
 
-- **email**: mccrea_k1@denison.edu
-- **hours**: MF 5-7pm
-- **location**: Olin 215
+- **email**: jane_doe@denison.edu
+- **hours**: TBD
+- **location**: TBD
 
 ## Artificial Intelligence
 
@@ -478,7 +500,7 @@ Excuses for late or missed assignments based on CD, flash drive, or hard drive e
 
 ## Late Assignments
 
-Turn in your work on time. We have a lot of ground to cover in this class. So turn in your work when it's due. This is meant to help you, and me. I love to procrastinate just as much as anyone else---but if you procrastinate in this course, you will drown. And if you procrastinate this forces me to procrastinate in getting a grade back to you. I want to give you timely feedback on your work, which I can't do if you don't turn your work in on time.
+Turn in your work on time. I want to give you timely feedback, which I can't do if you don't turn your work in. I try to start grading things within a week after due dates. If I don't see a submission from you, or if you haven't communicated with me about an extenuating circumstance requiring an extension, I'll give you a zero.
 
 ## Electronic Submission
 
@@ -509,7 +531,9 @@ Not only does the ability to use AI tools critically come from having abilities 
 
 By the way, offloading these tasks also means that you won't develop the ability to think clearly or deeply about your research and data analysis, because writing is deep thinking in action. If you offload writing to an LLM, you're offloading thinking. [That same research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) that I mentioned before shows that failing to write stuff on your own, that using an LLM instead, not only harms learning, it actually affects the architecture of your brain in adverse ways. People whose access to LLMs was curtailed showed greater neural connectivity than those given access to LLMs from the start. If you want to develop skills, the less you rely on LLMs, especially early on, the better.
 
-These two points also reinforce each other. You need skills to use AI tools effectively, and you give yourself the best chance of developing relevant skills the less you rely on AI. Therefore, I really want you to learn the skills I plan to teach you in this class. This isn't just for the benefit of your own personal development; I also worry that too much reliance on LLMs is leading to the de-skilling of the future workforce, leading to more and more students making themselves replaceable in their future careers.  Think about it, if your "skill" is that you know how to prompt an AI to perform a task, why does your employer need *you*? Anybody can figure out how to prompt AIs to do *something*, and some of the latest versions will do quite a lot on the basis of a very short or even vague request. If you want to be competitive, you need to demonstrate what *you* can do; not what you can ask an AI agent to do. And, going back to my previous points, if you rely on AI tools too much too soon in your education, you'll have only the brittlest of skills to offer a future employer or graduate admissions committee. And those brittle skills will actually make you a poor user of AI. I don’t care how much folks running these LLM operations want to sell you on new "study modes" and strategies for using AIs to augment or enhance learning. Turning to AI too soon risks leaving you dependent on tools that, as yet, remain fickle and error prone. 
+Ultimately, these two points reinforce each other. You need skills to use AI tools effectively, and you give yourself the best chance of developing relevant skills the less you rely on AI. This class is an opportunity for you to learn, not to avoid learning, and you (one way or another) are paying thousands of dollars just to take this single class. Don't waste your money (or my time). 
+
+I also worry that too much reliance on LLMs too soon is leading to the de-skilling of the future workforce (*you*), leading to more and more students making themselves replaceable in their future careers. Think about it, if your "skill" is that you know how to prompt an AI to perform a task, why does your employer need *you*? Anybody can figure out how to prompt AIs to do *something*, and some of the latest versions will do quite a lot on the basis of a very short or even vague request. If you want to be competitive, you need to demonstrate what *you* can do; not what you can ask an AI agent to do. And, going back to my previous points, if you rely on AI tools too much too soon in your education, you'll have only the brittlest of skills to offer a future employer (or graduate admissions committee). And those brittle skills will actually make you a poor user of AI.  
 
 This takes me to the approach I want to follow with AI in this course. First, I want you to actually develop some skills in using R to work with data and produce data visualizations, and in writing up your results, with as little reliance on AI as possible. Then, I want to titrate in AI-use for you to see how (and if) it improves your productivity. In short, I want you to develop skills as a scaffold for using AI (not the other way around). 
 

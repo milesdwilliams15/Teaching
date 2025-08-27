@@ -330,8 +330,228 @@ ggplot(preds) +
 
 ## From Relationships to Causation
 
+```{r}
+library(tidyverse)
+tibble(
+  # values without treatment
+  Y0 = rnorm(100),
+  
+  # values with treatment
+  Y1 = 1/2 + Y0,
+  
+  # treatment assignment
+  D = rep(0:1, each = 50) |>
+    sample(),
+  
+  # reveal outcomes
+  Yobs = Y1 * D + Y0 * (1 - D)
+) -> Data
+```
+
+Estimate the true ATE:
+
+```{r}
+mean(Data$Y1 - Data$Y0)
+```
+
+
+What we can actually estimate in the real world:
+
+```{r}
+mean(Data$Yobs[Data$D == 1]) - mean(Data$Yobs[Data$D == 0])
+```
+
+Equivalently using a linear model:
+
+```{r}
+lm(Yobs ~ D, Data) |> coef()
+```
+
+What about uncertainty and hypothesis testing? Introducing the sharp null:
+
+d = Y1 - Y0 = 0
+
+To test, randomly reassign treatment. If the null is true, this gives you the distribution of possible ATE estimates you'd expect to get.
+
+```{r}
+map_dfr(
+  .x = 1:200,
+  .f = 
+    ~ coef(lm(Yobs ~ D, data = Data |> mutate(D = sample(D))))[2]
+) -> null_output
+
+ggplot(null_output) +
+  aes(x = D) +
+  geom_histogram() +
+  geom_vline(
+    xintercept = coef(lm(Yobs ~ D, Data))[2],
+    color = "red"
+  )
+```
+
+
+
+
+```{r}
+map_dfr(
+  .x = 1:200,
+  .f = ~ coef(
+    lm(Yobs ~ D, Data |> 
+         mutate(
+           D = sample(D),
+           Yobs = Y1 * D + Y0 * (1 - D)
+         ))
+  )[2]
+) -> ate_output
+
+ggplot(ate_output) +
+  aes(D) +
+  geom_histogram() +
+  geom_vline(xintercept = .5, color = "red")
+```
+
 
 ## Randomized Trials
+
+```{r}
+library(tidyverse)
+url <- "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/aidExperiment.csv"
+Data <- read_csv(url)
+view(Data)
+```
+
+
+### Simple Randomization
+
+```{r}
+library(randomizr)
+
+Data |>
+  mutate(
+    simpleTr = simple_ra(N = n())
+  ) -> Data
+
+Data |>
+  count(simpleTr)
+```
+
+### Complete Randomization
+
+```{r}
+Data |>
+  mutate(
+    completeTr = complete_ra(N = n(), m = 200)
+  ) -> Data
+
+Data |>
+  count(completeTr)
+```
+
+
+### Block randomization
+
+```{r}
+Data |>
+  mutate(
+    blockTr = block_ra(
+      blocks = gender
+    )
+  ) -> Data
+
+Data |>
+  group_by(gender) |>
+  count(simpleTr)
+
+Data |>
+  group_by(gender) |>
+  summarize(
+    aid = mean(aid, na.rm = T)
+  )
+```
+
+```{r}
+Data |>
+  mutate(
+    blockTr = block_ra(
+      blocks = paste(gender, educ)
+    )
+  ) -> Data
+
+Data |>
+  group_by(gender, educ) |>
+  count(blockTr)
+```
+
+
+### Cluster randomization
+
+```{r}
+Data |>
+  mutate(
+    clusterTr = cluster_ra(
+      clusters = paste(gender, educ)
+    )
+  ) -> Data
+
+Data |>
+  group_by(gender, educ) |>
+  count(clusterTr)
+```
+
+### Analyze how you randomize
+
+```{r}
+## simple or complete ra:
+lm(aid ~ completeTr, data = Data)
+```
+
+
+```{r}
+library(estimatr)
+lm_robust(aid ~ completeTr, data = Data, se_type = "HC1")
+```
+
+HC2 is randomization justified. HC1 is not.
+
+```{r}
+lm_robust(aid ~ completeTr, data = Data, se_type = "HC2")
+```
+
+```{r}
+## block randomization:
+
+# way 1
+lm_robust(
+  aid ~ blockTr + paste0(gender, educ),
+  data = Data,
+  se_type = "HC2"
+)
+
+# way 2
+lm_robust(
+  aid ~ blockTr,
+  fixed_effects = ~ paste0(gender, educ),
+  data = Data,
+  se_type = "HC2"
+)
+
+# Way 3 (Lin Estimator)
+lm_lin(
+  aid ~ blockTr,
+  covariates = ~ paste(gender, educ),
+  data = Data,
+  se_type = "HC2"
+)
+```
+
+```{r}
+lm_robust(
+  aid ~ clusterTr,
+  data = Data,
+  se_type = "HC2"
+  #clusters = paste0(gender, educ)
+)
+```
 
 
 ## Selection on Observables
@@ -339,5 +559,290 @@ ggplot(preds) +
 
 ## Regression Discontinuity
 
+```{r}
+library(tidyverse)
+library(estimatr)
+library(modelsummary)
+library(rddtools) # install.packages("rddtools")
+data(house) # attaches the house data
+```
+
+
+Add the treatment column:
+
+```{r}
+house |>
+  mutate(
+    tr = ifelse(x > 0, 1, 0)
+  ) -> house
+```
+
+
+Estimate the model:
+
+```{r}
+lm_robust(
+  y ~ tr + x + tr:x,
+  data = house,
+  se_type = "HC1"
+) -> rd_fit
+
+summary(rd_fit)
+```
+
+Compare to diff-in-means and plot:
+
+```{r}
+lm_robust(
+  y ~ tr,
+  data = house,
+  se_type = "HC1"
+) -> md_fit
+
+modelplot(
+  list(
+    "RD" = rd_fit,
+    "Mean-Diff" = md_fit
+  ),
+  coef_map = c("tr" = "Incumbent")
+) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  )
+```
+
+Making an RD plot:
+
+```{r}
+## open {simqi}
+library(simqi)
+
+## {simqi} doesn't play well with lm_robust objects
+## so we have to re-estimate the model using lm()
+lm(
+  y ~ tr * x,
+  data = house
+) -> lm_fit
+
+## simulate predictions
+lm_fit |>
+  sim_qi(
+    vcov = vcovHC(lm_fit, type = "HC1"),
+    newdata = tibble(
+      x = c(seq(-.5, .5, by = 0.1), 0.001),
+      tr = ifelse(x > 0, 1, 0)
+    ),
+    return_newdata = T
+  ) -> sim_data
+
+## summarize and visualize the results
+sim_data |>
+  group_by(x, tr) |>
+  summarize(
+    pred = mean(y),
+    lo = quantile(y, 0.025),
+    hi = quantile(y, 0.975)
+  ) |>
+  mutate(
+    tr = ifelse(tr == 1, "Yes", "No")
+  ) |>
+  ggplot() +
+  aes(
+    x = x, 
+    y = pred, 
+    color = tr,
+    fill = tr
+  ) +
+  geom_line() +
+  geom_ribbon(
+    aes(ymin = lo, ymax = hi),
+    alpha = 0.3
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  ) +
+  labs(
+    title = "Regression discontinuity in action",
+    subtitle = "Effect of incumbency on election outcomes",
+    x = "Previous Election Margin",
+    y = "Current Vote Share",
+    color = "Incumbent?",
+    fill = "Incumbent?"
+  ) +
+  scale_x_continuous(
+    labels = scales::percent
+  ) + 
+  scale_y_continuous(
+    labels = scales::percent
+  ) +
+  theme(
+    legend.position = "bottom"
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = 0.5,
+    label = "''%<-%'The LATE'",
+    parse = T,
+    hjust = 0
+  )
+```
+
+
+Picking a bandwidth:
+
+```{r}
+bandwidth <- seq(0.05, 1, by = 0.05)
+bandwidth |>
+  map(
+    ~ lm(
+      y ~ tr * x,
+      data = house |>
+        filter(abs(x) < .x)
+    )
+  ) -> fits
+
+names(fits) <- bandwidth
+
+modelplot(
+  fits,
+  coef_map = c("tr" = "Incumbent")
+) +
+  geom_vline(
+    xintercept = 0,
+    linetype = 2
+  )
+```
+
+
+
 
 ## Difference-in-Differences
+
+
+Set up and read in the data:
+
+```{r}
+## packages
+library(tidyverse)
+library(estimatr)
+library(modelsummary)
+
+## Card and Krueger (1992) data
+ck <- read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/refs/heads/main/DPR%20201/Data/card_krueger_92.csv"
+)
+```
+
+Estimate the D-in-D:
+
+```{r}
+dd_fit <- lm_robust(
+  ft_employment ~ min_wage_change,
+  fixed_effects = ~ unit + period,
+  data = ck,
+  se_type = "stata",
+  clusters = unit
+)
+```
+
+Visualize the results:
+
+```{r}
+modelplot(
+  dd_fit
+) +
+  geom_vline(xintercept = 0)
+```
+
+Estimate the overall average difference:
+
+```{r}
+avg_fit <- lm_robust(
+  ft_employment ~ min_wage_change,
+  data = ck,
+  se_type = "stata",
+  clusters = unit
+)
+```
+
+Estimate the difference using SOO:
+
+```{r}
+soo_fit <- lm_robust(
+  ft_employment ~ min_wage_change + wave1_st_wage + 
+    franchise_name + co_owned + region,
+  data = ck,
+  se_type = "stata",
+  clusters = unit
+)
+```
+
+Estimate the difference using RD:
+
+```{r}
+rd_fit <- lm_robust(
+  ft_employment ~ min_wage_change,
+  data = ck |> filter(state == "NJ"),
+  se_type = "stata",
+  clusters = unit
+)
+```
+
+Put everything in a single visualization and compare:
+
+```{r}
+modelplot(
+  list(
+    "D-in-D" = dd_fit,
+    "Avg. Diff" = avg_fit,
+    "SOO" = soo_fit,
+    "RD" = rd_fit
+  ),
+  coef_map = c("min_wage_change" = "")
+) +
+  geom_vline(xintercept = 0)
+```
+
+Read in congress data for a TWFE example:
+
+```{r}
+congress_dt <- read_csv(
+  "https://raw.githubusercontent.com/milesdwilliams15/Teaching/main/DPR%20201/Data/CongressionalData.csv"
+)
+```
+
+```{r}
+dd_fit <- lm_robust(
+  cvp ~ republican,
+  fixed_effects = state_dist + cong,
+  data = congress_dt,
+  se_type = "stata",
+  clusters = state_dist
+)
+```
+
+```{r}
+modelplot(dd_fit)
+```
+
+
+```{r}
+dres <- lm(
+  republican ~ state_dist + as.factor(cong),
+  data = congress_dt
+) |> resid()
+```
+
+Calculate share with negative weights:
+
+```{r}
+congress_dt |>
+  summarize(
+    mean(dres > 0 & republican == 1),
+    mean(dres < 0 & republican == 0)
+  )
+```
+
