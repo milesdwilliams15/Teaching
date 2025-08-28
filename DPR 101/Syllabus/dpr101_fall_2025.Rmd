@@ -11,7 +11,7 @@ date: "Fall 2025"
 
 email: "williamsmd@dension.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MW 11:30-12:20 and 1:30-3:00pm"
+officehours: "M 11:30-12:20 and MW 1:30-3:00"
 office: "Ebaugh 109"
 classroom: "Knapp 105"
 classhours: "MWF (Sec. 1 9:30-10:20am, Sec. 2 10:30-11:20am)"
@@ -393,7 +393,7 @@ Healy's book is an excellent resource, but increasinly is becoming dated (as hap
 
 ## The Instructor (that's me)
 
-During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday or Wednesday between 11:30-12:20 or 1:30-3:00. No appointment necessary. Outside of those times I'm available for a virtual meeting by appointment on Tuesdays and Thursdays between 1:30-3:00.
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday between 11:30-12:20 or Monday and Wednesday 1:30-3:00. No appointment necessary. Outside of those times I'm available for a virtual meeting by appointment on Tuesdays and Thursdays between 1:30-3:00.
 
 You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond within 24 hours, but if you email me on a weekend be prepared for a longer response time.
 

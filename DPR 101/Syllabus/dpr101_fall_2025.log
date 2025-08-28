@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  27 AUG 2025 12:44
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  28 AUG 2025 13:44
 entering extended mode
 **./dpr101_fall_2025.tex
 (dpr101_fall_2025.tex
@@ -854,7 +854,7 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 148.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (22.48666pt too wide) in alignment at lines 145--154
+Overfull \hbox (20.39522pt too wide) in alignment at lines 145--154
 [] []
  []
 
@@ -929,4 +929,4 @@ Output written on dpr101_fall_2025.pdf (12 pages).
 ! [1][2][3][4][5][6][7][8][9][10][11][12]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 123119 bytes written
+! 123124 bytes written
