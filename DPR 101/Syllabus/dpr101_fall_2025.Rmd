@@ -9,7 +9,7 @@ title: "DPR 101 (01/02): Data Visualization for Political Research"
 author: Dr. Miles D. Williams
 date: "Fall 2025"
 
-email: "williamsmd@dension.edu"
+email: "williamsmd@denison.edu"
 web: "milesdwilliams15.github.io"
 officehours: "M 11:30-12:20 and MW 1:30-3:00"
 office: "Ebaugh 109"
