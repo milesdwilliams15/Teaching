@@ -1,13 +1,11 @@
 ---
 title: "What Makes a Data Visualization Good?"
-subtitle: "DPR 101"
-format: 
-  revealjs:
-    theme: serif
-    incremental: true
-    fig-align: center
-    fig-dpi: 500
+format: revealjs
 ---
+
+## Get with 2-3 neighbors and...
+
+*...come up with a list three criteria for a good data visualization*.
 
 ## How do we know if a data visualization is good?
 
@@ -33,7 +31,7 @@ format:
 
 ![](images/clipboard-46844671.png)
 
-## Depends on how you show the data
+## Is democracy essential (version 2)?
 
 ![](images/clipboard-1412683154.png)
 
@@ -65,7 +63,7 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 
 -   You need to directly label every slice.
 
--   You have run out of colours for the slices.
+-   You can run out of colors for the slices.
 
 -   You will have to explode the chart to solve your first three problems.
 
@@ -75,7 +73,7 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 
 ## Still room for debate
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 ![](images/clipboard-932591159.png){width="7in"}
 :::
@@ -83,9 +81,9 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 ::: {.column width="50%"}
 ![](images/clipboard-194260996.png){width="7in"}
 :::
-:::
+:::::
 
-## What makes a good data viz
+## What makes a good data viz?
 
 -   It lets your audience make a quick visual judgment
 
@@ -95,7 +93,7 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 
 -   It uses labels effectively when geometry won't do the trick
 
-## A good data viz
+## A good example
 
 ```{r}
 #| echo: false
@@ -106,6 +104,7 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 
 library(tidyverse)
 library(gghighlight)
+library(geomtextpath)
 library(coolorrr)
 library(qss)
 set_theme()
@@ -125,8 +124,11 @@ ggplot(florida) +
   geom_point(
     aes(color = county)
   ) +
-  geom_smooth(
-    method = "lm"
+  geom_textsmooth(
+    label = "Line of best fit",
+    method = "lm",
+    linewidth = 1,
+    hjust = .8
   ) + 
   gghighlight(
     county == "Palm Beach"
@@ -140,11 +142,56 @@ ggplot(florida) +
   labs(
     x = "Votes for Perot",
     y = "Votes for Buchanan",
-    title = "Florida third party candidate results in 1996 and 2000",
-    subtitle = paste0(
-      "Palm Beach had unusually high support for\n",
-      "Pat Buchanan in 2000 given its level of support\n",
-      "for Ross Perot in 1996.\n"
+    subtitle = "Florida third party candidate results in 1996 and 2000 at the county level",
+    title = str_wrap(
+      "Palm Beach had unusually high support for Pat Buchanan in 2000 given its level of support for Ross Perot in 1996.",
+      width = 50
     )
-  ) 
+  ) -> p
+p
 ```
+
+## Assertion-Evidence Approach
+
+Sources: [Alley (2013)](https://www.amazon.com/Craft-Scientific-Presentations-Critical-Succeed/dp/1441982787/) and [Wilke (2025)](https://blog.genesmindsmachines.com/p/slides-that-present-themselves-the)
+
+![](images/clipboard-3547949292.png)
+
+## Assertion-Evidence Approach
+
+```{r}
+#| fig-height: 5
+#| fig-width: 7
+
+p
+
+```
+
+## The Topic Phrase Approach
+
+```{r}
+#| fig-height: 5
+#| fig-width: 7
+
+p + 
+  labs(
+    title = str_wrap(
+      "Florida third party candidate results in 2000 versus 1996 by county",
+      width = 55
+    ),
+    subtitle = NULL
+  )
+
+```
+
+## Assertion-Evidence Is Best
+
+Why it helps:
+
+-   An assertion title allows for only one conclusion – a topic phrase title allows for many potential conclusions.
+
+-   Your audience can digest the data visualization faster.
+
+-   If you're presenting results in a public talk, tuned out audience members can quickly get back up to speed...and you can avoid getting lost.
+
+*I want you to use the assertion-evidence approach in your graph challenges and main assignments.*

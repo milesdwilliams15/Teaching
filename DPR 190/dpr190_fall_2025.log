@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  2 SEP 2025 14:11
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  3 NOV 2025 14:06
 entering extended mode
 **./dpr190_fall_2025.tex
 (dpr190_fall_2025.tex
@@ -824,16 +824,16 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <12> not available
 
 ] [7] [8]
 LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/it' tried instead on input line 729.
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 730.
 [9] [10] [11] 
 AED: lastpage setting LastPage
 [12]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 921.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 921.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 922.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 922.
 (dpr190_fall_2025.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 921.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 921.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 921.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 922.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 922.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 922.
  ) 
 Here is how much of TeX's memory you used:
  20274 strings out of 428410
@@ -850,4 +850,4 @@ Output written on dpr190_fall_2025.pdf (12 pages).
 ! [1][2][3][4][5][6][7][8][9][10][11][12]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 98604 bytes written
+! 98707 bytes written

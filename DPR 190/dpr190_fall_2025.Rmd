@@ -306,17 +306,17 @@ class_cal +
 
 -   Wednesday: In Braumoeller, read "Reasons for Skepticism, Part I: Data" (pages 21-46).
 
--   Friday: In Braumoeller, read "Reasons for Skepticism, Part II: Explanation" (pages 47-72). 
+-   Friday: NO CLASS (I have to watch my kid)
 
 \hfill \textit{GAI due Fri.}
 
 ## `r advdate(mon, 13)`: Is War Declining?
 
--   Monday: In Braumoeller, read "Is International Conflict Going out of Style?" (pages 75-99).
+-   Monday: In Braumoeller, read "Reasons for Skepticism, Part II: Explanation" (pages 47-72). 
 
--   Wednesday: In Braumoeller, read "Is International Conflict Getting Less Deadly?" (pages 100-130).
+-   Wednesday: In Braumoeller, read "Is International Conflict Going out of Style?" (pages 75-99).
 
--   Friday: In Braumoeller, read "Are the Causes of International Conflict Becoming Less Potent?" (pages 131-139). 
+-   Friday: In Braumoeller, read "Is International Conflict Getting Less Deadly?" (pages 100-130).
 
 \hfill \textit{GAI due Fri.}
 
@@ -326,21 +326,21 @@ NO CLASS
 
 ## `r advdate(mon, 15)`: The Role of Order
 
--   Monday: In Braumoeller, read "International Order" (pages 143-177).
+-   Monday: In Braumoeller, read "Are the Causes of International Conflict Becoming Less Potent?" (pages 131-139). 
 
--   Wednesday: In Braumoeller, read "History and International Order" (pages 178-211).
+-   Wednesday: In Braumoeller, read "International Order" (pages 143-177).
 
--   Friday: In Braumoeller, read "Conclusion and Implications" (pages 215-224). 
+-   Friday: In Braumoeller, read "History and International Order" (pages 178-211).
 
 \hfill \textit{GAI due Fri.}
 
 ## `r advdate(mon, 16)`: Work on MA3
 
--   Monday: Introduce and work on MA3
+-   Monday: In Braumoeller, read "Conclusion and Implications" (pages 215-224) and introduce MA3.
 
--   Wednesday: Work on MA3
+-   Wednesday: Work on MA3.
 
--   Friday: Work on MA3 
+-   Friday: Work on MA3 .
 
 \hfill \textit{MA3 due 12.17, 11:00am}
 

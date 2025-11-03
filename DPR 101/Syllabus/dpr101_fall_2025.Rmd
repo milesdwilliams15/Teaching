@@ -305,17 +305,17 @@ class_cal +
 
 -   Wednesday: [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html)
 
--   Friday: Read and discuss ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) 
+-   Friday: NO CLASS (I have to watch my kid)
 
 \hfill \textit{GC8 due Fri.}
 
 ## `r advdate(mon, 13)`: Complex Responses and Patchworked Visuals
 
--   Monday: [Dealing with Multiple Choice Survey Responses](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.5_multiple_choice_survey_questions.html)
+-   Monday: Read and discuss ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) 
 
--   Wednesday: [Showing More with Less](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html)
+-   Wednesday: [Dealing with Multiple Choice Survey Responses](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.5_multiple_choice_survey_questions.html)
 
--   Friday: Read and discuss "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" 
+-   Friday: [Showing More with Less](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html)
 
 \hfill \textit{GC9 due Fri.}
 
@@ -325,9 +325,9 @@ NO CLASS
 
 ## `r advdate(mon, 15)`: Work on MA3
 
--   Monday: Start MA3
+-   Monday: Read and discuss "[The ingroup love and outgroup hate of Christian Nationalism](https://www.cambridge.org/core/journals/politics-and-religion/article/ingroup-love-and-outgroup-hate-of-christian-nationalism-experimental-evidence-about-the-implementation-of-the-rule-of-law/C38241ED843332A2E8A434D13BC34B26)" 
 
--   Wednesday: MA3 Pitches
+-   Wednesday: MA3 Pitches + work day
 
 -   Friday: Read and discuss ["Accidental Scientists"](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/accidental-scientists-how-undergraduate-research-in-political-science-can-help-to-patch-the-leaky-pipeline-in-stem-education/5DEBD5A129812FDB3639366BBF91FF00)
 
@@ -337,7 +337,7 @@ NO CLASS
 
 -   Wednesday: Presentations
 
--   Friday: Presentations (or final work day)
+-   Friday: Final work day
 
 ## MA3 Due Dates
 
