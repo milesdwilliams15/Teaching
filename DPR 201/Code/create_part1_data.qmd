@@ -1,0 +1,197 @@
+
+## Setup
+
+Open needed packages:
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(countrycode)
+library(globalmacrodata)
+library(peacesciencer)
+library(troopdata)
+library(tradestatistics)
+```
+
+## US foreign aid data
+
+Open US foreign assistance data:
+
+```{r}
+read_csv(
+  "~/Foreign Figures/foreign-figures/_data/us_foreign_aid_country.csv"
+) -> usaid_dt
+```
+
+
+Get it into an appropriate shape for cross-sectional analysis:
+
+```{r}
+usaid_dt |>
+  janitor::clean_names() -> usaid_dt
+
+usaid_dt |>
+  filter(fiscal_year %in% c("2024", "2025")) |>
+  mutate(
+    ccode = countrycode(
+      country_name, "country.name", "cown"
+    )
+  ) |>
+  drop_na(ccode) |>
+  group_by(ccode) |>
+  summarize(
+    across(c(country_name, region_name, income_group_name), unique),
+    obligated_2024 = constant_amount[
+      fiscal_year == "2024" & transaction_type_id == 2
+    ] |> median(na.rm = T),
+    obligated_2025 = constant_amount[
+      fiscal_year == "2025" & transaction_type_id == 2
+    ] |> median(na.rm = T),
+    disbursed_2024 = constant_amount[
+      fiscal_year == "2024" & transaction_type_id == 3
+    ] |> median(na.rm = T),
+    disbursed_2025 = constant_amount[
+      fiscal_year == "2025" & transaction_type_id == 3
+    ] |> median(na.rm = T)
+  ) |>
+  ungroup() |>
+  mutate(
+    across(obligated_2024:disbursed_2025, ~ replace_na(.x, 0))
+  ) -> usaid_dt
+```
+
+## Let's populate with covariates
+
+First from global macro database:
+
+```{r}
+gmd(
+  version = "2025_12"
+) |>
+  filter(year %in% 2024:2025) -> gm
+
+gm |>
+  mutate(
+    ccode = countrycode(countryname, "country.name", "cown")
+  ) |>
+  drop_na(ccode) |>
+  group_by(ccode) |>
+  summarize(
+    gdp_2024 = median(rGDP_USD[year == 2024], na.rm = T),
+    gdp_2025 = median(rGDP_USD[year == 2025], na.rm = T),
+    pop_2024 = median(pop[year == 2024], na.rm = T),
+    pop_2025 = median(pop[year == 2025], na.rm = T),
+    inf_2024 = median(infl[year == 2024], na.rm = T),
+    inf_2025 = median(infl[year == 2025], na.rm = T),
+    unemp_2024 = median(unemp[year == 2024], na.rm = T),
+    unemp_2025 = median(unemp[year == 2025], na.rm = T)
+  ) |>
+  ungroup() -> gm
+```
+
+Get some security data:
+
+```{r}
+## alliances with the US
+create_dyadyears(subset_years = 2018) |>
+  add_atop_alliance() |>
+  filter(ccode1 == 2) -> us_allies
+
+us_allies |>
+  transmute(
+    ccode = ccode2,
+    any_alliance = atop_alliance,
+    defense = atop_defense,
+    nonagg = atop_nonagg,
+    consul = atop_consul
+  ) -> us_allies
+
+## hosting US troops
+get_troopdata(
+  startyear = 2024
+) -> us_troops
+
+us_troops |>
+  transmute(
+    ccode,
+    us_troops = troops_ad
+  ) -> us_troops
+
+## distance from the US
+create_dyadyears() |>
+  add_capital_distance() |>
+  filter(ccode1 == 2) |>
+  drop_na(capdist) |>
+  filter(year == max(year)) -> us_distance
+
+us_distance |>
+  transmute(
+    ccode = ccode2,
+    distance = capdist
+  ) -> us_distance
+
+## US trade data
+read_csv(
+  "~/Foreign Figures/foreign-figures/_data/us_trade_data_2024.csv"
+) -> us_trade
+
+us_trade |>
+  mutate(
+    ccode = countrycode(partnerISO, "iso3c", "cown")
+  ) |>
+  drop_na(ccode) |>
+  transmute(
+    ccode,
+    fcode = flowDesc,
+    amt = primaryValue
+  ) |>
+  pivot_wider(
+    values_from = amt,
+    names_from = fcode
+  ) |>
+  janitor::clean_names() -> us_trade
+```
+
+Merge all the data:
+
+```{r}
+list(
+  gm, us_allies, us_distance,
+  us_trade, us_troops
+) |>
+  reduce(full_join, by = "ccode") -> cov_dt
+
+usaid_dt |>
+  left_join(cov_dt, by = "ccode") -> dt
+```
+
+Deal with duplicates:
+
+```{r}
+dt |>
+  group_by(ccode) |>
+  mutate(
+    n = n()
+  ) |>
+  arrange(-n) ## looks like it's the troop data
+
+dt |>
+  group_by(ccode) |>
+  mutate(
+    us_troops = max(us_troops, na.rm = T)
+  ) |>
+  ungroup() |>
+  distinct() -> dt
+```
+
+## Save the data
+
+```{r}
+write_csv(
+  dt,
+  here::here(
+    "DPR 201", "Data", "dpr201_unit1_data.csv"
+  )
+)
+```
+
