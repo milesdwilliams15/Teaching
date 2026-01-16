@@ -92,6 +92,17 @@ gm |>
 Get some security data:
 
 ```{r}
+## country democracy
+create_stateyears() |>
+  add_democracy() -> us_dem
+
+us_dem |>
+  filter(year == 2024) |>
+  transmute(
+    ccode,
+    vdem_score = v2x_polyarchy
+  ) -> us_dem
+
 ## alliances with the US
 create_dyadyears(subset_years = 2018) |>
   add_atop_alliance() |>
@@ -156,7 +167,7 @@ Merge all the data:
 
 ```{r}
 list(
-  gm, us_allies, us_distance,
+  gm, us_dem, us_allies, us_distance,
   us_trade, us_troops
 ) |>
   reduce(full_join, by = "ccode") -> cov_dt
