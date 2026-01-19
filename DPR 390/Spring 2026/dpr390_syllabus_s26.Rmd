@@ -1,0 +1,553 @@
+---
+output: 
+  stevetemplates::syllabus:
+    latex_engine: xelatex
+    dev: cairo_pdf
+geometry: margin=1in
+
+title: "DPR 390: Death, Destruction, and Data"
+author: Dr. Miles D. Williams
+date: "Spring 2026"
+
+email: "williamsmd@denison.edu"
+web: "milesdwilliams15.github.io"
+officehours: "MW 10:30-11:30am and F 1:00-2:30pm"
+office: "Ebaugh 109"
+classroom: "Knapp Hall 208"
+classhours: "MWF 9:30-10:20 am"
+
+fontfamily: cochineal
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+   - \usepackage{amsmath}
+   - \usepackage{multicol}
+---
+
+```{r setup, include=FALSE}
+# knitr::opts_chunk$set(cache=FALSE, dev='pdf')
+knitr::opts_chunk$set(
+                      warning=F,
+                      message=F)
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-1)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ tmp <- paste("Week ",zadv,sep='',", ", tmon," - ",tfri)
+ return(tmp)
+}
+
+assign_date <- function(fm, d, w) {
+  fm + (w - 1) * 7 + (d - 1)
+}
+
+options(scipen=999)
+library(tidyverse)
+library(stevemisc)
+#library(ggpmisc)
+#library(anonymizer)
+# library(ggcal)
+#library(stringr)
+#library(kfigr)
+#library(broom)
+library(lubridate)
+
+
+
+# library(RefManageR)
+# library(knitcitations)
+# library(rcrossref)
+# bib <- ReadBib(here::here("bib/refs.bib"))
+#myopts <- BibOptions(bib.style = "authoryear", style="latex", first.inits=FALSE, max.names = 20)
+
+# Create a calendar for your syllabus ----
+# Source: http://svmiller.com/blog/2020/08/a-ggplot-calendar-for-your-semester/
+
+# 1) what is the first Monday of the semester?
+# Any number of ways to identify dates in R, but we'll use {lubridate} and the ymd() function here.
+# Format: YYYYMMDD. 
+
+## First Monday of semester
+
+mon <- ymd(20260119)
+
+## dates of no class
+not_here_dates <- c(
+  # MLK observed,
+  ymd(20260119),
+  # Spring Break
+  seq(ymd(20260316), ymd(20260320), by = 1),
+  # ISA
+  seq(ymd(20260322), ymd(20260325), by = 1)
+  )
+finals_week <- seq(ymd(20260506), ymd(20260512), by = 1)
+
+# You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
+ipas <- assign_date(mon, 5, c(2:4, 7:8, 11:13))
+mas  <- assign_date(mon, c(5, 3), c(6, 16))
+
+# What are the full dates of the semester? 
+semester_dates <- seq(ymd(20260119), ymd(20260504), by=1)
+
+# Custom function for treating the first day of the month as the first week 
+# of the month up until the first Sunday (unless Sunday was the start of the month)
+wom <- function(date) {
+    first <- wday(as.Date(paste(year(date),month(date),1,sep="-")))
+    return((mday(date)+(first-2)) %/% 7+1)
+  }
+
+# Create a data frame of dates, assign to Cal
+tibble(date = seq(ymd(20260101), ymd(20260531), by=1))  %>%
+  mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
+         wkdy = weekdays(date, abbreviate=T), # get weekday label
+         wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
+         semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
+         ipas = ifelse(date %in% ipas, 1, 0),
+         mas = ifelse(date %in% mas, 1, 0),
+         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
+         finals = ifelse(date %in% finals_week, 1, 0), # finals?
+         day = lubridate::mday(date), # get day of month to add later as a label
+         # Below: our custom wom() function
+         week = wom(date)) -> Cal
+
+# Create a fill category and color category variable, for filling/coloring.
+# I can probably make this a case_when(), but this will work.
+
+Cal %>%
+  mutate(fcategory = NA,
+         ccategory = NA,
+         fcategory = ifelse(semester == 1, "Semester", fcategory),
+         fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
+         ccategory = ifelse(
+           ipas == 1, "IPA", ccategory
+         ),
+         ccategory = ifelse(
+           mas == 1, "MA", ccategory
+         ),
+         fcategory = ifelse(not_here == 1, "Breaks", fcategory),
+         fcategory = ifelse(finals == 1, "Finals", fcategory),
+         fcategory = ifelse(is.na(fcategory), "NA", fcategory),
+         ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
+
+Cal %>% 
+  ggplot(.,aes(wkdy, week)) +
+  # custom theme stuff below
+  # theme_steve_web() + 
+  theme_bw() +
+  theme(panel.grid.major.x = element_blank(),
+        legend.position = c(0.85, 0.25)) +
+  # geom_tile and facet_wrap will do all the heavy lifting
+  geom_tile(alpha=0.8, 
+            aes(fill=fcategory,color=ccategory), 
+            size=1) +
+  facet_wrap(~mon, scales="free", ncol=3) +
+  # fill in tiles to make it look more "calendary" (sic)
+  geom_text(aes(label=day,color=ccategory),
+            family="Open Sans", 
+            show.legend = F) +
+  # put your y-axis down, flip it, and reverse it
+  scale_y_reverse(breaks=NULL) +
+  # manually fill scale colors to something you like...
+  scale_fill_manual(values=c("Class Day"="steelblue", 
+                             "Semester"="lightsteelblue",
+                             "Breaks"="forestgreen",
+                             "Finals"="firebrick",
+                             "NA" = "grey80"),
+                    #... but also suppress a label for a non-class semester day
+                    breaks=c("Class Day","Breaks","Finals")) +
+  scale_color_manual(
+    values = c(
+               "MA" = "firebrick", 
+               "IPA" = "darkblue",
+               "NA" = "white"),
+    breaks = c("MA", "IPA")
+  ) +
+  guides(
+    color = guide_legend(
+      override.aes = list(fill = "white")
+    )
+  ) +
+  labs(fill = "", color = "", x="", y="",
+       caption = "Notable dates: MLK (19 Jan.), Spring Break (16-20 Mar.), ISA (22-25 Mar.), Final Day of Instruction (04 May)"
+       )  -> class_cal
+
+```
+
+# Course Description
+
+<!-- Why, in the course of politics, do we choose violence over peace? The causes of deadly and destructive conflict can seem legion. No two history books or op-eds will tell quite the same story about the roots of this or that war, and the narratives given can involve more moving pieces than a grandfather clock. Yet, however rich the historical roots of a given conflict, by focusing on just one case it's all too easy to miss the forest for the trees. Many supposed causes of conflict---from ideological differences to political dissent driven by poverty and unemployment---sound compelling. But once we consider that many countries and groups in society have sharp ideological or material differences yet are able to negotiate peacefully and compromise, the "obvious" suspects lose their forcefulness. In this class, we'll take a different approach to studying conflict; not one that looks for what is present that could cause war, but instead one that looks to what is absent that could prevent it. Along the way, you'll be introduced to important datasets for studying conflict and tools for drawing insights from this data to help identify when the key factors that can help prevent war are present or absent. -->
+
+Are wars becoming less common and deadly over time? Why do countries fight each other in the first place? In "Death, Destruction, and Data" you'll get applied research experience answering these questions using some of best and newest data produced by scholars in the peace science community. You'll learn about common research designs, how to detect changes in trends, and test theories about why some countries are more likely to go to war than others.
+
+The class is divided into two parts. First, we'll focus on defining and measuring conflict in international relations and look at macro-trends in conflict initiation and deadliness. Second, we'll look at conflict between pairs of countries and test some prominent theories for why certain countries are more likely to fight each other than others. 
+
+By the end of this class I hope you get a taste for what quantitative conflict research is all about, learn important theories about patterns in war, and develop the ability to put theories to the test using data.
+
+
+\newpage
+
+# Class Schedule[^1]
+
+[^1]: As the instructor, I retain the right to amend this schedule if the need arises.
+
+\hrulefill
+
+```{r calendar, echo=F, eval=T,  warning=F, fig.width=8, fig.height=6}
+
+class_cal + 
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = 'top'
+  )
+```
+
+\bigskip
+
+\hrulefill
+
+## `r advdate(mon, 1)`: Welcome!
+
+- Monday: MLK - NO CLASS
+
+- Wednesday: Syllabus day
+
+- Friday: What is war?
+
+## `r advdate(mon, 2)`: Measuring War
+
+- Monday: Correlates of War Project vs. International Conflict Data Project
+
+- Wednesday: Our software and accessing the data
+
+- Friday: Practice set due and in-person assessment (IPA)
+
+## `r advdate(mon, 3)`: How common is war?
+
+- Monday: Visualizing trends
+
+- Wednesday: Detecting changes over time
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 4)`: How deadly is war?
+
+- Monday: Normal and abnormal distributions
+
+- Wednesday: Statistics for extreme data
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 5)`: Testing the long peace
+
+- Monday: Start MA1
+
+- Wednesday: Work on MA1
+
+- Friday: Work on MA1
+
+\hfill \textbf{MA1 due Fri. by midnight}
+
+
+## `r advdate(mon, 6)`: Correlates vs. causes of war
+
+- Monday: Correlation
+
+- Wednesday: Causation
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 7)`: Dangerous dyads
+
+- Monday: Dyadic models of conflict
+
+- Wednesday: Who's in and who's out?
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 8)`: Power and War
+
+- Monday: Theories of preponderance, parity, and transitions 
+
+- Wednesday: Testing the theories
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 9)`: Spring Break
+
+NO CLASS
+
+## `r advdate(mon, 10)`: ISA Week
+
+- Monday: ISA
+
+- Wednesday: ISA
+
+- Friday: Wild card (because I have a conference most of the week, we'll see what we can cover)
+
+
+## `r advdate(mon, 11)`: Democratic peace
+
+- Monday: Democratic peace theories
+
+- Wednesday: Testing the theories
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 12)`: Capitalist peace
+
+- Monday: Capitalist peace (aka, economic interdependence)
+
+- Wednesday: Testing the theory
+
+- Friday: Practice set due and IPA
+
+## `r advdate(mon, 13)`: Alliances and Deterrence
+
+- Monday: Alliances and deterrence theory vs. "Steps-to-War"
+
+- Wednesday: Testing the arguments.
+
+## `r advdate(mon, 14)`: Start Final Project
+
+- Monday: Start MA2
+
+- Wednesday: Work on MA2
+
+- Friday: Work on MA2
+
+
+## `r advdate(mon, 15)`: Present final project
+
+- Monday: MA2 presentations
+
+- Wednesday: MA2 presentations
+
+- Friday: MA2 presentations
+
+## `r advdate(mon, 16)`: Last Week of Instruction
+
+- Monday: Course evals + the final word
+
+- Wednesday: Finals begin
+
+*MA2 due Wed. May 6 by 4pm*
+
+
+\clearpage
+
+# Course Objectives
+
+By the time you complete this course, you should be able to formulate answers to the following questions:
+
+-   How do we go from defining war as a concept to measuring it with data?
+-   How common and deadly is war over time, and how do we use statistics to detect whether the chance and deadliness of war has changed?
+-   What pairs of countries have the highest chance of fighting each other, and can we actually identify the causes of why countries fight?
+
+You should also develop some quantitative reasoning and the ability to communicate verbally and in writing about complex concepts.
+
+# Analysis Software
+
+Students will use R and Rstudio, which are free and open source. There's no need to install this software, because you will have access to Posit Workbench available through a web browser installed on a Denison server: `r.denison.edu`. This gives you secure access to R and RStudio via the cloud. You can access the server using your Denison credentials from anywhere on campus. When off campus, you'll need a VPN connection. To use the VPN follow the instructions at one of the help pages below:
+
+1.  [For Windows Users](https://docs.google.com/document/d/1z1eapXs8Lp0yA7TBXmLfViiz6U67ADvLgpFeWJoSLLA/edit#heading=h.48vu9pu55b3s)
+2.  [For Mac Users](https://docs.google.com/document/d/1FaJN4et9H9eKsJIVinwqC903NbKA5A-IYfvDPlFwwXk/edit#heading=h.48vu9pu55b3s)
+
+While using the **Denison server version is highly recommended**, you are also welcome to download and install local versions of R and RStudio on your laptop. [This guide](https://posit.co/products/open-source/rstudio/) will walk you through the relevant steps. If you already have R and RStudio installed, that is also fine.
+
+# Required Readings and Recommended References
+
+There is no textbook for this class, but I will provide plenty of free resources for you throughout the semester, especially to provide guidance on using our software. There are many free and helpful resources online if you're interested in learning more about R and RStudio in general. I highly recommend:
+
+> Wickham, Hadley, Mine Çetinkaya-Rundel, and Garrett Grolemund. \href{https://r4ds.hadley.nz/}{\textit{R for Data Science (2e)}}.
+
+> Grolemund, Garrett. \href{https://rstudio-education.github.io/hopr/}{\textit{Hands-on Programming with R}}.
+
+We will also have substantive readings in the form of academic articles as we discuss specific topics in international conflict. I will post these to Canvas, and they will either be free or accessible using your Denison credentials. 
+
+# Resources
+
+## The Instructor (that's me!)
+
+During my office hours, my door is always open! If you have any questions or concerns about the course, just drop by my office Monday or Wednesday between 10:30-11:30am or Friday 1:00-2:30pm. No appointment necessary. If those hours don't work for you, we can work out a different time to meet.
+
+You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday.
+
+## Teaching Assistant
+
+DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
+
+### TBD
+
+- **email**: TBD
+- **hours**: TBD
+- **location**: TBD
+
+
+## Accessibility
+
+Students with a documented disability should complete a Semester Request for Accommodations through the MyAccommodations app on MyDenison. It is the student's responsibility to contact me privately as soon as possible to discuss specific needs and make arrangements well in advance of an evaluation. I rely on the Academic Resource Center (ARC) located in 020 Higley Hall, to verify the need for reasonable accommodations based on the documentation on file in that office. Reasonable accommodations cannot be applied retroactively and therefore ideally should be enacted early in the semester as they are not automatically carried forward from a previous term and must be requested every semester.
+
+## Writing Center
+
+Every writer–no matter the course or their experience level–needs a reader and benefits from deep conversation
+about their work! At the Writing Center, student consultants are eager to support you at any stage of the writing
+process including (but not limited to): deciphering assignment instructions, brainstorming, developing an
+argument, organizing your ideas, integrating research and sources, working with faculty feedback, and/or
+polishing a draft. Consultants, who are themselves experienced writers from a range of areas of study, are
+specially trained to support writing for any course or purpose from lab reports, research papers, and informal
+writing assignments to cover letters, personal statements, and other application materials. The Center welcomes
+writers from all backgrounds and levels of college preparation. Appointments can be scheduled for 25 or 50
+minutes at https://denison.mywconline.com/ and take place in-person in the Atrium level of the Library (A22).
+
+
+## Multilingual Support (L2)
+
+Students who use English in addition to other languages are welcome to use the resources available at the
+Multilingual Learning Office (MLO). The MLO includes Morayo Akinkugbe, PhD, the Assistant Director of
+Multilingual Programming and the student consultants who work with her. They are all trained and experienced in
+helping students address the different issues that arise when working in more than one language. If English is
+not your first or only language, please consider utilizing this resource, which is available to ALL Denison
+students. Dr. Akinkugbe and the student consultants offer a variety of support for L2 students, including
+consulting with you about your written language (grammar, syntax, word-choices), developing strategies to
+manage your reading assignments, assisting with class conversation and presentations, and helping to devise
+ways to develop and effectively use all your skills in English. You can set up an appointment
+via htps://denisonuappointments.as.me/mlo, or by emailing the Multilingual Learning Office directly
+at englishhelp@denison.edu.
+
+## Reporting Sexual Assault
+
+Essays, journals, and other coursework submitted for this class are generally considered confidential pursuant
+to the University’s student record policies. However, students should be aware that University employees
+are required by University policy to report allegations of discrimination based on sex, gender, gender identity,
+gender expression, sexual orientation, or pregnancy to the Title IX Coordinator. This includes reporting all
+incidents of sexual misconduct, sexual assault, and suspected abuse/neglect of a minor. Further, employees are
+to report these incidents that occur on campus and/or that involve students at Denison University whenever the
+employee becomes aware of a possible incident in the course of their employment, including via coursework or
+advising conversations. There are others on campus to whom you may speak in confidence, including clergy and
+medical staff and counselors at the Wellness Center. More information on Title IX and the University’s Policy
+prohibiting sex discrimination, including sexual harassment, sexual misconduct, stalking and retaliation, including
+support resources, how to report, and prevention and education efforts, can be found at:
+https://denison.edu/campus/title-ix.
+
+# Course Policy
+
+The course policy and requirements are detailed below. It all basically boils down to: (1) show up to class, (2) learn some stuff, and (3) don't cheat or trick me into believing you've accomplished 2.
+
+## Grading Policy
+
+Grades at Denison are based on a standard 4.0 scale. You can read more about Denison's grading system [here](https://catalog.denison.edu/catalog/academic-program/grading-system-evaluation/). Generally, a 90 corresponds to an A$-$, an 80 to a B$-$, etc.
+
+| **Grading Scale** |        |         |
+|-------------------|:-------|:--------|
+| A+: 98%+          | A: 92% | A-: 90% |
+| B+: 88%           | B: 82% | B-: 80% |
+| C+: 78%           | C: 72% | C-: 70% |
+| D+: 68%           | D: 62% | D-: 60% |
+| F: below 60       |        |         |
+
+*Attendance and Participation* **10%**
+
+> You should show up to class and participate! In terms of showing up, I'm generously offering 4 freebie absences (no questions asked). Life happens and my inbox is always full. So if you need a day because you're sick, you're traveling for sports or a performance, or you just want to go do something fun (I once cancelled class to go see Metallica) just take the time you need. However, once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your 5th absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. One way I'll keep you accountable is by randomly calling on you to answer questions. You don't have to get the answers right, but if it's clear you didn't know the answer due to lack of preparedness for class that will cost you a small amount of participation points (1% of your total class grade). On days when we're working on R code, I might ask you questions based on the lecture notes. 
+
+*Practice Sets* **15% Total**
+
+> Almost every week I'll assign a practice problem set. The goal is to give you some extra practice with concepts or technical skills outside of the class relevant to course materials. These will be graded on a simple pass-fail basis and grades will be generous. Essentially, do your best and get it turned in and you'll pass. Don't turn it in or submit a clearly lack-luster attempt and you'll fail. I want you to have a low-stakes outlet for working on challenging material, and the work you submit will help flag for me any issues or areas where you seem to be struggling so I can intervene. I also want you to feel prepared for the next sort of assignment I talk about below.
+
+*In-person Assessments* **30% Total**
+
+> On a semi-weekly basis, we will spend our last day of class doing an in-person assessment. The structure of these will vary, but they'll usually take the form of a pencil-and-paper assessment *with no devices or notes allowed*. The goal with these assessments is to give me as unobsctructed a view as possible of your progress in the class. We're in a brave new world where, because of the proliferation of LLMs, it's increasingly difficult for instructors to differentiate student effort from Silicon Valley compute. An in-person pencil-and-paper assessment is the cleanest way I know how to cut through the noise.
+
+*Main Assignments* **45% total**
+
+> You will undertake two research projects in this class. Think of these like a mid-term and a final. The goal is to craft a research paper based on original data analysis (with plenty of scaffolding provided by me for how this should look). Rubrics and instructions for these will be provided at the proper time, and we will have dedicated in-class time to work on each project. The second MA will involve an in-class presentation. 
+
+
+$$
+\textbf{Tallying Your Grade:}
+\begin{aligned}
+10\% & \text{ (Attendance and Participation)} \\
+15\% & \text{ (Practice Sets)} \\
+30\% & \text{ (In-person Assessments)} \\
+\underline{+ \space 45\%} &  \text{ (Main Assignments)} \\
+100\% & \text{ (Total Assignments)}
+\end{aligned}
+$$
+
+## E-mail Policy
+
+I will respond to your emails within 24 hours at the latest between Monday and Friday every week. Don't expect me to respond over the weekend or in the evenings---those times are family time, so I'll be less consistent about checking my inbox.
+
+## Make-Up Assignment Policy
+
+There are **NO** make-ups for missed assignments. Don't bother asking. But, if you anticipate having trouble making a due-date and notify me ***in advance***, we can work out a solution. Otherwise, you have this syllabus which alerts you when assignments are due. Plan ahead!
+
+## Second Chances Policy
+
+You have exactly one chance to complete your assignments, and only one chance should be necessary. There are days in class specifically carved out to work on your MAs, and my door is always open during office hours. You also have access to DPR TAs and the Writing Center. There are so many resources at your disposal as you complete your work in this class. Take advantage of them, and you won't need a second chance.
+
+## Attendance Policy
+
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences---no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence. 
+
+## Computer-based Excuses
+
+Excuses for late or missed assignments based on CD, flash drive, or hard drive errors are **not acceptable**. The Denison network and server is reliable and accessible. If you use your Google Drive and the RStudio server, all your work will be backed up and easy to access from any computer on campus.
+
+## Late Assignments
+
+Turn in your work on time. I want to give you timely feedback, which I can't do if you don't turn your work in. I try to start grading things within a week after due dates. If I don't see a submission from you, or if you haven't communicated with me about an extenuating circumstance requiring an extension, I'll give you a zero.
+
+## Electronic Submission
+
+You will submit all of your assignments electronically via Canvas.
+
+## Academic Dishonesty Policy
+
+Don't cheat. Just don't do it.
+
+It should go without saying, but ***plagiarism*** is a form of cheating and it includes:
+
+1.  Copying or paraphrasing the ideas of others without citation or attribution.
+2.  Copying or paraphrasing the ideas of ***other students in the class*** (this includes using someone else's code and submitting it as your own).
+
+I've had to deal with students plagiarizing before. It's painful for me and it puts a blight on the record of the student. It's not only cheating, it's stealing.
+
+When in doubt about whether something constitutes cheating, consult Denison's [Code of Academic Integrity](https://denison.edu/academics/curriculum/integrity).\footnote{Of course, if you have to ask yourself if something counts as cheating, then it probably is...} Be advised that this same Code of Academic Integrity requires that instructors notify the Associate Provost of cases of academic dishonesty. **Any incidence of academic dishonesty will result in failure of the course and referral to the Denison judicial process.**
+
+## AI Policy
+
+We will talk more in class about what I consider acceptable and unacceptable use of generative AI tools in this course. But I want to offer a brief sketch of my educational philosophy toward AI so you understand where I'm coming from. AI is here, and I know from student surveys that the vast majority of you are using it in some capacity. That means at least of few of you might find my attitude toward AI in coursework a bit draconian. But I assure you, my attitude is well-intentioned.
+
+There are two common views on AI in the classroom that are making the rounds, and I strongly *disagree* with both. 
+
+The first is that AI-use is a skill, so you must start learning to use it well now in order to be effective and competitive in your future career. This view *sounds* right, which is why so many accept it without sparing a moment or two to think more carefully about it. 
+
+The second view I disagree with is that AI-use can be a useful scaffold for learning skills (like doing research, producing data visualizations, and writing up the results). This also sounds right, so few seem to question it.
+
+I disagree with these views for two reasons. First, I think that using AI tools well is not really a skill; it's a second order implication of having skills. The people I see using AI effectively in their work today are people who developed expertise and skills before AI tools were readily available. Today, when they offload tasks to AI agents, they generally aren't asking the AI to do what they can't already do. They're asking it to take some work off their plate so they can focus on other tasks. Importantly, they know how to double-check and refine what their AI agents produce because they already know how to do the tasks they outsourced---or they're experienced enough that they could figure it out on their own given enough time. 
+
+Think about it, if you aren't a competent programmer, how can you know for sure if the code you ask an LLM to produce for you works as intended? How will you be able to troubleshoot a bug in LLM written code when you receive a vague and unhelpful error message? When it comes to writing a report or a paper, how will you actually know if LLM-generated text is factually correct or well-written? You need to have a solid foundation of knowledge and skills first before you can be a critical and competent user of these tools. Maybe this will change in the future, but I have yet to see strong evidence that that future is here already.
+
+Not only does the ability to critically use AI tools come from having abilities in the first place, [research](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) shows that access to AI tools while you're still learning important skills stunts your development rather than enhances it. This is especially important for working with programming languages and writing papers. A programming language *is a language*, and the only way to learn to speak it fluently is to actually spend some time speaking it. If you don't put in the work yourself, if you offload the cognitive burden to an LLM, you will never learn the language. In the same way, if you never write stuff on you own (as messy and awkward as your writing sometimes seems), you will never actually develop the ability to write well, much less learn the specialized skill of writing with data, or for that matter learn how to compose a convincing and logically sound argument. You certainly won't be able to verbally communicate to others about your research in any way that sounds remotely competent.
+
+Think of it this way. Say you started going to the gym to lift weights, but you used a robot to do all the heavy lifting for you. Do you think you'd actually get stronger? Of course not. You'd never develop any new muscle, and none of your personal records would actually be yours; they'd be the machine's. Coding and writing are exercises that work your brain---probably one of the most important muscles in your entire body. You should exercise your brain. You should do your own work.
+
+By the way, research backs me up on the point that outsourcing work to LLMs leads to weak brains. [That same study](https://www.media.mit.edu/publications/your-brain-on-chatgpt/) I mentioned before shows that failing to write stuff on your own, that using an LLM instead, adversely affects the architecture of your brain. People who had access to LLMs showed weaker neural connectivity in several parts of their brains than those denied access to LLMs. If you want a strong mind, the less you rely on LLMs, especially early on, the better. And once you develop a solid foundation, you should probably maintain a steady "exercise" regimen of LLM-free work to maintain your edge. 
+
+Consider another example. With some important exceptions, many people today don't have to engage in manual labor to "earn" their calories. Not long ago by historical standards, 90% of Americans worked in agriculture. Today that figure is less than 1%. As a result, chronic and non-communicable diseases (things that stem from too much inactivity and poor lifestyle choices) are the leading cause of death. One way that I personally try to counteract the fact that I work a non-labor-intensive job is to lift weights and do high intensity interval training every week. Essentially, I simulate manual labor, and this helps me to maintain my health. 
+
+I think LLMs are going to do to knowledge-based work what the industrial revolution did to manual labor. Without a commitment to simulating difficult cognitive tasks on a regular basis, I think cognitive decline is going to become a real issue in the coming years and decades, in the same way that physical health has declined as the need to engage in manual labor has disappeared (at least in industrialized countries). Now is the time to develop the habit of exercising your mind. It's going to become much harder to develop this habit down the road.
+
+Okay, but what if you want use an LLM to just help you study? To that I say, *sure*. I've seen plenty of examples of people using LLMs to learn new things, and to great effect. But be careful. LLMs weren't designed by educators for educational purposes. That means their use is riddled with landmines, ready to do real damage to your learning. So you need some strategies before you use LLMs as a study aid. [This article](https://gus1365199.substack.com/p/intent-amplified?utm_source=%2Finbox&utm_medium=reader2) should give you a good place to start. It offers practical tips to cajole an LLM into behaving in ways more conducive to learning. A word of warning though: don't go down this path unless you know you have self-control. Because, and I repeat, LLMs are not educational tools, you have to use them intentionally and strategically. That's hard to do.
+
+In sum, you need skills to use AI tools effectively, and you give yourself the best chance of developing relevant skills the less you rely on AI. This class is an opportunity for you to learn, not to avoid learning. (I'll also add you are paying thousands of dollars just to take this single class, so don't waste your money or my time.)
+
+I feel particularly compelled to make sure you do actually learn something in this class because a downstream implication of too much LLM use too soon is going to be the systematic *de-skilling* of the future workforce (which includes you*you*). That's my prediction anyway, and plenty of others share my concern. The sad result will be that more and more students make themselves replaceable in their future careers. Think about it, if your "skill" is that you know how to prompt an AI to perform a task, why does your employer need *you*? Anybody can figure out how to prompt AIs to do *something*, and some of the latest versions will do quite a lot on the basis of a very short or even vague request. If you want to be competitive, you need to demonstrate what *you* can do; not what you can ask an AI agent to do. And, going back to my previous points, if you rely on AI tools too much too soon in your education, you'll have only the brittlest of skills to offer a future employer (or graduate admissions committee). And those brittle skills will actually make you a poor user of AI. 
+
+So use this class as an opportunity to become a more competent AI user by avoiding the temptation to use AI.
+
