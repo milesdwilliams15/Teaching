@@ -5,7 +5,7 @@ output:
     dev: cairo_pdf
 geometry: margin=1in
 
-title: "DPR 390: Death, Destruction, and Data"
+title: "DPR 380: Death, Destruction, and Data"
 author: Dr. Miles D. Williams
 date: "Spring 2026"
 
