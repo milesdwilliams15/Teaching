@@ -88,26 +88,18 @@ finals_week <- seq(ymd(20260506), ymd(20260512), by = 1)
 
 # You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
 # writing (MA) assignments:
-ma_dates <- c(ymd(20250226), 
-              ymd(20250326)) 
+ma_dates <- c(ymd(20260223), 
+              ymd(20260330),
+              ymd(20260506)) 
   # Final date set to ...
 # analysis challenges:
-ac_dates <- c(
-  ymd(20250205),
-  ymd(20250212),
-  ymd(20250219),
-  ymd(20250305),
-  ymd(20250312),
-  ymd(20250402),
-  ymd(20250409),
-  ymd(20250416),
-  ymd(20250423),
-  ymd(20250430)
+ipa_dates <- c(
+  assign_date(mon, 1, c(3:5, 7:8, 12:15))
 )
 
 # What are the full dates of the semester? Here, I'll exclude exam week as I like to do.
-semester_dates <- 
-  seq(ymd(20250120), ymd(20250505), by=1)
+semester_dates <- seq(ymd(20260119), ymd(20260504), by=1)
+
 
 # Custom function for treating the first day of the month as the first week 
 # of the month up until the first Sunday (unless Sunday was the start of the month)
@@ -117,16 +109,15 @@ wom <- function(date) {
   }
 
 # Create a data frame of dates, assign to Cal
-tibble(date = seq(ymd(20250101), ymd(20250531), by=1))  %>%
+tibble(date = seq(ymd(20260101), ymd(20260531), by=1))  %>%
   mutate(mon = lubridate::month(date, label=T, abbr=F), # get month label
          wkdy = weekdays(date, abbreviate=T), # get weekday label
          wkdy = fct_relevel(wkdy, "Sun", "Mon", "Tue", "Wed", "Thu","Fri","Sat"), # make sure Sunday comes first
          semester = ifelse(date %in% semester_dates, 1, 0), # is date part of the semester?
-         mas = ifelse(date %in% ma_dates, 1, 0), # is it an MA assignment?
-         acs = ifelse(date %in% ac_dates, 1, 0), # is it a GC assignment?
-         not_here = ifelse(date %in% not_here_dates, 1, 0), # is it a day off?
-         day = lubridate::mday(date), # get day of month to add later as a label
-         # Below: our custom wom() function
+         mas = ifelse(date %in% ma_dates, 1, 0), 
+         ipa = ifelse(date %in% ipa_dates, 1, 0), 
+         not_here = ifelse(date %in% not_here_dates, 1, 0), 
+         day = lubridate::mday(date), 
          week = wom(date)) -> Cal
 
 # Create a fill category and color category variable, for filling/coloring.
@@ -138,7 +129,7 @@ Cal %>%
          fcategory = ifelse(semester == 1, "Semester", fcategory),
          fcategory = ifelse(semester == 1 & wkdy %in% c("Mon", "Wed", "Fri"), "Class Day", fcategory),
          ccategory = ifelse(mas == 1, "MA Due", ccategory),
-         ccategory = ifelse(acs == 1, "AC Due", ccategory),
+         ccategory = ifelse(ipa == 1, "IPA", ccategory),
          fcategory = ifelse(not_here == 1, "Breaks", fcategory),
          fcategory = ifelse(is.na(fcategory), "NA", fcategory),
          ccategory = ifelse(is.na(ccategory), "NA", ccategory)) -> Cal 
@@ -165,9 +156,9 @@ Cal %>%
                     breaks=c("Class Day","Breaks")) +
   scale_color_manual(
     values = c("MA Due" = "firebrick", 
-               "AC Due" = "darkblue", 
+               "IPA" = "darkblue", 
                "NA" = "white"),
-    breaks = c("MA Due", "AC Due")
+    breaks = c("MA Due", "IPA")
   ) +
   labs(fill = "", color = "", x="", y="",
        caption = "Notable dates: MLK (01.20), Spring Break (03.17-03.21), MPSA (04.03-04.04), Final Day of Instruction (05.05)"
@@ -225,15 +216,14 @@ class_cal +
 
 -   Wednesday: ["The Impact of Foreign Aid Cuts"](https://betterworldcampaign.org/impact-of-foreign-assistance-cuts) and ["U.S. Foreign Aid Freeze & Dissolution of USAID: Timeline of Events"](https://www.kff.org/global-health-policy/u-s-foreign-aid-freeze-dissolution-of-usaid-timeline-of-events/)
 
-\hfill \textit{Practice set due and in-person assessment (IPA)}
-
 ## `r advdate(mon, 3)`
 
 -   Monday: [Modeling Data](https://milesdwilliams15.quarto.pub/data-and-research-design/03_model_data.html)
 
 -   Wednesday: ["Who Gives Foreign Aid to Whom and Why?"](https://www.jstor.org/stable/pdf/40216022.pdf)
 
-\hfill \textit{Practice set due and IPA}
+\hfill \textit{Practice set due and in-person assessment (IPA) on Monday}
+
 
 
 ## `r advdate(mon, 4)` 
@@ -242,7 +232,7 @@ class_cal +
 
 -   Wednesday: ["Down the Rathole? Public Support for US Foreign Aid"](https://www.jstor.org/stable/44510179?seq=1) 
 
-\hfill \textit{Practice set due and IPA}
+\hfill \textit{Practice set due and IPA on Monday}
 
 
 ## `r advdate(mon, 5)`: 
@@ -250,6 +240,11 @@ class_cal +
 -   Monday: Introduce MA1
 
 -   Wednesday: Work on MA1 
+
+\hfill \textit{Practice set due and IPA on Monday}
+
+\hfill \textit{MA due 02.23}
+
 
 # Part II: Prediction - U.S. Presidential Elections
 
@@ -259,8 +254,6 @@ class_cal +
 
 -   Wednesday: ["The Political Economy Model: Presidential Forecast 2024"](https://www.cambridge.org/core/journals/ps-political-science-and-politics/article/political-economy-model-presidential-forecast-for-2024/8725394B48785D52F71151F5AB7D71CE) 
 
-\hfill \textit{Practice set due and IPA}
-
 
 ## `r advdate(mon, 7)`
 
@@ -268,7 +261,7 @@ class_cal +
 
 -   Wednesday: Listen to ["Colloquy Podcast: How Reliable Are Election Forecasts?"](https://gsas.harvard.edu/news/colloquy-podcast-how-reliable-are-election-forecasts) 
 
-\hfill \textit{Practice set due and IPA}
+\hfill \textit{Practice set due and IPA Monday}
 
 
 ## `r advdate(mon, 8)`
@@ -276,6 +269,10 @@ class_cal +
 - Monday: Introduce MA2
 
 - Wednesday: Work on MA2
+
+\hfill \textit{Practice set due and IPA Monday}
+
+\hfill \textit{MA due 03.30}
 
 
 ## `r advdate(mon, 9)`
@@ -294,15 +291,14 @@ NO CLASS (ISA)
 
 -   Wednesday: Listen to podcast about [*In COVID's Wake*](https://www.nytimes.com/2025/03/20/podcasts/the-daily/were-the-covid-lockdowns-worth-it.html?showTranscript=1) 
 
-\hfill \textit{Practice set due and IPA}
-
 
 ## `r advdate(mon, 12)`
 
 -   Monday: [Selection on Observables](https://milesdwilliams15.quarto.pub/data-and-research-design/09_soo.html)
 
 -   Wednesday: Read ["Ethnicity, Insurgency, and Civil War"](https://www.cambridge.org/core/journals/american-political-science-review/article/ethnicity-insurgency-and-civil-war/B1D5D0E7C782483C5D7E102A61AD6605) 
-\hfill \textit{Practice set due and IPA}
+
+\hfill \textit{Practice set due and IPA Monday}
 
 
 ## `r advdate(mon, 13)`
@@ -312,7 +308,7 @@ NO CLASS (ISA)
 -   Wednesday:  Read ["How reducing documentation burdens impacts equity
 in access to small business COVID-19 relief funding"](https://drive.google.com/file/d/1A24MUGoWjakQHhaUcE6E3z1PSPdf1337/view?usp=sharing) 
 
-\hfill \textit{Practice set due and IPA}
+\hfill \textit{Practice set due and IPA Monday}
 
 
 ## `r advdate(mon, 14)`
@@ -321,7 +317,7 @@ in access to small business COVID-19 relief funding"](https://drive.google.com/f
 
 -   Wednesday: Read ["Effects of the Minimum Wage on Employment Dynamics"](https://www.jstor.org/stable/pdf/24736030.pdf?casa_token=37pa6MOcHvoAAAAA:Fx3XvoPyf2yPBfqJSW_H6s1gwAtBdvxom6CY-AyHLjhL53ySoz55aG6j5FAZ9O2TY5LHP_qjH5aUp0AWrWCHt1DSBWy2oafyhoDPivg02UJLvLrOEf8) 
 
-\hfill \textit{Practice set due and IPA}
+\hfill \textit{Practice set due and IPA Monday}
 
 
 ## `r advdate(mon, 15)`
@@ -329,6 +325,9 @@ in access to small business COVID-19 relief funding"](https://drive.google.com/f
 -   Monday: Introduce MA3
 
 -   Wednesday: Work on MA3
+
+\hfill \textit{Practice set due and IPA Monday}
+
 
 ## `r advdate(mon, 16)`
 
