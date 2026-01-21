@@ -87,7 +87,7 @@ not_here_dates <- c(
 finals_week <- seq(ymd(20260506), ymd(20260512), by = 1)
 
 # You can adjust this as you see fit. Basically: add assignment types (e.g. papers, quizzes).
-ipas <- assign_date(mon, 5, c(2:4, 7:8, 11:13))
+ipas <- assign_date(mon, 5, c(2:4, 7, 8, 11:13))
 mas  <- assign_date(mon, c(5, 3), c(6, 16))
 
 # What are the full dates of the semester? 
@@ -216,31 +216,33 @@ class_cal +
 
 - Wednesday: Syllabus day
 
-- Friday: What is war?
+- Friday: Read ["What is war?"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/01_what_is_war.html)
+
+# Part I: Measement and Trends
 
 ## `r advdate(mon, 2)`: Measuring War
 
-- Monday: Correlates of War Project vs. International Conflict Data Project
+- Monday: Read "The Data"
 
-- Wednesday: Our software and accessing the data
+- Wednesday: Hands-on-activity 
 
-- Friday: Practice set due and in-person assessment (IPA)
+- Friday: Practice set due, Q&A, and in-person assessment (IPA)
 
 ## `r advdate(mon, 3)`: How common is war?
 
-- Monday: Visualizing trends
+- Monday: Read "Is War Disappearing?"
 
-- Wednesday: Detecting changes over time
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
 ## `r advdate(mon, 4)`: How deadly is war?
 
-- Monday: Normal and abnormal distributions
+- Monday: Read "Is War Less Deadly?"
 
-- Wednesday: Statistics for extreme data
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
 ## `r advdate(mon, 5)`: Testing the long peace
 
@@ -252,30 +254,32 @@ class_cal +
 
 \hfill \textbf{MA1 due Fri. by midnight}
 
+# Part II: Theories and Correlates
 
-## `r advdate(mon, 6)`: Correlates vs. causes of war
+## `r advdate(mon, 6)`: Dagerous Dyads
 
-- Monday: Correlation
+- Monday: Read "Dyadic Models of Conflict"
 
-- Wednesday: Causation
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
-## `r advdate(mon, 7)`: Dangerous dyads
+## `r advdate(mon, 7)`: Power and War
 
-- Monday: Dyadic models of conflict
+- Monday: Read "Preponderance, Parity, and Transitions" 
 
-- Wednesday: Who's in and who's out?
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
-## `r advdate(mon, 8)`: Power and War
 
-- Monday: Theories of preponderance, parity, and transitions 
+## `r advdate(mon, 8)`: Democratic peace
 
-- Wednesday: Testing the theories
+- Monday: Read "The Democratic Peace"
 
-- Friday: Practice set due and IPA
+- Wednesday: Hands-on-activity
+
+- Friday: Practice set due, Q&A, and IPA
 
 ## `r advdate(mon, 9)`: Spring Break
 
@@ -290,27 +294,29 @@ NO CLASS
 - Friday: Wild card (because I have a conference most of the week, we'll see what we can cover)
 
 
-## `r advdate(mon, 11)`: Democratic peace
+## `r advdate(mon, 11)`: Capitalist peace
 
-- Monday: Democratic peace theories
+- Monday: Read "The Capitalist Peace"
 
-- Wednesday: Testing the theories
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
-## `r advdate(mon, 12)`: Capitalist peace
+## `r advdate(mon, 12)`: Alliances and Deterrence
 
-- Monday: Capitalist peace (aka, economic interdependence)
+- Monday: Read "Alliances and War"
 
-- Wednesday: Testing the theory
+- Wednesday: Hands-on-activity
 
-- Friday: Practice set due and IPA
+- Friday: Practice set due, Q&A, and IPA
 
-## `r advdate(mon, 13)`: Alliances and Deterrence
+## `r advdate(mon, 13)`: Leaders and War
 
-- Monday: Alliances and deterrence theory vs. "Steps-to-War"
+- Monday: Read "Leaders and War"
 
-- Wednesday: Testing the arguments.
+- Wednesday: Hands-on-activity.
+
+- Friday: Practice set due, Q&A, and IPA
 
 ## `r advdate(mon, 14)`: Start Final Project
 
@@ -361,7 +367,11 @@ While using the **Denison server version is highly recommended**, you are also w
 
 # Required Readings and Recommended References
 
-There is no textbook for this class, but I will provide plenty of free resources for you throughout the semester, especially to provide guidance on using our software. There are many free and helpful resources online if you're interested in learning more about R and RStudio in general. I highly recommend:
+There is no textbook for this class that you need to purchase. Instead, I'm working on a free, open-access, and online book for this class which you can access here:
+
+[*Death, Destruction, and Data: An Intro to Using Data to Study International Conflict*](https://milesdwilliams15.quarto.pub/death-destruction-and-data/). 2026. Miles D. Williams.
+
+While not required reading, there are many free and helpful resources online if you're interested in learning more about R and RStudio in general. I highly recommend:
 
 > Wickham, Hadley, Mine Çetinkaya-Rundel, and Garrett Grolemund. \href{https://r4ds.hadley.nz/}{\textit{R for Data Science (2e)}}.
 
@@ -377,15 +387,15 @@ During my office hours, my door is always open! If you have any questions or con
 
 You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.email} any time. I'll try to respond as quickly as possible, but if you email me after 5 pm, you may not get a response from me until the next workday.
 
-## Teaching Assistant
+<!-- ## Teaching Assistant -->
 
-DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem.
+<!-- DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TAs are included below. Our TAs are a great resource if you're having trouble with your code or are stuck on a problem. -->
 
-### TBD
+<!-- ### TBD -->
 
-- **email**: TBD
-- **hours**: TBD
-- **location**: TBD
+<!-- - **email**: TBD -->
+<!-- - **hours**: TBD -->
+<!-- - **location**: TBD -->
 
 
 ## Accessibility
