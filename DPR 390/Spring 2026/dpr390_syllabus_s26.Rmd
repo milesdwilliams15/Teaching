@@ -222,7 +222,7 @@ class_cal +
 
 ## `r advdate(mon, 2)`: Measuring War
 
-- Monday: Read "The Data"
+- Monday: Read ["The Data"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/02_the_data.html)
 
 - Wednesday: Hands-on-activity 
 
