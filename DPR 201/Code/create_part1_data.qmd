@@ -58,6 +58,13 @@ usaid_dt |>
   mutate(
     across(obligated_2024:disbursed_2025, ~ replace_na(.x, 0))
   ) -> usaid_dt
+
+# usaid_dt |> count(ccode) |> arrange(-n)
+# usaid_dt |> filter(ccode == 625)
+usaid_dt |>
+  filter(
+    country_name != "Sudan (former)"
+  ) -> usaid_dt
 ```
 
 ## Let's populate with covariates

@@ -1,60 +1,90 @@
 ---
 title: "Main Assignment 3"
-subtitle: "Due 12.15 by 8:30pm"
+subtitle: "Due 12.17 by 11:00am"
 format: pdf
 editor: visual
 ---
 
 ## Overview
 
-Trying to replicate another researcher's analysis is what good science is all about. If an analysis only supports certain conclusions when a certain researcher does the work, that's a problem. But if anyone can follow a researcher's analysis plan and come to the same conclusion, that lends extra credence to their findings. In this assignment you will work individually or in teams of up to three (your choice) and play the role of re-analyst for the work Bear Braumoeller did for his book *Only the Dead*.
+Trying to replicate another researcher's analysis is what good science is all about. If an analysis only supports certain conclusions when a certain researcher does the work, or when you use a particular dataset, that's a problem. But if anyone can follow a researcher's analysis plan and come to the same conclusion using the same or different data, that lends extra credence to their findings.
 
-I've created an online application that you will use to perform your analysis. With the results, you'll write a report that summarizes what you found. Your analysis will focus on replicating three key findings of Braumoeller's: (1) that rates of conflict over time don't support the decline of war thesis, (2) that sizes of conflicts over time don't support the decline of war thesis, and (3) that international orders provide the best explanation for who does and doesn't fight each other in international politics.
+**In this assignment you will work in teams of 2-3 and play the role of re-analyst for the work Bear Braumoeller did for his book *Only the Dead*.**
 
-The main kicker in this assignment is that you won't try to replicate Braumoeller's findings with the dataset he used. Instead, your analysis will be supported by a new dataset that has only been published in the past few years. It's called the [Militarized Interstate Events Dataset](https://internationalconflict.ua.edu/data-download/), and it contains corrections for the Militarized Interstate Disputes Dataset Braumoeller used in his research. It also is more granular. It offers day-level detail about militarized events between countries and it nests these events within a broader conflict. This is truly great data. Does it support Braumoeller's conclusions? It's your job to find out in this MA.
+I've created [an online application](https://milesdwilliams15.shinyapps.io/trends-in-war/) that you will use to perform your analysis (but if you're extra ambitious or have some quantitative skills, you're welcome to the raw data to analyze it yourself). The app will produce data visualizations that resemble those Braumoeller produced when analyzing the incidence and size of international wars, and the role of international order in explaining patterns in international conflict.
+
+The main kicker in this assignment is that you won't try to replicate Braumoeller's findings with the dataset he used. Instead, your analysis will be supported by a new dataset that has only been published in the past few years. It's called the [Militarized Interstate Events Dataset](https://internationalconflict.ua.edu/data-download/), and it contains corrections for the Militarized Interstate Disputes Dataset Braumoeller used in his research. It also is more granular. It offers event-level detail about militarized conflicts between countries. That means, beyond tracking whether a dispute took place between countries, it also documents each and every event that was part of a conflict. Does this more fine grained data support Braumoeller's conclusions? It's your job to find out in this MA.
+
+With the results, you'll write a report that summarizes what you found. Your analysis will focus on replicating three key findings of Braumoeller's: (1) that rates of conflict over time don't support the decline of war thesis, (2) that sizes of conflicts over time don't support the decline of war thesis, and (3) that international order membership predicts who does and doesn't fight each other (e.g., that orders reduce conflict among members but increase conflict between orders or with countries outside the order).
 
 ## Submission Outline
 
-Your submission for this MA should adhere to the following outline:
+Your final submission will be in the form of a paper that adheres to the following outline (Each criterion is worth an equal point toward your final grade):
 
--   **Introduction**: Introduce your research question (It's pretty obvious: Is there evidence to support the decline of war thesis?) and why it matters. Draw on Braumoeller and any other sources as you wish to provide background on this question.
+-   **Top of the first page**
 
--   **Data and Design**: Describe how you'll find an answer. Briefly talk about the methods and data that Braumoeller uses in his book, and introduce the Militarized Interstate Events Dataset and how you'll use it to see if you can replicate Braumoeller's findings. You can read more about the MIE dataset, and why it is supposedly better, here: [The Militarized Interstate Events (MIE) dataset, 1816-2014](https://journals.sagepub.com/doi/10.1177/07388942231182674). You should not cite me or the app I've made for you as you discuss the data. Instead, cite the MIE dataset article in the previous link, for any other measures used in your analysis, use the relevant citations for those as well. There will be a "Metadata" tab in the app that will tell you where each variable in the data comes from. You should also avoid listing out variables with bullet points. Just talk about the variables you'll use in plain English and in broad brushstrokes.
+    -   Title
 
--   **Analysis**: Using the Trends in War app, put together data visualizations that summarize (1) trends in the rate of conflict, (2) trends in the size of conflict, and (3) trends in the rate of conflict between countries within, across, and outside of international orders. You must have at least one visualization for each trend, but you are free to include more. You may want to consider what happens when you adjust for opportunities for conflict or normalize by population, for example. For each of your visualizations, make sure that you include your summary of each in a paragraph *before* the visualization. Also focus on telling a story with the data visualization. Don't just start a paragraph with "This figure shows..."
+    -   Team member names
 
--   **Conclusion**: Write a brief conclusion that summarizes your findings. Did you replicate Braumoeller's findings? Did you find something different? What are the implications either way?
+<!-- -->
 
-Keep your writing short and to the point. You shouldn't need to write more than 1,000 words. When citing sources, use any citation style you prefer. Just be consistent.
+-   **Introduction**:
 
-## Grading Rubric
+    -   Include a section header.
 
-As per the syllabus, I will use a 0-5 point grading scale, which maps to six different possible grades:
+    -   2 paragraphs.
 
--   5pts = 100% — A+
+    -   1st paragraph: Introduce your research question. You should mention the three findings of Braumoeller's that you want to replicate.
 
--   4pts = 93% — A
+    -   2nd paragraph: State why the research question matters. Why do we care whether war is disappearing and whether international order can explain variation in international conflict?
 
--   3pts = 85% — B
+    -   Use clear writing, with minimal typos or grammatical/stylistic errors, and appropriate transitions.
 
--   2pts = 75% — C
+-   **Data and Design**:
 
--   1pt = 60% — D-
+    -   Include a section header.
 
--   0pts = 0% — F-
+    -   3 paragraphs.
 
-The only scenario where you get 0pts is by failing to make a submission. So as long as you turn in something, you're guaranteed to get at least a D-.
+    -   Briefly talk about the methods and data that Braumoeller uses in his book, and introduce the Militarized Interstate Events Dataset and how you'll use it to see if you can replicate Braumoeller's findings. You can read more about the MIE dataset, and why it is supposedly better, here: [The Militarized Interstate Events (MIE) dataset, 1816-2014](https://journals.sagepub.com/doi/10.1177/07388942231182674).
 
-Here are some reasons why I'll dock points from your grade. You can lose no more than 4pts on a submission since you can't do worse than 1pt (D-).
+    -   You should not cite me or the app I've made for you as you discuss the data. Instead, cite the MIE dataset article in the previous link, and for any other measures used in your analysis, use the relevant citations for those as well. There will be a "Metadata" tab in the app that will tell you where each variable in the data comes from.
 
--   4 or more typos, writing errors, or poorly worded sentences (-1pt)
+    -   Avoid listing out variables with bullet points. Just talk about the variables you'll use in plain English and in broad brushstrokes.
 
--   You didn't follow the submission outline instructions (-1pt)
+    -   Use clear writing, with minimal typos or grammatical/stylistic errors, and appropriate transitions.
 
--   You clearly misunderstood Braumoeller's argument and analysis (-1pt)
+-   **Analysis**:
 
--   You misinterpreted trends in the data and/or the measures of interest (-1pt)
+    -   Include a section header.
 
--   Your submission exceeds 1,000 words (-1pt)
+    -   There should be no sub-section headers.
 
-This rubric, on the one hand, sets a high bar for each item. On the other hand, it also means that you can't be penalized beyond the loss of a single point for failing to meet the standard set by each item as well. For example, say your submission is riddled with typos, but everything else is in place—you followed instructions, it's clear that you understood Braumoeller's argument and the data, and you kept your word count below 1,000. You'd get 4pts, which equates to 93%.
+    -   3-6 paragraphs.
+
+    -   Using the Trends in War app, put together data visualizations that summarize (1) trends in the rate of conflict, (2) trends in the size of conflict, and (3) trends in the rate of conflict between countries within, across, and outside of international orders.
+
+    -   You must have at leas one visualization for each trend, but you are free to include more (no more than 6 total). You may want to consider what happens when you adjust or don't adjust for opportunities for conflict or normalize conflict size by population, for example.
+
+    -   For each of your visualizations, make sure that you include your summary of each in a paragraph *before* the visualization.
+
+    -   Also make sure that the very first sentence of each paragraph is a clear statement about what you found in the data.
+
+    -   The remainder of the paragraph should be dedicated to helping your audience interpret the figure.
+
+    -   Use clear writing, with minimal typos or grammatical/stylistic errors, and appropriate transitions.
+
+-   **Conclusion**:
+
+    -   Include a section header.
+
+    -   2 paragraphs.
+
+    -   Briefly summarize your findings.
+
+    -   Discuss the big-picture implications of what you found.
+
+-   **Citations:**
+
+    -   You may use any citation style you wish, as long as you use it consistently.
