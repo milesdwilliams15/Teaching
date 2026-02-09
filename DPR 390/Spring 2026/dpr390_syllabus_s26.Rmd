@@ -230,15 +230,15 @@ class_cal +
 
 ## `r advdate(mon, 3)`: How common is war?
 
-- Monday: Read "Is War Disappearing?"
+- Monday: Read sec 3.1-3.3 of ["Is War Disappearing?"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/03_is_war_disappearing.html)
 
-- Wednesday: Hands-on-activity
+- Wednesday: Read sec 3.4-3.5 of ["Is War Disappearing?"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/03_is_war_disappearing.html)
 
 - Friday: Practice set due, Q&A, and IPA
 
 ## `r advdate(mon, 4)`: How deadly is war?
 
-- Monday: Read "Is War Less Deadly?"
+- Monday: Read ["Is War Less Deadly?"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/04_is_war_less_deadly.html)
 
 - Wednesday: Hands-on-activity
 
