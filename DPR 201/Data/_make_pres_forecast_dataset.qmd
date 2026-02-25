@@ -26,7 +26,7 @@ abr <- read_csv(
 abr |>
   mutate(
     inc_vote_share = ifelse(
-      inc_rep == 1,
+      inc_party == "rep",
       rep, dem
     ),
     inc_vote_margin = inc_vote_share / (rep + dem) - .5
