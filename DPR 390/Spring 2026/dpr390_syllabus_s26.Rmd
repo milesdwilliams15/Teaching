@@ -258,7 +258,7 @@ class_cal +
 
 ## `r advdate(mon, 6)`: Dagerous Dyads
 
-- Monday: Read "Dyadic Models of Conflict"
+- Monday: Read ["Dyadic Models of Conflict"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/05_dyads.html)
 
 - Wednesday: Hands-on-activity
 
@@ -266,9 +266,9 @@ class_cal +
 
 ## `r advdate(mon, 7)`: Power and War
 
-- Monday: Read "Preponderance, Parity, and Transitions" 
+- Monday: Read ["The Balance of Power and War"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/06_power.html) 
 
-- Wednesday: Hands-on-activity
+- Wednesday: Hands-on-activity (further reading: ["Prediction, Proxies, and Power"](https://www.jstor.org/stable/45132498))
 
 - Friday: Practice set due, Q&A, and IPA
 
