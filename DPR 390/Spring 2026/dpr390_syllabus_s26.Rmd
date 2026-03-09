@@ -275,7 +275,7 @@ class_cal +
 
 ## `r advdate(mon, 8)`: Democratic peace
 
-- Monday: Read "The Democratic Peace"
+- Monday: Read ["The Democratic Peace"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/07_democracy.html)
 
 - Wednesday: Hands-on-activity
 
