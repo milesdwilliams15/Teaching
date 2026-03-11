@@ -111,10 +111,9 @@ abr |>
     inc_vote_share,
     inc_vote_margin,
     inc_elec_total = as.numeric(inc_elec),
-    inc_elec_margin = inc_elec_total - ceiling(
-      0.5 * (as.numeric(winner_elec) +
-               as.numeric(loser_elec))
-    )
+    inc_elec_margin = inc_elec_total - as.numeric(ifelse(
+      inc_elec == winner_elec, loser_elec, winner_elec
+    ))
   ) -> abr
 ```
 
