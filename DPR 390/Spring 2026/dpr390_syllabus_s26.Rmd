@@ -296,7 +296,7 @@ NO CLASS
 
 ## `r advdate(mon, 11)`: Capitalist peace
 
-- Monday: Read "The Capitalist Peace"
+- Monday: Read ["The Trading Peace"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/08_trade.html)
 
 - Wednesday: Hands-on-activity
 
