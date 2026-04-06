@@ -304,7 +304,7 @@ NO CLASS
 
 ## `r advdate(mon, 12)`: Alliances and Deterrence
 
-- Monday: Read "Alliances and War"
+- Monday: Read ["Alliances and War"](https://milesdwilliams15.quarto.pub/death-destruction-and-data/09_alliances.html)
 
 - Wednesday: Hands-on-activity
 

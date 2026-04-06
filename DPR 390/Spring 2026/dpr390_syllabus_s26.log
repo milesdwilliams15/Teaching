@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  27 MAR 2026 13:07
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  6 APR 2026 10:32
 entering extended mode
 **./dpr390_syllabus_s26.tex
 (dpr390_syllabus_s26.tex
@@ -917,28 +917,28 @@ LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/n' will be
 (Font)              scaled to size 10.95pt on input line 267.
 [3] [4]
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/it' will be
-(Font)              scaled to size 10.95pt on input line 406.
+(Font)              scaled to size 10.95pt on input line 408.
 [5] [6
 
 ]
-Overfull \hbox (10.9279pt too wide) in paragraph at lines 537--554
+Overfull \hbox (10.9279pt too wide) in paragraph at lines 539--556
 \T1/Cochineal-TLF/m/n/10.95 htps://denisonuappointments.as.me/mlo, or by email-
 ing the Mul-ti-lin-gual Learn-ing Of-fice di-rectly at [][]$englishhelp @
  []
 
 [7] [8]
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 665.
+(Font)              scaled to size 8.0pt on input line 667.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/it' will be
-(Font)              scaled to size 10.95pt on input line 686.
+(Font)              scaled to size 10.95pt on input line 688.
 [9] [10] [11] [12] 
 AED: lastpage setting LastPage
 [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 906.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 906.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 908.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 908.
 (dpr390_syllabus_s26.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 906.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 906.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 908.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 908.
  ) 
 Here is how much of TeX's memory you used:
  21305 strings out of 428410
@@ -956,4 +956,4 @@ Output written on dpr390_syllabus_s26.pdf (13 pages).
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 ! xdvipdfmx:warning: PDF destination "Hfootnote.2" not defined.
 
-! 102909 bytes written
+! 102937 bytes written
