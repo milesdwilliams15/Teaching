@@ -5,7 +5,7 @@ output:
     dev: cairo_pdf
 geometry: margin=1in
 
-title: "DPR 190: War, Wealth, and World Politics"
+title: "DPR 191: War, Wealth, and World Politics"
 author: Dr. Miles D. Williams
 date: "Fall 2026"
 
