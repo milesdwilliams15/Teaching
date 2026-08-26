@@ -11,7 +11,7 @@ date: "Fall 2026"
 
 email: "williamsmd@denison.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MWF 8:30 am - 9:20 am, W 11:30 am - 1:20 pm"
+officehours: "MWF 8:30am - 9:20am"
 office: "Knobel 101E"
 classroom: "Higley 325"
 classhours: "MWF (Sec. 2 9:30-10:20am, Sec. 3 10:30-11:20am)"
