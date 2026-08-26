@@ -5,16 +5,16 @@ output:
     dev: cairo_pdf
 geometry: margin=1in
 
-title: "DPR 101 (01/02): Data Visualization for Political Research"
+title: "DPR 101 (02/03): Data Visualization for Political Research"
 author: Dr. Miles D. Williams
 date: "Fall 2026"
 
 email: "williamsmd@denison.edu"
 web: "milesdwilliams15.github.io"
-officehours: "MWF 8:30-9:20 am, MW 11:30 am - 1:20 pm"
+officehours: "MWF 8:30 am - 9:20 am, W 11:30 am - 1:20 pm"
 office: "Knobel 101E"
 classroom: "Higley 325"
-classhours: "MWF (Sec. 1 9:30-10:20am, Sec. 2 10:30-11:20am)"
+classhours: "MWF (Sec. 2 9:30-10:20am, Sec. 3 10:30-11:20am)"
 
 fontfamily: cochineal
 fontsize: 11pt
@@ -345,9 +345,9 @@ No class!!
 
 ## MA3 Due Dates
 
-- *Section 1 (9:30-10:30am)*: TBD
+- *Section 2 (9:30-10:30am)*: TBD
 
-- *Section 2 (10:30-11:30am)*: TBD
+- *Section 3 (10:30-11:30am)*: TBD
 
 \newpage
 

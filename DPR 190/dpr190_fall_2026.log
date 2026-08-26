@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  24 AUG 2026 11:39
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  26 AUG 2026 13:59
 entering extended mode
 **./dpr190_fall_2026.tex
 (dpr190_fall_2026.tex
@@ -786,6 +786,10 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 173.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
+Overfull \hbox (7.34894pt too wide) in alignment at lines 170--180
+[] []
+ []
+
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <14.4> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 186.
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
@@ -859,4 +863,4 @@ Output written on dpr190_fall_2026.pdf (14 pages).
 ! ][14]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 130211 bytes written
+! 130210 bytes written
