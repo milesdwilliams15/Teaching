@@ -168,7 +168,6 @@ This course will help you understand political data and what to do with it. That
 
 *Note*: Tentatively, the cadence for the class will be **lecture** on Mondays, **discussion readings** on Wednesdays, and **in-person assessments** on Fridays. I'll flag when we deviate from this pattern.
 
-
 # Getting Started
 
 ## `r advdate(mon, 1)`: Welcome!
@@ -189,7 +188,7 @@ This course will help you understand political data and what to do with it. That
 
 - Lecture Notes: NONE
 
-- Readings: ["Look at Data"](https://socviz.co/lookatdata.html#lookatdata) and ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118) 
+- Readings: ["Look at Data"](https://socviz.co/lookatdata.html#lookatdata) and ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118)
 
 - Homework: NONE
 
@@ -199,9 +198,9 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 3)`: Intro to Software
 
-- Lecture Notes: [Introduction](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/intro.html), [R Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/02_prerequisites2.html)
+- Lecture Notes: [Introduction](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/intro.html), [R Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/01_prerequesites1.html)
 
-- Readings: ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714) 
+- Readings: ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714)
 
 - Homework: Practice Set 1 (due Friday)
 
@@ -209,9 +208,9 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 4)`: The Basics
 
-- Lecture Notes: [\`ggplot()\` Basics](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/03_ggplot1.html) 
+- Lecture Notes: [\`ggplot()\` Basics](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/03_ggplot1.html)
 
-- Readings: ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A) 
+- Readings: ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A)
 
 - Homework: Practice Set 2 (due Friday)
 
@@ -219,9 +218,9 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 5)`: Show the Right Numbers
 
-- Lecture Notes: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/05_showing_the_right_numbers1.html)
+- Lecture Notes: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/05_showing_the_right_numbers1.html)
 
-- Readings: ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/) 
+- Readings: ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/)
 
 - Homework: Practice Set 3 (due Friday)
 
@@ -231,9 +230,9 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 6)`: Drawing Maps
 
-- Lecture Notes: [Drawing Maps](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/07_drawing_maps1.html) 
+- Lecture Notes: [Drawing Maps](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/07_drawing_maps1.html)
 
-- Readings: [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link") 
+- Readings: [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link")
 
 - Homework: Practice Set 4
 
@@ -253,7 +252,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 8)`: Wrangling Data
 
-- Lecture Notes: [Data Wrangling](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/09_modifying_data.html)
+- Lecture Notes: [Data Wrangling](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/09_modifying_data.html)
 
 - Readings: [War Is Not Over: What the Optimists Get Wrong About Conflict](https://drive.google.com/file/d/1irp5wKqItQuRfRZvjgmc8NHksoFLmFR-/view?usp=sharing)
 
@@ -265,18 +264,17 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 9)`: Refining Plots
 
-- Lecture Notes: [Adding Labels and Text](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/10_layering_complexity.html) continued
+- Lecture Notes: [Adding Labels and Text](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/10_layering_complexity.html) continued
 
-- Readings: "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)" 
+- Readings: "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)"
 
 - Homework: Practice Set 5 (due Friday)
 
 - Assessment: IPA 5 (on Friday)
 
-
 ## `r advdate(mon, 10)`: Color Palettes and Themes
 
-- Lecture Notes: [Introducing \`{coolorrr}\` for Color Palettes](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/11_color_palettes.html) and [\`ggplot()\` Themes](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/12_refining_your_plots.html) 
+- Lecture Notes: [Introducing \`{coolorrr}\` for Color Palettes](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/11_color_palettes.html) and [Customizing Your Work Space and Refining Your Plots](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/12_refining_your_plots.html)
 
 - Readings: TBD
 
@@ -298,7 +296,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 12)`: Survey Data and Measurement
 
-- Lecture Notes: [Working with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14_tools_for_survey_data.html) and [Making Indexes with Survey Data](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.25_indexing.html)
+- Lecture Notes: [Working with Survey Data](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/14_tools_for_survey_data.html) and [Making Indexes with Survey Data](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/14.25_indexing.html)
 
 - Readings: Christian nationalism
 
@@ -308,14 +306,13 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 13)`: Complex Responses and Patchworked Visuals
 
-- Lecture Notes: [Dealing with Multiple Choice Survey Responses](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/14.5_multiple_choice_survey_questions.html) and [Showing More with Less](https://milesdwilliams15.quarto.pub/dpr-101-data-visualization-for-political-research/15_visualizing_survey_data.html)
+- Lecture Notes: [Dealing with Multiple Choice Survey Responses](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/14.5_multiple_choice_survey_questions.html) and [Showing More with Less](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/15_visualizing_survey_data.html)
 
-- Readings: ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf) 
+- Readings: ["Using AI for Political Pollilng"](https://ash.harvard.edu/articles/using-ai-for-political-polling/) and for context check out this [Ipsos press release](https://www.ipsos.com/sites/default/files/ct/news/documents/2025-08/ipsos-partners-with-stanford-university-press-release.pdf)
 
 - Homework: Practice Set 8 (due Friday)
 
 - Assessment: IPA 8 (on Friday)
-
 
 ## `r advdate(mon, 14)`: Thanksgiving Break
 
@@ -331,7 +328,6 @@ No class!!
 
 - Assessment: NONE
 
-
 ## `r advdate(mon, 16)`: MA3 Presentations
 
 - Lecture Notes: Review
@@ -341,7 +337,6 @@ No class!!
 - Homework: MA3 (due Monday 11.09)
 
 - Assessment: Presentations
-
 
 ## MA3 Due Dates
 
@@ -451,7 +446,7 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 *Attendance and Participation* **10%**
 
-> You should show up to class and participate. You have 4 freebie absences (no questions asked). Once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your fifth absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. 
+> You should show up to class and participate. You have 4 freebie absences (no questions asked). Once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your fifth absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work.
 
 *3 Main Assignments (MAs)* **15% Each**
 
@@ -467,17 +462,14 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 \bigskip
 
-
-$$
-\textbf{Tallying Your Grade:}\\
+$$\textbf{Tallying Your Grade:}\\
 \begin{aligned}
 10\%  & \text{ (Attendance and Participation)} \\
 45\%  & \text{ (Main Assigments)} \\
 15\%  & \text{ (Practice Sets)} \\
 \underline{+ 30\%} &  \text{ (In-person Assessments)} \\
 100\% & \text{ (Total Assignments)}
-\end{aligned}
-$$
+\end{aligned}$$
 
 ## E-mail Policy
 
@@ -493,7 +485,7 @@ You have exactly one chance to complete your assignments, and only one chance sh
 
 ## Attendance Policy
 
-Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences, no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence. 
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences, no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence.
 
 ## Computer-based Excuses
 
@@ -562,35 +554,35 @@ m26 |>
   ) -> dt
 ```
 
-I think I've rewritten my AI policy every semester, both because the set of tools for which the "AI" label is used keeps evolving, and because my own views keep evolving, too. 
+I think I've rewritten my AI policy every semester, both because the set of tools for which the "AI" label is used keeps evolving, and because my own views keep evolving, too.
 
 First, a note on terminology. I personally prefer to call these tools “pattern engines,” both because this is more descriptive of what they do and doesn’t incline me toward thinking these tools are alive in some mysterious way. They are models trained on patterns in data, and they spit out predicted patterns (often very good ones, and other times quite terrible ones) when given new data.
 
-Next, I want to be transparent. I use these tools. I never would call myself a “high-end user,” but I use them all the same. 
+Next, I want to be transparent. I use these tools. I never would call myself a “high-end user,” but I use them all the same.
 
 Nonetheless, I'm a slow adopter compared to some. I toyed around with chat-bots now and then, like everyone else, after ChatGPT hit the scene, but I only began using the Claude chat-bot with some earnest in the Spring semester of 2026, and over the summer I started experimenting with Posit Assistant, which is an agentic coder that lives inside RStudio (the software we'll use this semester). I’ve always been skeptical of these tools. They can be helpful, but also I have no doubt that the interests of their creators are woefully misaligned with most of society’s, including higher education’s.
 
-My reluctance aside, using these tools has rid me of all doubt that they are powerful and, when used well, can amplify the abilities of the user. I also have no doubt that these tools can undermine critical thinking, short-circuit the ability to learn new skills, and obscure mistakes by covering them with a veneer of sycophantic confidence. 
+My reluctance aside, using these tools has rid me of all doubt that they are powerful and, when used well, can amplify the abilities of the user. I also have no doubt that these tools can undermine critical thinking, short-circuit the ability to learn new skills, and obscure mistakes by covering them with a veneer of sycophantic confidence.
 
 The fact that these tools are so good at coding, in particular, will be a powerful source of temptation for you this semester. You'll do yourself an equally powerful disservice if you succumb to that temptation. The reason, ironically, is that these tools are good at coding. There's a misperception that their skill and speed with coding means that learning to code is unnecessary---that their skill can substitute for your own. I'd like to disabuse you of that idea.
 
-Imagine a different world for a second, one in which these tools were trained only to reproduce the outputs of code rather than trained on the code itself (I got this idea from a [Substack Note](https://substack.com/@aisnakeoil/note/c-303550018?r=blsen&utm_source=notes-share-action&utm_medium=web) by Arvind Narayanan). In such a world, these tools would develop outputs, most likely in binary, which would be wholly uninterpretible and unreproducible for a human programmer. Likewise, these tools would do a poor job of writing code. In this world, the human and the AI agent are substitutes. They do not use the same process to produce an output, and neither is particularly good at checking the other's work. Nonetheless, the AI is still faster than the human, so you can easily imagine it displacing human labor in this fictitious world, much the way many worry it will in our current one. 
+Imagine a different world for a second, one in which these tools were trained only to reproduce the outputs of code rather than trained on the code itself (I got this idea from a [Substack Note](https://substack.com/@aisnakeoil/note/c-303550018?r=blsen&utm_source=notes-share-action&utm_medium=web) by Arvind Narayanan). In such a world, these tools would develop outputs, most likely in binary, which would be wholly uninterpretible and unreproducible for a human programmer. Likewise, these tools would do a poor job of writing code. In this world, the human and the AI agent are substitutes. They do not use the same process to produce an output, and neither is particularly good at checking the other's work. Nonetheless, the AI is still faster than the human, so you can easily imagine it displacing human labor in this fictitious world, much the way many worry it will in our current one.
 
-This hypothetical process is much closer to how these tools work when making images or audio, which is why artists and musicians tend to be so put off by them. Here the threat of substitution is palpable, because these models were trained on outputs rather than on the creative process itself. The act of painting or creating a new song isn't machine readable the way code (or written text) is. 
+This hypothetical process is much closer to how these tools work when making images or audio, which is why artists and musicians tend to be so put off by them. Here the threat of substitution is palpable, because these models were trained on outputs rather than on the creative process itself. The act of painting or creating a new song isn't machine readable the way code (or written text) is.
 
-Let's return to the world we now live in where models were trained on code. The work of humans and agents is mutually intelligible in our world. Though the agent might technically be faster, the human has the ability to direct and check its work, catch and fix errors, or make modifications to improve the output. The agent can do all this for the human coder, too. Because of this mutual intelligibility, human and agentic coders are now *compliments* rather than *substitutes.* Or, if you prefer (as I do), an agentic coder is a tool that amplifies a human coder's abilities rather than a black-box that replaces them. 
+Let's return to the world we now live in where models were trained on code. The work of humans and agents is mutually intelligible in our world. Though the agent might technically be faster, the human has the ability to direct and check its work, catch and fix errors, or make modifications to improve the output. The agent can do all this for the human coder, too. Because of this mutual intelligibility, human and agentic coders are now *compliments* rather than *substitutes.* Or, if you prefer (as I do), an agentic coder is a tool that amplifies a human coder's abilities rather than a black-box that replaces them.
 
-In such world, the world you and I are in, learning to code is no less valuable a skill than it was before these tools disrupted the status quo. It's arguably more valuable, because agentic coders amplify the skills you have. 
+In such world, the world you and I are in, learning to code is no less valuable a skill than it was before these tools disrupted the status quo. It's arguably more valuable, because agentic coders amplify the skills you have.
 
 All this means that you need to have skills to amplify, and here, yet another irony arises. To develop the ability to code, you need to write code yourself without the assistance of an agentic coder (or even a chat-bot). You need to do the hard work, learn to suffer through the frustrations that come with learning a programming language, and repeat.
 
-The same mutual intelligibility principle applies to writing short response essays, reflections, and research papers (like the ones I'll ask you to write in this class). You can pass off the hard work of drafting an essay to a chat-bot or agent, but that only deprives you of a learning opportunity, and down the road you'll be less effective at using these tools to amplify your writing because you'll have only the poorest of writing skills to amplify. Learning to write well, as with coding, requires a patient determination that, I'm sorry to tell you, is a painful exercise in the moment, though it pays dividends in the future. 
+The same mutual intelligibility principle applies to writing short response essays, reflections, and research papers (like the ones I'll ask you to write in this class). You can pass off the hard work of drafting an essay to a chat-bot or agent, but that only deprives you of a learning opportunity, and down the road you'll be less effective at using these tools to amplify your writing because you'll have only the poorest of writing skills to amplify. Learning to write well, as with coding, requires a patient determination that, I'm sorry to tell you, is a painful exercise in the moment, though it pays dividends in the future.
 
-This admonition to do the hard work applies to me, too. To use these tools well, I need to maintain and expand my own skills, and that requires continued practice. That's why I carve out spaces (like a weekly [data-driven newsletter](https://mileswilliams.substack.com/) that I write) where I do not use these tools at all. I write my own code, and I write and edit my own words. I think of these sessions as workouts, much like my weightlifting sessions in my basement gym. Skills that go unused atrophy. If you are an athlete, artist, or musician, you know this all too well. 
+This admonition to do the hard work applies to me, too. To use these tools well, I need to maintain and expand my own skills, and that requires continued practice. That's why I carve out spaces (like a weekly [data-driven newsletter](https://mileswilliams.substack.com/) that I write) where I do not use these tools at all. I write my own code, and I write and edit my own words. I think of these sessions as workouts, much like my weightlifting sessions in my basement gym. Skills that go unused atrophy. If you are an athlete, artist, or musician, you know this all too well.
 
-In your case, the concern isn't atrophied skills as much as the absence of developing skills at all. It's no surprise that most of the empirical research on AI use in education shows mostly adverse effects. 
+In your case, the concern isn't atrophied skills as much as the absence of developing skills at all. It's no surprise that most of the empirical research on AI use in education shows mostly adverse effects.
 
-Most of your fellow students seem to agree with me. Over the last few semesters, DPR has fielded a survey of Denison students that includes questions about AI use and attitudes. As the figure below makes clear, most of your fellow Denisonians use AI in some way for help with coursework. In the Spring 2026 wave of the survey, 85% reported familiarity with AI, and over 81% said they used it for help with coursework in some form or fashion (how 15% were unfamiliar with AI is beyond me). 
+Most of your fellow students seem to agree with me. Over the last few semesters, DPR has fielded a survey of Denison students that includes questions about AI use and attitudes. As the figure below makes clear, most of your fellow Denisonians use AI in some way for help with coursework. In the Spring 2026 wave of the survey, 85% reported familiarity with AI, and over 81% said they used it for help with coursework in some form or fashion (how 15% were unfamiliar with AI is beyond me).
 
 ```{r}
 #| fig-height: 3
@@ -638,7 +630,6 @@ dt |>
 ```
 
 Here's the kicker. As you can see in the next figure, when you break responses down by whether and what students use AI for, and calculate the share who think AI undermines the value of a college education, those that use AI most, worry about its negative impact. The margins are substantial. 77% of students who use AI for writing think AI undermines the value of a college education, compared with 53% of those who don't. 71% who use it for coding think AI undermines a college education, compared to 52% who don't. The biggest gap lies between those who use AI for anything and those who don't use it at all. 63% of students who use AI for anything think AI undermines the value of a college education compared to 25% who don't use it at all.
-
 
 ```{r}
 #| fig-height: 6
@@ -699,15 +690,14 @@ dt |>
   ggpal("binary")
 ```
 
-Denisonians aren’t unique in holding these views. Just go online and search for other recent national surveys and you can find a similar pattern. Many people are worried about the negative impact these tools have on learning, and those that use these tools more frequently often harbor the strongest concerns. 
+Denisonians aren’t unique in holding these views. Just go online and search for other recent national surveys and you can find a similar pattern. Many people are worried about the negative impact these tools have on learning, and those that use these tools more frequently often harbor the strongest concerns.
 
-Many also worry (rightly) about the impact of these tools on credentials, like college degrees. But I have some good news for you. Most of this concern is focused on online, asynchronous programs and those at large state schools where it is comparatively easy to get away with the illusion of learning by outsourcing assignments to a chat-bot or coding agent. Now, because of these tools, is the best time to earn a degree at a place like Denison where smaller class sizes and face-to-face interactions with faculty send a more credible signal to future employers that you earned your degree. Partly this is because of the perception that it is easier to police unsanctioned AI use in a small, close-knit environment (which, I have to admit, isn’t always true). It’s also because a place like Denison gives you more opportunities to develop relationships with faculty and mentors who can vouch for your learning. 
+Many also worry (rightly) about the impact of these tools on credentials, like college degrees. But I have some good news for you. Most of this concern is focused on online, asynchronous programs and those at large state schools where it is comparatively easy to get away with the illusion of learning by outsourcing assignments to a chat-bot or coding agent. Now, because of these tools, is the best time to earn a degree at a place like Denison where smaller class sizes and face-to-face interactions with faculty send a more credible signal to future employers that you earned your degree. Partly this is because of the perception that it is easier to police unsanctioned AI use in a small, close-knit environment (which, I have to admit, isn’t always true). It’s also because a place like Denison gives you more opportunities to develop relationships with faculty and mentors who can vouch for your learning.
 
-Building on that last point, human connections are now more vital than ever, so don’t squander them by using AI when your professors ask you not to. At a place like Denison, you aren’t an anonymous face in the crowd. Faculty will remember you. In the future, when you need a faculty member to vouch for you, think about the impression you want to leave them with. Will they remember you as a student who blatantly used AI when told not to, or the student who put in the work? I’ll gladly vouch for a student who worked hard to earn a “B” or a “C” before I consider vouching for a student who did next to no work and got an “A”. 
+Building on that last point, human connections are now more vital than ever, so don’t squander them by using AI when your professors ask you not to. At a place like Denison, you aren’t an anonymous face in the crowd. Faculty will remember you. In the future, when you need a faculty member to vouch for you, think about the impression you want to leave them with. Will they remember you as a student who blatantly used AI when told not to, or the student who put in the work? I’ll gladly vouch for a student who worked hard to earn a “B” or a “C” before I consider vouching for a student who did next to no work and got an “A”.
 
 So, carefully weigh the relational impact of AI use. Unsanctioned use could damage relationships with people you need to speak on your behalf down the road. These relationships will set you apart from the mass of people currently using Claude or ChatGPT to complete their online degrees who may, at the end of that experience, find that they don’t have an actual human being that can directly speak to their abilities when a future employer asks for references.
 
-***Okay, Dr. Williams, wrap this thing up. How can and can’t students in this class use AI?*** My ask is simple. Treat AI like an additional resource, much like yours truly, the DPR teaching assistant, ARC, the Writing Center, etc. All of these resources share two things in common: (1) they will support your learning by providing feedback, redirecting you to the right resources if they can’t answer your questions, or giving you helpful tips for completing assignments; and (2) they will not complete your assignments for you. I expect you to know how to wrangle data and produce clear data visualizations that help answer timely and important questions by the end of this class. I also expect you to have experience collaborating in teams to do an analysis and write a report about what you found. The only way you can do that is by by doing the work yourself. Doing the work yourself will help you build an important set of skills that (if you’re so inclined) agentic coders will amplify later. Also, the learning process will teach you the habits of determination and patience required to solve arduous problems you may face in life and in work, and it will cultivate a habit of integrity that will pay off immensely for the human connections you form here at Denison. 
+***Okay, Dr. Williams, wrap this thing up. How can and can’t students in this class use AI?*** My ask is simple. Treat AI like an additional resource, much like yours truly, the DPR teaching assistant, ARC, the Writing Center, etc. All of these resources share two things in common: (1) they will support your learning by providing feedback, redirecting you to the right resources if they can’t answer your questions, or giving you helpful tips for completing assignments; and (2) they will not complete your assignments for you. I expect you to know how to wrangle data and produce clear data visualizations that help answer timely and important questions by the end of this class. I also expect you to have experience collaborating in teams to do an analysis and write a report about what you found. The only way you can do that is by by doing the work yourself. Doing the work yourself will help you build an important set of skills that (if you’re so inclined) agentic coders will amplify later. Also, the learning process will teach you the habits of determination and patience required to solve arduous problems you may face in life and in work, and it will cultivate a habit of integrity that will pay off immensely for the human connections you form here at Denison.
 
-Thus ends my plea. 
-
+Thus ends my plea.
