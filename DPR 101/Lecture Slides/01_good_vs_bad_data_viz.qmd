@@ -9,15 +9,15 @@ format: revealjs
 
 ## How do we know if a data visualization is good?
 
--   We could consider factors like objectivity...
+- We could consider factors like objectivity...
 
--   ...transparency
+- ...transparency
 
--   ...clarity
+- ...clarity
 
--   ...efficiency
+- ...efficiency
 
--   Let's look a some examples and see what we think
+- Let's look a some examples and see what we think
 
 ## Life Expectancy
 
@@ -59,13 +59,13 @@ format: revealjs
 
 It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-visualisation-and-exploration/no_pie-charts))
 
--   You need to add the percentage to every slice.
+- You need to add the percentage to every slice.
 
--   You need to directly label every slice.
+- You need to directly label every slice.
 
--   You can run out of colors for the slices.
+- You can run out of colors for the slices.
 
--   You will have to explode the chart to solve your first three problems.
+- You will have to explode the chart to solve your first three problems.
 
 ## Putting it bluntly
 
@@ -85,13 +85,13 @@ It's labor intensive! ([see more](https://scc.ms.unimelb.edu.au/resources/data-v
 
 ## What makes a good data viz?
 
--   It lets your audience make a quick visual judgment
+- It lets your audience make a quick visual judgment
 
--   Design elements are used strategically (and sparingly)
+- Design elements are used strategically (and sparingly)
 
--   It is transparent and easy to replicate
+- It is transparent and easy to replicate
 
--   It uses labels effectively when geometry won't do the trick
+- It uses labels effectively when geometry won't do the trick
 
 ## A good example
 
@@ -188,10 +188,10 @@ p +
 
 Why it helps:
 
--   An assertion title allows for only one conclusion – a topic phrase title allows for many potential conclusions.
+- An assertion title allows for only one conclusion – a topic phrase title allows for many potential conclusions.
 
--   Your audience can digest the data visualization faster.
+- Your audience can digest the data visualization faster.
 
--   If you're presenting results in a public talk, tuned out audience members can quickly get back up to speed...and you can avoid getting lost.
+- If you're presenting results in a public talk, tuned out audience members can quickly get back up to speed...and you can avoid getting lost.
 
 *I want you to use the assertion-evidence approach in your graph challenges and main assignments.*

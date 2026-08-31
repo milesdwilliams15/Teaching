@@ -188,7 +188,7 @@ This course will help you understand political data and what to do with it. That
 
 - Lecture Notes: NONE
 
-- Readings: ["Look at Data"](https://socviz.co/lookatdata.html#lookatdata) and ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118)
+- Readings: ["Look at Data"](https://socviz.co/01-look-at-data.html) and ["No evidence of election fraud"](https://www.pnas.org/doi/10.1073/pnas.2103619118)
 
 - Homework: NONE
 
