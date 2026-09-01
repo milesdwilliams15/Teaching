@@ -1,0 +1,58 @@
+---
+title: "Make county-level dataset for 2024"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+census_api_key("3eccf6bb91b2507ae6809065f555f28501de53c0") # free, register at census.gov
+
+county_race <- get_acs(
+  geography = "county",
+  variables = c(total = "B02001_001", white = "B02001_002",
+                black = "B02001_003", asian = "B02001_005"),
+  year = 2024,
+  survey = "acs5"
+) |>
+  select(-moe) |>
+  pivot_wider(names_from = variable, values_from = estimate)
+
+county_race <- county_race |>
+  mutate(
+    pct_black = black / total * 100
+  )
+
+county_race <- county_race |>
+  separate(col = NAME, ", ", into = c("county", "state"))
+
+state_region <- tibble(
+  state = state.name,
+  region = state.region
+)
+
+county_race <- county_race |>
+  left_join(state_region)
+
+county_race <- county_race |>
+  drop_na(region)
+
+county_race <- county_race |>
+  left_join(
+    socviz::election24_county_df,
+    by = c("GEOID" = "fips")
+  )
+
+county_race <- county_race |>
+  drop_na(winner)
+
+save(
+  county_race,
+  here::here(
+    "DPR 101",
+    "Data",
+    "election_2024.csv"
+  )
+)
+```
+
