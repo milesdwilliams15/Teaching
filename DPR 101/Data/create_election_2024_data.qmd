@@ -20,7 +20,9 @@ county_race <- get_acs(
 
 county_race <- county_race |>
   mutate(
-    pct_black = black / total * 100
+    pct_white = white / total * 100,
+    pct_black = black / total * 100,
+    pct_asian = asian / total * 100
   )
 
 county_race <- county_race |>
@@ -46,12 +48,70 @@ county_race <- county_race |>
 county_race <- county_race |>
   drop_na(winner)
 
-save(
+county_race <- county_race |>
+  mutate(
+    pct_dem = votes_dem / total_votes,
+    pct_gop = votes_gop / total_votes,
+    margin_gop = pct_gop - pct_dem
+  )
+
+write_csv(
   county_race,
   here::here(
     "DPR 101",
     "Data",
     "election_2024.csv"
+  )
+)
+```
+
+
+Do a version at the state-level, too.
+
+```{r}
+state_race <- get_acs(
+  geography = "state",
+  variables = c(total = "B02001_001", white = "B02001_002",
+                black = "B02001_003", asian = "B02001_005"),
+  year = 2024,
+  survey = "acs5"
+) |>
+  select(-moe) |>
+  pivot_wider(names_from = variable, values_from = estimate)
+
+state_race <- state_race |>
+  mutate(
+    pct_white = white / total * 100,
+    pct_black = black / total * 100,
+    pct_asian = asian / total * 100
+  )
+
+state_race <- state_race |>
+  rename(state = NAME)
+
+state_region <- tibble(
+  state = state.name,
+  region = state.region
+)
+
+state_race <- state_race |>
+  left_join(state_region)
+
+state_race <- state_race |>
+  drop_na(region)
+
+state_race <- state_race |>
+  left_join(
+    socviz::election24,
+    by = "state"
+  )
+
+write_csv(
+  state_race,
+  here::here(
+    "DPR 101",
+    "Data",
+    "election_2024_state.csv"
   )
 )
 ```
