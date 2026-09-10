@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  31 AUG 2026 06:11
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  10 SEP 2026 11:34
 entering extended mode
 **./dpr101_fall_2026.tex
 (dpr101_fall_2026.tex
@@ -910,7 +910,7 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1089.
 Here is how much of TeX's memory you used:
  21502 strings out of 428410
  368437 string characters out of 3159547
- 435133 words of memory out of 3000000
+ 435134 words of memory out of 3000000
  24568 multiletter control sequences out of 15000+200000
  229598 words of font info for 66 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -930,4 +930,4 @@ Output written on dpr101_fall_2026.pdf (14 pages).
 ! ][14]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 140760 bytes written
+! 140779 bytes written
