@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  10 SEP 2026 11:34
+This is XeTeX, Version 3.14159265-2.6-0.99996 (MiKTeX 2.9) (preloaded format=xelatex 2017.10.12)  16 SEP 2026 11:39
 entering extended mode
 **./dpr101_fall_2026.tex
 (dpr101_fall_2026.tex
@@ -883,11 +883,11 @@ LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
 (Font)              scaled to size 9.0pt on input line 325.
 [2] [3] [4] [5] [6] [7] [8]
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 799.
+(Font)              scaled to size 8.0pt on input line 800.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 799.
+(Font)              scaled to size 6.0pt on input line 800.
 LaTeX Font Info:    Font shape `T1/Cochineal-TLF/b/it' will be
-(Font)              scaled to size 10.95pt on input line 815.
+(Font)              scaled to size 10.95pt on input line 816.
 [9] [10] [11]
 File: dpr101_fall_2026_files/dpr101_fall_2026_files/figure-latex/unnamed-chunk-
 2-1.pdf Graphic file (type QTm)
@@ -901,16 +901,16 @@ File: dpr101_fall_2026_files/dpr101_fall_2026_files/figure-latex/unnamed-chunk-
 -3-1.pdf" > [12] [13] 
 AED: lastpage setting LastPage
 [14]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1089.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1089.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1090.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1090.
 (dpr101_fall_2026.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1089.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1089.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1090.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 1090.
  ) 
 Here is how much of TeX's memory you used:
  21502 strings out of 428410
- 368437 string characters out of 3159547
- 435134 words of memory out of 3000000
+ 368442 string characters out of 3159547
+ 435131 words of memory out of 3000000
  24568 multiletter control sequences out of 15000+200000
  229598 words of font info for 66 fonts, out of 3000000 for 9000
  1328 hyphenation exceptions out of 8191
@@ -930,4 +930,4 @@ Output written on dpr101_fall_2026.pdf (14 pages).
 ! ][14]
 ! xdvipdfmx:warning: PDF destination "Hfootnote.1" not defined.
 
-! 140779 bytes written
+! 140968 bytes written

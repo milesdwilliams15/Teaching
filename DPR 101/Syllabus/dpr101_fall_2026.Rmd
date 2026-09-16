@@ -400,11 +400,11 @@ You can email me at [williamsmd\@denison.edu](mailto:williamsmd@denison.edu){.em
 
 DPR hires teaching assistants each semester to provide you with extra help and tutoring. Contact information, hours, and locations for our TA are included below. Our TA is a great resource if you're having trouble with your code or are stuck on a problem.
 
-### [Name(s) here]
+### Kaiden McCready
 
-- **email**: TBD
-- **hours**: TBD
-- **location**: TBD
+- **email**: [mccrea_k1\@denison.edu](mailto:mccrea_k1@denison.edu){.email}
+- **hours**: Tuesdays and Thursdays, 7-9pm
+- **location**: Knobel 109
 
 ## Artificial Intelligence
 
