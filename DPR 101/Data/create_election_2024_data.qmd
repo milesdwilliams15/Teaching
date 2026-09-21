@@ -50,8 +50,8 @@ county_race <- county_race |>
 
 county_race <- county_race |>
   mutate(
-    pct_dem = votes_dem / total_votes,
-    pct_gop = votes_gop / total_votes,
+    pct_dem = votes_dem / (votes_dem + votes_gop) * 100,
+    pct_gop = votes_gop / (votes_dem + votes_gop) * 100,
     margin_gop = pct_gop - pct_dem
   )
 
