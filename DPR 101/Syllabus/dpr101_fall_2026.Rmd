@@ -198,7 +198,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 3)`: Intro to Software
 
-- Lecture Notes: [Introduction](https://01a067d4-6aba-4e6b-2e99-5c51ca043ae5.share.connect.posit.cloud/intro.html), [R Basics](https://01a067d4-6aba-4e6b-2e99-5c51ca043ae5.share.connect.posit.cloud/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://01a067d4-6aba-4e6b-2e99-5c51ca043ae5.share.connect.posit.cloud/02_prerequisites2.html)
+- Lecture Notes: [Introduction](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/intro.html), [R Basics](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/02_prerequisites2.html)
 
 - Readings: ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714)
 
@@ -208,7 +208,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 4)`: The Basics
 
-- Lecture Notes: [\`ggplot()\` Basics](https://01a067d4-6aba-4e6b-2e99-5c51ca043ae5.share.connect.posit.cloud/03_ggplot1.html)
+- Lecture Notes: [ggplot() Basics](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/03_ggplot1.html)
 
 - Readings: ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A)
 
@@ -218,7 +218,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 5)`: Show the Right Numbers
 
-- Lecture Notes: [Showing the Right Numbers with \`ggplot()\` Data Transformations](https://01a067d4-6aba-4e6b-2e99-5c51ca043ae5.share.connect.posit.cloud/05_showing_the_right_numbers1.html)
+- Lecture Notes: [Showing the Right Numbers with ggplot() Data Transformations](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/05_showing_the_right_numbers1.html)
 
 - Readings: ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/)
 
