@@ -65,6 +65,71 @@ write_csv(
 )
 ```
 
+Now read in and merge with historical data:
+
+```{r}
+hist_dt <- readRDS("~/Denison University/Teaching/dpr-101-project-files/_data/countypres_2000-2020.rds")
+
+hist_dt |>
+  filter(year == 2020) |>
+  transmute(
+    GEOID = as.numeric(county_fips),
+    total_votes_2020 = totalvotes,
+    votes_dem_2020 = democrat,
+    votes_gop_2020 = republican,
+    pct_dem_2020 = votes_dem_2020 /
+      (votes_dem_2020 + votes_gop_2020),
+    pct_gop_2020 = votes_gop_2020 / 
+      (votes_dem_2020 + votes_gop_2020),
+    margin_gop_2020 = pct_gop_2020 - 
+      pct_dem_2020
+  ) -> elec_2020
+
+## add _2024 prefix to 2024 data
+county_race |>
+  rename_with(
+    ~ paste0(.x, "_2024"),
+    .cols = c(13:16, 18:20)
+  ) -> county_race
+
+county_race$GEOID <- 
+  as.numeric(county_race$GEOID)
+
+county_race |>
+  left_join(elec_2020) -> new_county
+```
+
+Now merge in integrity data.
+
+```{r}
+heritage <- read_csv(
+  here::here(
+    "DPR 101",
+    "Data",
+    "heritage_election_integrity_2026.csv"
+  )
+)
+
+heritage |>
+  select(1:3) |>
+  transmute(
+    state = State,
+    integrity_score = `Total Score`
+  ) -> heritage
+
+new_county |>
+  left_join(heritage) -> final_dt
+
+write_csv(
+  final_dt,
+  here::here(
+    "DPR 101",
+    "Data",
+    "main_assignment_01.csv"
+  )
+)
+```
+
 
 Do a version at the state-level, too.
 
@@ -114,5 +179,84 @@ write_csv(
     "election_2024_state.csv"
   )
 )
+```
+
+## fix election data at county level
+
+```{r}
+library(tidyverse)
+library(here)
+dt <- read_csv(
+  here("DPR 101", "Data", "main_assignment_01.csv")
+)
+```
+
+Find the culprits:
+
+```{r}
+## I get lots here
+dt |>
+  filter(
+    votes_dem_2024 + votes_gop_2024 > total_votes_2024
+  ) 
+
+## none here
+dt |>
+  filter(
+    votes_dem_2020 + votes_gop_2020 > total_votes_2020
+  ) 
+```
+
+It's the {socviz} dataset
+
+```{r}
+socviz::election24_county_df |>
+  filter(
+    votes_dem + votes_gop > total_votes
+  )
+```
+
+```{r}
+dt |>
+  mutate(
+    bad_eggs = votes_dem_2024 + votes_gop_2024 > total_votes_2024
+  ) |>
+  ggplot() +
+  aes(votes_gop_2020, votes_gop_2024, color = bad_eggs) +
+  geom_point() 
+```
+
+```{r}
+dt |>
+  mutate(
+    bad_eggs = votes_dem_2024 + votes_gop_2024 > total_votes_2024
+  ) |>
+  group_by(state) |>
+  summarize(mean = mean(bad_eggs),
+            pct_gop = sum(votes_gop_2024) / sum(votes_gop_2024 + votes_dem_2024)) |>
+  arrange(-mean)
+```
+
+
+```{r}
+socviz::election24 |>
+  mutate(
+    pct_gop = trump_vote / (trump_vote + harris_vote)
+  ) |>
+  select(state, pct_gop)
+```
+
+```{r}
+mit_dt <- read_csv("https://raw.githubusercontent.com/kjhealy/socviz/refs/heads/main/data-raw/raw/countypres_2000-2024.csv")
+mit_dt |>
+  filter(year >= 2020, mode == "TOTAL") |>
+  group_by(state, county_fips, year) |>
+  summarize(
+    votes_gop = candidatevotes[party == "REPUBLICAN"],
+    votes_dem = candidatevotes[party == "DEMOCRAT"],
+    votes_tot = totalvotes |> unique()
+  )
+mit_dt |>
+  filter(county_fips == 4001, mode == "TOTAL")
 ```
 

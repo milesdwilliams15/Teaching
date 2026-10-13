@@ -155,11 +155,11 @@ Cal %>%
 
 # Course Description
 
-This class is called *War, Wealth, and World Politics*. Really, this is a course about international relations as subject matter and International Relations (IR) as a field of social science. War, wealth, and world politics all fall under this umbrella.  My goal (hope) for this semester isn't to teach you everything you need to know about international relations or IR as a discipline. My objective is more narrow. I want to show you how looking at the world like an IR researcher can help you make sense of international politics and call "BS" on dubious claims about what's going on in the world and the trajectory it's headed in. 
+This class is called *War, Wealth, and World Politics*. Really, this is a course about international relations as subject matter and International Relations (IR) as a field of social science. War, wealth, and world politics all fall under this umbrella. My goal (hope) for this semester isn't to teach you everything you need to know about international relations or IR as a discipline. My objective is more narrow. I want to show you how looking at the world like an IR researcher can help you make sense of international politics and call "BS" on dubious claims about what's going on in the world and the trajectory it's headed in.
 
 To equip you to do this, I've divided the class into three sections, each oriented around specific questions. In the first part of the course we'll ask: **who are the main actors in international relations, what issues are at stake in their interactions, and why is it so hard for them to cooperate with each other?** In the second part of the course we'll move away from specific issues and ask: **how do IR theories help us simplify the process of making sense of the world, what are their main moving pieces, and how do we verify when or if these theories are useful?** And in the final part of the course we'll home in on a specific but high-profile example of IR scholarship in action about the decline of war, asking: **how did this specific author blend theory and data to help readers make sense of a complex issue in international relations?**
 
-By the end of this course you won't know how the world works --- it's too complex for any one person to comprehend --- but if you work hard and apply yourself, you might just know enough to get your bearings. To use an analogy, I'm not going to give you a map of the world's oceans, but I will give you a compass and sextant. 
+By the end of this course you won't know how the world works --- it's too complex for any one person to comprehend --- but if you work hard and apply yourself, you might just know enough to get your bearings. To use an analogy, I'm not going to give you a map of the world's oceans, but I will give you a compass and sextant.
 
 \newpage
 
@@ -171,7 +171,7 @@ By the end of this course you won't know how the world works --- it's too comple
 
 - Readings: READ THE SYLLABUS
 
-- Homework: READ THE SYLLABUS AGAIN!! 
+- Homework: READ THE SYLLABUS AGAIN!!
 
 - Assessment: NONE
 
@@ -181,7 +181,7 @@ By the end of this course you won't know how the world works --- it's too comple
 
 ## `r advdate(mon, 2)`: Setting the Stage
 
-- Readings: Listen to Paul Poast, \href{https://open.spotify.com/episode/5FHM9YyzclsjYLUhtRLk70}{"So, what do IR scholars actually do?"} and, in Haass, read the intro to "Part IV: Order and Disorder" and the chapters "Sovereignty, Self-Determination, and Balance of Power," "Alliances and Coalitions," and "International Society" (pages 251-279). 
+- Readings: Listen to Paul Poast, \href{https://open.spotify.com/episode/5FHM9YyzclsjYLUhtRLk70}{"So, what do IR scholars actually do?"} and, in Haass, read the intro to "Part IV: Order and Disorder" and the chapters "Sovereignty, Self-Determination, and Balance of Power," "Alliances and Coalitions," and "International Society" (pages 251-279).
 
 - Homework: NONE
 
@@ -191,7 +191,7 @@ By the end of this course you won't know how the world works --- it's too comple
 
 ## `r advdate(mon, 3)`: Globalization, Terrorism, and Nukes
 
-- Readings: In Haass, read "Globalization" (pages 159-165), "Terrorism and Counterterrorism" (pages 166-172), and "Nuclear Proliferation" (pages 173-182). 
+- Readings: In Haass, read "Globalization" (pages 159-165), "Terrorism and Counterterrorism" (pages 166-172), and "Nuclear Proliferation" (pages 173-182).
 
 - Homework: Grade-the-AI (due Friday)
 
@@ -199,9 +199,9 @@ By the end of this course you won't know how the world works --- it's too comple
 
 \hfill \textit{GAI due Fri.}
 
-## `r advdate(mon, 4)`: Climate, Migration, and Cyber 
+## `r advdate(mon, 4)`: Climate, Migration, and Cyber
 
-- Readings: In Haass, read "Climate Change" (pages 183-192), "Migration" (pages 193-200), and "The Internet, Cyberspace, and Cybersecurity" (pages 201-207). 
+- Readings: In Haass, read "Climate Change" (pages 183-192), "Migration" (pages 193-200), and "The Internet, Cyberspace, and Cybersecurity" (pages 201-207).
 
 - Homework: Grade-the-AI (due Friday)
 
@@ -209,14 +209,13 @@ By the end of this course you won't know how the world works --- it's too comple
 
 ## `r advdate(mon, 5)`: Health, Trade, and Money
 
-- Readings: In Haass, read "Global Health" (pages 208-214), "Trade and Investment" (pages 2015-229), and "Currency and Monetary Policy" (pages 230-239). 
+- Readings: In Haass, read "Global Health" (pages 208-214), "Trade and Investment" (pages 2015-229), and "Currency and Monetary Policy" (pages 230-239).
 
 - Homework: Grade-the-AI (due Friday)
 
 - Assessment: IPA 3 (on Friday)
 
 \textit{Note: My new baby boy is due Wednesday this week. If he comes, class will be cancelled and IPA 3 will be combined with IPA 4 next week. We'll resume class the following Wednesday.}
-
 
 ## `r advdate(mon, 6)`: Development and AI
 
@@ -248,7 +247,7 @@ By the end of this course you won't know how the world works --- it's too comple
 
 ## `r advdate(mon, 9)`: The Big 3
 
-- Readings: In Drezner, read "The Realpolitik of the Living Dead" (pages 31-42), "Regulating the Undead in a Liberal World Order" (pages 43-54), and "The Social Construction of Zombies" (pages 55-62). 
+- Readings: In Drezner, read "The Realpolitik of the Living Dead" (pages 31-42), "Regulating the Undead in a Liberal World Order" (pages 43-54), and "The Social Construction of Zombies" (pages 55-62).
 
 - Homework: Grade-the-AI (due Friday)
 
@@ -256,7 +255,7 @@ By the end of this course you won't know how the world works --- it's too comple
 
 ## `r advdate(mon, 10)`: Beyond the State as Actor
 
-- Readings: In Drezner, read "Domestic Politics: Are All Zombie Politics Local?" (pages 81-92), "Bureaucratic Politics: The 'Pulling and Hauling' of Zombies" (pages 93-102), and "We're Only Human: Psychological Responses to the Undead" (pages 103-110). 
+- Readings: In Drezner, read "Domestic Politics: Are All Zombie Politics Local?" (pages 81-92), "Bureaucratic Politics: The 'Pulling and Hauling' of Zombies" (pages 93-102), and "We're Only Human: Psychological Responses to the Undead" (pages 103-110).
 
 - Homework: Grade-the-AI (due Friday)
 
@@ -312,7 +311,6 @@ NO CLASS
 
 TBD
 
-
 \singlespacing
 \setlength{\parskip}{5pt}
 
@@ -322,14 +320,14 @@ TBD
 
 After taking this course, my hope is that you are able to answer the following questions:
 
-1. *Who are the main actors in international relations, what issues are at stake in their interactions, and why is it so hard for them to cooperate with each other?* 
-2. *How do IR theories help us simplify the process of making sense of the world, what are their main moving pieces, and how do we verify when or if these theories are useful?*
-3. *What does it look like to blend theory and data to make sense of a complex issue in international relations?*
+1.  *Who are the main actors in international relations, what issues are at stake in their interactions, and why is it so hard for them to cooperate with each other?*
+2.  *How do IR theories help us simplify the process of making sense of the world, what are their main moving pieces, and how do we verify when or if these theories are useful?*
+3.  *What does it look like to blend theory and data to make sense of a complex issue in international relations?*
 
 I also have some secondary learning objectives for you:
 
-1. *Learn how to think critically about IR theories and data.*
-2. *Develop the skill of making (and writing) a clear argument on the basis of theory and evidence*.
+1.  *Learn how to think critically about IR theories and data.*
+2.  *Develop the skill of making (and writing) a clear argument on the basis of theory and evidence*.
 
 No doubt, elements of this course will probably fall short in helping you realize these objectives. All I ask is that you apply yourself and commit to learning, and I'll do my best to be your guide and come up with challenges that help you grow. I can ask for nothing more, or less.
 
@@ -389,16 +387,15 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 *Attendance and Participation* **10%**
 
-> You should show up to class and participate! In terms of showing up, I'm generously offering 4 freebie absences (no questions asked). Life happens and my inbox is always full. So if you need a day because you're sick, you're traveling for sports or a performance, or you just want to go do something fun (I once cancelled class to go see Metallica) just take the time you need. However, once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your 5th absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. One way I'll keep you accountable is by randomly calling on you to answer questions in class. You don't have to get the answers right, but if it's clear you didn't know the answer due to lack of preparedness for class that will cost you a small amount of participation points (1% of your total class grade). 
+> You should show up to class and participate! In terms of showing up, I'm generously offering 4 freebie absences (no questions asked). Life happens and my inbox is always full. So if you need a day because you're sick, you're traveling for sports or a performance, or you just want to go do something fun (I once cancelled class to go see Metallica) just take the time you need. However, once those 4 freebies are used up, you should communicate with me to justify why you need to miss class or you will lose all attendance points upon your 5th absence. As for participation, I expect you to come ready to learn and engage in class discussion and group work. One way I'll keep you accountable is by randomly calling on you to answer questions in class. You don't have to get the answers right, but if it's clear you didn't know the answer due to lack of preparedness for class that will cost you a small amount of participation points (1% of your total class grade).
 
 *3 Main Assignments* **15% Each**
 
 > You'll have three team-based main assignments (MAs) to complete in this course. These will come at the end of each of our three units. Prompts for these will be provided on campus. Each MA will be different but will have the outline of a research paper.
 
-
 *Grade the AI* **15% Total**
 
-> Almost every week I'll give you a prompt asking a question relavent to the material we cover in class. You'll then give this prompt to an LLM-powered chat-bot (ChatGPT, Claude, Gemini, etc.) You'll copy its response to a Google or Word doc, and then give it a letter grade from "A"-"F" and write a short paragraph justifying your evaluation of the response. Your grade for the AI and justification will be graded by me on a pass/fail basis. If you clearly tried, you'll pass. This exercise (plus the lectures) is meant to prepare you for the main assignments (see above) and the weekly in-person assessments (see below). 
+> Almost every week I'll give you a prompt asking a question relavent to the material we cover in class. You'll then give this prompt to an LLM-powered chat-bot (ChatGPT, Claude, Gemini, etc.) You'll copy its response to a Google or Word doc, and then give it a letter grade from "A"-"F" and write a short paragraph justifying your evaluation of the response. Your grade for the AI and justification will be graded by me on a pass/fail basis. If you clearly tried, you'll pass. This exercise (plus the lectures) is meant to prepare you for the main assignments (see above) and the weekly in-person assessments (see below).
 
 *In-person Assessments* **30% Total**
 
@@ -406,19 +403,14 @@ Grades at Denison are based on a standard 4.0 scale. You can read more about Den
 
 \bigskip
 
-
-
-$$
-\textbf{Tallying Your Grade:}\\
+$$\textbf{Tallying Your Grade:}\\
 \begin{aligned}
 10\%  & \text{ (Attendance and Participation)} \\
 45\%  & \text{ (Main Assigments)} \\
 15\%  & \text{ (Practice Sets)} \\
 \underline{+ 30\%} &  \text{ (In-person Assessments)} \\
 100\% & \text{ (Total Assignments)}
-\end{aligned}
-$$
-
+\end{aligned}$$
 
 ## E-mail Policy
 
@@ -434,7 +426,7 @@ You have exactly one chance to complete your assignments, and only one chance sh
 
 ## Attendance Policy
 
-Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences -- no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence. 
+Attendance is part of your grade. As I noted in the "Grading Policy" section, you have 4 freebie absences -- no questions asked or permission required. Beyond these 4 there are no more unexcused absences allowed. Missing class a fifth time will automatically trigger the loss of all your attendance and participation credit unless you communicate with me in advance to justify your absence.
 
 ## Computer-based Excuses
 
@@ -503,27 +495,27 @@ m26 |>
   ) -> dt
 ```
 
-I think I've rewritten my AI policy every semester, both because the set of tools for which the "AI" label is used keeps evolving, and because my own views keep evolving, too. 
+I think I've rewritten my AI policy every semester, both because the set of tools for which the "AI" label is used keeps evolving, and because my own views keep evolving, too.
 
 First, a note on terminology. I personally prefer to call these tools “pattern engines,” both because this is more descriptive of what they do and doesn’t incline me toward thinking these tools are alive in some mysterious way. They are models trained on patterns in data, and they spit out predicted patterns (often very good ones, and other times quite terrible ones) when given new data.
 
-Next, I want to be transparent. I use these tools. I never would call myself a “high-end user,” but I use them all the same. 
+Next, I want to be transparent. I use these tools. I never would call myself a “high-end user,” but I use them all the same.
 
 Nonetheless, I'm a slow adopter compared to some. I toyed around with chat-bots now and then, like everyone else, after ChatGPT hit the scene, but I only began using the Claude chat-bot with some earnest in the Spring semester of 2026, and over the summer I started experimenting with Posit Assistant, which is an agentic coder that lives inside RStudio (the software I use to conduct research). I’ve always been skeptical of these tools. They can be helpful, but also I have no doubt that the interests of their creators are woefully misaligned with most of society’s, including higher education’s.
 
-My reluctance aside, using these tools has rid me of all doubt that they are powerful and, when used well, can amplify the abilities of the user. I also have no doubt that these tools can undermine critical thinking, short-circuit the ability to learn new skills, and obscure mistakes by covering them with a veneer of sycophantic confidence. 
+My reluctance aside, using these tools has rid me of all doubt that they are powerful and, when used well, can amplify the abilities of the user. I also have no doubt that these tools can undermine critical thinking, short-circuit the ability to learn new skills, and obscure mistakes by covering them with a veneer of sycophantic confidence.
 
-The fact that these tools can write passable essays and summaries of readings will be a powerful source of temptation for you this semester. You'll do yourself an equally powerful disservice if you succumb to that temptation. These models were trained on text. That means the text they produce and text produced by a human are mutually intelligible and, hence, compliments (things that enhance the value of one another rather than replace the value of one another). Put differently, because of mutual intelligibility, you can read and evaluate the output of AI, check for errors, and make corrections to what it produces. It can do the same for you. This means these tools can amplify your skills as a reader and writer. Seeing them as a replacement for these skills is a clear sign that someone is making a grave category error. The abilities to focus, to understand and evaluate what you read, and to write clearly and in a voice authentic to yourself are more important than ever. 
+The fact that these tools can write passable essays and summaries of readings will be a powerful source of temptation for you this semester. You'll do yourself an equally powerful disservice if you succumb to that temptation. These models were trained on text. That means the text they produce and text produced by a human are mutually intelligible and, hence, compliments (things that enhance the value of one another rather than replace the value of one another). Put differently, because of mutual intelligibility, you can read and evaluate the output of AI, check for errors, and make corrections to what it produces. It can do the same for you. This means these tools can amplify your skills as a reader and writer. Seeing them as a replacement for these skills is a clear sign that someone is making a grave category error. The abilities to focus, to understand and evaluate what you read, and to write clearly and in a voice authentic to yourself are more important than ever.
 
-Of course, all this means that you need to have skills to amplify, and here, yet another irony arises. To develop the ability to read critically and write well, you need to do the hard work, learn to suffer through difficult bits, and repeat. You can pass off the hard work of drafting an essay to an LLM, but that only deprives you of a learning opportunity, and down the road you'll be less effective at using these tools to amplify your writing because you'll have only the poorest of writing skills to amplify. Learning to read and write well requires a patient determination that, I'm sorry to tell you, is a painful exercise in the moment, though it pays dividends in the future. 
+Of course, all this means that you need to have skills to amplify, and here, yet another irony arises. To develop the ability to read critically and write well, you need to do the hard work, learn to suffer through difficult bits, and repeat. You can pass off the hard work of drafting an essay to an LLM, but that only deprives you of a learning opportunity, and down the road you'll be less effective at using these tools to amplify your writing because you'll have only the poorest of writing skills to amplify. Learning to read and write well requires a patient determination that, I'm sorry to tell you, is a painful exercise in the moment, though it pays dividends in the future.
 
-You may, then, find it odd that you have a near-weekly assignment in this class called "Grade-the-AI" where I've specifically instructed you to use one of these tools to write an essay in response to a prompt. My goal is actually to help you cultivate the right instincts for LLM-generated text. Whenever you use this tool, your first move should be verification. Your next should be to don the hat of a heavy-handed editor if you plan to use this text for anything you plan to put your name on. That includes identifying and eliminating the vacuous fluff these tools are prone to generating. Both tasks require a user that is well-read and a practiced writer. You'll get plenty of experience with reading in this course, and the main assignments will give you practice writing. At the same time that I'm asking you to generate essays for the Grade-the-AI assignments, I'm asking you to abstain from using these tools to generate summaries of your readings before you've read them yourself, and from using these tools to generate first drafts of your main assignments. It should go without saying, but you should also grade the work of the AI in the Grade-the-AI assignments yourself rather than have the AI evaluate itself. 
+You may, then, find it odd that you have a near-weekly assignment in this class called "Grade-the-AI" where I've specifically instructed you to use one of these tools to write an essay in response to a prompt. My goal is actually to help you cultivate the right instincts for LLM-generated text. Whenever you use this tool, your first move should be verification. Your next should be to don the hat of a heavy-handed editor if you plan to use this text for anything you plan to put your name on. That includes identifying and eliminating the vacuous fluff these tools are prone to generating. Both tasks require a user that is well-read and a practiced writer. You'll get plenty of experience with reading in this course, and the main assignments will give you practice writing. At the same time that I'm asking you to generate essays for the Grade-the-AI assignments, I'm asking you to abstain from using these tools to generate summaries of your readings before you've read them yourself, and from using these tools to generate first drafts of your main assignments. It should go without saying, but you should also grade the work of the AI in the Grade-the-AI assignments yourself rather than have the AI evaluate itself.
 
-This admonition to do the hard work applies to me, too. To use these tools well, I need to maintain and expand my own skills, and that requires continued practice. That's why I carve out spaces (like a weekly [data-driven newsletter](https://mileswilliams.substack.com/) that I write) where I do not use these tools at all. I write my own analysis code, and I write and edit my own words. I think of these sessions as workouts, much like my weightlifting sessions in my basement gym. Skills that go unused atrophy. If you are an athlete, artist, or musician, you know this all too well. 
+This admonition to do the hard work applies to me, too. To use these tools well, I need to maintain and expand my own skills, and that requires continued practice. That's why I carve out spaces (like a weekly [data-driven newsletter](https://mileswilliams.substack.com/) that I write) where I do not use these tools at all. I write my own analysis code, and I write and edit my own words. I think of these sessions as workouts, much like my weightlifting sessions in my basement gym. Skills that go unused atrophy. If you are an athlete, artist, or musician, you know this all too well.
 
-In your case, the concern isn't atrophied skills as much as the absence of developing skills at all. It's no surprise that most of the empirical research on AI use in education shows mostly adverse effects. 
+In your case, the concern isn't atrophied skills as much as the absence of developing skills at all. It's no surprise that most of the empirical research on AI use in education shows mostly adverse effects.
 
-Most of your fellow students seem to agree with me. Over the last few semesters, DPR has fielded a survey of Denison students that includes questions about AI use and attitudes. As the figure below makes clear, most of your fellow Denisonians use AI in some way for help with coursework. In the Spring 2026 wave of the survey, 85% reported familiarity with AI, and over 81% said they used it for help with coursework in some form or fashion (how 15% were unfamiliar with AI is beyond me). 
+Most of your fellow students seem to agree with me. Over the last few semesters, DPR has fielded a survey of Denison students that includes questions about AI use and attitudes. As the figure below makes clear, most of your fellow Denisonians use AI in some way for help with coursework. In the Spring 2026 wave of the survey, 85% reported familiarity with AI, and over 81% said they used it for help with coursework in some form or fashion (how 15% were unfamiliar with AI is beyond me).
 
 ```{r}
 #| fig-height: 3
@@ -571,7 +563,6 @@ dt |>
 ```
 
 Here's the kicker. As you can see in the next figure, when you break responses down by whether and what students use AI for, and calculate the share who think AI undermines the value of a college education, those that use AI most, worry about its negative impact. The margins are substantial. 77% of students who use AI for writing think AI undermines the value of a college education, compared with 53% of those who don't. 71% who use it for coding think AI undermines a college education, compared to 52% who don't. The biggest gap lies between those who use AI for anything and those who don't use it at all. 63% of students who use AI for anything think AI undermines the value of a college education compared to 25% who don't use it at all.
-
 
 ```{r}
 #| fig-height: 6
@@ -632,15 +623,14 @@ dt |>
   ggpal("binary")
 ```
 
-Denisonians aren’t unique in holding these views. Just go online and search for other recent national surveys and you can find a similar pattern. Many people are worried about the negative impact these tools have on learning, and those that use these tools more frequently often harbor the strongest concerns. 
+Denisonians aren’t unique in holding these views. Just go online and search for other recent national surveys and you can find a similar pattern. Many people are worried about the negative impact these tools have on learning, and those that use these tools more frequently often harbor the strongest concerns.
 
-Many also worry (rightly) about the impact of these tools on credentials, like college degrees. But I have some good news for you. Most of this concern is focused on online, asynchronous programs and those at large state schools where it is comparatively easy to get away with the illusion of learning by outsourcing assignments to a chat-bot or coding agent. Now, because of these tools, is the best time to earn a degree at a place like Denison where smaller class sizes and face-to-face interactions with faculty send a more credible signal to future employers that you earned your degree. Partly this is because of the perception that it is easier to police unsanctioned AI use in a small, close-knit environment (which, I have to admit, isn’t always true). It’s also because a place like Denison gives you more opportunities to develop relationships with faculty and mentors who can vouch for your learning. 
+Many also worry (rightly) about the impact of these tools on credentials, like college degrees. But I have some good news for you. Most of this concern is focused on online, asynchronous programs and those at large state schools where it is comparatively easy to get away with the illusion of learning by outsourcing assignments to a chat-bot or coding agent. Now, because of these tools, is the best time to earn a degree at a place like Denison where smaller class sizes and face-to-face interactions with faculty send a more credible signal to future employers that you earned your degree. Partly this is because of the perception that it is easier to police unsanctioned AI use in a small, close-knit environment (which, I have to admit, isn’t always true). It’s also because a place like Denison gives you more opportunities to develop relationships with faculty and mentors who can vouch for your learning.
 
-Building on that last point, human connections are now more vital than ever, so don’t squander them by using AI when your professors ask you not to. At a place like Denison, you aren’t an anonymous face in the crowd. Faculty will remember you. In the future, when you need a faculty member to vouch for you, think about the impression you want to leave them with. Will they remember you as a student who blatantly used AI when told not to, or the student who put in the work? I’ll gladly vouch for a student who worked hard to earn a “B” or a “C” before I consider vouching for a student who did next to no work and got an “A”. 
+Building on that last point, human connections are now more vital than ever, so don’t squander them by using AI when your professors ask you not to. At a place like Denison, you aren’t an anonymous face in the crowd. Faculty will remember you. In the future, when you need a faculty member to vouch for you, think about the impression you want to leave them with. Will they remember you as a student who blatantly used AI when told not to, or the student who put in the work? I’ll gladly vouch for a student who worked hard to earn a “B” or a “C” before I consider vouching for a student who did next to no work and got an “A”.
 
 So, carefully weigh the relational impact of AI use. Unsanctioned use could damage relationships with people you need to speak on your behalf down the road. These relationships will set you apart from the mass of people currently using Claude or ChatGPT to complete their online degrees who may, at the end of that experience, find that they don’t have an actual human being that can directly speak to their abilities when a future employer asks for references.
 
-***Okay, Dr. Williams, wrap this thing up. How can and can’t students in this class use AI?*** My ask is simple. Treat AI like an additional resource, much like yours truly, ARC, the Writing Center, etc. All of these resources share two things in common: (1) they will support your learning by providing feedback, redirecting you to the right resources if they can’t answer your questions, or giving you helpful tips for completing assignments; and (2) they will not complete your assignments for you. When I ask you to do your own work, I expect you to do it. The learning process will teach you the habits of determination and patience required to solve arduous problems you may face in life and in work, and it will cultivate a habit of integrity that will pay off immensely for the human connections you form here at Denison. 
+***Okay, Dr. Williams, wrap this thing up. How can and can’t students in this class use AI?*** My ask is simple. Treat AI like an additional resource, much like yours truly, ARC, the Writing Center, etc. All of these resources share two things in common: (1) they will support your learning by providing feedback, redirecting you to the right resources if they can’t answer your questions, or giving you helpful tips for completing assignments; and (2) they will not complete your assignments for you. When I ask you to do your own work, I expect you to do it. The learning process will teach you the habits of determination and patience required to solve arduous problems you may face in life and in work, and it will cultivate a habit of integrity that will pay off immensely for the human connections you form here at Denison.
 
-Thus ends my plea. 
-
+Thus ends my plea.

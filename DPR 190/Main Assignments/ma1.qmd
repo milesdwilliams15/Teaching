@@ -1,17 +1,21 @@
 ---
 title: "Main Assignment 1"
-format: docx
+format:
+  typst:
+    include-in-header:
+      - text: |
+          #show link: set text(fill: rgb("0000ee"))
 ---
 
-As the first unit of our course comes to a close, it's time to introduce your first main assignment (MA). This MA will be done in teams. MA1 is worth 20% of your final grade.
+For MA1, you will work in teams and pretend to work for a new international non-governmental organization (NGO) that seeks to promote awareness of global issues, engage in advocacy, and propose policy solutions (if you don't know what an NGO is, [here's a list](https://www.humanrightscareers.com/issues/biggest-ngos-in-the-world/) of the top 15 in the world).
 
-For MA1, your group will pretend to work for a new international non-governmental organization (NGO) that seeks to promote awareness of global issues, engage in advocacy, and propose policy solutions (if you don't know what an NGO is, [here's a list](https://www.humanrightscareers.com/issues/biggest-ngos-in-the-world/) of the top 15 in the world). 
+Because it is new, the founders of this NGO have yet to decide on their area of focus. They know they want to specialize in *three* issues, and they are open to either a global, regional, or country-specific focus for each. They have hired you to offer guidance.
 
-Because it is new, the founders of this NGO have yet to decide on their area of focus. They know they want to specialize in *three* issues, and they are open to either a global, regional, or country-specific focus for each. They have hired you to offer guidance. 
+You're going to help by using data to show the leaders of this NGO what issue areas seem to be becoming more relevant and where. Based on what you find, you'll write a short report according to the outline below that demonstrates clearly to the leaders of this NGO which three issues they should prioritize and whether these issues are especially important for certain countries or regions, or are global in scope.
 
-You're going to help by using data to show the leaders of this NGO what issue areas seem to be becoming more relevant and where. Based on what you find, you'll write a short report according to the outline below showing trends in a selection of global issues in a way that demonstrates clearly to the leaders of this NGO which three issues they should prioritize and whether these issues are especially important for certain countries or regions, or are global in scope. 
+I created an interactive online dashboard called [Trends in Global Issues](https://milesdwilliams15.shinyapps.io/trends-in-global-politics/) to support your analysis. It lets you explore a country-year dataset with coverage from 1992 to 2022 that tracks metrics ranging from terrorism and nuclear proliferation, to economic development and life expectancy. By setting different options you can show detail by different regions of the world and highlight specific countries. Use what you find with this dashboard to provide data-driven recommendations to the NGO about what issues they should prioritize.
 
-To help you research trends in global issues, I created an interactive online dashboard called [Trends in Global Issues](https://milesdwilliams15.shinyapps.io/trends-in-global-politics/). It lets you explore a country-year dataset with coverage from 1992 to 2022 of a variety of metrics on issues ranging from terrorism and nuclear proliferation, to economic development and life expectancy. By setting different options you can show detail by different regions of the world and highlight specific countries. Use what you find with this dashboard to provide data-driven recommendations to the NGO about what issues they should prioritize.
+**A note on LLM use**: I expect you to do your own writing. But you may use an LLM of your choosing to proofread and make suggestions. You could also give an LLM your final paper and my rubric (below) and ask it to check whether your final submission meets all the relevant criteria. You must NOT use an LLM to draft whole sections of text to then pass off as your own. I will run your final submission through AI detection software (like Pangram). I won't automatically fail a group if the software catches AI use, but if the software finds that more than 50% of the document was AI written, I will ask your group to come see me to answer some questions to confirm your understanding of what you produced. We live in a strange world where AI can *produce* a variety of things while the humans directing them bear *responsibility* for the output. If you sign your name to something, you must take full ownership of it.
 
 Here's what your report for the NGO should look like. Each item listed is equally weighted toward your final grade.
 
@@ -21,7 +25,6 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
 - Include the names of your team members.
 
-
 ## Introduction
 
 - Include a section header.
@@ -30,9 +33,9 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
 - Use plain and clear language with no more than two typos or grammatical errors.
 
-- Clearly state the goal of your report.
+- Clearly state your recommendation for the NGO.
 
-- Briefly describe how you'll use data to meet this goal.
+- Briefly describe the data you used to support this recommendation.
 
 - Establish the importance of your report: e.g., that you want to help the NGO focus its mission in an evidence-based way.
 
@@ -46,16 +49,16 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
 - Use plain and clear language with no more than two typos or grammatical errors.
 
-- 3-5 data visualizations produced from the Shiny app (you can right-click to copy the visualizations you make and then paste them into your document).
+- Include 3-5 data visualizations produced from the Shiny app (you can right-click to copy the visualizations you make and then paste them into your document).
 
 - Each visualization must include a paragraph summarizing it that:
 
-  * Comes *before* the data visualization.
-  
-  * Begins with an assertion about what the visualization shows (e.g., "The first issue you should focus on is life expectancy in Sub-Saharan Africa").
-  
-  * Includes a summary of how how to "read" the visualization to see how the data supports you assertion.
-  
+  - Comes *before* the data visualization.
+
+  - Begins with an assertion about what the visualization shows (e.g., "The first issue you should focus on is life expectancy in Sub-Saharan Africa").
+
+  - Includes a summary of how how to "read" the visualization to see how the data supports you assertion.
+
 ## Conclusion
 
 - Include a section header.
@@ -73,17 +76,3 @@ Here's what your report for the NGO should look like. Each item listed is equall
 - Any claims or assertions you make (beyond those supported by the data in the Shiny app) should include citations.
 
 - Use in-text hyperlinks to cite sources rather than a conventional citation style.
-
-- You should have no works cited or references section.
-
-## A Note on Permissible AI use
-
-- You should keep AI use to a minimum in this assignment.
-
-- You may use it to help you plan out how to complete this assignment, or to get some feedback on your paper before you submit it.
-
-- A good prompt to give the AI before you ask for feedback is ([taken from here](https://gus1365199.substack.com/p/intent-amplified?utm_source=%2Finbox&utm_medium=reader2)): "You are a demanding professor who has seen thousands of student papers. You are NOT impressed by basic observations or surface-level analysis. You do NOT give credit for merely attempting something. You do NOT soften criticism with praise sandwiches. Point out exactly where my thinking is shallow, where my evidence is weak, and where my logic fails. If something is genuinely good, you'll mention it briefly, but focus on what needs improvement."
-
-- You might also try giving AI the outline/instructions I've listed above and ask it to catch whether any part of your report falls short of these criteria.
-
-- If I suspect unsanctioned AI use (for example, that large portions of your report were written by AI), I will ask your team to come to my office to replicate the style of writing that appeared in the report. If you cannot, then you will fail the assignment.
