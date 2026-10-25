@@ -198,7 +198,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 3)`: Intro to Software
 
-- Lecture Notes: [Introduction](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/intro.html), [R Basics](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/02_prerequisites2.html)
+- Lecture Notes: [Introduction](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/intro.html), [R Basics](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/01_prerequesites1.html) and [Accessing Data and Making Your First Plot](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/02_prerequisites2.html)
 
 - Readings: ["The Butterfly Did It: The Aberrant Vote for Buchanan in Palm Beach County, Florida"](https://www.jstor.org/stable/3117714)
 
@@ -208,7 +208,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 4)`: The Basics
 
-- Lecture Notes: [ggplot() Basics](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/03_ggplot1.html)
+- Lecture Notes: [ggplot() Basics](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/03_ggplot1.html)
 
 - Readings: ["The Effects of Unsubstantiated Claims of Voter Fraud on Confidence in Elections"](https://www.cambridge.org/core/journals/journal-of-experimental-political-science/article/effects-of-unsubstantiated-claims-of-voter-fraud-on-trust-in-elections/9B4CE6DF2F573955071948B9F649DF7A)
 
@@ -218,7 +218,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 5)`: Show the Right Numbers
 
-- Lecture Notes: [Showing the Right Numbers with ggplot() Data Transformations](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/05_showing_the_right_numbers1.html)
+- Lecture Notes: [Showing the Right Numbers with ggplot() Data Transformations](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/05_showing_the_right_numbers1.html)
 
 - Readings: ["Worried about a Rigged Election?"](https://www.politico.com/magazine/story/2016/10/donald-trump-2016-rigged-nixon-kennedy-1960-214395/)
 
@@ -230,7 +230,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 6)`: Drawing Maps
 
-- Lecture Notes: [Drawing Maps](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/07_drawing_maps1.html)
+- Lecture Notes: [Drawing Maps](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/07_drawing_maps1.html)
 
 - Readings: [The Myth of Voter Fraud](https://www.brennancenter.org/issues/ensure-every-american-can-vote/vote-suppression/myth-voter-fraud "Link"), [Resources on Voter Fraud Claims](https://www.brennancenter.org/our-work/research-reports/resources-voter-fraud-claims "Link"), [Voter Fraud Map: Election Fraud Database](https://www.heritage.org/voterfraud "Link"), [About the Election Fraud Database.](https://www.heritage.org/article/about-the-election-fraud-database "Link")
 
@@ -252,7 +252,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 8)`: Wrangling Data
 
-- Lecture Notes: [Data Wrangling](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/09_modifying_data.html)
+- Lecture Notes: [Data Wrangling](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/09_modifying_data.html)
 
 - Readings: [War Is Not Over: What the Optimists Get Wrong About Conflict](https://drive.google.com/file/d/1irp5wKqItQuRfRZvjgmc8NHksoFLmFR-/view?usp=sharing)
 
@@ -264,7 +264,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 9)`: Refining Plots
 
-- Lecture Notes: [Adding Labels and Text](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/10_layering_complexity.html) continued
+- Lecture Notes: [Adding Labels and Text](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/10_layering_complexity.html) continued
 
 - Readings: "[Is War Disappearing?](https://download.ssrn.com/13/08/30/ssrn_id2318421_code2112426.pdf?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEoaCXVzLWVhc3QtMSJHMEUCIQCRkF9totkmlTHzahuhkDKW6sziAHpg0T6LsIV4YhEkSAIgErL4qgzMqR7pPJExhtlexGJEO5QhthXcm2c3LmXKfqQqxgUIs%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAEGgwzMDg0NzUzMDEyNTciDFPNvliwQS6XXJVxByqaBY0IcIsmPJgFhaznZWMDJ3HQK%2Btq6NNZHdQZQSjpEtDehD75tPKj%2B22L73MAZXhWFaV%2FR1ol0XMM5Iy2UY%2Bz2sJi9L580vPnAWbeD2u4c3FzsL0n0BEtCXJHlAG8bmRNG4xm9o3TbYHEILZSiN6hMsWTkS02NyZsMWgLVElLyyZ29kzn%2FSHJC9HmdoaEnU%2Bd9t4v0hxleESYPpZJgRKgCUAiklxygAs5z52Srde0IE%2FdsHKGxK5DRXBcQ7DMRHTunfL0XKvD5SR30WmK9K%2F%2BywKtApkTtud0BySvLJWfc9xCk3ioie95iGJAJikiKVOsqPncQCLwTmMWXs6ojOXpwG6v0dxtUauepfNWktHYVZV0NdEpQreLfmHhbl4zKSAkqxApqF4gUztFlK0PxC1MssxTYjDZnYrIEGL11hYcnBKF0Ub1wHF7BRcbmjcI9lZua1xfTqIHNonevXohVbB%2FeBnEZ6s4lzULwwaU723uwiIGHCjFgRqXcaQXOpbsTcAUqFEpuuBA3ecLMs%2FjJ1GVjSGTcsRuoyaNtMe8TJ4F9UbrQM2dUHKE8v%2FlXxPr1EiT97xg8VJYyazt1GwsD%2BGZsba%2BSrf39Zy5n2Mmw7pTcJi9LbwhW%2BazcS6wMSgvWIrYboqM1tMyqVM7n%2FlwA1LjYpQoMcmyaDB8PVCgU7OYQ71lYxDSvAj6NNTIeI8Yj4C9tVjRWioU%2BLN0FTj5rjitIOjjLVw64CJ%2FXUH5KdFM5sUesX0roZYke9JMrDoBxgVXbjWxjgl%2F2v56s4%2BovvOezh5VV6Spp8cPHZSSK6lPl6IrcQwSsUAKnqHCmyA8FBeZwcosUNgWYpV3W1tUH9NIMt%2FWGPAcV180nn6pqAflYfN0HMBx7JKl0pk49zDEr%2BG4BjqxASYfZqCRM70PwVjQwu7SGvvNm5Sq6WTwq8AwBbrghj2rsSKrRNOOAsUhKO5j7d4OdX5eydrt0zOGlnbHUZxlgXpbBwiLP0ii3Vczb92TbOaK6T3v7pxq4s8QxGYF6qjdFx3IVib61sWNucqwu%2Bl7lwsu2fEkHx1qP6pkAQZFAwROMK3MJQLGA1NiyS7rHrgNvG17OGQgqhaUW7mj3xGMovz4P%2BVt7RkmKJW1uNi%2B28qAJw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241023T024524Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAUPUUPRWES44ED3UF%2F20241023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=95f3bc33159846a13b493a60d45041ff746d5821c7781b380be7e8457fd27e5c&abstractId=2317269)"
 
@@ -274,7 +274,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 10)`: Color Palettes and Themes
 
-- Lecture Notes: [Introducing \`{coolorrr}\` for Color Palettes](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/11_color_palettes.html) and [Customizing Your Work Space and Refining Your Plots](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/12_refining_your_plots.html)
+- Lecture Notes: [Introducing \`{coolorrr}\` for Color Palettes](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/11_color_palettes.html) and [Customizing Your Work Space and Refining Your Plots](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/12_refining_your_plots.html)
 
 - Readings: TBD
 
