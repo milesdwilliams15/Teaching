@@ -1,17 +1,63 @@
 ---
-title: "MA2"
-format: pdf
-editor: visual
+title: "Main Assignment 2"
+format: typst
 ---
 
-## 
+I will randomly assign you into teams of three. This is a group submission: each team will turn in one essay. Your mission is to use one of the eight theories we discussed in this unit of the class to predict what would happen if humanity created an artificial super intelligence (ASI) that goes rogue and becomes malicious.
 
-In this unit we've talked about many different theories of international politics. For MA2, you're objective is to select a theory that we discussed and argue why it is best for explaining Russia's invasion of Ukraine and the West's response. To make your case you'll write a brief five paragraph essay that follows the below format:
+Such an intelligence would surpass humans in every way in terms of strategy and speed. Any digital information would be suspect as the ASI generates all manner of deep fakes to keep humans confused and divided. It could threaten to wipe out humanity, or perhaps hold it hostage or enslave it en masse.
 
--   Paragraph 1: Begin the paragraph will a clear thesis statement, and include a brief summary of the points of evidence you will bring to bear to support this thesis.
+You may choose the details of the ASI's origins (for example, which country, company, or lab created it, and whether its creation was intentional or accidental). State your choice clearly in your essay.
 
--   Paragraphs 2-4: Each paragraph will introduce a point of evidence and explain why it supports your thesis. You can draw from news stories about events in Ukraine or arguments made by scholars about the war. Anything you cite, use in-text hyperlinks to the source.
+How would the world respond? Would actors react quickly enough to stop the ASI before it takes over critical systems, killer drones, and nuclear arsenals? Would they seek to regain control of the ASI and use it to their advantage? Or would they cooperate and agree to never allow such an intelligence to come on line again? Which IR theory you pick will determine the predicted outcome.
 
--   Paragraph 5: Conclude by summarizing your argument and offer a quick prediction based on your chosen theory for how the war in Ukraine will come to an end.
+Use the outline below to craft your essay. It should be six paragraphs, less than 800 words (not including title and names), and include no section headings. All points sum to 22. Your team's final grade will be calculated as the share of all points earned.
 
-Submit your essay to Canvas by Friday Nov. 8 by midnight.
+## Overall (+5pts)
+
+- Include a title with your team's names (+1pt).
+- No unclear language or repetitiveness, and all complex terms or jargon are explained \[terms specific to a theory that you would need to define for a general audience, like balance of power or cognitive bias, etc.\] (+1pt).
+- No typos (+1pt).
+- Word count \< 800 words, excluding title and names (+1pt).
+- Use in-text hyperlinks for all citations (+1pt).
+
+## Paragraph 1 (+2pts)
+
+- Introduce the topic of artificial super intelligence (ASI) and its potential threat to humanity (+1pt).
+- Name the theory you will use and state what you believe your chosen theory predicts would ultimately happen (+1pt).
+
+## Paragraph 2 (+3pts)
+
+- In your first sentence, introduce, in abstract terms, the actors whose decisions most bear on predicting outcomes according to your theory (+1pt).
+- With the remainder of your paragraph, discuss some real-world examples of these actors and explain why they fit the definition of most relevant actors for your chosen theory. Also explain whether the ASI's origin (the one you chose) affects which actors are most relevant, and if so, how (+1pt).
+- Accurately apply your chosen theory: the actors you identify are those your theory, rather than a different theory, treats as most important (+1pt).
+
+## Paragraph 3 (+3pts)
+
+- In your first sentence, introduce, in abstract terms, the preferences of the most relevant actors (+1pt).
+- With the remainder of your paragraph, make these preferences concrete by pointing to some plausible preferences of the real-world actors you mentioned in the second paragraph (+1pt).
+- Accurately apply your chosen theory: the preferences you describe are consistent with what your theory assumes about what actors want and why (+1pt).
+
+## Paragraph 4 (+3pts)
+
+- In your first sentence, introduce, in abstract terms, the possible alternatives the most relevant actors can choose from (+1pt).
+- With the remainder of your paragraph, make these alternatives concrete by pointing to some plausible actions the real-world actors you mentioned in the second paragraph could make that align with the abstract alternatives \[for example, if actors can cooperate, what would cooperation concretely look like?\] (+1pt).
+- Accurately apply your chosen theory: the alternatives you describe are the ones your theory says actors would realistically consider (+1pt).
+
+## Paragraph 5 (+3pts)
+
+- In your first sentence, introduce, in abstract terms, the ways that the actions of the most relevant actors will affect others and vice versa (+1pt).
+- With the remainder of your paragraph, talk about the concrete actions or outcomes that result from these interactions for your chosen real-world actors. Do not predict which alternative each actor will ultimately select; that belongs in Paragraph 6 (+1pt).
+- Accurately apply your chosen theory: the interactions you describe reflect how your theory understands relationships among actors (+1pt).
+
+## Paragraph 6 (+3pts)
+
+- In your first sentence, introduce, in abstract terms, what ultimately the most relevant actors will choose to do in response to the ASI (+1pt).
+- With the remainder of your paragraph, explain specifically what you think the real-world relevant actors you mentioned in paragraph 2 will choose to do and what the ultimate outcome will be. Also explain whether the ASI's origin (the one you chose) changes this outcome, and if so, how (+1pt).
+- Accurately apply your chosen theory: the choices and outcome you predict follow from your theory's logic and from the preceding paragraphs (+1pt).
+
+## AI Policy
+
+You may use AI to brainstorm suggestions, to do background research, or to cross-reference your finished essay against this assignment prompt to confirm that you have met all the criteria. You may not use AI to write any part of your assignment, in part or in whole.
+
+All essays will be run through Pangram. If your essay comes back as more than 25% AI-generated, your team will be notified and we will schedule a conversation to review your essay writing process, with an appropriate response based on our discussion.

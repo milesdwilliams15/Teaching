@@ -19,13 +19,13 @@ I created an interactive online dashboard called [Trends in Global Issues](https
 
 Here's what your report for the NGO should look like. Each item listed is equally weighted toward your final grade.
 
-## Preamble
+## Preamble (2pts)
 
 - Include a title.
 
 - Include the names of your team members.
 
-## Introduction
+## Introduction (6pts)
 
 - Include a section header.
 
@@ -39,7 +39,7 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
 - Establish the importance of your report: e.g., that you want to help the NGO focus its mission in an evidence-based way.
 
-## Analysis
+## Analysis (8pts)
 
 - Include a section header.
 
@@ -59,7 +59,7 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
   - Includes a summary of how how to "read" the visualization to see how the data supports you assertion.
 
-## Conclusion
+## Conclusion (5pts)
 
 - Include a section header.
 
@@ -71,7 +71,7 @@ Here's what your report for the NGO should look like. Each item listed is equall
 
 - Think big and discuss why the issues you've identified should matter to the NGO.
 
-## Citations
+## Citations (2pts)
 
 - Any claims or assertions you make (beyond those supported by the data in the Shiny app) should include citations.
 

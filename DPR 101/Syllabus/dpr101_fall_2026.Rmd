@@ -296,7 +296,7 @@ This course will help you understand political data and what to do with it. That
 
 ## `r advdate(mon, 12)`: Survey Data and Measurement
 
-- Lecture Notes: [Working with Survey Data](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/14_tools_for_survey_data.html) and [Making Indexes with Survey Data](https://01a03487-efb6-f99a-ea7b-5556ac72d3e5.share.connect.posit.cloud/14.25_indexing.html)
+- Lecture Notes: [Working with Survey Data](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/14_tools_for_survey_data.html) and [Making Indexes with Survey Data](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/14.25_indexing.html)
 
 - Readings: Christian nationalism
 

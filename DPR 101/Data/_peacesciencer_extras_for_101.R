@@ -169,7 +169,8 @@ add_icd_mics <- function(
         across(
           starts_with("icdmic") | starts_with("fatal"),
           ~ replace_na(.x, 0)
-        )
+        ),
+        icdmichostlev = ifelse(icdmichostlev < 2, NA, icdmichostlev)
       ) -> dt
   }
   
