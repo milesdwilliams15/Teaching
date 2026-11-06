@@ -298,7 +298,7 @@ This course will help you understand political data and what to do with it. That
 
 - Lecture Notes: [Working with Survey Data](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/14_tools_for_survey_data.html) and [Making Indexes with Survey Data](https://01a130d2-553e-593d-d4f3-0fb1a273caee.share.connect.posit.cloud/14.25_indexing.html)
 
-- Readings: Christian nationalism
+- Readings: ["The measurement of Christian nationalism in broader perspective: a systematic reevaluation"](https://www.cambridge.org/core/journals/politics-and-religion/article/measurement-of-christian-nationalism-in-broader-perspective-a-systematic-reevaluation/7BD2C3DFE92DB581D15C4EFE87C621EF)
 
 - Homework: Practice Set 7 (due Friday)
 
